@@ -13,3 +13,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Rôle d'un utilisateur de l'application. Détermine les permissions et actions de l'utilisateur
+enum UserRole {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+// État d'une tâche
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELLED
+}
+
+// État d'un projet
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
