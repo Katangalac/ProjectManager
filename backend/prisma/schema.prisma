@@ -39,11 +39,170 @@ enum ProjectStatus {
   CANCELLED
 }
 
+// Modèle représentant un utilisateur de l'application
 model User {
-  id          Int    @id @default(autoincrement())
-  userName    String @unique @map("username")
-  firstName   String @map("first_name")
-  lastName    String @map("last_name")
-  phoneNumber String @unique @map("phone_number")
-  email       String @unique @map("email_adress")
+  id                Int            @default(autoincrement())
+  userName          String         @map("username")
+  firstName         String         @map("first_name")
+  lastName          String         @map("last_name")
+  phoneNumber       String         @map("phone_number")
+  email             String         @map("email_adress")
+  password          String         @map("password")
+  profession        String?        @map("profession")
+  picture           Bytes?         @map("picture")
+  role              UserRole       @map("role")
+  leadTeams         Team[]
+  userTeams         UserTeam[]
+  createdProjects   Project[]
+  createdTasks      Task[]
+  assignedTasks     UserTask[]
+  userNotifications Notification[]
+  updatedAt         DateTime       @default(now()) @map("updated_at")
+  createdAt         DateTime       @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_user")
+  @@unique([userName], name: "uk_username")
+  @@unique([phoneNumber], name: "uk_phone_number")
+  @@unique([email], name: "uk_email_adress")
+  @@map("users")
+}
+
+// Modèle représentant une équipe de travail
+model Team {
+  id           Int           @default(autoincrement())
+  leaderId     Int           @map("leader_id")
+  name         String        @map("name")
+  description  String        @map("description")
+  user         User          @relation(fields: [leaderId], references: [id])
+  teamTasks    Task[]
+  teamUsers    UserTeam[]
+  teamProjects ProjectTeam[]
+  updatedAt    DateTime      @default(now()) @map("updated_at")
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_team")
+  @@unique([name], name: "uk_team_name")
+  @@map("teams")
+}
+
+// Modèle représentant un projet à gérer avec l'application
+model Project {
+  id            Int           @default(autoincrement())
+  creatorId     Int           @map("creator_id")
+  title         String        @map("title")
+  description   String        @map("description")
+  status        ProjectStatus @default(PLANNING) @map("status")
+  budgetPlanned Float         @default(0.00) @map("budget_planned")
+  actual_cost   Float         @default(0.00) @map("actual_cost")
+  startedAt     DateTime      @map("started_at")
+  deadline      DateTime      @map("deadline")
+  completedAt   DateTime?     @map("completed_at")
+  user          User          @relation(fields: [creatorId], references: [id])
+  projectTasks  Task[]
+  projectTeams  ProjectTeam[]
+  updatedAt     DateTime      @default(now()) @map("updated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  ProjectTask   ProjectTask[]
+
+  @@id([id], name: "pk_project")
+  @@unique([title], name: "uk_project_title")
+  @@map("projects")
+}
+
+// Modèle représentant une tâche d'un projet
+model Task {
+  id            Int           @default(autoincrement())
+  creatorId     Int           @map("creator_id")
+  projectId     Int           @map("project_id")
+  teamId        Int           @map("team_id")
+  title         String        @map("title")
+  description   String        @map("description")
+  priorityLevel Int           @map("priority_level")
+  status        TaskStatus    @default(TODO) @map("status")
+  cost          Float         @default(0.00) @map("cost")
+  startedAt     DateTime      @map("started_at")
+  deadline      DateTime      @map("deadline")
+  completedAt   DateTime?     @map("completed_at")
+  user          User          @relation(fields: [creatorId], references: [id])
+  project       Project       @relation(fields: [projectId], references: [id])
+  team          Team          @relation(fields: [teamId], references: [id])
+  assignedTo    UserTask[]
+  updatedAt     DateTime      @default(now()) @map("updated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  ProjectTask   ProjectTask[]
+
+  @@id([id], name: "pk_task")
+  @@unique([title], name: "uk_task_title")
+  @@map("tasks")
+}
+
+// Modèle représentant une notification
+model Notification {
+  id        Int      @default(autoincrement())
+  userId    Int      @map("user_id")
+  message   String   @map("message")
+  sentAt    DateTime @default(now()) @map("sent_at")
+  user      User     @relation(fields: [userId], references: [id])
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_notification")
+  @@map("notifications")
+}
+
+// Modèle d'association des utilisateurs à dess équipes
+model UserTeam {
+  id        Int      @default(autoincrement())
+  userId    Int      @map("user_id")
+  teamId    Int      @map("team_id")
+  userRole  String   @map("user_role")
+  user      User     @relation(fields: [userId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, teamId], name: "pk_user_team")
+  @@map("user_teams")
+}
+
+// Modèle d'association des projets à des équipes
+model ProjectTeam {
+  id        Int      @default(autoincrement())
+  projectId Int      @map("project_id")
+  teamId    Int      @map("team_id")
+  project   Project  @relation(fields: [projectId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id])
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([projectId, teamId], name: "pk_project_team")
+  @@map("project_teams")
+}
+
+// Modèle d'association des utilisateurs à leurs tâches
+model UserTask {
+  id        Int      @default(autoincrement())
+  userId    Int      @map("user_id")
+  taskId    Int      @map("task_id")
+  user      User     @relation(fields: [userId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id])
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, taskId], name: "pk_user_task")
+  @@map("user_tasks")
+}
+
+// Modèle d'association des utilisateurs à leurs tâches
+model ProjectTask {
+  id        Int      @default(autoincrement())
+  projectId Int      @map("user_id")
+  taskId    Int      @map("task_id")
+  project   Project  @relation(fields: [projectId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id])
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([projectId, taskId], name: "pk_project_task")
+  @@map("project_tasks")
 }
