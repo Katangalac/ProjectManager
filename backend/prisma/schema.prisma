@@ -70,10 +70,10 @@ model User {
 // Modèle représentant une équipe de travail
 model Team {
   id           Int           @default(autoincrement())
-  leaderId     Int           @map("leader_id")
+  leaderId     Int?          @map("leader_id")
   name         String        @map("name")
   description  String        @map("description")
-  user         User          @relation(fields: [leaderId], references: [id])
+  user         User?         @relation(fields: [leaderId], references: [id], onDelete: SetNull)
   teamTasks    Task[]
   teamUsers    UserTeam[]
   teamProjects ProjectTeam[]
@@ -88,7 +88,7 @@ model Team {
 // Modèle représentant un projet à gérer avec l'application
 model Project {
   id            Int           @default(autoincrement())
-  creatorId     Int           @map("creator_id")
+  creatorId     Int?          @map("creator_id")
   title         String        @map("title")
   description   String        @map("description")
   status        ProjectStatus @default(PLANNING) @map("status")
@@ -97,7 +97,7 @@ model Project {
   startedAt     DateTime      @map("started_at")
   deadline      DateTime      @map("deadline")
   completedAt   DateTime?     @map("completed_at")
-  user          User          @relation(fields: [creatorId], references: [id])
+  user          User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   projectTasks  Task[]
   projectTeams  ProjectTeam[]
   updatedAt     DateTime      @default(now()) @map("updated_at")
@@ -112,9 +112,9 @@ model Project {
 // Modèle représentant une tâche d'un projet
 model Task {
   id            Int           @default(autoincrement())
-  creatorId     Int           @map("creator_id")
-  projectId     Int           @map("project_id")
-  teamId        Int           @map("team_id")
+  creatorId     Int?          @map("creator_id")
+  projectId     Int?          @map("project_id")
+  teamId        Int?          @map("team_id")
   title         String        @map("title")
   description   String        @map("description")
   priorityLevel Int           @map("priority_level")
@@ -123,9 +123,9 @@ model Task {
   startedAt     DateTime      @map("started_at")
   deadline      DateTime      @map("deadline")
   completedAt   DateTime?     @map("completed_at")
-  user          User          @relation(fields: [creatorId], references: [id])
-  project       Project       @relation(fields: [projectId], references: [id])
-  team          Team          @relation(fields: [teamId], references: [id])
+  user          User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  project       Project?      @relation(fields: [projectId], references: [id])
+  team          Team?         @relation(fields: [teamId], references: [id])
   assignedTo    UserTask[]
   updatedAt     DateTime      @default(now()) @map("updated_at")
   createdAt     DateTime      @default(now()) @map("created_at")
@@ -142,7 +142,7 @@ model Notification {
   userId    Int      @map("user_id")
   message   String   @map("message")
   sentAt    DateTime @default(now()) @map("sent_at")
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -156,8 +156,8 @@ model UserTeam {
   userId    Int      @map("user_id")
   teamId    Int      @map("team_id")
   userRole  String   @map("user_role")
-  user      User     @relation(fields: [userId], references: [id])
-  team      Team     @relation(fields: [teamId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -170,8 +170,8 @@ model ProjectTeam {
   id        Int      @default(autoincrement())
   projectId Int      @map("project_id")
   teamId    Int      @map("team_id")
-  project   Project  @relation(fields: [projectId], references: [id])
-  team      Team     @relation(fields: [teamId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -184,8 +184,8 @@ model UserTask {
   id        Int      @default(autoincrement())
   userId    Int      @map("user_id")
   taskId    Int      @map("task_id")
-  user      User     @relation(fields: [userId], references: [id])
-  task      Task     @relation(fields: [taskId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -198,8 +198,8 @@ model ProjectTask {
   id        Int      @default(autoincrement())
   projectId Int      @map("user_id")
   taskId    Int      @map("task_id")
-  project   Project  @relation(fields: [projectId], references: [id])
-  task      Task     @relation(fields: [taskId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
