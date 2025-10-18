@@ -41,24 +41,27 @@ enum ProjectStatus {
 
 // Modèle représentant un utilisateur de l'application
 model User {
-  id                Int            @default(autoincrement())
-  userName          String         @map("username")
-  firstName         String         @map("first_name")
-  lastName          String         @map("last_name")
-  phoneNumber       String         @map("phone_number")
-  email             String         @map("email_adress")
-  password          String         @map("password")
-  profession        String?        @map("profession")
-  picture           Bytes?         @map("picture")
-  role              UserRole       @map("role")
+  id                Int                @default(autoincrement())
+  userName          String             @map("username")
+  firstName         String             @map("first_name")
+  lastName          String             @map("last_name")
+  phoneNumber       String             @map("phone_number")
+  email             String             @map("email_adress")
+  password          String             @map("password")
+  profession        String?            @map("profession")
+  picture           Bytes?             @map("picture")
+  imageUrl          String?            @map("image_url")
+  role              UserRole           @map("role")
   leadTeams         Team[]
   userTeams         UserTeam[]
+  userConversations UserConversation[]
+  userMessages      Message[]
   createdProjects   Project[]
   createdTasks      Task[]
   assignedTasks     UserTask[]
   userNotifications Notification[]
-  updatedAt         DateTime       @default(now()) @map("updated_at")
-  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime           @default(now()) @map("updated_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
 
   @@id([id], name: "pk_user")
   @@unique([userName], name: "uk_username")
@@ -69,16 +72,17 @@ model User {
 
 // Modèle représentant une équipe de travail
 model Team {
-  id           Int           @default(autoincrement())
-  leaderId     Int?          @map("leader_id")
-  name         String        @map("name")
-  description  String        @map("description")
-  user         User?         @relation(fields: [leaderId], references: [id], onDelete: SetNull)
-  teamTasks    Task[]
-  teamUsers    UserTeam[]
-  teamProjects ProjectTeam[]
-  updatedAt    DateTime      @default(now()) @map("updated_at")
-  createdAt    DateTime      @default(now()) @map("created_at")
+  id                Int            @default(autoincrement())
+  leaderId          Int?           @map("leader_id")
+  name              String         @map("name")
+  description       String         @map("description")
+  user              User?          @relation(fields: [leaderId], references: [id], onDelete: SetNull)
+  teamTasks         Task[]
+  teamUsers         UserTeam[]
+  teamProjects      ProjectTeam[]
+  teamConversations Conversation[]
+  updatedAt         DateTime       @default(now()) @map("updated_at")
+  createdAt         DateTime       @default(now()) @map("created_at")
 
   @@id([id], name: "pk_team")
   @@unique([name], name: "uk_team_name")
@@ -150,7 +154,66 @@ model Notification {
   @@map("notifications")
 }
 
-// Modèle d'association des utilisateurs à dess équipes
+// Modèle représentant une conversation
+model Conversation {
+  id           Int                @default(autoincrement())
+  isGroup      Boolean            @default(false) @map("is_group")
+  teamId       Int?               @map("team_id")
+  team         Team?              @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  participants UserConversation[]
+  messages     Message[]
+  updatedAt    DateTime           @default(now()) @map("updated_at")
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_conversation")
+  @@map("conversations")
+}
+
+// Modèle représentant un message d'une conversation
+model Message {
+  id             Int          @default(autoincrement())
+  senderId       Int?         @map("sender_id")
+  conversationId Int          @map("conversation_id")
+  content        String?      @map("content")
+  sender         User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  attachments    Attachment[]
+  updatedAt      DateTime     @default(now()) @map("updated_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_message")
+  @@map("messages")
+}
+
+// Modèle représentant une pièce jointe (à un message) 
+model Attachment {
+  id        Int      @default(autoincrement())
+  messageId Int      @map("message_id")
+  url       String   @map("url")
+  type      String   @map("type")
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_attachment")
+  @@map("attachments")
+}
+
+//  Modèle d'association des utilisateurs à des conversations
+model UserConversation {
+  id             Int          @default(autoincrement())
+  userId         Int          @map("user_id")
+  conversationId Int          @map("conversation_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  updatedAt      DateTime     @default(now()) @map("updated_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@id([id], name: "pk_user_conversation")
+  @@map("user_conversations")
+}
+
+// Modèle d'association des utilisateurs à des équipes
 model UserTeam {
   id        Int      @default(autoincrement())
   userId    Int      @map("user_id")
