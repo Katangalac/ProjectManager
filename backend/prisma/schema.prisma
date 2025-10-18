@@ -38,3 +38,12 @@ enum ProjectStatus {
   COMPLETED
   CANCELLED
 }
+
+model User {
+  id          Int    @id @default(autoincrement())
+  userName    String @unique @map("username")
+  firstName   String @map("first_name")
+  lastName    String @map("last_name")
+  phoneNumber String @unique @map("phone_number")
+  email       String @unique @map("email_adress")
+}
