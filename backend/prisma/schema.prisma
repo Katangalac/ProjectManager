@@ -41,11 +41,11 @@ enum ProjectStatus {
 
 // Modèle représentant un utilisateur de l'application
 model User {
-  id                Int                @default(autoincrement())
+  id                String             @default(uuid())
   userName          String             @map("username")
   firstName         String             @map("first_name")
   lastName          String             @map("last_name")
-  phoneNumber       String             @map("phone_number")
+  phoneNumber       String?            @map("phone_number")
   email             String             @map("email_address")
   password          String             @map("password")
   profession        String?            @map("profession")
@@ -72,8 +72,8 @@ model User {
 
 // Modèle représentant une équipe de travail
 model Team {
-  id                Int            @default(autoincrement())
-  leaderId          Int?           @map("leader_id")
+  id                String         @default(uuid())
+  leaderId          String?        @map("leader_id")
   name              String         @map("name")
   description       String         @map("description")
   user              User?          @relation(fields: [leaderId], references: [id], onDelete: SetNull)
@@ -91,8 +91,8 @@ model Team {
 
 // Modèle représentant un projet à gérer avec l'application
 model Project {
-  id            Int           @default(autoincrement())
-  creatorId     Int?          @map("creator_id")
+  id            String        @default(uuid())
+  creatorId     String?       @map("creator_id")
   title         String        @map("title")
   description   String        @map("description")
   status        ProjectStatus @default(PLANNING) @map("status")
@@ -114,10 +114,10 @@ model Project {
 
 // Modèle représentant une tâche d'un projet
 model Task {
-  id            Int        @default(autoincrement())
-  creatorId     Int?       @map("creator_id")
-  projectId     Int?       @map("project_id")
-  teamId        Int?       @map("team_id")
+  id            String     @default(uuid())
+  creatorId     String?    @map("creator_id")
+  projectId     String?    @map("project_id")
+  teamId        String?    @map("team_id")
   title         String     @map("title")
   description   String     @map("description")
   priorityLevel Int        @map("priority_level")
@@ -140,8 +140,8 @@ model Task {
 
 // Modèle représentant une notification
 model Notification {
-  id        Int      @default(autoincrement())
-  userId    Int      @map("user_id")
+  id        String   @default(uuid())
+  userId    String   @map("user_id")
   message   String   @map("message")
   sentAt    DateTime @default(now()) @map("sent_at")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -154,9 +154,9 @@ model Notification {
 
 // Modèle représentant une conversation
 model Conversation {
-  id           Int                @default(autoincrement())
+  id           String             @default(uuid())
   isGroup      Boolean            @default(false) @map("is_group")
-  teamId       Int?               @map("team_id")
+  teamId       String?            @map("team_id")
   team         Team?              @relation(fields: [teamId], references: [id], onDelete: SetNull)
   participants UserConversation[]
   messages     Message[]
@@ -169,9 +169,9 @@ model Conversation {
 
 // Modèle représentant un message d'une conversation
 model Message {
-  id             Int          @default(autoincrement())
-  senderId       Int?         @map("sender_id")
-  conversationId Int          @map("conversation_id")
+  id             String       @default(uuid())
+  senderId       String?      @map("sender_id")
+  conversationId String       @map("conversation_id")
   content        String?      @map("content")
   sender         User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
@@ -185,8 +185,8 @@ model Message {
 
 // Modèle représentant une pièce jointe (à un message) 
 model Attachment {
-  id        Int      @default(autoincrement())
-  messageId Int      @map("message_id")
+  id        String   @default(uuid())
+  messageId String   @map("message_id")
   url       String   @map("url")
   type      String   @map("type")
   message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
@@ -199,8 +199,8 @@ model Attachment {
 
 //  Modèle d'association des utilisateurs à des conversations
 model UserConversation {
-  userId         Int          @map("user_id")
-  conversationId Int          @map("conversation_id")
+  userId         String       @map("user_id")
+  conversationId String       @map("conversation_id")
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   updatedAt      DateTime     @default(now()) @map("updated_at")
@@ -212,8 +212,8 @@ model UserConversation {
 
 // Modèle d'association des utilisateurs à des équipes
 model UserTeam {
-  userId    Int      @map("user_id")
-  teamId    Int      @map("team_id")
+  userId    String   @map("user_id")
+  teamId    String   @map("team_id")
   userRole  String   @map("user_role")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -226,8 +226,8 @@ model UserTeam {
 
 // Modèle d'association des projets à des équipes
 model ProjectTeam {
-  projectId Int      @map("project_id")
-  teamId    Int      @map("team_id")
+  projectId String   @map("project_id")
+  teamId    String   @map("team_id")
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -239,8 +239,8 @@ model ProjectTeam {
 
 // Modèle d'association des utilisateurs à leurs tâches
 model UserTask {
-  userId    Int      @map("user_id")
-  taskId    Int      @map("task_id")
+  userId    String   @map("user_id")
+  taskId    String   @map("task_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
