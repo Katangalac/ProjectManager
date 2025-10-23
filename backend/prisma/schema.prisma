@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -43,8 +42,8 @@ enum ProjectStatus {
 model User {
   id                String             @default(uuid())
   userName          String             @map("username")
-  firstName         String             @map("first_name")
-  lastName          String             @map("last_name")
+  firstName         String?            @map("first_name")
+  lastName          String?            @map("last_name")
   phoneNumber       String?            @map("phone_number")
   email             String             @map("email_address")
   password          String             @map("password")
