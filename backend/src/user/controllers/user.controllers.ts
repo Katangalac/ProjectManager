@@ -1,0 +1,128 @@
+import { Request, Response } from "express";
+import { updateUserSchema, getUsersFilterSchema } from "../validators/index.js";
+import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
+import * as userService from "../services/user.services.js"
+import { z } from "zod"
+import { SafeUser } from "../types/User.js";
+
+/**
+ * Schéma pour valider l'id passé en paramètre
+ * S'assure que l'id est un uuid 
+ */
+const idParamSchema = z.object({
+  id: z.uuid("ID invalide"),
+});
+
+/**
+ * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
+ * @route GET /api/users
+ * @param {Request} req : requête Express contenant les données de filtre à utiliser dans `req.query`
+ * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @returns {Promise<SafeUser>} - retourne un objet JSON contenant la liste des utilisateurs
+ */
+export const getUsersController = async(req: Request, res: Response) => {
+    try {
+        const filters = getUsersFilterSchema.parse(req.query);
+        const users = await userService.getUsers(filters);
+        res.status(200).json(users);
+    } catch (err) {
+        console.error(err);
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ message: err.message });
+        }
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+/**
+ * Récupère un utilisateur par son identifiant (id)
+ * @route GET /api/users/:id
+ * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans `req.params.id`
+ * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @returns {Promise<SafeUser>} - retourne un objet JSON contenant les informations de l'utilisateur
+ */
+export const getUserByIdController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse(req.params.id);
+        const user = await userService.getUserById(id);
+        res.status(200).json(user);
+    } catch (err) {
+        console.error(err);
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ message: err.message });
+        }
+
+        if (err instanceof UserNotFoundError) {
+            return res.status(404).json({ message: err.message });
+        }
+
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+/**
+ * Met à jour les informations de l'utilisateur ayant l'identifiant passé en paramètre 
+ * @route PATCH /api/users/:id
+ * @param {Request} req : - requête Express contenant l'identifiant de l'utilisateur dans `req.params.id`
+ *                        - contient les données à mettre à jour dans req.body
+ * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @returns {Promise<SafeUser>} : l'utilisateur avec les informations mises à jour
+ */
+export const updateUserController = async(req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse(req.params.id);
+        const input = updateUserSchema.parse(req.body);
+        const user = await userService.updateUser(id, input);
+        res.status(200).json(user);
+    } catch (err) {
+        console.error(err);
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ message: err.message });
+        }
+
+        if (err instanceof UserNotFoundError) {
+            return res.status(404).json({ message: err.message });
+        }
+
+        if (err instanceof EmailAlreadyUsedError) {
+            return res.status(409).json({ message: err.message });
+        }
+
+        if (err instanceof UsernameAlreadyUsedError) {
+            return res.status(409).json({ message: err.message });
+        }
+
+        if (err instanceof PhoneNumberAlreadyUsedError) {
+            return res.status(409).json({ message: err.message });
+        }
+
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
+/**
+ * Supprime l'utilisateur ayant l'identifiant passé en paramètre
+ * @route DELETE /api/users/:id
+ * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans `req.params.id`
+ * @param {Response} res : réponse Express utilisé pour renvoyer la réponse
+ */
+export const deleteUserController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse(req.params.id);
+        await userService.deleteUser(id);
+        res.status(204).send();
+    }
+    catch (err) {
+        console.error(err);
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ message: err.message });
+        }
+
+        if (err instanceof UserNotFoundError) {
+            return res.status(404).json({ message: err.message });
+        }
+
+        res.status(500).json({ message: "Erreur interne du serveur" });
+    }
+};
+
