@@ -20,6 +20,12 @@ enum UserRole {
   VIEWER
 }
 
+// Indique la méthode d'inscription utilisée par un utilisateur lors de son enregistrement
+enum UserProvider {
+  LOCAL
+  GOOGLE
+}
+
 // État d'une tâche
 enum TaskStatus {
   TODO
@@ -51,6 +57,8 @@ model User {
   picture           Bytes?             @map("picture")
   imageUrl          String?            @map("image_url")
   role              UserRole           @map("role")
+  provider          UserProvider       @map("provider")
+  googleId          String?            @map("google_id")
   leadTeams         Team[]
   userTeams         UserTeam[]
   userConversations UserConversation[]
@@ -59,6 +67,7 @@ model User {
   createdTasks      Task[]
   assignedTasks     UserTask[]
   userNotifications Notification[]
+  lastLoginAt       DateTime?          @map("last_login_at")
   updatedAt         DateTime           @default(now()) @map("updated_at")
   createdAt         DateTime           @default(now()) @map("created_at")
 
@@ -66,6 +75,7 @@ model User {
   @@unique([userName], name: "uk_username")
   @@unique([phoneNumber], name: "uk_phone_number")
   @@unique([email], name: "uk_email_adress")
+  @@unique([googleId], name: "uk_google_id")
   @@map("users")
 }
 
