@@ -1,7 +1,7 @@
 import { User, SafeUser, RegisterUserInput, UpdateUserInput, GetUsersFilters } from "../types/User.js"
 import { toSafeUser } from "./user.transforms.js";
 import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
-import { Prisma, UserRole } from "@prisma/client";
+import { Prisma, UserRole, UserProvider } from "@prisma/client";
 import { db } from "../../db.js";
 import { hash } from "argon2";
 
@@ -17,10 +17,11 @@ export const createUser = async (input: RegisterUserInput): Promise<SafeUser> =>
     try {
         const hashedPassword = await hash(input.password);
         input.password = hashedPassword;
-        const newUser: User = await db.user.create({
+        const newUser = await db.user.create({
             data: {
                 ...input,
-                role: UserRole.MEMBER
+                role: UserRole.MEMBER,
+                provider: UserProvider.LOCAL
             }
         });
         return toSafeUser(newUser);
@@ -99,7 +100,7 @@ export const updateUser = async (id: string, input: UpdateUserInput): Promise<Sa
         if ("picture" in updateData && updateData.picture !== undefined) prismaData.picture = updateData.picture;
         if ("imageUrl" in updateData && updateData.imageUrl !== undefined) prismaData.imageUrl = updateData.imageUrl;*/
 
-        const updatedUser: User = await db.user.update({
+        const updatedUser = await db.user.update({
             where: { id },
             data: cleanedData as Prisma.UserUpdateInput
         });
@@ -120,7 +121,7 @@ export const updateUser = async (id: string, input: UpdateUserInput): Promise<Sa
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
-    const user: User | null = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id } });
     if (!user) throw new UserNotFoundError(id);
     await db.user.delete({ where: { id } });
 };
