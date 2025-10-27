@@ -54,11 +54,10 @@ model User {
   email             String             @map("email_address")
   password          String             @map("password")
   profession        String?            @map("profession")
-  picture           Bytes?             @map("picture")
   imageUrl          String?            @map("image_url")
   role              UserRole           @map("role")
   provider          UserProvider       @map("provider")
-  googleId          String?            @map("google_id")
+  oauthId           String?            @map("oauth_id")
   leadTeams         Team[]
   userTeams         UserTeam[]
   userConversations UserConversation[]
@@ -75,7 +74,7 @@ model User {
   @@unique([userName], name: "uk_username")
   @@unique([phoneNumber], name: "uk_phone_number")
   @@unique([email], name: "uk_email_adress")
-  @@unique([googleId], name: "uk_google_id")
+  @@unique([oauthId], name: "uk_oauth_id")
   @@map("users")
 }
 

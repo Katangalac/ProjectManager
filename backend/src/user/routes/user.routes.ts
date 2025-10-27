@@ -3,16 +3,24 @@ import * as userController from "../controllers/user.controllers.js"
 
 const router = Router();
 
-//GET /api/users
+/**
+ * @route GET /users 
+ */
 router.get("/", userController.getUsersController);
 
-//GET /api/users/:id
+/**
+ * @route GET /users/:id
+ */
 router.get("/:id", userController.getUserByIdController);
 
-//PATCH /api/users/:id
+/**
+ * @route PATCH /users/:id
+ */
 router.patch("/:id", userController.updateUserController);
 
-//DELETE /api/users/:id
+/**
+ * @route DELETE /users/:id
+ */ 
 router.delete("/:id", userController.deleteUserController);
 
 export default router;

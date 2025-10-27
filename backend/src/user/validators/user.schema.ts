@@ -1,5 +1,5 @@
 import {z} from 'zod'
-import { UserRole } from "@prisma/client";
+import { UserRole, UserProvider} from "@prisma/client";
 import { phoneRegex } from '../../utils/utils';
 
 
@@ -16,9 +16,11 @@ export const userSchema = z.object({
     lastName: z.string().max(50, "Nom trop long").nullable(),
     phoneNumber: z.string().regex(phoneRegex).nullable(),
     profession: z.string().max(100, "Nom de profession trop long").nullable(),
-    picture: z.instanceof(Uint8Array<ArrayBufferLike>).nullable(),
     imageUrl: z.url().max(2048).nullable(),
     role: z.enum(UserRole),
+    provider: z.enum(UserProvider),
+    oauthId:z.string().nullable(),
+    lastLoginAt: z.date().nullable(),
     createdAt: z.date(),
     updatedAt: z.date()
 });
