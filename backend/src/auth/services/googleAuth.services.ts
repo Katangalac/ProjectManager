@@ -1,24 +1,34 @@
 import axios from "axios";
+import qs from "qs";
 
 const GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URI = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 /**
- * Échange le code d'autorisation retourné par Google contre des jetons d'accès et d'identité
+ * Échange le code d'autorisation retourné par Google contre un jeton d'accès et d'identité
  * Le code temporaire reçu dans le callback est envoyé à l'API OAuth de Google 
  * @async
  * @param {string} code : le code d'autorisation renvoyé par Google dans la requête de callback
  * @param {string} redirectUri : l'url de redirection enregistrée dans la console Google Cloud
  * @returns un objet contenant les jetons id_token et access_token fournis par Google
  */
-export const exchangeCodeForTokens = async (code: string, redirectUri: string) => {
-    const response = await axios.post(GOOGLE_TOKEN_URI, {
+export const exchangeCodeForToken = async (code: string, redirectUri: string) => {
+    const params = qs.stringify({
         code,
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         redirect_uri: redirectUri,
         grant_type: "authorization_code",
     });
+    const response = await axios.post(
+        GOOGLE_TOKEN_URI,
+        params,
+        {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        }
+    );
     return response.data;
 }
 

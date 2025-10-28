@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { exchangeCodeForTokens, getGoogleUser } from "../services/googleAuth.services";
+import { exchangeCodeForToken, getGoogleUser } from "../services/googleAuth.services";
 import { db } from "../../db";
 import { generateAuthResponse } from "../services/auth.services";
 import { UserProvider } from "@prisma/client";
@@ -20,8 +20,8 @@ export const googleAuth = (req: Request, res: Response) => {
         "https://accounts.google.com/o/oauth2/v2/auth" +
         `?client_id=${process.env.GOOGLE_CLIENT_ID}` +
         `&redirect_uri=${REDIRECT_URI}` +
+        `&response_type=code` +
         `&scope=openid%20email%20profile`;
-    
     res.redirect(redirectUri);
 };
 
@@ -42,11 +42,12 @@ export const googleCallback = async (req: Request, res: Response) => {
     const code = req.query.code as string;
 
     try {
-        const { tokenId, accessToken } = await exchangeCodeForTokens(code, REDIRECT_URI);
-        const googleUser = await getGoogleUser(accessToken);
+        const { id_token, access_token } = await exchangeCodeForToken(code, REDIRECT_URI);
+        const googleUser = await getGoogleUser(access_token);
         const { email, name, sub } = googleUser;
         let user = await db.user.findUnique({ where: { email } });
         if (!user) {
+            console.log("entré");
             const baseUsername = name.replace(/\s+/g, '').toLowerCase();
             let username = baseUsername;
             let count = 1;
