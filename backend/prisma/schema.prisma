@@ -52,7 +52,7 @@ model User {
   lastName          String?            @map("last_name")
   phoneNumber       String?            @unique @map("phone_number")
   email             String             @unique @map("email_address")
-  password          String             @map("password")
+  password          String?            @map("password")
   profession        String?            @map("profession")
   imageUrl          String?            @map("image_url")
   role              UserRole           @map("role")
