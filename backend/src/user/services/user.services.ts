@@ -124,7 +124,7 @@ export const updateUser = async (id: string, userData: UpdateUserInput): Promise
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id:id } });
     if (!user) throw new UserNotFoundError(id);
     await db.user.delete({ where: { id } });
 };

@@ -40,7 +40,7 @@ export const getUsersController = async(req: Request, res: Response) => {
  */
 export const getUserByIdController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse(req.params.id);
+        const { id } = idParamSchema.parse({id:req.params.id});
         const user = await userService.getUserById(id);
         res.status(200).json(user);
     } catch (err) {
@@ -66,7 +66,7 @@ export const getUserByIdController = async (req: Request, res: Response) => {
  */
 export const updateUserController = async(req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse(req.params.id);
+        const { id } = idParamSchema.parse({id:req.params.id});
         const input = updateUserSchema.parse(req.body);
         const user = await userService.updateUser(id, input);
         res.status(200).json(user);
@@ -103,7 +103,9 @@ export const updateUserController = async(req: Request, res: Response) => {
  */
 export const deleteUserController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse(req.params.id);
+        const { id } = idParamSchema.parse({id:req.params.id});
+       /*  const id = req.params.id;
+        if (!id) return res.status(401).json({ message: "Requête invalide. Id manquant" }); */
         await userService.deleteUser(id);
         res.status(204).send();
     }
