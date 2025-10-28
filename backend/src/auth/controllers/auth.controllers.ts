@@ -48,12 +48,18 @@ export const login = async (req: Request, res: Response) => {
             },
         });  
         if (!user) return res.status(401).json({ error: "Identifiants invalides. Cet utilisateur n'existe pas" });
-        const { password, ...safeUser } = user;
-        const isValidPassword = await verify(password, loginData.password);
-        if (!isValidPassword) return res.status(401).json({ error: "Mot de passe invalide" });
-        const { token, cookieOptions } = generateAuthResponse(safeUser);
-        res.cookie("projectManagerToken", token, cookieOptions);
-        res.status(200).json({ message: "Connexion réussie", safeUser });
+        if (user.provider === UserProvider.LOCAL) {
+            const { password, ...safeUser } = user;
+            if (!password) return res.status(500).json({ error: "Utilisateur local sans mot de passe!" });
+            const isValidPassword = await verify(password, loginData.password);
+            if (!isValidPassword) return res.status(401).json({ error: "Mot de passe invalide" });
+            const { token, cookieOptions } = generateAuthResponse(safeUser);
+            res.cookie("projectManagerToken", token, cookieOptions);
+            res.status(200).json({ message: "Connexion réussie", safeUser });
+        }
+        else {
+            res.status(500).json({error: `Cet utilisateur est inscrit avec ${user.provider}`})
+        }
     } catch (err) {
         console.error("Erreur lors de la connexion : ", err);
         if (err instanceof ZodError) {

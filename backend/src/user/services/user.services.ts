@@ -19,7 +19,10 @@ import { hash } from "argon2";
  */
 export const createUser = async (newUserData: RegisterUserInput, provider: UserProvider = UserProvider.LOCAL, oauthId:string|null = null): Promise<SafeUser> => {
     try {
-        const hashedPassword = await hash(newUserData.password);
+        let hashedPassword = null;
+        if (provider === UserProvider.LOCAL) {
+            hashedPassword = await hash(newUserData.password);
+        }
         const newUser = await db.user.create({
             data: {
                 ...newUserData,
