@@ -14,9 +14,9 @@ export const toPublicUser = (user: User): PublicUser => {
         firstName: user.firstName,
         lastName: user.lastName,
         profession: user.profession,
-        picture: user.picture,
         imageUrl: user.imageUrl,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        lastLoginAt: user.lastLoginAt
     };
 };
 

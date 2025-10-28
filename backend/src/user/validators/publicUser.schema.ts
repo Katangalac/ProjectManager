@@ -12,5 +12,6 @@ export const publicUserSchema = z.object({
     profession: z.string().max(100, "Nom de profession trop long").nullable(),
     imageUrl: z.url().max(2048).nullable(),
     createdAt: z.date().nullable(),
+    lastLoginAt:z.date().nullable()
 });
 
