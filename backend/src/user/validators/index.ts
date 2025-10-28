@@ -1,4 +1,4 @@
-//Centralisation des importations/exportations des schémas d'utilisateur
+//Centralisation des exportations des schémas d'utilisateur
 export * from "./publicUser.schema"
 export * from "./registerUser.schema"
 export * from "./user.schema"

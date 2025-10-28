@@ -12,7 +12,6 @@ export const updateUserSchema = z.object({
     lastName: z.string().max(50, "Nom trop long").nullable().optional(),
     phoneNumber: z.string().regex(phoneRegex).nullable().optional(), 
     profession: z.string().max(100, "Nom de profession trop long").nullable().optional(),
-    picture: z.instanceof(Uint8Array).nullable().optional(),
     imageUrl: z.url().max(2048).nullable().optional()
 });
 

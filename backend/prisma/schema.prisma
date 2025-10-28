@@ -46,19 +46,18 @@ enum ProjectStatus {
 
 // Modèle représentant un utilisateur de l'application
 model User {
-  id                String             @default(uuid())
-  userName          String             @map("username")
+  id                String             @id @default(uuid())
+  userName          String             @unique @map("username")
   firstName         String?            @map("first_name")
   lastName          String?            @map("last_name")
-  phoneNumber       String?            @map("phone_number")
-  email             String             @map("email_address")
+  phoneNumber       String?            @unique @map("phone_number")
+  email             String             @unique @map("email_address")
   password          String             @map("password")
   profession        String?            @map("profession")
-  picture           Bytes?             @map("picture")
   imageUrl          String?            @map("image_url")
   role              UserRole           @map("role")
   provider          UserProvider       @map("provider")
-  googleId          String?            @map("google_id")
+  oauthId           String?            @unique @map("oauth_id")
   leadTeams         Team[]
   userTeams         UserTeam[]
   userConversations UserConversation[]
@@ -71,17 +70,12 @@ model User {
   updatedAt         DateTime           @default(now()) @map("updated_at")
   createdAt         DateTime           @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_user")
-  @@unique([userName], name: "uk_username")
-  @@unique([phoneNumber], name: "uk_phone_number")
-  @@unique([email], name: "uk_email_adress")
-  @@unique([googleId], name: "uk_google_id")
   @@map("users")
 }
 
 // Modèle représentant une équipe de travail
 model Team {
-  id                String         @default(uuid())
+  id                String         @id @default(uuid())
   leaderId          String?        @map("leader_id")
   name              String         @map("name")
   description       String         @map("description")
@@ -93,14 +87,12 @@ model Team {
   updatedAt         DateTime       @default(now()) @map("updated_at")
   createdAt         DateTime       @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_team")
-  @@unique([name], name: "uk_team_name")
   @@map("teams")
 }
 
 // Modèle représentant un projet à gérer avec l'application
 model Project {
-  id            String        @default(uuid())
+  id            String        @id @default(uuid())
   creatorId     String?       @map("creator_id")
   title         String        @map("title")
   description   String        @map("description")
@@ -116,14 +108,12 @@ model Project {
   updatedAt     DateTime      @default(now()) @map("updated_at")
   createdAt     DateTime      @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_project")
-  @@unique([title], name: "uk_project_title")
   @@map("projects")
 }
 
 // Modèle représentant une tâche d'un projet
 model Task {
-  id            String     @default(uuid())
+  id            String     @id @default(uuid())
   creatorId     String?    @map("creator_id")
   projectId     String?    @map("project_id")
   teamId        String?    @map("team_id")
@@ -142,14 +132,12 @@ model Task {
   updatedAt     DateTime   @default(now()) @map("updated_at")
   createdAt     DateTime   @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_task")
-  @@unique([title], name: "uk_task_title")
   @@map("tasks")
 }
 
 // Modèle représentant une notification
 model Notification {
-  id        String   @default(uuid())
+  id        String   @id @default(uuid())
   userId    String   @map("user_id")
   message   String   @map("message")
   sentAt    DateTime @default(now()) @map("sent_at")
@@ -157,13 +145,12 @@ model Notification {
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_notification")
   @@map("notifications")
 }
 
 // Modèle représentant une conversation
 model Conversation {
-  id           String             @default(uuid())
+  id           String             @id @default(uuid())
   isGroup      Boolean            @default(false) @map("is_group")
   teamId       String?            @map("team_id")
   team         Team?              @relation(fields: [teamId], references: [id], onDelete: SetNull)
@@ -172,13 +159,12 @@ model Conversation {
   updatedAt    DateTime           @default(now()) @map("updated_at")
   createdAt    DateTime           @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_conversation")
   @@map("conversations")
 }
 
 // Modèle représentant un message d'une conversation
 model Message {
-  id             String       @default(uuid())
+  id             String       @id @default(uuid())
   senderId       String?      @map("sender_id")
   conversationId String       @map("conversation_id")
   content        String?      @map("content")
@@ -188,13 +174,12 @@ model Message {
   updatedAt      DateTime     @default(now()) @map("updated_at")
   createdAt      DateTime     @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_message")
   @@map("messages")
 }
 
 // Modèle représentant une pièce jointe (à un message) 
 model Attachment {
-  id        String   @default(uuid())
+  id        String   @id @default(uuid())
   messageId String   @map("message_id")
   url       String   @map("url")
   type      String   @map("type")
@@ -202,7 +187,6 @@ model Attachment {
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
-  @@id([id], name: "pk_attachment")
   @@map("attachments")
 }
 

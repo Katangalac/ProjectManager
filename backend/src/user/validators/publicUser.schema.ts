@@ -10,8 +10,8 @@ export const publicUserSchema = z.object({
     firstName: z.string().max(50, "Nom trop long").nullable(),
     lastName: z.string().max(50, "Nom trop long").nullable(),
     profession: z.string().max(100, "Nom de profession trop long").nullable(),
-    picture: z.instanceof(Uint8Array).nullable(),
     imageUrl: z.url().max(2048).nullable(),
     createdAt: z.date().nullable(),
+    lastLoginAt:z.date().nullable()
 });
 

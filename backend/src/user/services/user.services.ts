@@ -1,6 +1,6 @@
 import { User, SafeUser, RegisterUserInput, UpdateUserInput, GetUsersFilters } from "../types/User.js"
 import { toSafeUser } from "./user.transforms.js";
-import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
+import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserAlreadyExistError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
 import { Prisma, UserRole, UserProvider } from "@prisma/client";
 import { db } from "../../db.js";
 import { hash } from "argon2";
@@ -8,20 +8,22 @@ import { hash } from "argon2";
 
 /**
  * Crée et enregistre un nouvel utilisateur dans le système
- * @param {RegisterUserInput} input : les informations nécessaires pour la création d'un utilisateur
+ * @param {RegisterUserInput} newUserData : les informations nécessaires pour la création d'un utilisateur
+ * @param {UserProvider} provider : la source de provenance de l'utilsateur ( ex:google,facebook,local ou autres)
  * @returns {SafeUser} : l'utilisateur créé 
  * @throws {EmailAlreadyUsedError} : lorsque l'email est déjà utilisé par un autre utilisateur
  * @throws {UsernameAlreadyUsedError} : lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
+ * @throws {UserAlreadyExistError} : lorsque l'utilisateur est déjà enregistré dans le système
  */
-export const createUser = async (input: RegisterUserInput): Promise<SafeUser> => {
+export const createUser = async (newUserData: RegisterUserInput, provider: UserProvider = UserProvider.LOCAL): Promise<SafeUser> => {
     try {
-        const hashedPassword = await hash(input.password);
-        input.password = hashedPassword;
+        const hashedPassword = await hash(newUserData.password);
         const newUser = await db.user.create({
             data: {
-                ...input,
+                ...newUserData,
+                password: hashedPassword,
                 role: UserRole.MEMBER,
-                provider: UserProvider.LOCAL
+                provider: provider
             }
         });
         return toSafeUser(newUser);
@@ -29,6 +31,7 @@ export const createUser = async (input: RegisterUserInput): Promise<SafeUser> =>
         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
             if (Array.isArray(err.meta?.target) && err.meta.target.includes("userName")) throw new UsernameAlreadyUsedError();
             if (Array.isArray(err.meta?.target) && err.meta.target.includes("email")) throw new EmailAlreadyUsedError();
+            if (Array.isArray(err.meta?.target) && err.meta.target.includes("googleId")) throw new UserAlreadyExistError();
         }
         throw err;
     }
@@ -72,19 +75,19 @@ export const getUserById = async (id: string): Promise<SafeUser> => {
 /**
  * Met à jour les informations d'un utilisateur
  * @param {string} id : l'identifiant de l'utilisateur
- * @param {UpdateUserInput} input : les données à mettre à jour
+ * @param {UpdateUserInput} userData : les données à mettre à jour
  * @returns {Promise<SafeUser>} : l'utilisateur avec les informations à jour 
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  * @throws {EmailAlreadyUsedError} : lorsque l'email est déjà utilisé par un autre utilisateur
  * @throws {UsernameAlreadyUsedError} : lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
  * @throws {PhoneNumberAlreadyUsedError} : lorsque le numéro de téléphone est déjà utilisé par un autre utilisateur
  */
-export const updateUser = async (id: string, input: UpdateUserInput): Promise<SafeUser> => {
+export const updateUser = async (id: string, userData: UpdateUserInput): Promise<SafeUser> => {
     try {
         const user = await db.user.findUnique({ where: { id } });
         if (!user) throw new UserNotFoundError(id);
         const cleanedData = Object.fromEntries(
-            Object.entries(input).filter(([_, v]) => v !== undefined)
+            Object.entries(userData).filter(([_, v]) => v !== undefined)
         );
 
         /**const cleanedData: Prisma.UserUpdateInput = {
@@ -121,7 +124,7 @@ export const updateUser = async (id: string, input: UpdateUserInput): Promise<Sa
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
-    const user = await db.user.findUnique({ where: { id } });
+    const user = await db.user.findUnique({ where: { id:id } });
     if (!user) throw new UserNotFoundError(id);
     await db.user.delete({ where: { id } });
 };
