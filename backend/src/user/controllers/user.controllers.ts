@@ -14,6 +14,7 @@ const idParamSchema = z.object({
 
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
+ * @async
  * @param {Request} req : requête Express contenant les données de filtre à utiliser dans req.query
  * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
  * @returns {Promise<SafeUser>} - retourne un objet JSON contenant la liste des utilisateurs
@@ -34,6 +35,7 @@ export const getUsersController = async(req: Request, res: Response) => {
 
 /**
  * Récupère un utilisateur par son identifiant (id)
+ * @async
  * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans req.params.id
  * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
  * @returns {Promise<SafeUser>} - retourne un objet JSON contenant les informations de l'utilisateur
@@ -59,6 +61,7 @@ export const getUserByIdController = async (req: Request, res: Response) => {
 
 /**
  * Met à jour les informations de l'utilisateur ayant l'identifiant passé en paramètre 
+ * @async
  * @param {Request} req : - requête Express contenant l'identifiant de l'utilisateur dans req.params.id
  *                        - contient les données à mettre à jour dans req.body
  * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
@@ -98,6 +101,7 @@ export const updateUserController = async(req: Request, res: Response) => {
 
 /**
  * Supprime l'utilisateur ayant l'identifiant passé en paramètre
+ * @async
  * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans req.params.id
  * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
  */

@@ -8,14 +8,16 @@ import { hash } from "argon2";
 
 /**
  * Crée et enregistre un nouvel utilisateur dans le système
+ * @async
  * @param {RegisterUserInput} newUserData : les informations nécessaires pour la création d'un utilisateur
  * @param {UserProvider} provider : la source de provenance de l'utilsateur ( ex:google,facebook,local ou autres)
+ * @param {string|null} oauthId: identifiant unique de l'utilisateur provenant d'un service 0Auth le cas echéant
  * @returns {SafeUser} : l'utilisateur créé 
  * @throws {EmailAlreadyUsedError} : lorsque l'email est déjà utilisé par un autre utilisateur
  * @throws {UsernameAlreadyUsedError} : lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
  * @throws {UserAlreadyExistError} : lorsque l'utilisateur est déjà enregistré dans le système
  */
-export const createUser = async (newUserData: RegisterUserInput, provider: UserProvider = UserProvider.LOCAL): Promise<SafeUser> => {
+export const createUser = async (newUserData: RegisterUserInput, provider: UserProvider = UserProvider.LOCAL, oauthId:string|null = null): Promise<SafeUser> => {
     try {
         const hashedPassword = await hash(newUserData.password);
         const newUser = await db.user.create({
@@ -23,7 +25,8 @@ export const createUser = async (newUserData: RegisterUserInput, provider: UserP
                 ...newUserData,
                 password: hashedPassword,
                 role: UserRole.MEMBER,
-                provider: provider
+                provider: provider,
+                oauthId: oauthId
             }
         });
         return toSafeUser(newUser);
@@ -39,6 +42,7 @@ export const createUser = async (newUserData: RegisterUserInput, provider: UserP
 
 /**
  * Fait une recherche des utilisateurs enregistrés en appliquant les filtres transmis
+ * @async
  * @param {GetUsersFilters} filters : les filtres à utiliser sur la liste des utilisateurs
  * @returns {Promise<SafeUser[]>} : la liste des utilisateurs respectant les filtres utilisés
  */
@@ -62,6 +66,7 @@ export const getUsers = async (filters: GetUsersFilters): Promise<SafeUser[]> =>
 
 /**
  * Fait une recherche de l'utilisateur ayant l'identifiant passé en paramètre
+ * @async
  * @param {string} id : l'identifiant de l'utilisateur recherché
  * @returns {Promise<SafeUser>} : l'utilisateur ayant l'identifiant passé en paramètre
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
@@ -74,6 +79,7 @@ export const getUserById = async (id: string): Promise<SafeUser> => {
 
 /**
  * Met à jour les informations d'un utilisateur
+ * @async
  * @param {string} id : l'identifiant de l'utilisateur
  * @param {UpdateUserInput} userData : les données à mettre à jour
  * @returns {Promise<SafeUser>} : l'utilisateur avec les informations à jour 
@@ -120,6 +126,7 @@ export const updateUser = async (id: string, userData: UpdateUserInput): Promise
 
 /**
  * Supprime l'utilisateur ayant l'identifiant passé en paramètre
+ * @async
  * @param {string} id : l'identifiant de l'utilisateur à supprimer
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
