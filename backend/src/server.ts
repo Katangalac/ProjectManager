@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import userRoutes from "./user/routes/user.routes"
 import authRoutes from "./auth/routes/auth.routes"
+import googleAuthRoutes from "./auth/routes/googleAuth.routes"
 import { authenticate } from "./auth/middleware/authenticate";
 import morgan from "morgan"
 
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
     })
 })
 app.use("/api/auth", authRoutes);
+app.use("/api/auth", googleAuthRoutes)
 app.use("/api/users", userRoutes);
 
 app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));
