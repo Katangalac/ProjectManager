@@ -4,6 +4,7 @@ import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserAlreadyExistError,U
 import { Prisma, UserRole, UserProvider } from "@prisma/client";
 import { db } from "../../db.js";
 import { hash } from "argon2";
+import { Team } from "../../team/types/Team.js";
 
 
 /**
@@ -99,19 +100,6 @@ export const updateUser = async (id: string, userData: UpdateUserInput): Promise
             Object.entries(userData).filter(([_, v]) => v !== undefined)
         );
 
-        /**const cleanedData: Prisma.UserUpdateInput = {
-            updatedAt: new Date(),
-        };
-  
-        if ("userName" in updateData && updateData.userName !== undefined) prismaData.userName = updateData.userName;
-        if ("email" in updateData && updateData.email !== undefined) prismaData.email = updateData.email;
-        if ("firstName" in updateData && updateData.firstName !== undefined) prismaData.firstName = updateData.firstName;
-        if ("lastName" in updateData && updateData.lastName !== undefined) prismaData.lastName = updateData.lastName;
-        if ("phoneNumber" in updateData && updateData.phoneNumber !== undefined) prismaData.phoneNumber = updateData.phoneNumber;
-        if ("profession" in updateData && updateData.profession !== undefined) prismaData.profession = updateData.profession;
-        if ("picture" in updateData && updateData.picture !== undefined) prismaData.picture = updateData.picture;
-        if ("imageUrl" in updateData && updateData.imageUrl !== undefined) prismaData.imageUrl = updateData.imageUrl;*/
-
         const updatedUser = await db.user.update({
             where: { id },
             data: cleanedData as Prisma.UserUpdateInput
@@ -134,8 +122,24 @@ export const updateUser = async (id: string, userData: UpdateUserInput): Promise
  * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
-    const user = await db.user.findUnique({ where: { id:id } });
+    const user = await db.user.findUnique({ where: { id } });
     if (!user) throw new UserNotFoundError(id);
     await db.user.delete({ where: { id } });
 };
 
+/**
+ * Récupère toutes les équipes dont un utilisateur est membre
+ * @async
+ * @param {string} userId : identifiant de l'utilisateur dont on veut récupérer l'équipe
+ * @returns {Team[]} : la liste d'équipes dont l'utilisateur est membre
+ */
+export const getUserTeams = async (userId: string): Promise<Team[]> => {
+    const userTeamPairs = await db.userTeam.findMany({
+        where: { userId },
+        include: {
+            team:true
+        }
+    });
+    const userTeams = userTeamPairs.map(userTeamPair => userTeamPair.team);
+    return userTeams;
+}

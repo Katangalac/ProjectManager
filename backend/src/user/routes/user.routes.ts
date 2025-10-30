@@ -23,4 +23,9 @@ router.patch("/:id", userController.updateUserController);
  */ 
 router.delete("/:id", userController.deleteUserController);
 
+/**
+ * @route GET /api/users/:id/teams
+ */
+router.get("/:id/teams", userController.getUserTeamsController)
+
 export default router;
