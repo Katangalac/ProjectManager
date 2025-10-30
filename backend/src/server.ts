@@ -45,6 +45,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/teams", teamRoutes);
+app.use("/api/teams", authenticate, teamRoutes);
 
 app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));

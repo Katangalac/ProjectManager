@@ -37,7 +37,11 @@ const userTeamRoleSchema = z.object({
 export const createTeamController = async (req: Request, res: Response) => {
     try {
         const teamData = teamSchemaValidator.teamDataSchema.parse(req.body);
+        if (!teamData.leaderId && req.user) {
+            teamData.leaderId = req.user?.sub;
+        }
         const newTeam = await teamService.createTeam(teamData);
+        if(req.user)await teamService.addUserToTeam(req.user.sub, newTeam.id, "");
         res.status(201).json({ message: "Équipe créée", newTeam });
     } catch (err) {
         console.error("Erreur lors de la création de l'équipe : ", err);
@@ -99,7 +103,7 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
 export const updateTeamController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teamData = teamSchemaValidator.teamDataSchema.parse(req.body);
+        const teamData = teamSchemaValidator.updateTeamDataSchema.parse(req.body);
         const updatedTeam = await teamService.updateTeam(id, teamData);
         res.status(200).json({ message: "Équipe mise à jour avec succès", updatedTeam });
     } catch (err) {
@@ -124,7 +128,7 @@ export const deleteTeamController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         await teamService.deleteTeam(id);
-        res.status(204).send("Équipe supprimée avec succès!");
+        res.status(204).send();
     } catch (err) {
         console.error("Erreur lors de la suppression de l'équipe : ", err);
         if (err instanceof z.ZodError) {
@@ -172,7 +176,7 @@ export const removeUserFromTeamController = async (req: Request, res: Response) 
         const { id:teamId } = idParamSchema.parse({ id: req.params.id });
         const { id:userId } = idParamSchema.parse({ id: req.params.userId });
         await teamService.removeUserFromTeam(userId, teamId);
-        res.status(204).send("Utilisateur retirée de l'équipe avec succès!");
+        res.status(204).send();
     }catch (err) {
         console.error("Erreur lors du retrait de l'utilisateur de l'équipe : ", err);
         if (err instanceof z.ZodError) {

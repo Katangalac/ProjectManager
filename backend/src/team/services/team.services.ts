@@ -1,4 +1,4 @@
-import { Team, TeamData, UserTeam } from "../types/Team";
+import { Team, TeamData, UserTeam, UpdateTeamData } from "../types/Team";
 import { db } from "../../db";
 import { TeamNotFoundError, UserAlreadyInTeamError, UserNotInTeamError } from "../errors";
 import { Prisma } from "@prisma/client";
@@ -48,7 +48,7 @@ export const getTeamById = async (id: string): Promise<Team> => {
  * @param {TeamData} teamData : les informations à modifier/mettre à jour
  * @returns {Team}: un objet représentant l'équipe avec les informations à jour
  */
-export const updateTeam = async (id: string, teamData: TeamData): Promise<Team> => {
+export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<Team> => {
     const team = await db.team.findUnique({ where: { id } });
     if (!team) throw new TeamNotFoundError(id);
     const cleanedData = Object.fromEntries(

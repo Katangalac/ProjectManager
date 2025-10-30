@@ -129,12 +129,13 @@ export const deleteUser = async (id: string): Promise<void> => {
 
 /**
  * Récupère toutes les équipes dont un utilisateur est membre
+ * @async
  * @param {string} userId : identifiant de l'utilisateur dont on veut récupérer l'équipe
  * @returns {Team[]} : la liste d'équipes dont l'utilisateur est membre
  */
 export const getUserTeams = async (userId: string): Promise<Team[]> => {
     const userTeamPairs = await db.userTeam.findMany({
-        where: { userId: userId },
+        where: { userId },
         include: {
             team:true
         }

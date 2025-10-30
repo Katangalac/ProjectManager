@@ -135,7 +135,7 @@ export const deleteUserController = async (req: Request, res: Response) => {
 export const getUserTeamsController = async (req:Request, res:Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teams = userService.getUserTeams(id);
+        const teams = await userService.getUserTeams(id);
         res.status(200).json(teams);
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes de l'utilisateur : ", err);
