@@ -72,7 +72,7 @@ export const updateUserController = async(req: Request, res: Response) => {
         const { id } = idParamSchema.parse({id:req.params.id});
         const input = updateUserSchema.parse(req.body);
         const user = await userService.updateUser(id, input);
-        res.status(200).json(user);
+        res.status(200).json({message:"Utilisateur mis à jour avec succès", user});
     } catch (err) {
         console.error("Erreur lors de la mise à jour de l'utilisateur", err);
         if (err instanceof z.ZodError) {
@@ -126,4 +126,23 @@ export const deleteUserController = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Erreur de la suppression de l'utilisateur" });
     }
 };
+
+/**
+ * Récupère toutes les équipes dont l'utilisateur est membre
+ * @param {Request} req : requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res : reponse Express em JSON
+ */
+export const getUserTeamsController = async (req:Request, res:Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const teams = userService.getUserTeams(id);
+        res.status(200).json(teams);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des équipes de l'utilisateur : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des équipes de l'utilisateur" });
+    }
+}
 
