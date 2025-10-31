@@ -48,4 +48,9 @@ router.patch("/:id/members/:userId", teamController.updateUserRoleInTeamControll
  */
 router.delete("/:id/members/:userId", teamController.removeUserFromTeamController);
 
+/**
+ * @route GET /api/teams/:id/projects
+ */
+router.get("/:id/projects", teamController.getTeamProjects);
+
 export default router;

@@ -3,14 +3,7 @@ import { Request, Response } from "express"
 import * as teamSchemaValidator from "../validators"
 import * as teamError from "../errors"
 import { z } from "zod"
-
-/**
- * Schéma pour valider l'id passé en paramètre
- * S'assure que l'id est un uuid 
- */
-const idParamSchema = z.object({
-  id: z.uuid("ID invalide"),
-});
+import {idParamSchema} from "../../schemas/idparam.schema"
 
 /**
  * Schéma pour valider les données d'entrée d'une paire utilisateur-équipe
@@ -230,6 +223,26 @@ export const getTeamMembers = async (req: Request, res: Response) => {
         if (err instanceof z.ZodError) {
             res.status(400).json({ error: "Données invalides" });
         }
-        res.status(500).json({ error: "Erreur lors e la récupération des membres de l'équipe" });
+        res.status(500).json({ error: "Erreur lors de la récupération des membres de l'équipe" });
+    }
+};
+
+/**
+ * Récupère les projets d'une équipe
+ * @async
+ * @param {Request} req : requete Express contenant l'id de l'équipe
+ * @param {Response} res : reponse Express en JSON
+ */
+export const getTeamProjects = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const teamProjects = await teamService.getTeamProjects(id);
+        res.status(200).json(teamProjects);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des projets de l'équipe : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des projets de l'équipe" });
     }
 };

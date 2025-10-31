@@ -4,6 +4,7 @@ import { TeamNotFoundError, UserAlreadyInTeamError, UserNotInTeamError } from ".
 import { Prisma } from "@prisma/client";
 import { toSafeUser } from "../../user/services/user.transforms";
 import { SafeUser } from "../../user/types/User";
+import { Project } from "../../project/types/Project";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -112,6 +113,7 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
         },
     });
     if (!userTeamPair) throw new UserNotInTeamError(userId, teamId);
+
     await db.userTeam.delete({
         where: {
             pk_user_team: { userId: userId, teamId: teamId }
@@ -150,12 +152,36 @@ export const updateUserRoleInTeam = async (userId: string, teamId: string, userT
  * @returns {SafeUser[]} : la liste des utilisateurs membres de l'équipe
  */
 export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
-    const userTeamPairs = await db.userTeam.findMany({
+    const users = await db.user.findMany({
+        where: {
+            userTeams: {
+                some: { teamId }
+            }
+        }
+    });
+    /* const userTeamPairs = await db.userTeam.findMany({
         where: { teamId },
         include: {
             user:true
         }
-    });
-    const teamMembers = userTeamPairs.map(userTeamPair => toSafeUser(userTeamPair.user));
+    }); */
+    //const teamMembers = userTeamPairs.map(userTeamPair => toSafeUser(userTeamPair.user));
+    const teamMembers = users.map(toSafeUser);
     return teamMembers;
+}
+
+/**
+ * Récupère tous les projets dans lesquels une équipe intervient
+ * @param teamId : identifiant de l'équipe
+ * @returns {Project[]} : la liste de projets dans lesquels l'équipe est impliquée
+ */
+export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
+    const teamProjects = await db.project.findMany({
+        where: {
+            projectTeams: {
+                some: { teamId }
+            }
+        }
+    });
+    return teamProjects;
 }

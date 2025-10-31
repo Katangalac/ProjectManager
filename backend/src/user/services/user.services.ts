@@ -5,6 +5,7 @@ import { Prisma, UserRole, UserProvider } from "@prisma/client";
 import { db } from "../../db.js";
 import { hash } from "argon2";
 import { Team } from "../../team/types/Team.js";
+import { Project } from "../../project/types/Project";
 
 
 /**
@@ -134,12 +135,41 @@ export const deleteUser = async (id: string): Promise<void> => {
  * @returns {Team[]} : la liste d'équipes dont l'utilisateur est membre
  */
 export const getUserTeams = async (userId: string): Promise<Team[]> => {
-    const userTeamPairs = await db.userTeam.findMany({
+    const userTeams = await db.team.findMany({
+        where: {
+            teamUsers: {
+                some: { userId }
+            }
+        }
+    });
+    /* const userTeamPairs = await db.userTeam.findMany({
         where: { userId },
         include: {
             team:true
         }
     });
-    const userTeams = userTeamPairs.map(userTeamPair => userTeamPair.team);
+    const userTeams = userTeamPairs.map(userTeamPair => userTeamPair.team); */
     return userTeams;
+}
+
+/**
+ * Récupère tous les projets dan lesquels l'utilisateur est impliqué
+ * @param {string} userId : identifiant de l'utilisateur
+ * @returns {Project[]} : la liste de projets dans lesquels l'utilisateur intervient
+ */
+export const getUserProjects = async (userId: string): Promise<Project[]> => {
+    const userProjects = await db.project.findMany({
+        where: {
+            projectTeams: {
+                some: {
+                    team: {
+                        teamUsers: {
+                            some:{userId}
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return userProjects;
 }

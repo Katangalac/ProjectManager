@@ -3,14 +3,7 @@ import { updateUserSchema, getUsersFilterSchema } from "../validators/index.js";
 import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
 import * as userService from "../services/user.services.js"
 import { z } from "zod"
-
-/**
- * Schéma pour valider l'id passé en paramètre
- * S'assure que l'id est un uuid 
- */
-const idParamSchema = z.object({
-  id: z.uuid("ID invalide"),
-});
+import {idParamSchema} from "../../schemas/idparam.schema"
 
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
@@ -108,8 +101,6 @@ export const updateUserController = async(req: Request, res: Response) => {
 export const deleteUserController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({id:req.params.id});
-       /*  const id = req.params.id;
-        if (!id) return res.status(401).json({ message: "Requête invalide. Id manquant" }); */
         await userService.deleteUser(id);
         res.status(204).send();
     }
@@ -143,6 +134,25 @@ export const getUserTeamsController = async (req:Request, res:Response) => {
             res.status(400).json({ error: "Données invalides" });
         }
         res.status(500).json({ error: "Erreur lors de la récupération des équipes de l'utilisateur" });
+    }
+}
+
+/**
+ * Récupère tous les projets dans lesquels l'utilisateur intervient
+ * @param {Request} req : requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res : reponse Express em JSON
+ */
+export const getUserProjectsController = async (req:Request, res:Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const projects = await userService.getUserProjects(id);
+        res.status(200).json(projects);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des projets de l'utilisateur : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des projets de l'utilisateur" });
     }
 }
 

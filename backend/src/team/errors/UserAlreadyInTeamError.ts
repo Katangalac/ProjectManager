@@ -2,7 +2,7 @@ import { AppError } from "../../errors/AppError"
 
 /**
  * Erreur levée lors de l'ajout d'un utlisateur dans une équipe
- * Est levée lorsque l'utilisateur est déjà membre de l'quipe
+ * Est levée lorsque l'utilisateur est déjà membre de l'équipe
  */
 export class UserAlreadyInTeamError extends AppError{
     constructor(userId:string, teamId:string) {
