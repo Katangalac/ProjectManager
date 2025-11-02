@@ -1,4 +1,4 @@
-import { AppError } from "../../errors/AppError"
+import { AppError } from "../../errors/AppError";
 
 /**
  * Erreur levée lors du retrait d'une équipe à un projet
@@ -8,4 +8,4 @@ export class TeamNotInProjectError extends AppError{
     constructor(teamId:string, projectId:string) {
         super(`L'uéquipe(${teamId}) n'est pas dans le projet(${projectId})`, 404, "TEAM_NOT_IN_PROJECT");
     }
-}
+};

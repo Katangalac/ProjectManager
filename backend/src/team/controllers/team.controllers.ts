@@ -1,14 +1,14 @@
-import * as teamService from "../services/team.services"
-import { Request, Response } from "express"
-import * as teamSchemaValidator from "../validators"
-import * as teamError from "../errors"
-import { z } from "zod"
-import {idParamSchema} from "../../schemas/idparam.schema"
+import * as teamService from "../services/team.services";
+import { Request, Response } from "express";
+import * as teamSchemas from "../schemas/team.schemas";
+import * as teamError from "../errors";
+import { z } from "zod";
+import { idParamSchema } from "../../schemas/idparam.schema";
 
 /**
  * Schéma pour valider les données d'entrée d'une paire utilisateur-équipe
  */
-const addUserToTeamInputSchema = teamSchemaValidator.userTeamSchema.omit({
+const addUserToTeamInputSchema = teamSchemas.userTeamSchema.omit({
     teamId:true,
     createdAt: true,
     updatedAt: true
@@ -29,7 +29,7 @@ const userTeamRoleSchema = z.object({
  */
 export const createTeamController = async (req: Request, res: Response) => {
     try {
-        const teamData = teamSchemaValidator.teamDataSchema.parse(req.body);
+        const teamData = teamSchemas.createTeamSchema.parse(req.body);
         if (!teamData.leaderId && req.user) {
             teamData.leaderId = req.user?.sub;
         }
@@ -96,7 +96,7 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
 export const updateTeamController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teamData = teamSchemaValidator.updateTeamDataSchema.parse(req.body);
+        const teamData = teamSchemas.updateTeamDataSchema.parse(req.body);
         const updatedTeam = await teamService.updateTeam(id, teamData);
         res.status(200).json({ message: "Équipe mise à jour avec succès", updatedTeam });
     } catch (err) {

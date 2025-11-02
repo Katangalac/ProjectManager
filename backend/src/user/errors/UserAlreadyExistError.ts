@@ -8,4 +8,4 @@ export class UserAlreadyExistError extends AppError{
     constructor() {
         super("Cet utilisateur existe déjà", 409, "USER_CONFLICT");
     }
-}
+};

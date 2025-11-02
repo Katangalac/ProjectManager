@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as projectController from "../controllers/project.controllers"
+import * as projectController from "../controllers/project.controllers";
 
 const router = Router();
 
 /**
- * @route POST /api/project
+ * @route POST /api/projects
  */
 router.post("/", projectController.createProjectController);
 
@@ -31,7 +31,7 @@ router.delete("/:id", projectController.deleteProjectController);
 /**
  * @route POST /api/projects/:id/teams
  */
-router.post("/:id/teams", projectController.addTeamToProjectController);
+router.post("/:id/teams/:teamId", projectController.addTeamToProjectController);
 
 /**
  * @route GET /api/projects/:id/teams

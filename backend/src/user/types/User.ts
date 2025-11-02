@@ -1,4 +1,4 @@
-import {userSchema, publicUserSchema, updateUserSchema, registerUserSchema, getUsersFilterSchema} from "../validators"
+import { userSchema, publicUserSchema, updateUserDataSchema, createUserSchema, searchUsersFilterSchema } from "../schemas/user.schemas";
 import {z} from "zod";
 
 /**
@@ -19,16 +19,16 @@ export type PublicUser = z.infer<typeof publicUserSchema>;
 /**
  * Type représentant les données attendues lors de la création d'un utilisateur
  */
-export type RegisterUserInput = z.infer<typeof registerUserSchema>;
+export type CreateUserData = z.infer<typeof createUserSchema>;
 
 /**
  * Type représentant les données attendues lors de la modification d'un utilisateur
  */
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type UpdateUserData = z.infer<typeof updateUserDataSchema>;
 
 /**
  * Type représentant les champs pouvant être utilisés comme filtre de recherche des utilisateurs
  */
-export type GetUsersFilters = z.infer<typeof getUsersFilterSchema>;
+export type SearchUsersFilter = z.infer<typeof searchUsersFilterSchema>;
 
 

@@ -1,6 +1,6 @@
-import {CreateProjectInput, SearchProjectFilterShema, Project, UpdateProjectInput}  from "../types/Project"
-import {ProjectNotFoundError, TeamAlreadyInProjectError, TeamNotInProjectError} from "../errors"
-import { db } from "../../db"
+import { CreateProjectData, SearchProjectsFilter, Project, UpdateProjectData } from "../types/Project";
+import { ProjectNotFoundError, TeamAlreadyInProjectError, TeamNotInProjectError } from "../errors";
+import { db } from "../../db";
 import { Prisma, ProjectTeam } from "@prisma/client";
 import { Team } from "../../team/types/Team";
 import { toSafeUser } from "../../user/services/user.transforms";
@@ -9,10 +9,10 @@ import { SafeUser } from "../../user/types/User";
 /**
  * Crée un nouveau projet 
  * @async
- * @param {CreateProjectInput} projectData : informations sur le projet
+ * @param {CreateProjectData} projectData : informations sur le projet
  * @returns {Project} : un objet représentant le projet créé
  */
-export const createProject = async (projectData: CreateProjectInput): Promise<Project> => {
+export const createProject = async (projectData: CreateProjectData): Promise<Project> => {
     const project = await db.project.create({
         data: projectData
     });
@@ -35,10 +35,10 @@ export const getProjectById = async (id: string):Promise<Project> => {
 /**
  * Récupère les projets remplissant les critères de filtre passé en paramètre
  * @async
- * @param {SearchProjectFilterShema} : les filtres de recherche à utiliser 
+ * @param {SearchProjectsFilter} : les filtres de recherche à utiliser 
  * @returns {Project[]}: la liste de projets remplissant les critères de recherche
  */
-export const getProjects = async (filter:SearchProjectFilterShema):Promise<Project[]> => {
+export const getProjects = async (filter: SearchProjectsFilter): Promise<Project[]> => {
     const where: Prisma.ProjectWhereInput = {};
     if (filter.title) where.title = { contains: filter.title, mode: 'insensitive' };
     if (filter.status) where.status = filter.status;
@@ -52,31 +52,26 @@ export const getProjects = async (filter:SearchProjectFilterShema):Promise<Proje
     if (filter.completedBefore) where.completedAt = { lt: new Date(filter.completedBefore) }
     if (filter.completedAfter) where.completedAt = { gt: new Date(filter.completedAfter) }
 
-    const projects = await db.project.findMany({ where: where });
+    const projects = await db.project.findMany({where});
     return projects;
-}
+};
 
 /**
  * Met à jour les informations d'un projet
  * @async 
  * @returns {Project} : le projet ayant l'identifiant passé en paramètre
- * @param {UpdateProjectInput} projectData : les nouvelles informations du projet
+ * @param {UpdateProjectData} projectData : les nouvelles informations du projet
  * @throws {ProjectNotFoundError}: lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
-export const updateProject = async (id:string, projectData:UpdateProjectInput):Promise<Project> => {
+export const updateProject = async (id: string, projectData: UpdateProjectData): Promise<Project> => {
     const project = await db.project.findUnique({ where: { id } });
     if (!project) throw new ProjectNotFoundError(id);
-
-    const cleanedData = Object.fromEntries(
-        Object.entries(projectData).filter(([_, v]) => v !== undefined)
-    );
-
     const updatedProject = await db.project.update({
         where: { id },
-        data: cleanedData as Prisma.ProjectUpdateInput
+        data: projectData as Prisma.ProjectUpdateInput
     });
     return updatedProject;
-}
+};
 
 /**
  * Supprime le projet ayant l'identifiant passé en paramètre
@@ -135,7 +130,7 @@ export const removeTeamFromProject = async (teamId: string, projectId: string) =
             pk_project_team: { projectId: projectId, teamId: teamId }
         }
     });
-}
+};
 
 /**
  * Récupère toutes les équipes impliquées dans un projet
@@ -143,7 +138,7 @@ export const removeTeamFromProject = async (teamId: string, projectId: string) =
  * @param projectId : identifiant du projet
  * @returns {Team[]} : la liste d'équipes intervenant dans le projet
  */
-export const getProjectTeams = async (projectId: string):Promise<Team[]> => {
+export const getProjectTeams = async (projectId: string): Promise<Team[]> => {
     const projectTeams = await db.team.findMany({
         where: {
             teamProjects: {
@@ -152,14 +147,14 @@ export const getProjectTeams = async (projectId: string):Promise<Team[]> => {
         }
     });
     return projectTeams;
-}
+};
 
 /**
  * Récupère tous les utilisateurs impliqués dans un projet
  * @param projectId : identifiant du projet
  * @returns {SafeUser[]}: les utilisateurs intervenant dans le projet
  */
-export const getProjectMembers = async (projectId: string):Promise<SafeUser[]> => {
+export const getProjectMembers = async (projectId: string): Promise<SafeUser[]> => {
     const projectUsers = await db.user.findMany({
         where: {
             userTeams: {
@@ -175,5 +170,5 @@ export const getProjectMembers = async (projectId: string):Promise<SafeUser[]> =
     });
     const projectSafeUsers = projectUsers.map(toSafeUser);
     return projectSafeUsers;
-}
+};
 

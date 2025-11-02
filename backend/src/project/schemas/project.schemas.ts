@@ -12,18 +12,19 @@ export const projectSchema = z.object({
     status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING),        
     budgetPlanned: z.float64().default(0.00),
     actualCost:z.float64().default(0.00),     
-    startedAt:z.date(),    
-    deadline:z.date(),      
-    completedAt:z.date().nullable(),
-    updatedAt:z.date(),
-    createdAt:z.date()
+    startedAt:z.coerce.date(),    
+    deadline:z.coerce.date(),      
+    completedAt:z.coerce.date().nullable(),
+    updatedAt:z.coerce.date(),
+    createdAt:z.coerce.date()
 });
 
 /**
  * Schéma pour valider les données attendues lors de la création d'un nouveau projet
  */
-export const projectCreationSchema = projectSchema.omit({
+export const createProjectSchema = projectSchema.omit({
     id: true,
+    actualCost: true,
     completedAt: true,
     updatedAt: true,
     createdAt: true
@@ -32,32 +33,32 @@ export const projectCreationSchema = projectSchema.omit({
 /**
  * Schéma pour valider les données attendues lors de la modification d'un projet
  */
-export const updateProjectInputSchema = z.object({
+export const updateProjectDataSchema = z.object({
     creatorId: z.uuid("ID invalide").nullable().optional(),
     title: z.string().max(100, "Titre trop long").optional(),         
     description: z.string().optional(),
     status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING).optional(),        
     budgetPlanned: z.float64().default(0.00).optional(),
-    actualCost:z.float64().default(0.00).optional,     
-    startedAt:z.date().optional(),    
-    deadline:z.date().optional(),      
-    completedAt:z.date().nullable().optional()
+    actualCost: z.float64().default(0.00).optional(),
+    startedAt: z.coerce.date().optional(),    
+    deadline: z.coerce.date().optional(),      
+    completedAt: z.coerce.date().nullable().optional()
 });
 
 /**
  * Schéma pour valider les données attendues comme filtre de recherche des projets
  */
-export const projectSearchFiltersSchema = z.object({
+export const searchProjectsFilterSchema = z.object({
     title: z.string().max(100, "Titre trop long").optional(),
-    status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING).optional(),
-    startOn:z.date().optional(),    
-    endOn: z.date().optional(),
-    startBefore: z.date().optional(),
-    endBefore: z.date().optional(),
-    startAfter: z.date().optional(),
-    endAfter: z.date().optional(),
-    completedOn: z.date().optional(),
-    completedBefore: z.date().optional(),
-    completedAfter:z.date().optional(),
+    status: z.enum(ProjectStatus).optional(),
+    startOn:z.coerce.date().optional(),    
+    endOn: z.coerce.date().optional(),
+    startBefore: z.coerce.date().optional(),
+    endBefore: z.coerce.date().optional(),
+    startAfter: z.coerce.date().optional(),
+    endAfter: z.coerce.date().optional(),
+    completedOn: z.coerce.date().optional(),
+    completedBefore: z.coerce.date().optional(),
+    completedAfter: z.coerce.date().optional(),
 });
 

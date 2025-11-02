@@ -1,9 +1,9 @@
-import * as projectService from "../services/project.services"
-import { Request, Response } from "express"
-import * as projectSchemas from "../schemas/project.schema"
-import * as projectError from "../errors"
-import {idParamSchema} from "../../schemas/idparam.schema"
-import { z } from "zod"
+import * as projectService from "../services/project.services";
+import { Request, Response } from "express";
+import * as projectSchemas from "../schemas/project.schemas";
+import * as projectError from "../errors";
+import { idParamSchema } from "../../schemas/idparam.schema";
+import { z } from "zod";
 
 /**
  * Crée un nouveau projet
@@ -13,7 +13,7 @@ import { z } from "zod"
  */
 export const createProjectController = async (req: Request, res: Response) => {
     try {
-        const projectData = projectSchemas.projectCreationSchema.parse(req.body);
+        const projectData = projectSchemas.createProjectSchema.parse(req.body);
         if (!projectData.creatorId && req.user) {
             projectData.creatorId = req.user?.sub;
         }
@@ -36,7 +36,7 @@ export const createProjectController = async (req: Request, res: Response) => {
  */
 export const getProjectsController = async (req: Request, res: Response) => {
     try {
-        const filters = projectSchemas.projectSearchFiltersSchema.parse(req.query);
+        const filters = projectSchemas.searchProjectsFilterSchema.parse(req.query);
         const projects = await projectService.getProjects(filters);
         res.status(200).json(projects);
     }catch (err) {
@@ -80,7 +80,7 @@ export const getProjectByIdController = async (req: Request, res: Response) => {
 export const updateProjectController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const projectData = projectSchemas.updateProjectInputSchema.parse(req.body);
+        const projectData = projectSchemas.updateProjectDataSchema.parse(req.body);
         const updatedProject = await projectService.updateProject(id, projectData);
         res.status(200).json({ message: "Projet mis à jour avec succès", updatedProject: updatedProject });
     } catch (err) {
@@ -129,7 +129,7 @@ export const addTeamToProjectController = async (req: Request, res: Response) =>
         const { id:projectId } = idParamSchema.parse({ id: req.params.id });
         const {id:teamId} = idParamSchema.parse({ id: req.params.teamId });
         const projectTeamPair = await projectService.addTeamToProject(teamId, projectId);
-        res.status(200).json({ message: "Équiper ajoutée au projet", projectTeamPair: projectTeamPair });
+        res.status(200).json({ message: "Équipe ajoutée au projet", projectTeamPair: projectTeamPair });
     }catch (err) {
         console.error("Erreur lors de l'ajout de l'équipe au projet : ", err);
         if (err instanceof z.ZodError) {
@@ -151,7 +151,7 @@ export const addTeamToProjectController = async (req: Request, res: Response) =>
 export const removeTeamFromProjectController = async (req: Request, res: Response) => {
     try {
         const { id:projectId } = idParamSchema.parse({ id: req.params.id });
-        const { id:teamId } = idParamSchema.parse({ id: req.params.userId });
+        const { id:teamId } = idParamSchema.parse({ id: req.params.teamId });
         await projectService.removeTeamFromProject(teamId, projectId);
         res.status(204).send();
     }catch (err) {

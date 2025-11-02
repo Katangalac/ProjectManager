@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 
 //Création du Client prisma "db" pour faire des requêtes vers la BD
 

@@ -6,6 +6,6 @@ import { AppError } from "../../errors/AppError";
  */
 export class ProjectNotFoundError extends AppError {
     constructor(id:string) {
-        super(`Projet ${id} introuvable`, 404, "PROJECT_NOT_FOUND")
+        super(`Projet ${id} introuvable`, 404, "PROJECT_NOT_FOUND");
     }
-}
+};

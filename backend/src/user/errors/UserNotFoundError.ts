@@ -1,4 +1,4 @@
-import {AppError} from "../../errors/AppError.js";
+import {AppError} from "../../errors/AppError";
 
 /**
  * Erreur levée lors d'une recherche d'un utilisateur
@@ -8,4 +8,4 @@ export class UserNotFoundError extends AppError {
     constructor(id:string) {
         super(`Utilisateur ${id} introuvable`, 404, "USER_NOT_FOUND");
     }
-}
+};

@@ -1,4 +1,4 @@
-import { Team, TeamData, UserTeam, UpdateTeamData } from "../types/Team";
+import { Team, CreateTeamData, UserTeam, UpdateTeamData } from "../types/Team";
 import { db } from "../../db";
 import { TeamNotFoundError, UserAlreadyInTeamError, UserNotInTeamError } from "../errors";
 import { Prisma } from "@prisma/client";
@@ -9,10 +9,10 @@ import { Project } from "../../project/types/Project";
 /**
  * Crée une nouvelle équipe de travail
  * @async
- * @param {TeamData} teamData : informatons sur l'équipe à créer
+ * @param {CreateTeamData} teamData : informatons sur l'équipe à créer
  * @returns {Team} : un objet Team représentant l'équipe créée
  */
-export const createTeam = async (teamData: TeamData): Promise<Team> => {
+export const createTeam = async (teamData: CreateTeamData): Promise<Team> => {
     const newTeam = await db.team.create({
         data: teamData
     });
@@ -46,18 +46,15 @@ export const getTeamById = async (id: string): Promise<Team> => {
  * Met à jour les informations de Léquipe ayant l'ideneitifiant passé en paramètre
  * @async
  * @param {string} id : identfiant de l'équipe à modifier
- * @param {TeamData} teamData : les informations à modifier/mettre à jour
+ * @param {updateTeamData} teamData : les informations à modifier/mettre à jour
  * @returns {Team}: un objet représentant l'équipe avec les informations à jour
  */
 export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<Team> => {
     const team = await db.team.findUnique({ where: { id } });
     if (!team) throw new TeamNotFoundError(id);
-    const cleanedData = Object.fromEntries(
-        Object.entries(teamData).filter(([_, v]) => v !== undefined)
-    );
     const updatedTeam = await db.team.update({
         where: { id },
-        data: cleanedData as Prisma.TeamUpdateInput
+        data: teamData as Prisma.TeamUpdateInput
     });
     return updatedTeam;
 };
@@ -159,16 +156,9 @@ export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
             }
         }
     });
-    /* const userTeamPairs = await db.userTeam.findMany({
-        where: { teamId },
-        include: {
-            user:true
-        }
-    }); */
-    //const teamMembers = userTeamPairs.map(userTeamPair => toSafeUser(userTeamPair.user));
     const teamMembers = users.map(toSafeUser);
     return teamMembers;
-}
+};
 
 /**
  * Récupère tous les projets dans lesquels une équipe intervient
@@ -184,4 +174,4 @@ export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
         }
     });
     return teamProjects;
-}
+};

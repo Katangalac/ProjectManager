@@ -1,6 +1,6 @@
 import { verifyToken } from "../utils/jwt";
 import { Request, Response, NextFunction } from "express";
-import { tokenPayloadSchema } from "../validators/tokenPayload.schema";
+import { tokenPayloadSchema } from "../schemas/auth.schemas";
 
 
 /**
