@@ -1,10 +1,6 @@
-import { teamSchema, teamDataSchema, updateTeamDataSchema, userTeamSchema} from "../validators";
+import { teamSchema, createTeamSchema, updateTeamDataSchema, searchTeamsFilterSchema,  userTeamSchema} from "../schemas/team.schemas";
 import { z } from "zod";
 
-/**
- * Type représentant les informations d'une équipe modifiable par un utilisateur
- */
-export type TeamData = z.infer<typeof teamDataSchema>;
 
 /**
  * Type représentant les données attendues pour créer une équipe
@@ -12,9 +8,19 @@ export type TeamData = z.infer<typeof teamDataSchema>;
 export type Team = z.infer<typeof teamSchema>;
 
 /**
+ * Type représentant les informations d'une équipe modifiable par un utilisateur
+ */
+export type CreateTeamData = z.infer<typeof createTeamSchema>;
+
+/**
  * Type représentant les données attendues lors de la modification d'une équipe
  */
 export type UpdateTeamData = z.infer<typeof updateTeamDataSchema>;
+
+/**
+ * Type représentant les données de filtre attendues lors d'Une recherche des équipes
+ */
+export type SearchTeamsFilter = z.infer<typeof searchTeamsFilterSchema>;
 
 /**
  * Type représentant un utilisateur membre d'une équipe

@@ -2,12 +2,13 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import userRoutes from "./user/routes/user.routes"
-import authRoutes from "./auth/routes/auth.routes"
-import googleAuthRoutes from "./auth/routes/googleAuth.routes"
-import teamRoutes from "./team/routes/team.routes"
+import userRoutes from "./user/routes/user.routes";
+import authRoutes from "./auth/routes/auth.routes";
+import googleAuthRoutes from "./auth/routes/googleAuth.routes";
+import teamRoutes from "./team/routes/team.routes";
+import projectRoutes from "./project/routes/project.routes";
 import { authenticate } from "./auth/middleware/authenticate";
-import morgan from "morgan"
+import morgan from "morgan";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,5 +47,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/teams", authenticate, teamRoutes);
+app.use("/api/projects", authenticate, projectRoutes);
 
 app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));

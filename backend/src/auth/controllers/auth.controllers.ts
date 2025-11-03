@@ -1,22 +1,22 @@
 import { createUser } from "../../user/services/user.services";
-import { loginSchema} from "../validators";
-import { registerUserSchema } from "../../user/validators";
+import { loginDataSchema} from "../schemas/auth.schemas";
+import { createUserSchema } from "../../user/schemas/user.schemas";
 import { UserProvider } from "@prisma/client";
 import { Request, Response } from "express";
 import { generateAuthResponse } from "../services/auth.services";
-import { db } from "../../db.js";
+import { db } from "../../db";
 import { verify} from "argon2";
 import { ZodError } from "zod";
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
  * @async
- * @param {Request} req : requête Express contenant les informations du nouvel utilisateur dans req.body
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant les informations du nouvel utilisateur dans req.body
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const register = async (req: Request, res: Response) => {
     try {
-        const newUserData = registerUserSchema.parse(req.body);
+        const newUserData = createUserSchema.parse(req.body);
         const user = await createUser(newUserData, UserProvider.LOCAL);
         const { token, cookieOptions } = generateAuthResponse(user);
         res.cookie("projectManagerToken", token, cookieOptions);
@@ -33,12 +33,12 @@ export const register = async (req: Request, res: Response) => {
 /**
  * Connecte/authentifie un utilisateur enregistré dans le système
  * @async
- * @param {Request} req : requête Express contenant les informations de connexion dans req.body
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant les informations de connexion dans req.body
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const login = async (req: Request, res: Response) => {
     try {
-        const loginData = loginSchema.parse(req.body);
+        const loginData = loginDataSchema.parse(req.body);
         const user = await db.user.findFirst({
             where: {
                 OR: [
@@ -72,8 +72,8 @@ export const login = async (req: Request, res: Response) => {
 /**
  * Déconnecte un utilisateur
  * @async
- * @param {Request} req : requête Express
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const logout = async (req: Request, res: Response) => {
     try {

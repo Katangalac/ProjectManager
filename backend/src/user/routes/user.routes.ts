@@ -1,5 +1,5 @@
-import {Router} from "express"
-import * as userController from "../controllers/user.controllers.js"
+import { Router } from "express";
+import * as userController from "../controllers/user.controllers";
 
 const router = Router();
 
@@ -26,6 +26,11 @@ router.delete("/:id", userController.deleteUserController);
 /**
  * @route GET /api/users/:id/teams
  */
-router.get("/:id/teams", userController.getUserTeamsController)
+router.get("/:id/teams", userController.getUserTeamsController);
+
+/**
+ * @route GET /api/users/:id/projects
+ */
+router.get("/:id/projects", userController.getUserProjectsController);
 
 export default router;

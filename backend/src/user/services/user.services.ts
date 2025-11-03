@@ -1,24 +1,25 @@
-import { User, SafeUser, RegisterUserInput, UpdateUserInput, GetUsersFilters } from "../types/User.js"
-import { toSafeUser } from "./user.transforms.js";
-import{EmailAlreadyUsedError,PhoneNumberAlreadyUsedError,UserAlreadyExistError,UserNotFoundError,UsernameAlreadyUsedError} from "../errors/index.js"
+import { User, SafeUser, CreateUserData, UpdateUserData, SearchUsersFilter } from "../types/User";
+import { toSafeUser } from "./user.transforms";
+import { EmailAlreadyUsedError, PhoneNumberAlreadyUsedError, UserAlreadyExistError, UserNotFoundError, UsernameAlreadyUsedError } from "../errors/index";
 import { Prisma, UserRole, UserProvider } from "@prisma/client";
-import { db } from "../../db.js";
+import { db } from "../../db";
 import { hash } from "argon2";
-import { Team } from "../../team/types/Team.js";
+import { Team } from "../../team/types/Team";
+import { Project } from "../../project/types/Project";
 
 
 /**
  * Crée et enregistre un nouvel utilisateur dans le système
  * @async
- * @param {RegisterUserInput} newUserData : les informations nécessaires pour la création d'un utilisateur
- * @param {UserProvider} provider : la source de provenance de l'utilsateur ( ex:google,facebook,local ou autres)
- * @param {string|null} oauthId: identifiant unique de l'utilisateur provenant d'un service 0Auth le cas echéant
- * @returns {SafeUser} : l'utilisateur créé 
- * @throws {EmailAlreadyUsedError} : lorsque l'email est déjà utilisé par un autre utilisateur
- * @throws {UsernameAlreadyUsedError} : lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
- * @throws {UserAlreadyExistError} : lorsque l'utilisateur est déjà enregistré dans le système
+ * @param {CreateUserData} newUserData - les informations nécessaires pour la création d'un utilisateur
+ * @param {UserProvider} provider - la source de provenance de l'utilsateur ( ex:google,facebook,local ou autres)
+ * @param {string|null} oauthId - identifiant unique de l'utilisateur provenant d'un service 0Auth le cas echéant
+ * @returns {SafeUser} - l'utilisateur créé 
+ * @throws {EmailAlreadyUsedError} - lorsque l'email est déjà utilisé par un autre utilisateur
+ * @throws {UsernameAlreadyUsedError} - lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
+ * @throws {UserAlreadyExistError} - lorsque l'utilisateur est déjà enregistré dans le système
  */
-export const createUser = async (newUserData: RegisterUserInput, provider: UserProvider = UserProvider.LOCAL, oauthId:string|null = null): Promise<SafeUser> => {
+export const createUser = async (newUserData: CreateUserData, provider: UserProvider = UserProvider.LOCAL, oauthId:string|null = null): Promise<SafeUser> => {
     try {
         let hashedPassword = null;
         if (provider === UserProvider.LOCAL) {
@@ -45,19 +46,19 @@ export const createUser = async (newUserData: RegisterUserInput, provider: UserP
 };
 
 /**
- * Fait une recherche des utilisateurs enregistrés en appliquant les filtres transmis
+ * Fait une recherche des utilisateurs enregistrés en appliquant le filtre transmis
  * @async
- * @param {GetUsersFilters} filters : les filtres à utiliser sur la liste des utilisateurs
- * @returns {Promise<SafeUser[]>} : la liste des utilisateurs respectant les filtres utilisés
+ * @param {SearchUsersFilter} filter - les filtres à utiliser sur la liste des utilisateurs
+ * @returns {Promise<SafeUser[]>} - la liste des utilisateurs respectant les filtres utilisés
  */
-export const getUsers = async (filters: GetUsersFilters): Promise<SafeUser[]> => {
-    const { page, pageSize, ...input } = filters;
+export const getUsers = async (filter: SearchUsersFilter): Promise<SafeUser[]> => {
+    const { page, pageSize, ..._ } = filter;
     const where: Prisma.UserWhereInput = {};
-    if (input.email) where.email = { contains: input.email, mode: 'insensitive' };
-    if (input.userName) where.userName = { contains: input.userName, mode: 'insensitive' };
-    if (input.firstName) where.firstName = { contains: input.firstName, mode: 'insensitive' };
-    if (input.lastName) where.lastName = { contains: input.lastName, mode: 'insensitive' };
-    if (input.profession) where.profession = { contains: input.profession, mode: 'insensitive' };
+    if (filter.email) where.email = { contains: filter.email, mode: 'insensitive' };
+    if (filter.userName) where.userName = { contains: filter.userName, mode: 'insensitive' };
+    if (filter.firstName) where.firstName = { contains: filter.firstName, mode: 'insensitive' };
+    if (filter.lastName) where.lastName = { contains: filter.lastName, mode: 'insensitive' };
+    if (filter.profession) where.profession = { contains: filter.profession, mode: 'insensitive' };
     const skip = (page - 1) * pageSize;
     const take = pageSize;
     const users = await db.user.findMany({
@@ -71,9 +72,9 @@ export const getUsers = async (filters: GetUsersFilters): Promise<SafeUser[]> =>
 /**
  * Fait une recherche de l'utilisateur ayant l'identifiant passé en paramètre
  * @async
- * @param {string} id : l'identifiant de l'utilisateur recherché
- * @returns {Promise<SafeUser>} : l'utilisateur ayant l'identifiant passé en paramètre
- * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
+ * @param {string} id - l'identifiant de l'utilisateur recherché
+ * @returns {Promise<SafeUser>} - l'utilisateur ayant l'identifiant passé en paramètre
+ * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const getUserById = async (id: string): Promise<SafeUser> => {
     const user = await db.user.findUnique({ where: { id } });
@@ -84,25 +85,21 @@ export const getUserById = async (id: string): Promise<SafeUser> => {
 /**
  * Met à jour les informations d'un utilisateur
  * @async
- * @param {string} id : l'identifiant de l'utilisateur
- * @param {UpdateUserInput} userData : les données à mettre à jour
- * @returns {Promise<SafeUser>} : l'utilisateur avec les informations à jour 
- * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
- * @throws {EmailAlreadyUsedError} : lorsque l'email est déjà utilisé par un autre utilisateur
- * @throws {UsernameAlreadyUsedError} : lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
- * @throws {PhoneNumberAlreadyUsedError} : lorsque le numéro de téléphone est déjà utilisé par un autre utilisateur
+ * @param {string} id - l'identifiant de l'utilisateur
+ * @param {UpdateUserData} userData - les données à mettre à jour
+ * @returns {Promise<SafeUser>} - l'utilisateur avec les informations à jour 
+ * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
+ * @throws {EmailAlreadyUsedError} - lorsque l'email est déjà utilisé par un autre utilisateur
+ * @throws {UsernameAlreadyUsedError} - lorsque le nom d'utilisateur est déjà utilisé par un autre utilisateur
+ * @throws {PhoneNumberAlreadyUsedError} - lorsque le numéro de téléphone est déjà utilisé par un autre utilisateur
  */
-export const updateUser = async (id: string, userData: UpdateUserInput): Promise<SafeUser> => {
+export const updateUser = async (id: string, userData: UpdateUserData): Promise<SafeUser> => {
     try {
         const user = await db.user.findUnique({ where: { id } });
         if (!user) throw new UserNotFoundError(id);
-        const cleanedData = Object.fromEntries(
-            Object.entries(userData).filter(([_, v]) => v !== undefined)
-        );
-
         const updatedUser = await db.user.update({
             where: { id },
-            data: cleanedData as Prisma.UserUpdateInput
+            data: userData as Prisma.UserUpdateInput
         });
         return toSafeUser(updatedUser);
     } catch (err) {
@@ -118,8 +115,8 @@ export const updateUser = async (id: string, userData: UpdateUserInput): Promise
 /**
  * Supprime l'utilisateur ayant l'identifiant passé en paramètre
  * @async
- * @param {string} id : l'identifiant de l'utilisateur à supprimer
- * @throws {UserNotFoundError} : lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
+ * @param {string} id - l'identifiant de l'utilisateur à supprimer
+ * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
     const user = await db.user.findUnique({ where: { id } });
@@ -130,16 +127,38 @@ export const deleteUser = async (id: string): Promise<void> => {
 /**
  * Récupère toutes les équipes dont un utilisateur est membre
  * @async
- * @param {string} userId : identifiant de l'utilisateur dont on veut récupérer l'équipe
- * @returns {Team[]} : la liste d'équipes dont l'utilisateur est membre
+ * @param {string} userId - identifiant de l'utilisateur dont on veut récupérer l'équipe
+ * @returns {Team[]} - la liste d'équipes dont l'utilisateur est membre
  */
 export const getUserTeams = async (userId: string): Promise<Team[]> => {
-    const userTeamPairs = await db.userTeam.findMany({
-        where: { userId },
-        include: {
-            team:true
+    const userTeams = await db.team.findMany({
+        where: {
+            teamUsers: {
+                some: { userId }
+            }
         }
     });
-    const userTeams = userTeamPairs.map(userTeamPair => userTeamPair.team);
     return userTeams;
+}
+
+/**
+ * Récupère tous les projets dan lesquels l'utilisateur est impliqué
+ * @param {string} userId - identifiant de l'utilisateur
+ * @returns {Project[]} - la liste de projets dans lesquels l'utilisateur intervient
+ */
+export const getUserProjects = async (userId: string): Promise<Project[]> => {
+    const userProjects = await db.project.findMany({
+        where: {
+            projectTeams: {
+                some: {
+                    team: {
+                        teamUsers: {
+                            some:{userId}
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return userProjects;
 }

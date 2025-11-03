@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as teamController from "../controllers/team.controllers"
+import * as teamController from "../controllers/team.controllers";
 
 const router = Router();
 
@@ -41,11 +41,16 @@ router.get("/:id/members", teamController.getTeamMembers);
 /**
  * @route PATCH /api/teams/:id/members/:userId
  */
-router.patch("/:id/members/:userId", teamController.updateUserRoleInTeamController)
+router.patch("/:id/members/:userId", teamController.updateUserRoleInTeamController);
 
 /**
  * @route DELETE /api/teams/:id/members/:userId
  */
 router.delete("/:id/members/:userId", teamController.removeUserFromTeamController);
+
+/**
+ * @route GET /api/teams/:id/projects
+ */
+router.get("/:id/projects", teamController.getTeamProjects);
 
 export default router;
