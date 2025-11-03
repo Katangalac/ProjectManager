@@ -6,6 +6,7 @@ import { db } from "../../db";
 import { hash } from "argon2";
 import { Team } from "../../team/types/Team";
 import { Project } from "../../project/types/Project";
+import { Task } from "../../task/types/Task";
 
 
 /**
@@ -153,12 +154,28 @@ export const getUserProjects = async (userId: string): Promise<Project[]> => {
                 some: {
                     team: {
                         teamUsers: {
-                            some:{userId}
+                            some: { userId }
                         }
                     }
                 }
             }
         }
-    })
+    });
     return userProjects;
+}
+
+/**
+ * Récupère les taches de l'utilisateur
+ * @param {string} userId - identifiant de l'utilisateur
+ * @returns {Task[]} - la liste des tâches auxquelles l'utilisateur est assignée
+ */
+export const getUserTasks = async (userId: string): Promise<Task[]> => {
+    const userTasks = await db.task.findMany({
+        where: {
+            assignedTo: {
+                some:{userId}
+            }
+        }
+    });
+    return userTasks;
 }

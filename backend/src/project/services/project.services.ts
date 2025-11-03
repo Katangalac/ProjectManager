@@ -5,6 +5,7 @@ import { Prisma, ProjectTeam } from "@prisma/client";
 import { Team } from "../../team/types/Team";
 import { toSafeUser } from "../../user/services/user.transforms";
 import { SafeUser } from "../../user/types/User";
+import { Task } from "../../task/types/Task";
 
 /**
  * Crée un nouveau projet 
@@ -112,7 +113,7 @@ export const addTeamToProject = async (teamId: string, projectId: string):Promis
             projectId: projectId,
             teamId: teamId
         }
-    })
+    });
     return projectTeamPair;
 };
 
@@ -178,3 +179,18 @@ export const getProjectMembers = async (projectId: string): Promise<SafeUser[]> 
     return projectSafeUsers;
 };
 
+/**
+ * Récupère toutes les taches d'un projet
+ * @param projectId - identifiant du projet
+ * @returns {Task[]} - la liste de taches du projet
+ */
+export const getProjectTasks = async (projectId: string): Promise<Task[]> => {
+    const project = await db.project.findUnique({ 
+        where: { id: projectId },
+        include: {
+            projectTasks : true
+        }
+    });
+    if (!project) throw new ProjectNotFoundError(projectId);
+    return project.projectTasks;
+}

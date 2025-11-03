@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { toSafeUser } from "../../user/services/user.transforms";
 import { SafeUser } from "../../user/types/User";
 import { Project } from "../../project/types/Project";
+import { Task } from "../../task/types/Task";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -86,22 +87,22 @@ export const deleteTeam = async (id: string) => {
  * @async
  * @param {string} userId - identifiant de l'utilisateur qu'on veut ajouter dans l'équipe
  * @param {string} teamId - identifiant de l'équipe dans laquelle on veut ajouter l'utilisateur
- * @param {string} userTeamRole - rôle de l'utilisateur dans l'équipe
+ * @param {string} userRole - rôle de l'utilisateur dans l'équipe
  * @returns {UserTeam} - un objet représentant le lien entre l'utilisateur et l'équipe
  * @throws {UserAlreadyInTeamError} - si l'utilisateur fait déjà partie de l'équipe
  */
-export const addUserToTeam = async (userId: string, teamId: string, userTeamRole: string = ""): Promise<UserTeam> => {
+export const addUserToTeam = async (userId: string, teamId: string, userRole: string = ""): Promise<UserTeam> => {
     let userTeamPair = await db.userTeam.findUnique({
         where: {
-            pk_user_team: { userId: userId, teamId: teamId }
+            pk_user_team: { userId, teamId }
         },
     });
     if (userTeamPair) throw new UserAlreadyInTeamError(userId, teamId);
     userTeamPair = await db.userTeam.create({
         data: {
-            userId: userId,
-            teamId: teamId,
-            userRole: userTeamRole
+            userId,
+            teamId,
+            userRole
         }
     });
     return userTeamPair;
@@ -116,14 +117,14 @@ export const addUserToTeam = async (userId: string, teamId: string, userTeamRole
 export const removeUserFromTeam = async (userId: string, teamId: string) => {
     let userTeamPair = await db.userTeam.findUnique({
         where: {
-            pk_user_team: { userId: userId, teamId: teamId }
+            pk_user_team: { userId, teamId }
         },
     });
     if (!userTeamPair) throw new UserNotInTeamError(userId, teamId);
 
     await db.userTeam.delete({
         where: {
-            pk_user_team: { userId: userId, teamId: teamId }
+            pk_user_team: { userId, teamId }
         },
     });
 };
@@ -132,22 +133,22 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
  * Met à jour le role d'un utilisateur dans une équipe
  * @param userId - identifiant de l'utilisateur 
  * @param teamId - identifiant de l'équipe
- * @param userTeamRole - role de l'utilisateur
+ * @param userRole - role de l'utilisateur
  * @returns la version à jour du role de l'utilisateur dans l'équipe
  * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
  */
-export const updateUserRoleInTeam = async (userId: string, teamId: string, userTeamRole: string):Promise<UserTeam> => {
+export const updateUserRoleInTeam = async (userId: string, teamId: string, userRole: string):Promise<UserTeam> => {
     let userTeamPair = await db.userTeam.findUnique({
         where: {
-            pk_user_team: { userId: userId, teamId: teamId }
+            pk_user_team: { userId, teamId }
         },
     });
     if (!userTeamPair) throw new UserNotInTeamError(userId, teamId);
     const updatedUserTeamPair = await db.userTeam.update({
         where: {
-            pk_user_team: { userId: userId, teamId: teamId }
+            pk_user_team: { userId, teamId }
         },
-        data: { userRole: userTeamRole }
+        data: { userRole: userRole }
     });
     return updatedUserTeamPair;
 };
@@ -185,3 +186,19 @@ export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
     });
     return teamProjects;
 };
+
+/**
+ * Récupère toutes les taches assignées à une équipe
+ * @param teamId - identifiant de l'équipe
+ * @returns {Task[]} - la liste de taches dans lesquelles l'équipe est impliquée
+ */
+export const getTeamTasks = async (teamId: string): Promise<Task[]> => {
+    const team = await db.team.findUnique({ 
+        where: { id: teamId },
+        include: {
+            teamTasks : true
+        }
+    });
+    if (!team) throw new TeamNotFoundError(teamId);
+    return team.teamTasks;
+}

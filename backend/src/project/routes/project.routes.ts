@@ -29,7 +29,7 @@ router.patch("/:id", projectController.updateProjectController);
 router.delete("/:id", projectController.deleteProjectController);
 
 /**
- * @route POST /api/projects/:id/teams
+ * @route POST /api/projects/:id/teams/:teamId
  */
 router.post("/:id/teams/:teamId", projectController.addTeamToProjectController);
 
@@ -47,5 +47,10 @@ router.delete("/:id/teams/:teamId", projectController.removeTeamFromProjectContr
  * @route GET /api/projects/:id/members
  */
 router.get("/:id/members", projectController.getProjectMembersController);
+
+/**
+ * @route GET /api/projects/:id/tasks
+ */
+router.get("/:id/tasks", projectController.getProjectTasksController)
 
 export default router;
