@@ -8,8 +8,8 @@ import { z } from "zod";
 /**
  * Crée un nouveau projet
  * @async
- * @param {Request} req : requete Express contenant les infos de l'équipe à créer
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant les infos de l'équipe à créer
+ * @param {Response} res - reponse Express en JSON
  */
 export const createProjectController = async (req: Request, res: Response) => {
     try {
@@ -29,15 +29,15 @@ export const createProjectController = async (req: Request, res: Response) => {
 };
 
 /**
- * Récupère les projets enregistrées dans le système respectant les filtres passés en paramètre
+ * Récupère les projets enregistrées dans le système respectant le filtre passé en paramètre
  * @async
- * @param {Request} req : requete Express 
- * @param {Response}  res : reponse Express en JSON
+ * @param {Request} req - requete Express 
+ * @param {Response}  res - reponse Express en JSON
  */
 export const getProjectsController = async (req: Request, res: Response) => {
     try {
-        const filters = projectSchemas.searchProjectsFilterSchema.parse(req.query);
-        const projects = await projectService.getProjects(filters);
+        const filter = projectSchemas.searchProjectsFilterSchema.parse(req.query);
+        const projects = await projectService.getProjects(filter);
         res.status(200).json(projects);
     }catch (err) {
         console.error("Erreur lors de la récupération des projets : ", err);
@@ -51,8 +51,8 @@ export const getProjectsController = async (req: Request, res: Response) => {
 /**
  * Récupère le projet ayant l'identifiant passé en paramètre
  * @async
- * @param {Request} req : requete Express contenant l'identifiant du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const getProjectByIdController = async (req: Request, res: Response) => {
     try {
@@ -74,8 +74,8 @@ export const getProjectByIdController = async (req: Request, res: Response) => {
 /**
  * Met à jour les informations d'un projet
  * @async
- * @param {Request} req : requete Express contenant l'identifiant du projet
- * @param {Response} res : rponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant du projet
+ * @param {Response} res - rponse Express en JSON
  */
 export const updateProjectController = async (req: Request, res: Response) => {
     try {
@@ -98,8 +98,8 @@ export const updateProjectController = async (req: Request, res: Response) => {
 /**
  * Supprime un projet
  * @async
- * @param {Request} req : requete Express contenant l'identifiant du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const deleteProjectController = async (req: Request, res: Response) => {
     try {
@@ -121,8 +121,8 @@ export const deleteProjectController = async (req: Request, res: Response) => {
 /**
  * Ajoute une équipe dans un projet
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe et du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe et du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const addTeamToProjectController = async (req: Request, res: Response) => {
     try {
@@ -145,8 +145,8 @@ export const addTeamToProjectController = async (req: Request, res: Response) =>
 /**
  * Retire une équipe d'un projet
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe et du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe et du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const removeTeamFromProjectController = async (req: Request, res: Response) => {
     try {
@@ -169,8 +169,8 @@ export const removeTeamFromProjectController = async (req: Request, res: Respons
 /**
  * Récupère les équipes impliquées dans un projet
  * @async
- * @param {Request} req : requete Express contenant l'id du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'id du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const getProjectTeamsController = async (req: Request, res: Response) => {
     try {
@@ -190,8 +190,8 @@ export const getProjectTeamsController = async (req: Request, res: Response) => 
 /**
  * Récupère les utilisateurs impliqués dans un projet
  * @async
- * @param {Request} req : requete Express contenant l'id du projet
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'id du projet
+ * @param {Response} res - reponse Express en JSON
  */
 export const getProjectMembersController = async (req: Request, res: Response) => {
     try {

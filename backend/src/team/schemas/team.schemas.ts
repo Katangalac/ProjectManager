@@ -39,7 +39,9 @@ export const updateTeamDataSchema = z.object({
  * Schéma pour valider les données attendues comme filtre de recherche des équipes
  */
 export const searchTeamsFilterSchema = z.object({
-    name: z.string().optional()
+    name: z.string().optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 /**
@@ -55,3 +57,18 @@ export const userTeamSchema = z.object({
     updatedAt: z.date()
 });
 
+/**
+ * Schéma pour valider les données d'entrée d'une paire utilisateur-équipe
+ */
+export const addUserToTeamInputSchema = userTeamSchema.omit({
+    teamId:true,
+    createdAt: true,
+    updatedAt: true
+});
+
+/**
+ * Schéma pour le rôle de l'utilisateur dans une équipe
+ */
+export const userTeamRoleSchema = z.object({
+    userRole: z.string()
+});

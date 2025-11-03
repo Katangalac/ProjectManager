@@ -14,7 +14,7 @@ export const getUserIdFromRequest = (req: Request): string | undefined => {
 
 /**
  * Retire les propriétés/champs d'un objet ayant la valeur undefined
- * @param {T} obj : un objet qui peut être de n'importe quel type
+ * @param {T} obj - un objet qui peut être de n'importe quel type
  * @returns l'objet passé en  paramètre sans les propriétés/champs qui étaient undefined
  */
 export const removeUndefined = <T extends Record<string, any>>(obj: T): {

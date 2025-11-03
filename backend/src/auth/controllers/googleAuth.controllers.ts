@@ -12,8 +12,8 @@ const REDIRECT_URI = "http://localhost:3000/api/auth/google/callback"
  * Initialise le processus d'authentification OAuth2.0 avec Google
  * Génère une URL contenant les paramètres nécessaires (client_id, redirect_uri, scope, etc.)
  * et redirige l'utilisateur vers la page de connexion Google.
- * @param {Request} req : requête Express
- * @param {Response} res : réponse Express
+ * @param {Request} req - requête Express
+ * @param {Response} res - réponse Express
  */
 export const googleAuth = (req: Request, res: Response) => {
     const redirectUri =
@@ -35,8 +35,8 @@ export const googleAuth = (req: Request, res: Response) => {
  * 4. Vérifie si l'utilisateur existe déjà dans la base de données, sinon le crée.
  * 5. Génère un JWT (ou une session) et redirige l'utilisateur vers le frontend.
  * @async
- * @param {Request} req : requête Express contenant le code d'autorisation Google dans req.query.code
- * @param {Response} res : réponse Express contenant la réponse JSON
+ * @param {Request} req - requête Express contenant le code d'autorisation Google dans req.query.code
+ * @param {Response} res - réponse Express contenant la réponse JSON
  */
 export const googleCallback = async (req: Request, res: Response) => {
     const code = req.query.code as string;

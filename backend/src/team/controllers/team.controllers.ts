@@ -6,26 +6,10 @@ import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
 
 /**
- * Schéma pour valider les données d'entrée d'une paire utilisateur-équipe
- */
-const addUserToTeamInputSchema = teamSchemas.userTeamSchema.omit({
-    teamId:true,
-    createdAt: true,
-    updatedAt: true
-});
-
-/**
- * Schéma pour le rôle de l'utilisateur dans une équipe
- */
-const userTeamRoleSchema = z.object({
-    userRole: z.string()
-});
-
-/**
  * Crée une nouvelle équipe
  * @async
- * @param {Request} req : requete Express contenant les infos de l'équipe à créer
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant les infos de l'équipe à créer
+ * @param {Response} res - reponse Express en JSON
  */
 export const createTeamController = async (req: Request, res: Response) => {
     try {
@@ -46,14 +30,15 @@ export const createTeamController = async (req: Request, res: Response) => {
 };
 
 /**
- * Récupère les équipes enregistrées dans le système
+ * Récupère les équipes enregistrées dans le système respectant le filtre passé en paramètre
  * @async
- * @param {Request} req : requete Express 
- * @param {Response}  res : reponse Express en JSON
+ * @param {Request} req - requete Express 
+ * @param {Response}  res - reponse Express en JSON
  */
 export const getTeamsController = async (req: Request, res: Response) => {
     try {
-        const teams = await teamService.getTeams();
+        const filter = teamSchemas.searchTeamsFilterSchema.parse(req.query);
+        const teams = await teamService.getTeams(filter);
         res.status(200).json(teams);
     }catch (err) {
         console.error("Erreur lors de la récupération des équipes : ", err);
@@ -67,8 +52,8 @@ export const getTeamsController = async (req: Request, res: Response) => {
 /**
  * Récupère l'équipe ayant l'identifiant passé en paramètre
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe
+ * @param {Response} res - reponse Express en JSON
  */
 export const getTeamByIdController = async (req: Request, res: Response) => {
     try {
@@ -90,8 +75,8 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
 /**
  * Met à jour les informations d'une équipe
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe
- * @param {Response} res : rponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe
+ * @param {Response} res - rponse Express en JSON
  */
 export const updateTeamController = async (req: Request, res: Response) => {
     try {
@@ -114,8 +99,8 @@ export const updateTeamController = async (req: Request, res: Response) => {
 /**
  * Supprime une équipe
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe
+ * @param {Response} res - reponse Express en JSON
  */
 export const deleteTeamController = async (req: Request, res: Response) => {
     try {
@@ -137,13 +122,13 @@ export const deleteTeamController = async (req: Request, res: Response) => {
 /**
  * Ajoute un utilisateur dans une équipe
  * @async
- * @param {Request} req : requete Express contenant les informations sur l'utilisateur à ajouter et son role dans l'équipe
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant les informations sur l'utilisateur à ajouter et son role dans l'équipe
+ * @param {Response} res - reponse Express en JSON
  */
 export const addUserToTeamController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const inputData = addUserToTeamInputSchema.parse(req.body);
+        const inputData = teamSchemas.addUserToTeamInputSchema.parse(req.body);
         const userTeamPair = await teamService.addUserToTeam(inputData.userId, id, inputData.userRole);
         res.status(200).json({ message: "Utilisateur ajouté à l'équipe", userTeamPair });
     }catch (err) {
@@ -161,8 +146,8 @@ export const addUserToTeamController = async (req: Request, res: Response) => {
 /**
  * Retire un utilisateur d'une équipe
  * @async
- * @param {Request} req : requete Express contenant l'identifiant de l'équipe et de l'utilisateur
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe et de l'utilisateur
+ * @param {Response} res - reponse Express en JSON
  */
 export const removeUserFromTeamController = async (req: Request, res: Response) => {
     try {
@@ -185,14 +170,14 @@ export const removeUserFromTeamController = async (req: Request, res: Response) 
 /**
  * Met à jour le role d'un utilisateur au sein d'une équipe
  * @async
- * @param {Request} req : requete Express contenant le nouveau role dans req.body ainsi que les identifiants
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant le nouveau role dans req.body ainsi que les identifiants
+ * @param {Response} res - reponse Express en JSON
  */
 export const updateUserRoleInTeamController = async (req: Request, res: Response) => {
     try {
         const { id: teamId } = idParamSchema.parse({ id: req.params.id });
         const { id:userId } = idParamSchema.parse({ id: req.params.userId });
-        const {userRole} = userTeamRoleSchema.parse(req.body);
+        const {userRole} = teamSchemas.userTeamRoleSchema.parse(req.body);
         const updatedUserTeamPair = await teamService.updateUserRoleInTeam(userId, teamId, userRole);
         res.status(200).json({ message: "Rôle de l'utilisateur mis à jour", updatedUserTeamPair });
     } catch (err) {
@@ -210,8 +195,8 @@ export const updateUserRoleInTeamController = async (req: Request, res: Response
 /**
  * Récupère les membres d'une équipe
  * @async
- * @param {Request} req : requete Express contenant l'id de l'équipe
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'id de l'équipe
+ * @param {Response} res - reponse Express en JSON
  */
 export const getTeamMembers = async (req: Request, res: Response) => {
     try {
@@ -230,8 +215,8 @@ export const getTeamMembers = async (req: Request, res: Response) => {
 /**
  * Récupère les projets d'une équipe
  * @async
- * @param {Request} req : requete Express contenant l'id de l'équipe
- * @param {Response} res : reponse Express en JSON
+ * @param {Request} req - requete Express contenant l'id de l'équipe
+ * @param {Response} res - reponse Express en JSON
  */
 export const getTeamProjects = async (req: Request, res: Response) => {
     try {

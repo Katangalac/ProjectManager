@@ -60,5 +60,7 @@ export const searchProjectsFilterSchema = z.object({
     completedOn: z.coerce.date().optional(),
     completedBefore: z.coerce.date().optional(),
     completedAfter: z.coerce.date().optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(20)
 });
 

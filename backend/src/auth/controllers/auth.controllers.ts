@@ -11,8 +11,8 @@ import { ZodError } from "zod";
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
  * @async
- * @param {Request} req : requête Express contenant les informations du nouvel utilisateur dans req.body
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant les informations du nouvel utilisateur dans req.body
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const register = async (req: Request, res: Response) => {
     try {
@@ -33,8 +33,8 @@ export const register = async (req: Request, res: Response) => {
 /**
  * Connecte/authentifie un utilisateur enregistré dans le système
  * @async
- * @param {Request} req : requête Express contenant les informations de connexion dans req.body
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant les informations de connexion dans req.body
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const login = async (req: Request, res: Response) => {
     try {
@@ -72,8 +72,8 @@ export const login = async (req: Request, res: Response) => {
 /**
  * Déconnecte un utilisateur
  * @async
- * @param {Request} req : requête Express
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const logout = async (req: Request, res: Response) => {
     try {

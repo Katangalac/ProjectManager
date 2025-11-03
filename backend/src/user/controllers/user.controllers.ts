@@ -8,14 +8,14 @@ import { idParamSchema } from "../../schemas/idparam.schema";
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
  * @async
- * @param {Request} req : requête Express contenant les données de filtre à utiliser dans req.query
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant les données de filtre à utiliser dans req.query
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  * @returns {Promise<SafeUser>} - retourne un objet JSON contenant la liste des utilisateurs
  */
 export const getUsersController = async(req: Request, res: Response) => {
     try {
-        const filters = searchUsersFilterSchema.parse(req.query);
-        const users = await userService.getUsers(filters);
+        const filter = searchUsersFilterSchema.parse(req.query);
+        const users = await userService.getUsers(filter);
         res.status(200).json(users);
     } catch (err) {
         console.error("Erreur lors de la récupération des utilisateurs", err);
@@ -29,8 +29,8 @@ export const getUsersController = async(req: Request, res: Response) => {
 /**
  * Récupère un utilisateur par son identifiant (id)
  * @async
- * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans req.params.id
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant l'identifiant de l'utilisateur dans req.params.id
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  * @returns {Promise<SafeUser>} - retourne un objet JSON contenant les informations de l'utilisateur
  */
 export const getUserByIdController = async (req: Request, res: Response) => {
@@ -55,10 +55,10 @@ export const getUserByIdController = async (req: Request, res: Response) => {
 /**
  * Met à jour les informations de l'utilisateur ayant l'identifiant passé en paramètre 
  * @async
- * @param {Request} req : - requête Express contenant l'identifiant de l'utilisateur dans req.params.id
- *                        - contient les données à mettre à jour dans req.body
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
- * @returns {Promise<SafeUser>} : l'utilisateur avec les informations mises à jour
+ * @param {Request} req - requête Express contenant l'identifiant de l'utilisateur dans req.params.id
+ *                      - contient les données à mettre à jour dans req.body
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
+ * @returns {Promise<SafeUser>} - l'utilisateur avec les informations mises à jour
  */
 export const updateUserController = async(req: Request, res: Response) => {
     try {
@@ -95,8 +95,8 @@ export const updateUserController = async(req: Request, res: Response) => {
 /**
  * Supprime l'utilisateur ayant l'identifiant passé en paramètre
  * @async
- * @param {Request} req : requête Express contenant l'identifiant de l'utilisateur dans req.params.id
- * @param {Response} res : réponse Express utilisé pour renvoyer la réponse JSON
+ * @param {Request} req - requête Express contenant l'identifiant de l'utilisateur dans req.params.id
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  */
 export const deleteUserController = async (req: Request, res: Response) => {
     try {
@@ -120,8 +120,8 @@ export const deleteUserController = async (req: Request, res: Response) => {
 
 /**
  * Récupère toutes les équipes dont l'utilisateur est membre
- * @param {Request} req : requete Express contenant l'identifiant de l'utilisateur
- * @param {Response} res : reponse Express em JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res - reponse Express em JSON
  */
 export const getUserTeamsController = async (req: Request, res: Response) => {
     try {
@@ -139,8 +139,8 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
 
 /**
  * Récupère tous les projets dans lesquels l'utilisateur intervient
- * @param {Request} req : requete Express contenant l'identifiant de l'utilisateur
- * @param {Response} res : reponse Express em JSON
+ * @param {Request} req - requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res - reponse Express em JSON
  */
 export const getUserProjectsController = async (req: Request, res: Response) => {
     try {

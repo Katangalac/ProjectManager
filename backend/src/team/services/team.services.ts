@@ -1,4 +1,4 @@
-import { Team, CreateTeamData, UserTeam, UpdateTeamData } from "../types/Team";
+import { Team, CreateTeamData, UserTeam, UpdateTeamData, SearchTeamsFilter } from "../types/Team";
 import { db } from "../../db";
 import { TeamNotFoundError, UserAlreadyInTeamError, UserNotInTeamError } from "../errors";
 import { Prisma } from "@prisma/client";
@@ -9,8 +9,8 @@ import { Project } from "../../project/types/Project";
 /**
  * Crée une nouvelle équipe de travail
  * @async
- * @param {CreateTeamData} teamData : informatons sur l'équipe à créer
- * @returns {Team} : un objet Team représentant l'équipe créée
+ * @param {CreateTeamData} teamData - informations sur l'équipe à créer
+ * @returns {Team} - un objet Team représentant l'équipe créée
  */
 export const createTeam = async (teamData: CreateTeamData): Promise<Team> => {
     const newTeam = await db.team.create({
@@ -22,19 +22,29 @@ export const createTeam = async (teamData: CreateTeamData): Promise<Team> => {
 /**
  * Récupère la liste des équipes enregitrées dans le système
  * @async
- * @returns {Team[]}  la liste d'équipes créées dans le système
+ * @param {SearchTeamsFilter} filter - le filtre de recherche à utiliser
+ * @returns {Team[]} - la liste d'équipes créées dans le système
  */
-export const getTeams = async (): Promise<Team[]> => {
-    const teams = await db.team.findMany();
+export const getTeams = async (filter: SearchTeamsFilter): Promise<Team[]> => {
+    const { page, pageSize, ..._ } = filter;
+    const where: Prisma.TeamWhereInput = {};
+    if (filter.name) where.name = { contains: filter.name, mode: 'insensitive' };
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+    const teams = await db.team.findMany({
+        where,
+        skip,
+        take
+    });
     return teams;
 };
 
 /**
  * Récupère l'équipe ayant l'identifiant passé en paramètre
  * @async
- * @param {string} id : identifiant de l'équipe recherchée
- * @returns {Team} : un objet Team représentant l'équipe ayant l'identifiant spécifié
- * @throws {TeamNotFoundError} : si aucune équipe avec l'identifiant donnée n'a été trouvée
+ * @param {string} id - identifiant de l'équipe recherchée
+ * @returns {Team} - un objet Team représentant l'équipe ayant l'identifiant spécifié
+ * @throws {TeamNotFoundError} - si aucune équipe avec l'identifiant donnée n'a été trouvée
  */
 export const getTeamById = async (id: string): Promise<Team> => {
     const team = await db.team.findUnique({ where: { id } });
@@ -45,9 +55,9 @@ export const getTeamById = async (id: string): Promise<Team> => {
 /**
  * Met à jour les informations de Léquipe ayant l'ideneitifiant passé en paramètre
  * @async
- * @param {string} id : identfiant de l'équipe à modifier
- * @param {updateTeamData} teamData : les informations à modifier/mettre à jour
- * @returns {Team}: un objet représentant l'équipe avec les informations à jour
+ * @param {string} id - identfiant de l'équipe à modifier
+ * @param {updateTeamData} teamData - les informations à modifier/mettre à jour
+ * @returns {Team} - un objet représentant l'équipe avec les informations à jour
  */
 export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<Team> => {
     const team = await db.team.findUnique({ where: { id } });
@@ -62,8 +72,8 @@ export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<
 /**
  * Supprime l'équipe ayant l'identifiant passé en paramètre
  * @async
- * @param {string} id : identifiant de l'équipe à supprimer
- * @throws {TeamNotFoundError} : si aucune équipe avec l'identifiant donnée n'a été trouvée
+ * @param {string} id - identifiant de l'équipe à supprimer
+ * @throws {TeamNotFoundError} - si aucune équipe avec l'identifiant donnée n'a été trouvée
  */
 export const deleteTeam = async (id: string) => {
     const team = await db.team.findUnique({ where: { id } });
@@ -74,11 +84,11 @@ export const deleteTeam = async (id: string) => {
 /**
  * Ajoute un utilisateur dans une équipe
  * @async
- * @param {string} userId : identifiant de l'utilisateur qu'on veut ajouter dans l'équipe
- * @param {string} teamId : identifiant de l'équipe dans laquelle on veut ajouter l'utilisateur
- * @param {string} userTeamRole : rôle de l'utilisateur dans l'équipe
- * @returns {UserTeam} : un objet représentant le lien entre l'utilisateur et l'équipe
- * @throws {UserAlreadyInTeamError} : si l'utilisateur fait déjà partie de l'équipe
+ * @param {string} userId - identifiant de l'utilisateur qu'on veut ajouter dans l'équipe
+ * @param {string} teamId - identifiant de l'équipe dans laquelle on veut ajouter l'utilisateur
+ * @param {string} userTeamRole - rôle de l'utilisateur dans l'équipe
+ * @returns {UserTeam} - un objet représentant le lien entre l'utilisateur et l'équipe
+ * @throws {UserAlreadyInTeamError} - si l'utilisateur fait déjà partie de l'équipe
  */
 export const addUserToTeam = async (userId: string, teamId: string, userTeamRole: string = ""): Promise<UserTeam> => {
     let userTeamPair = await db.userTeam.findUnique({
@@ -99,9 +109,9 @@ export const addUserToTeam = async (userId: string, teamId: string, userTeamRole
 
 /**
  * Retire un utilisateur d'une équipe
- * @param {string} userId : identifiant de l'utilisateur qu'on veut retirer de l'équipe
- * @param {string} teamId : identifiant de l'équipe de laquelle on veut retirer l'utilisateur
- * @throws {UserNotInTeamError} : si l'utilisateur ne fait pas partie de l'équipe
+ * @param {string} userId - identifiant de l'utilisateur qu'on veut retirer de l'équipe
+ * @param {string} teamId - identifiant de l'équipe de laquelle on veut retirer l'utilisateur
+ * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
  */
 export const removeUserFromTeam = async (userId: string, teamId: string) => {
     let userTeamPair = await db.userTeam.findUnique({
@@ -120,11 +130,11 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
 
 /**
  * Met à jour le role d'un utilisateur dans une équipe
- * @param userId : identifiant de l'utilisateur 
- * @param teamId : identifiant de l'équipe
- * @param userTeamRole : role de l'utilisateur
+ * @param userId - identifiant de l'utilisateur 
+ * @param teamId - identifiant de l'équipe
+ * @param userTeamRole - role de l'utilisateur
  * @returns la version à jour du role de l'utilisateur dans l'équipe
- * @throws {UserNotInTeamError} : si l'utilisateur ne fait pas partie de l'équipe
+ * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
  */
 export const updateUserRoleInTeam = async (userId: string, teamId: string, userTeamRole: string):Promise<UserTeam> => {
     let userTeamPair = await db.userTeam.findUnique({
@@ -145,8 +155,8 @@ export const updateUserRoleInTeam = async (userId: string, teamId: string, userT
 /**
  * Récupère les membres d'une équipe
  * @async
- * @param {string} teamId : identifiant de l'équipe dont on veux récupérer les membres
- * @returns {SafeUser[]} : la liste des utilisateurs membres de l'équipe
+ * @param {string} teamId - identifiant de l'équipe dont on veux récupérer les membres
+ * @returns {SafeUser[]} - la liste des utilisateurs membres de l'équipe
  */
 export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
     const users = await db.user.findMany({
@@ -162,8 +172,8 @@ export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
 
 /**
  * Récupère tous les projets dans lesquels une équipe intervient
- * @param teamId : identifiant de l'équipe
- * @returns {Project[]} : la liste de projets dans lesquels l'équipe est impliquée
+ * @param teamId - identifiant de l'équipe
+ * @returns {Project[]} - la liste de projets dans lesquels l'équipe est impliquée
  */
 export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
     const teamProjects = await db.project.findMany({
