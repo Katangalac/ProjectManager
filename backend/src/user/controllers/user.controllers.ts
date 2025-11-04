@@ -156,3 +156,21 @@ export const getUserProjectsController = async (req: Request, res: Response) => 
     }
 };
 
+/**
+ * Récupère toutes les tâches assignées à un utilisateur
+ * @param {Request} req - requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res - reponse Express em JSON
+ */
+export const getUserTasksController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const userTasks = await userService.getUserTasks(id);
+        res.status(200).json(userTasks);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des taches de l'utilisateur : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des taches de l'utilisateur" });
+    }
+};

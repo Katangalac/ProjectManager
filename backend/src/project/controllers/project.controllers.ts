@@ -206,3 +206,26 @@ export const getProjectMembersController = async (req: Request, res: Response) =
         res.status(500).json({ error: "Erreur lors de la récupération des membres du projet" });
     }
 }; 
+
+/**
+ * Récupère les taches d'un projet
+ * @async
+ * @param {Request} req - requete Express contenant l'id du projet
+ * @param {Response} res - reponse Express en JSON
+ */
+export const getProjectTasksController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const projectTasks = await projectService.getProjectTasks(id);
+        res.status(200).json(projectTasks);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des taches du projet : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        if (err instanceof projectError.ProjectNotFoundError) {
+            res.status(404).json({ error: "Aucun projet avec l'identifiant donné n'a été trouvé" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des taches du projet" });
+    }
+};

@@ -198,7 +198,7 @@ export const updateUserRoleInTeamController = async (req: Request, res: Response
  * @param {Request} req - requete Express contenant l'id de l'équipe
  * @param {Response} res - reponse Express en JSON
  */
-export const getTeamMembers = async (req: Request, res: Response) => {
+export const getTeamMembersController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const teamMembers = await teamService.getTeamMembers(id);
@@ -218,7 +218,7 @@ export const getTeamMembers = async (req: Request, res: Response) => {
  * @param {Request} req - requete Express contenant l'id de l'équipe
  * @param {Response} res - reponse Express en JSON
  */
-export const getTeamProjects = async (req: Request, res: Response) => {
+export const getTeamProjectsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const teamProjects = await teamService.getTeamProjects(id);
@@ -229,5 +229,28 @@ export const getTeamProjects = async (req: Request, res: Response) => {
             res.status(400).json({ error: "Données invalides" });
         }
         res.status(500).json({ error: "Erreur lors de la récupération des projets de l'équipe" });
+    }
+};
+
+/**
+ * Récupère les taches d'une équipe
+ * @async
+ * @param {Request} req - requete Express contenant l'id de l'équipe
+ * @param {Response} res - reponse Express en JSON
+ */
+export const getTeamTasksController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const teamTasks = await teamService.getTeamTasks(id);
+        res.status(200).json(teamTasks);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des taches de l'équipe : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        if (err instanceof teamError.TeamNotFoundError) {
+            res.status(404).json({ error: "Aucune équipe avec l'identifiant donné n'a été trouvée" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des taches de l'équipe" });
     }
 };
