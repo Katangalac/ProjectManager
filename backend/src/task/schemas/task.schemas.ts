@@ -26,7 +26,6 @@ export const taskSchema = z.object({
  */
 export const createTaskSchema = taskSchema.omit({
     id: true,
-    cost: true,
     completedAt: true,
     updatedAt: true,
     createdAt: true
@@ -54,9 +53,9 @@ export const updateTaskDataSchema = z.object({
  */
 export const searchTasksFilterSchema = z.object({
     title: z.string().optional(),
-    priorityLevelEq: z.number().int().min(0).max(5).optional(),
-    priorityLevelLt: z.number().int().min(0).max(5).optional(),
-    priorityLevelGt: z.number().int().min(0).max(5).optional(),
+    priorityLevelEq: z.coerce.number().int().min(0).max(5).optional(),
+    priorityLevelLt: z.coerce.number().int().min(0).max(5).optional(),
+    priorityLevelGt: z.coerce.number().int().min(0).max(5).optional(),
     status: z.enum(TaskStatus).optional(),
     startOn:z.coerce.date().optional(),    
     endOn: z.coerce.date().optional(),

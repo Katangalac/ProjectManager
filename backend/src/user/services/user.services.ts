@@ -172,9 +172,20 @@ export const getUserProjects = async (userId: string): Promise<Project[]> => {
 export const getUserTasks = async (userId: string): Promise<Task[]> => {
     const userTasks = await db.task.findMany({
         where: {
-            assignedTo: {
-                some:{userId}
-            }
+            OR: [
+                {
+                    assignedTo: {
+                        some:{userId}
+                    }
+                },
+                {
+                    team: {
+                        teamUsers: {
+                            some:{userId}
+                        }
+                    }
+                }
+            ]
         }
     });
     return userTasks;

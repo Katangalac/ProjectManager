@@ -33,4 +33,9 @@ router.get("/:id/teams", userController.getUserTeamsController);
  */
 router.get("/:id/projects", userController.getUserProjectsController);
 
+/**
+ * @routes GET /api/users/:id/tasks
+ */
+router.get("/:id/tasks", userController.getUserTasksController)
+
 export default router;

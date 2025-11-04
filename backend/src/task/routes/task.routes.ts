@@ -28,7 +28,6 @@ router.patch("/:id", taskController.updateTaskController);
  */
 router.delete("/:id", taskController.deleteTaskController);
 
-
 /**
  * @route GET /api/teams/:id/contributors
  */
@@ -42,7 +41,7 @@ router.post("/:id/contributors/:userId", taskController.assignTaskToUserControll
 /**
  * @route DELETE /api/tasks/:id/contributors/:userId
  */
-router.post("/:id/contributors/:userId", taskController.unassignUserFromTaskController);
+router.delete("/:id/contributors/:userId", taskController.unassignUserFromTaskController);
 
 export default router;
 
