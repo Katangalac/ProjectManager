@@ -56,6 +56,6 @@ router.get("/:id/projects", teamController.getTeamProjectsController);
 /**
  * @route GET/api/teams/:id/tasks
  */
-router.get("/:id/tasks", teamController.getTeamTasksController)
+router.get("/:id/tasks", teamController.getTeamTasksController);
 
 export default router;

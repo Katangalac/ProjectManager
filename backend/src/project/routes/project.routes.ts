@@ -51,6 +51,6 @@ router.get("/:id/members", projectController.getProjectMembersController);
 /**
  * @route GET /api/projects/:id/tasks
  */
-router.get("/:id/tasks", projectController.getProjectTasksController)
+router.get("/:id/tasks", projectController.getProjectTasksController);
 
 export default router;

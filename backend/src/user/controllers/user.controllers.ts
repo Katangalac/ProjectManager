@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { updateUserDataSchema, searchUsersFilterSchema } from "../schemas/user.schemas";
 import { EmailAlreadyUsedError, PhoneNumberAlreadyUsedError, UserNotFoundError, UsernameAlreadyUsedError } from "../errors/index";
 import * as userService from "../services/user.services";
+import {getUserNotifications} from "../../notification/services/notification.services"
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
 
@@ -174,3 +175,24 @@ export const getUserTasksController = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Erreur lors de la récupération des taches de l'utilisateur" });
     }
 };
+
+/**
+ * Récupère toutes les notifications d'un utilisateur
+ * @param {Request} req - requete Express contenant l'identifiant de l'utilisateur
+ * @param {Response} res - reponse Express em JSON
+ */
+export const getUserNotificationsController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const userNotifications = await getUserNotifications(id);
+        res.status(200).json(userNotifications);
+    } catch (err) {
+        console.error("Erreur lors de la récupération des notifications de l'utilisateur : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        res.status(500).json({ error: "Erreur lors de la récupération des notifications de l'utilisateur" });
+    }
+};
+
+
