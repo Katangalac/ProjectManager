@@ -10,7 +10,10 @@ import { Prisma } from "@prisma/client";
  */
 export const createNotification = async (notificationData: CreateNotificationData): Promise<Notification> => {
     const newNotification = await db.notification.create({
-        data: notificationData
+        data: {
+            ...notificationData,
+            read:false
+        }
     })
     return newNotification;
 };
@@ -23,7 +26,8 @@ export const createNotification = async (notificationData: CreateNotificationDat
 export const getNotifications = async (filter: SearchNotificationsFilter): Promise<Notification[]> => {
     const { page, pageSize, ..._ } = filter;
     const where: Prisma.NotificationWhereInput = {};
-    if (filter.read) where.read = { equals: filter.read };
+    console.log(filter.read);
+    if (filter.read !== undefined) where.read = filter.read;
     const skip = (page - 1) * pageSize;
     const take = pageSize;
     const notifications = await db.notification.findMany({
