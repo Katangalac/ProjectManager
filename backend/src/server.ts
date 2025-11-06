@@ -8,6 +8,7 @@ import googleAuthRoutes from "./auth/routes/googleAuth.routes";
 import teamRoutes from "./team/routes/team.routes";
 import projectRoutes from "./project/routes/project.routes";
 import taskRoutes from "./task/routes/task.routes";
+import notificationRoutes from "./notification/routes/notification.routes";
 import { authenticate } from "./auth/middleware/authenticate";
 import morgan from "morgan";
 
@@ -50,5 +51,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/teams", authenticate, teamRoutes);
 app.use("/api/projects", authenticate, projectRoutes);
 app.use("/api/tasks", authenticate, taskRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));

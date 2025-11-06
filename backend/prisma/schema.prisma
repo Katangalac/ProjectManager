@@ -140,7 +140,7 @@ model Notification {
   id        String   @id @default(uuid())
   userId    String   @map("user_id")
   message   String   @map("message")
-  sentAt    DateTime @default(now()) @map("sent_at")
+  read      Boolean  @default(false) @map("read")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   updatedAt DateTime @default(now()) @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
@@ -168,6 +168,7 @@ model Message {
   senderId       String?      @map("sender_id")
   conversationId String       @map("conversation_id")
   content        String?      @map("content")
+  read           Boolean      @default(false) @map("read")
   sender         User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   attachments    Attachment[]

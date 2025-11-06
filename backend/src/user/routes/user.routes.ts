@@ -34,8 +34,13 @@ router.get("/:id/teams", userController.getUserTeamsController);
 router.get("/:id/projects", userController.getUserProjectsController);
 
 /**
- * @routes GET /api/users/:id/tasks
+ * @route GET /api/users/:id/tasks
  */
-router.get("/:id/tasks", userController.getUserTasksController)
+router.get("/:id/tasks", userController.getUserTasksController);
+
+/**
+ * @route GET /api/users/:id/notifications
+ */
+router.get("/:id/notifications", userController.getUserNotificationsController);
 
 export default router;
