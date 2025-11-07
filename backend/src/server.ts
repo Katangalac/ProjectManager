@@ -1,4 +1,5 @@
 import express from "express";
+import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -9,7 +10,10 @@ import teamRoutes from "./team/routes/team.routes";
 import projectRoutes from "./project/routes/project.routes";
 import taskRoutes from "./task/routes/task.routes";
 import notificationRoutes from "./notification/routes/notification.routes";
+import conversationRoutes from "./conversation/routes/conversation.routes";
+import messageRoutes from "./message/routes/message.routes";
 import { authenticate } from "./auth/middleware/authenticate";
+import { setupSocket } from "./chat/chat.socket";
 import morgan from "morgan";
 
 const app = express();
@@ -52,5 +56,11 @@ app.use("/api/teams", authenticate, teamRoutes);
 app.use("/api/projects", authenticate, projectRoutes);
 app.use("/api/tasks", authenticate, taskRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/conversations", conversationRoutes);
+app.use("/api/messages", messageRoutes);
+
+//Serveur pour faire du temps réel
+const server = http.createServer(app);
+setupSocket(server);
 
 app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));

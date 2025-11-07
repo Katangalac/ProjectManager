@@ -43,4 +43,14 @@ router.get("/:id/tasks", userController.getUserTasksController);
  */
 router.get("/:id/notifications", userController.getUserNotificationsController);
 
+/**
+ * @route GET /api/users/:id/conversations
+ */
+router.get("/:id/conversations", userController.getUserConversationsController);
+
+/**
+ * @route GET /api/users/:id/messages
+ */
+router.get("/:id/messages", userController.getUserMessagesController);
+
 export default router;
