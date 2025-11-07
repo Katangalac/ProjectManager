@@ -71,13 +71,16 @@ export const getProjects = async (filter: SearchProjectsFilter): Promise<Project
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
 export const updateProject = async (id: string, projectData: UpdateProjectData): Promise<Project> => {
-    const project = await db.project.findUnique({ where: { id } });
-    if (!project) throw new ProjectNotFoundError(id);
-    const updatedProject = await db.project.update({
-        where: { id },
-        data: projectData as Prisma.ProjectUpdateInput
-    });
-    return updatedProject;
+    try {
+        const updatedProject = await db.project.update({
+            where: { id },
+            data: projectData as Prisma.ProjectUpdateInput
+        });
+        return updatedProject;
+    } catch (err: any) {
+        if (err.code === "P2025") throw new ProjectNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -87,9 +90,12 @@ export const updateProject = async (id: string, projectData: UpdateProjectData):
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
 export const deleteProject = async (id: string) => {
-    const project = await db.project.findUnique({ where: { id } });
-    if (!project) throw new ProjectNotFoundError(id);
-    await db.project.delete({ where: { id } });
+    try {
+        await db.project.delete({ where: { id } });
+    }catch (err: any) {
+        if (err.code === "P2025") throw new ProjectNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -101,20 +107,18 @@ export const deleteProject = async (id: string) => {
  * @throws {TeamAlreadyInProjectError} - lorsque l'équipe est déjà dans le projet
  */
 export const addTeamToProject = async (teamId: string, projectId: string):Promise<ProjectTeam> => {
-    let projectTeamPair = await db.projectTeam.findUnique({
-        where: {
-            pk_project_team: { projectId: projectId, teamId: teamId }
-        }
-    });
-    if (projectTeamPair) throw new TeamAlreadyInProjectError(teamId, projectId);
-
-    projectTeamPair = await db.projectTeam.create({
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        }
-    });
-    return projectTeamPair;
+    try {
+        const projectTeamPair = await db.projectTeam.create({
+            data: {
+                projectId: projectId,
+                teamId: teamId
+            }
+        });
+        return projectTeamPair;
+    } catch (err: any) {
+        if (err.code === "P2002") throw new TeamAlreadyInProjectError(teamId, projectId);
+        throw err;
+    }
 };
 
 /**
@@ -125,18 +129,16 @@ export const addTeamToProject = async (teamId: string, projectId: string):Promis
  * @throws {TeamNotInProjectError} - lorsque l'équipe n'est pas dans le projet
  */
 export const removeTeamFromProject = async (teamId: string, projectId: string) => {
-    const projectTeamPair = await db.projectTeam.findUnique({
-        where: {
-            pk_project_team: { projectId: projectId, teamId: teamId }
-        }
-    });
-    if (!projectTeamPair) throw new TeamNotInProjectError(teamId, projectId);
-
-    await db.projectTeam.delete({
-        where: {
-            pk_project_team: { projectId: projectId, teamId: teamId }
-        }
-    });
+    try {
+        await db.projectTeam.delete({
+            where: {
+                pk_project_team: { projectId: projectId, teamId: teamId }
+            }
+        });
+    }catch (err: any) {
+        if (err.code === "P2025") throw new TeamNotInProjectError(teamId, projectId);
+        throw err;
+    }
 };
 
 /**

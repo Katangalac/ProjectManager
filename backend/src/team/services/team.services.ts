@@ -61,13 +61,16 @@ export const getTeamById = async (id: string): Promise<Team> => {
  * @returns {Team} - un objet représentant l'équipe avec les informations à jour
  */
 export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<Team> => {
-    const team = await db.team.findUnique({ where: { id } });
-    if (!team) throw new TeamNotFoundError(id);
-    const updatedTeam = await db.team.update({
-        where: { id },
-        data: teamData as Prisma.TeamUpdateInput
-    });
-    return updatedTeam;
+    try {
+        const updatedTeam = await db.team.update({
+            where: { id },
+            data: teamData as Prisma.TeamUpdateInput
+        });
+        return updatedTeam;
+    } catch (err: any) {
+        if (err.code === "P2025") throw new TeamNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -77,9 +80,12 @@ export const updateTeam = async (id: string, teamData: UpdateTeamData): Promise<
  * @throws {TeamNotFoundError} - si aucune équipe avec l'identifiant donnée n'a été trouvée
  */
 export const deleteTeam = async (id: string) => {
-    const team = await db.team.findUnique({ where: { id } });
-    if (!team) throw new TeamNotFoundError(id);
-    await db.team.delete({ where: { id } });
+    try {
+        await db.team.delete({ where: { id } });
+    }catch (err: any) {
+        if (err.code === "P2025") throw new TeamNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -92,20 +98,19 @@ export const deleteTeam = async (id: string) => {
  * @throws {UserAlreadyInTeamError} - si l'utilisateur fait déjà partie de l'équipe
  */
 export const addUserToTeam = async (userId: string, teamId: string, userRole: string = ""): Promise<UserTeam> => {
-    let userTeamPair = await db.userTeam.findUnique({
-        where: {
-            pk_user_team: { userId, teamId }
-        },
-    });
-    if (userTeamPair) throw new UserAlreadyInTeamError(userId, teamId);
-    userTeamPair = await db.userTeam.create({
-        data: {
-            userId,
-            teamId,
-            userRole
-        }
-    });
-    return userTeamPair;
+    try {
+        const userTeamPair = await db.userTeam.create({
+            data: {
+                userId,
+                teamId,
+                userRole
+            }
+        });
+        return userTeamPair;
+    } catch (err: any) {
+        if (err.code === "P2002") throw new UserAlreadyInTeamError(userId, teamId);
+        throw err;
+    }
 };
 
 /**
@@ -115,18 +120,16 @@ export const addUserToTeam = async (userId: string, teamId: string, userRole: st
  * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
  */
 export const removeUserFromTeam = async (userId: string, teamId: string) => {
-    let userTeamPair = await db.userTeam.findUnique({
-        where: {
-            pk_user_team: { userId, teamId }
-        },
-    });
-    if (!userTeamPair) throw new UserNotInTeamError(userId, teamId);
-
-    await db.userTeam.delete({
-        where: {
-            pk_user_team: { userId, teamId }
-        },
-    });
+    try {
+        await db.userTeam.delete({
+            where: {
+                pk_user_team: { userId, teamId }
+            },
+        });
+    }catch (err: any) {
+        if (err.code === "P2025") throw new UserNotInTeamError(userId, teamId);
+        throw err;
+    }
 };
 
 /**
@@ -138,19 +141,18 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
  * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
  */
 export const updateUserRoleInTeam = async (userId: string, teamId: string, userRole: string):Promise<UserTeam> => {
-    let userTeamPair = await db.userTeam.findUnique({
-        where: {
-            pk_user_team: { userId, teamId }
-        },
-    });
-    if (!userTeamPair) throw new UserNotInTeamError(userId, teamId);
-    const updatedUserTeamPair = await db.userTeam.update({
-        where: {
-            pk_user_team: { userId, teamId }
-        },
-        data: { userRole: userRole }
-    });
-    return updatedUserTeamPair;
+    try {
+        const updatedUserTeamPair = await db.userTeam.update({
+            where: {
+                pk_user_team: { userId, teamId }
+            },
+            data: { userRole: userRole }
+        });
+        return updatedUserTeamPair;
+    } catch (err: any) {
+        if (err.code === "P2025") throw new UserNotInTeamError(userId, teamId);
+        throw err;
+    }
 };
 
 /**
@@ -193,12 +195,12 @@ export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
  * @returns {Task[]} - la liste de taches dans lesquelles l'équipe est impliquée
  */
 export const getTeamTasks = async (teamId: string): Promise<Task[]> => {
-    const team = await db.team.findUnique({ 
+    const team = await db.team.findUnique({
         where: { id: teamId },
         include: {
-            teamTasks : true
+            teamTasks: true
         }
     });
     if (!team) throw new TeamNotFoundError(teamId);
     return team.teamTasks;
-}
+};

@@ -74,13 +74,16 @@ export const getTasks = async (filter: SearchTasksFilter): Promise<Task[]> => {
  * @throws {TaskNotFoundError} - lorsqu'aucune tache avec l'identifiant donné n'a été trouvée
  */
 export const updateTask = async (id: string, taskData: UpdateTaskData): Promise<Task> => {
-    const task = await db.task.findUnique({ where: { id } });
-    if (!task) throw new TaskNotFoundError(id);
-    const updatedTask = await db.task.update({
-        where: { id },
-        data: taskData as Prisma.TaskUpdateInput
-    });
-    return updatedTask;
+    try {
+        const updatedTask = await db.task.update({
+            where: { id },
+            data: taskData as Prisma.TaskUpdateInput
+        });
+        return updatedTask;
+    } catch (err: any) {
+        if (err.code === "P2025") throw new TaskNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -90,9 +93,12 @@ export const updateTask = async (id: string, taskData: UpdateTaskData): Promise<
  * @throws {TaskNotFoundError} - lorsqu'aucune tache avec l'identifiant donné n'a été trouvée
  */
 export const deleteTask = async (id: string) => {
-    const task = await db.task.findUnique({ where: { id } });
-    if (!task) throw new TaskNotFoundError(id);
-    await db.task.delete({ where: { id } });
+    try {
+        await db.task.delete({ where: { id } });
+    }catch (err: any) {
+        if (err.code === "P2025") throw new TaskNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -104,20 +110,18 @@ export const deleteTask = async (id: string) => {
  * @throws {TaskAlreadyAssignedToUserError} - lorsque la tache a déjà été assignée à l'utilisateur
  */
 export const assignTaskToUser = async (taskId: string, userId: string):Promise<UserTask> => {
-    let userTaskPair = await db.userTask.findUnique({
-        where: {
-            pk_user_task: { taskId, userId }
-        }
-    });
-    if (userTaskPair) throw new TaskAlreadyAssignedToUserError(taskId, userId);
-
-    userTaskPair = await db.userTask.create({
-        data: {
-            taskId,
-            userId
-        }
-    });
-    return userTaskPair;
+    try {
+        const userTaskPair = await db.userTask.create({
+            data: {
+                taskId,
+                userId
+            }
+        });
+        return userTaskPair;
+    } catch (err: any) {
+        if (err.code === "P2002") throw new TaskAlreadyAssignedToUserError(taskId, userId);
+        throw err;
+    }
 };
 
 /**
@@ -128,18 +132,16 @@ export const assignTaskToUser = async (taskId: string, userId: string):Promise<U
  * @throws {TaskNotAssignedToUserError} - lorsque la tache n'était pas assignée à l'utilisateur
  */
 export const unassignUserFromTask = async (userId: string, taskId: string) => {
-    const userTaskPair = await db.userTask.findUnique({
-        where: {
-            pk_user_task: {taskId, userId}
-        }
-    });
-    if (!userTaskPair) throw new TaskNotAssignedToUserError(taskId, userId);
-
-    await db.userTask.delete({
-        where: {
-            pk_user_task: { taskId, userId }
-        }
-    });
+    try {
+        await db.userTask.delete({
+            where: {
+                pk_user_task: { taskId, userId }
+            }
+        });
+    } catch (err: any) {
+        if (err.code === "P2025") throw new TaskNotAssignedToUserError(taskId, userId);
+        throw err;
+    }
 };
 
 /**

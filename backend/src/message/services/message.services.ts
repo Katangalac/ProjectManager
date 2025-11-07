@@ -111,6 +111,7 @@ export const markMessageAsRead = async (messageId: string, userId: string): Prom
 export const deleteMessage = async (messageId: string, userId: string) => {
     const message = await db.message.findUnique({ where: { id: messageId } });
     if (!message) throw new MessageNotFoundError(messageId);
+    if (message.senderId !== userId) throw new NotUserMessageError(userId, messageId);
     await db.message.delete({ where: { id: messageId } });
 
     const io = getIO();

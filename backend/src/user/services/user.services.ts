@@ -96,19 +96,18 @@ export const getUserById = async (id: string): Promise<SafeUser> => {
  */
 export const updateUser = async (id: string, userData: UpdateUserData): Promise<SafeUser> => {
     try {
-        const user = await db.user.findUnique({ where: { id } });
-        if (!user) throw new UserNotFoundError(id);
         const updatedUser = await db.user.update({
             where: { id },
             data: userData as Prisma.UserUpdateInput
         });
         return toSafeUser(updatedUser);
-    } catch (err) {
+    } catch (err:any) {
         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
             if (Array.isArray(err.meta?.target) && err.meta.target.includes("userName")) throw new UsernameAlreadyUsedError();
             if (Array.isArray(err.meta?.target) && err.meta.target.includes("email")) throw new EmailAlreadyUsedError();
             if (Array.isArray(err.meta?.target) && err.meta.target.includes("phoneNumber")) throw new PhoneNumberAlreadyUsedError();
         }
+        if(err.code === "P2025") throw new UserNotFoundError(id);
         throw err;
     }
 };
@@ -120,9 +119,12 @@ export const updateUser = async (id: string, userData: UpdateUserData): Promise<
  * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const deleteUser = async (id: string): Promise<void> => {
-    const user = await db.user.findUnique({ where: { id } });
-    if (!user) throw new UserNotFoundError(id);
-    await db.user.delete({ where: { id } });
+    try {
+        await db.user.delete({ where: { id } });
+    } catch (err: any) {
+        if(err.code === "P2025") throw new UserNotFoundError(id);
+        throw err;
+    }
 };
 
 /**

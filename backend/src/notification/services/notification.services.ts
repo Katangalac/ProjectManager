@@ -70,13 +70,16 @@ export const getUserNotifications = async (userId: string): Promise<Notification
  * @throws {NotificationNotFoundError} - lorsqu'aucune notification avec l'identifiant a été trouvée
  */
 export const markNotificationAsRead = async (id: string):Promise<Notification> => {
-    const notification = await db.notification.findUnique({ where: { id } });
-    if (!notification) throw new NotificationNotFoundError(id);
-    const updatedNotification = await db.notification.update({
-        where: { id },
-        data:{read:true}
-    })
-    return updatedNotification;
+    try {
+        const updatedNotification = await db.notification.update({
+            where: { id },
+            data:{read:true}
+        })
+        return updatedNotification;
+    } catch (err: any) {
+        if (err.code === "P2025") throw new NotificationNotFoundError(id);
+        throw err;
+    }
 };
 
 /**
@@ -85,7 +88,10 @@ export const markNotificationAsRead = async (id: string):Promise<Notification> =
  * @throws {NotificationNotFoundError} - lorsqu'aucune notification avec l'identifiant a été trouvée
  */
 export const deleteNotification = async (id: string) => {
-    const notification = await db.notification.findUnique({ where: { id } });
-    if (!notification) throw new NotificationNotFoundError(id);
-    await db.notification.delete({ where: { id } });
+    try {
+        await db.notification.delete({ where: { id } });
+    } catch (err: any) {
+        if (err.code === "P2025") throw new NotificationNotFoundError(id);
+        throw err;
+    }
 };
