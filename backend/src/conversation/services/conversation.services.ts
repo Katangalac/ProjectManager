@@ -5,13 +5,14 @@ import { toSafeUser } from "../../user/services/user.transforms";
 import { getTeamMembers } from "../../team/services/team.services";
 import { Message } from "../../message/types/Message";
 import { UserConversation } from "@prisma/client";
-import { ConversationNotFoundError,UserAlreadyInConversationError } from "../errors";
+import { ConversationNotFoundError,UserAlreadyInConversationError,NotEnoughParticipantsInConversationError } from "../errors";
 
 /**
  * Crée une nouvelle conversation
  * @async
  * @param conversationData - informations sur la conversation à créer
  * @returns {Coversation} - la conversation créée
+ * @throws {NotEnoughParticipantsInConversationError} - lorsqu'il n'y a pas assez des participants dans la conversation
  */
 export const createConversation = async (conversationData: CreateConversationData): Promise<Conversation> => {
     const { participantIds, teamId, ...conversationInfo } = conversationData;
@@ -21,6 +22,7 @@ export const createConversation = async (conversationData: CreateConversationDat
         const teamMemberIds = teamMembers.map((user) => user.id);
         finalParticipantIds = Array.from(new Set([...finalParticipantIds, ...teamMemberIds]));
     }
+    if (!finalParticipantIds || finalParticipantIds.length < 1) throw new NotEnoughParticipantsInConversationError();
     const conversation = await db.conversation.create({
         data: {
             ...conversationInfo,
@@ -31,7 +33,18 @@ export const createConversation = async (conversationData: CreateConversationDat
         },
         include: {
             participants: {
-                include: { user: true },
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber: true,
+                            email: true
+                        }
+                    }
+                    
+                 },
             }
         }
     });
@@ -51,7 +64,15 @@ export const getConversationById = async (id: string): Promise<Conversation> => 
         include: {
             participants: {
                 include: {
-                    user:true
+                    user: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber:true,
+                            email: true,
+                        }
+                    }
                 }
             },
 
@@ -102,7 +123,15 @@ export const getUserConversations = async (userId: string): Promise<Conversation
         include: {
             participants: {
                 include: {
-                    user: true
+                    user: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            phoneNumber:true,
+                            email: true,
+                        }
+                    }
                 }
             },
             messages: {
@@ -165,6 +194,15 @@ export const addParticipantToConversation = async (conversationId: string, userI
         const userConversationPair = await db.userConversation.create({
             data: { conversationId, userId }
         });
+        const participantsCount = await db.userConversation.count({
+            where:{conversationId}
+        });
+        if (participantsCount > 2) {
+            await db.conversation.update({
+                where: { id: conversationId },
+                data: { isGroup: true },
+            });
+        }
         return userConversationPair;
     } catch (err: any) {
         if (err.code === "P2002") throw new UserAlreadyInConversationError(userId, conversationId);

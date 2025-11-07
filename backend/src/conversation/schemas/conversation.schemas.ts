@@ -27,9 +27,9 @@ export const createConversationSchema = z.object({
   )
   .refine(
     (data) => {
-      if (!data.isGroup && data.participantIds.length !== 2) return false;
+      if (!data.isGroup && data.participantIds.length > 2) return false;
       return true;
     },
-    { message: "Une conversation privée doit avoir exactement 2 participants", path: ["participantIds"] }
+    { message: "Une conversation privée doit max 2 participants", path: ["participantIds"] }
   );
 

@@ -20,7 +20,15 @@ export const sendMessage = async (messageData: CreateMessageData): Promise<Messa
         },
         include: {
             attachments: true,
-            sender: true
+            sender: {
+                select: {
+                    id: true,
+                    userName: true,
+                    firstName: true,
+                    lastName: true,
+                    email:true
+                }
+            }
         }
     });
 

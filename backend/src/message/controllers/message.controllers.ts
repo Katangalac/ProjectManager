@@ -33,7 +33,7 @@ export const sendMessageController = async (req: Request, res: Response) => {
  */
 export const editMessageController = async (req: Request, res: Response) => {
     try {
-        const { id: messageId } = idParamSchema.parse(req.params.id);
+        const { id: messageId } = idParamSchema.parse({id:req.params.id});
         const updateData = editMessageSchema.parse(req.body);
         const editedMessage = await messageService.editMessage(messageId, updateData);
         res.status(200).json({ message: "Message modifié avec succès", editedMessage: editedMessage });
@@ -60,7 +60,7 @@ export const editMessageController = async (req: Request, res: Response) => {
  */
 export const markMessageAsReadController = async (req: Request, res: Response) => {
     try {
-        const { id: messageId } = idParamSchema.parse(req.params.id);
+        const { id: messageId } = idParamSchema.parse({id:req.params.id});
         const {id:userId} = idParamSchema.parse(req.body);
         const updatedMessage = await messageService.markMessageAsRead(messageId, userId);
         res.status(200).json({message:"Message marqué comme lu", updatedMessage:updatedMessage});
@@ -84,7 +84,7 @@ export const markMessageAsReadController = async (req: Request, res: Response) =
  */
 export const deleteMessageController = async (req: Request, res: Response) => {
     try {
-        const { id: messageId } = idParamSchema.parse(req.params.id);
+        const { id: messageId } = idParamSchema.parse({id:req.params.id});
         const {id:userId} = idParamSchema.parse(req.body);
         await messageService.deleteMessage(messageId, userId);
         res.status(204).send();

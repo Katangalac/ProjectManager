@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import * as conversationService from "../services/conversation.services";
 import * as conversationSchema from "../schemas/conversation.schemas";
-import { ConversationNotFoundError, UserAlreadyInConversationError } from "../errors";
+import { ConversationNotFoundError, UserAlreadyInConversationError, NotEnoughParticipantsInConversationError } from "../errors";
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
 
@@ -20,6 +20,9 @@ export const createConversationController = async (req: Request, res: Response) 
         console.error("Erreur lors de la création de la conversation", err);
         if (err instanceof z.ZodError) {
             res.status(400).json({ erreur: "Données invalides" });
+        }
+        if (err instanceof NotEnoughParticipantsInConversationError) {
+            res.status(400).json({ erreur: "Pas assez des participants (id) pour créer une conversation" });
         }
         res.status(500).json({ erreur: "Erreur lors de la création de la conversation" });
     }
@@ -122,7 +125,7 @@ export const addParticipantToConversationController = async (req: Request, res: 
         const { id: conversationId } = idParamSchema.parse({ id: req.params.id });
         const { id: userId } = idParamSchema.parse({ id: req.params.userId });
         const userConversationPair = await conversationService.addParticipantToConversation(conversationId, userId);
-        res.status(200).json(userConversationPair);
+        res.status(200).json({message:"Utilisateur ajouté dans la conversation", newUserConversation:userConversationPair});
     } catch (err) {
         console.error("Erreur lors de l'ajout d'un participant dans la conversation", err);
         if (err instanceof z.ZodError) {
