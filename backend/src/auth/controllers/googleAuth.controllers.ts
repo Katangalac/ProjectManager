@@ -5,6 +5,7 @@ import { generateAuthResponse } from "../services/auth.services";
 import { UserProvider } from "@prisma/client";
 import { createUser } from "../../user/services/user.services";
 import { ZodError } from "zod";
+import { getUserByEmail, updateUserLastLoginDateToNow } from "../../user/services/user.services";
 
 const REDIRECT_URI = "http://localhost:3000/api/auth/google/callback"
 
@@ -45,9 +46,8 @@ export const googleCallback = async (req: Request, res: Response) => {
         const { id_token, access_token } = await exchangeCodeForToken(code, REDIRECT_URI);
         const googleUser = await getGoogleUser(access_token);
         const { email, name, sub } = googleUser;
-        let user = await db.user.findUnique({ where: { email } });
+        let user = await getUserByEmail(email);
         if (!user) {
-            console.log("entré");
             const baseUsername = name.replace(/\s+/g, '').toLowerCase();
             let username = baseUsername;
             let count = 1;
@@ -56,12 +56,13 @@ export const googleCallback = async (req: Request, res: Response) => {
             while (await db.user.findUnique({ where: { userName: username } })) {
                 username = `${baseUsername}${count++}`;
             }
-            const userData = { email: email, userName: username, password: "" };
-            const newUser = await createUser(userData, UserProvider.GOOGLE, sub);
-            const { token, cookieOptions } = generateAuthResponse(newUser);
-            res.cookie("projectManagerToken", token, cookieOptions);
-            res.status(200).json({ message: "Connexion Google réussie", user });
-        }
+            const userData = { email: email, userName: username, password: null };
+            user = await createUser(userData, UserProvider.GOOGLE, sub);
+        } 
+        const { token, cookieOptions } = generateAuthResponse(user);
+        res.cookie("projectManagerToken", token, cookieOptions);
+        user = await updateUserLastLoginDateToNow(user.id);
+        res.status(200).json({ message: "Connexion Google réussie", user });
     } catch (err) {
         console.error("Erreur d’authentification Google", err);
         if (err instanceof ZodError) {

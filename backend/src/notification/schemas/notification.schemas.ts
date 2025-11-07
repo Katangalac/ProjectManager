@@ -24,7 +24,7 @@ export const createNotificationSchema = notificationSchema.omit({
 });
 
 /**
- * Schéma de validation des filtres de recherche des utilisateurs
+ * Schéma de validation des filtres de recherche des notifications
  * Vérifie que les données sont valides
  */
 export const searchNotificationsFilterSchema = z.object({
@@ -45,4 +45,19 @@ export const searchNotificationsFilterSchema = z.object({
         }),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
 });

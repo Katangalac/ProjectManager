@@ -4,6 +4,9 @@ import * as teamSchemas from "../schemas/team.schemas";
 import * as teamError from "../errors";
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
+import { searchTasksFilterSchema } from "../../task/schemas/task.schemas";
+import { searchUsersFilterSchema } from "../../user/schemas/user.schemas";
+import { searchProjectsFilterSchema } from "../../project/schemas/project.schemas";
 
 /**
  * Crée une nouvelle équipe
@@ -201,7 +204,8 @@ export const updateUserRoleInTeamController = async (req: Request, res: Response
 export const getTeamMembersController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teamMembers = await teamService.getTeamMembers(id);
+        const filter = searchUsersFilterSchema.parse(req.query);
+        const teamMembers = await teamService.getTeamMembers(id, filter);
         res.status(200).json(teamMembers);
     } catch (err) {
         console.error("Erreur lors de la récupération des membres de l'équipe : ", err);
@@ -221,7 +225,8 @@ export const getTeamMembersController = async (req: Request, res: Response) => {
 export const getTeamProjectsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teamProjects = await teamService.getTeamProjects(id);
+        const filter = searchProjectsFilterSchema.parse(req.query);
+        const teamProjects = await teamService.getTeamProjects(id, filter);
         res.status(200).json(teamProjects);
     } catch (err) {
         console.error("Erreur lors de la récupération des projets de l'équipe : ", err);
@@ -241,7 +246,8 @@ export const getTeamProjectsController = async (req: Request, res: Response) => 
 export const getTeamTasksController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teamTasks = await teamService.getTeamTasks(id);
+        const filter = searchTasksFilterSchema.parse(req.query);
+        const teamTasks = await teamService.getTeamTasks(id, filter);
         res.status(200).json(teamTasks);
     } catch (err) {
         console.error("Erreur lors de la récupération des taches de l'équipe : ", err);

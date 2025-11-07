@@ -42,6 +42,21 @@ export const searchTeamsFilterSchema = z.object({
     name: z.string().optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
 });
 
 /**

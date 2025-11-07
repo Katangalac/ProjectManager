@@ -38,3 +38,42 @@ export const editMessageSchema = z.object({
     userId: z.uuid("ID invalide"),
     newContent: z.string()
 });
+
+/**
+ * Schéma de validation des filtres de recherche des messages
+ * Vérifie que les données sont valides
+ */
+export const searchMessagesFilterSchema = z.object({
+    read: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
+});

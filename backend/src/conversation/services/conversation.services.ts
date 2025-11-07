@@ -5,7 +5,13 @@ import { toSafeUser } from "../../user/services/user.transforms";
 import { getTeamMembers } from "../../team/services/team.services";
 import { Message } from "../../message/types/Message";
 import { UserConversation } from "@prisma/client";
-import { ConversationNotFoundError,UserAlreadyInConversationError,NotEnoughParticipantsInConversationError } from "../errors";
+import { ConversationNotFoundError, UserAlreadyInConversationError, NotEnoughParticipantsInConversationError } from "../errors";
+import { searchUsersFilterSchema } from "../../user/schemas/user.schemas";
+import { SearchUsersFilter } from "../../user/types/User";
+import { buildUserWhereInput } from "../../utils/utils";
+import { SearchMessagesFilter } from "../../message/types/Message";
+import { buildMessageWhereInput } from "../../utils/utils";
+import { Prisma } from "@prisma/client";
 
 /**
  * Crée une nouvelle conversation
@@ -18,7 +24,8 @@ export const createConversation = async (conversationData: CreateConversationDat
     const { participantIds, teamId, ...conversationInfo } = conversationData;
     let finalParticipantIds = [...participantIds];
     if (teamId) {
-        const teamMembers = await getTeamMembers(teamId);
+        const memberFilter = searchUsersFilterSchema.parse({ all: true });
+        const teamMembers = await getTeamMembers(teamId, memberFilter);
         const teamMemberIds = teamMembers.map((user) => user.id);
         finalParticipantIds = Array.from(new Set([...finalParticipantIds, ...teamMemberIds]));
     }
@@ -107,59 +114,35 @@ export const updateConversation = async (id: string): Promise<Conversation> => {
 };
 
 /**
- * Récupère les conversations d'un utilisateur en incluant les participants ainsi que le dernier message 
- * envoyé dans chacune de ces conversations
- * @async
- * @param {string} userId - identifiant de l'utilisateur
- * @returns {Conversation[]} - la liste de conversations de l'utilisateur
- */
-export const getUserConversations = async (userId: string): Promise<Conversation[]> => {
-    const userConversations = await db.conversation.findMany({
-        where: {
-            participants: {
-                some: { userId }
-            }
-        },
-        include: {
-            participants: {
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            firstName: true,
-                            lastName: true,
-                            phoneNumber:true,
-                            email: true,
-                        }
-                    }
-                }
-            },
-            messages: {
-                orderBy: { createdAt: "desc" },
-                take: 1
-            }
-        },
-        orderBy: {
-            updatedAt: "desc"
-        }
-    });
-    return userConversations;
-};
-
-/**
  * Récupère les utilisateurs impliqués dans une conversation
  * @async
  * @param {string} conversationId - identifiant de la conversation
+ * @param {SearchUsersFilter} filter - filtre de recherche à utiliser
  * @returns {SafeUser[]} - la liste des participants
  */
-export const getConversationParticipants = async (conversationId: string): Promise<SafeUser[]> => {
-    const participants = await db.user.findMany({
-        where: {
-            userConversations: {
-                some: { conversationId }
-            }
+export const getConversationParticipants = async (conversationId: string, filter: SearchUsersFilter): Promise<SafeUser[]> => {
+    const { page, pageSize, all, ..._ } = filter;
+    const conversatioParticipantCondition: Prisma.UserWhereInput = {
+        userConversations: {
+            some: { conversationId }
         }
-    });
+    };
+
+    const userFilter = buildUserWhereInput(filter);
+
+    const query: Prisma.UserFindManyArgs = {
+        where: {
+            AND:[conversatioParticipantCondition, userFilter]
+        },
+        orderBy:{updatedAt:"desc"}
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const participants = await db.user.findMany(query);
     const safeParticipants = participants.map(toSafeUser);
     return safeParticipants;
 };
@@ -168,16 +151,29 @@ export const getConversationParticipants = async (conversationId: string): Promi
  * Récupère les messages d'une conversation
  * @async
  * @param {string} conversationId - identifiant de la conversation
+ * @param {SearchMessagesFilter} filter - filtre de recherche à utiliser
  * @returns {Message[]} - la liste des messages
  */
-export const getConversationMessages = async (conversationId: string): Promise<Message[]> => {
-    const messages = await db.message.findMany({
-        where: { conversationId },
+export const getConversationMessages = async (conversationId: string, filter: SearchMessagesFilter): Promise<Message[]> => {
+    const { page, pageSize, all, ..._ } = filter;
+    const messageFilter = buildMessageWhereInput(filter);
+
+    const query: Prisma.MessageFindManyArgs = {
+        where: {
+            AND:[{conversationId}, messageFilter]
+        },
         include: {
             attachments:true
         },
         orderBy:{createdAt:"asc"}
-    });
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const messages = await db.message.findMany(query);
     return messages;
 };
 

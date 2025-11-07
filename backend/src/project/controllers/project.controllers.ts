@@ -4,6 +4,9 @@ import * as projectSchemas from "../schemas/project.schemas";
 import * as projectError from "../errors";
 import { idParamSchema } from "../../schemas/idparam.schema";
 import { z } from "zod";
+import { searchUsersFilterSchema } from "../../user/schemas/user.schemas";
+import { searchTasksFilterSchema } from "../../task/schemas/task.schemas";
+import { searchTeamsFilterSchema } from "../../team/schemas/team.schemas";
 
 /**
  * Crée un nouveau projet
@@ -175,7 +178,8 @@ export const removeTeamFromProjectController = async (req: Request, res: Respons
 export const getProjectTeamsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const projectTeams = await projectService.getProjectTeams(id);
+        const filter = searchTeamsFilterSchema.parse(req.query);
+        const projectTeams = await projectService.getProjectTeams(id, filter);
         res.status(200).json(projectTeams);
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes du projet : ", err);
@@ -196,7 +200,8 @@ export const getProjectTeamsController = async (req: Request, res: Response) => 
 export const getProjectMembersController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const projectMembers = await projectService.getProjectMembers(id);
+        const filter = searchUsersFilterSchema.parse(req.query);
+        const projectMembers = await projectService.getProjectMembers(id, filter);
         res.status(200).json(projectMembers);
     } catch (err) {
         console.error("Erreur lors de la récupération des membres du projet : ", err);
@@ -216,7 +221,8 @@ export const getProjectMembersController = async (req: Request, res: Response) =
 export const getProjectTasksController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const projectTasks = await projectService.getProjectTasks(id);
+        const filter = searchTasksFilterSchema.parse(req.query);
+        const projectTasks = await projectService.getProjectTasks(id, filter);
         res.status(200).json(projectTasks);
     } catch (err) {
         console.error("Erreur lors de la récupération des taches du projet : ", err);

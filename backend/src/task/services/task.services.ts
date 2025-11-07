@@ -6,6 +6,9 @@ import { Team } from "../../team/types/Team";
 import { Project } from "@prisma/client";
 import { SafeUser } from "../../user/types/User";
 import { toSafeUser } from "../../user/services/user.transforms";
+import { buildTaskWhereInput } from "../../utils/utils";
+import { buildUserWhereInput } from "../../utils/utils";
+import { SearchUsersFilter } from "../../user/types/User";
 
 /**
  * Crée une nouvelle tâche
@@ -41,21 +44,7 @@ export const getTaskById = async (id: string):Promise<Task> => {
  */
 export const getTasks = async (filter: SearchTasksFilter): Promise<Task[]> => {
     const { page, pageSize, ..._} = filter;
-    const where: Prisma.TaskWhereInput = {};
-    if (filter.title) where.title = { contains: filter.title, mode: 'insensitive' };
-    if (filter.status) where.status = filter.status;
-    if (filter.startOn) where.startedAt = { equals: new Date(filter.startOn) }
-    if (filter.startBefore) where.startedAt = { lt: new Date(filter.startBefore) }
-    if (filter.startAfter) where.startedAt = { gt: new Date(filter.startAfter) }
-    if (filter.endOn) where.deadline = { equals: new Date(filter.endOn) }
-    if (filter.endBefore) where.deadline = { lt: new Date(filter.endBefore) }
-    if (filter.endAfter) where.deadline = { gt: new Date(filter.endAfter) }
-    if (filter.completedOn) where.completedAt = { equals: new Date(filter.completedOn) }
-    if (filter.completedBefore) where.completedAt = { lt: new Date(filter.completedBefore) }
-    if (filter.completedAfter) where.completedAt = { gt: new Date(filter.completedAfter) }
-    if (filter.priorityLevelEq) where.priorityLevel = { equals: filter.priorityLevelEq }
-    if (filter.priorityLevelLt) where.priorityLevel = { lt: filter.priorityLevelLt }
-    if(filter.priorityLevelGt) where.priorityLevel = {gt: filter.priorityLevelGt}
+    const where = buildTaskWhereInput(filter);
     const skip = (page - 1) * pageSize;
     const take = pageSize;
     const tasks = await db.task.findMany({
@@ -146,32 +135,48 @@ export const unassignUserFromTask = async (userId: string, taskId: string) => {
 
 /**
  * Récupère tous les utilisateurs qui ont contribué à une tache
- * @param taskId - identifiant de la tache
+ * @async
+ * @param {string} taskId - identifiant de la tache
+ * @param {SearchUsersFilter} - filtre de recherche à utiliser
  * @returns {SafeUser[]} - les utilisateurs intervenant dans la tache
  */
-export const getTaskContributors = async (taskId: string): Promise<SafeUser[]> => {
-    const taskContributors = await db.user.findMany({
-        where: {
-            OR: [
-                {
-                    userTeams: {
-                        some: {
-                            team: {
-                                teamTasks: {
-                                    some:{id:taskId}
-                                }
+export const getTaskContributors = async (taskId: string, filter: SearchUsersFilter): Promise<SafeUser[]> => {
+    const { page, pageSize, all, ..._ } = filter;
+    const taskContributorCondition: Prisma.UserWhereInput = {
+        OR: [
+            {
+                userTeams: {
+                    some: {
+                        team: {
+                            teamTasks: {
+                                some: { id: taskId }
                             }
                         }
-                    },
+                    }
                 },
-                {
-                    assignedTasks: {
-                        some: {taskId}
-                    },
-                }
-            ]
-        }
-    });
+            },
+            {
+                assignedTasks: {
+                    some: { taskId }
+                },
+            }
+        ]
+    };
+
+    const userFilter = buildUserWhereInput(filter);
+
+    const query: Prisma.UserFindManyArgs = {
+        where: {
+            AND:[taskContributorCondition, userFilter]
+        },
+        orderBy:{updatedAt:"desc"}
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+    const taskContributors = await db.user.findMany(query);
     const taskSafeContributors = taskContributors.map(toSafeUser);
     return taskSafeContributors;
 };

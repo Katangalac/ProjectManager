@@ -4,6 +4,7 @@ import { createUserSchema } from "../../user/schemas/user.schemas";
 import { UserProvider } from "@prisma/client";
 import { Request, Response } from "express";
 import { generateAuthResponse } from "../services/auth.services";
+import { updateUserLastLoginDateToNow } from "../../user/services/user.services";
 import { db } from "../../db";
 import { verify} from "argon2";
 import { ZodError } from "zod";
@@ -17,9 +18,10 @@ import { ZodError } from "zod";
 export const register = async (req: Request, res: Response) => {
     try {
         const newUserData = createUserSchema.parse(req.body);
-        const user = await createUser(newUserData, UserProvider.LOCAL);
+        let user = await createUser(newUserData, UserProvider.LOCAL);
         const { token, cookieOptions } = generateAuthResponse(user);
         res.cookie("projectManagerToken", token, cookieOptions);
+        user = await updateUserLastLoginDateToNow(user.id);
         res.status(201).json({ message: "Utilisateur créé", user });
     } catch (err) {
         console.error("Erreur lors de l'inscription : ", err);
@@ -55,7 +57,8 @@ export const login = async (req: Request, res: Response) => {
             if (!isValidPassword) return res.status(401).json({ error: "Mot de passe invalide" });
             const { token, cookieOptions } = generateAuthResponse(safeUser);
             res.cookie("projectManagerToken", token, cookieOptions);
-            res.status(200).json({ message: "Connexion réussie", safeUser });
+            const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
+            res.status(200).json({ message: "Connexion réussie", updatedUser });
         }
         else {
             res.status(500).json({error: `Cet utilisateur est inscrit avec ${user.provider}`})

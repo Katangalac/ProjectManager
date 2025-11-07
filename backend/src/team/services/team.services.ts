@@ -6,6 +6,13 @@ import { toSafeUser } from "../../user/services/user.transforms";
 import { SafeUser } from "../../user/types/User";
 import { Project } from "../../project/types/Project";
 import { Task } from "../../task/types/Task";
+import { buildTeamWhereInput } from "../../utils/utils";
+import { buildUserWhereInput } from "../../utils/utils";
+import { buildProjectWhereInput } from "../../utils/utils";
+import { buildTaskWhereInput } from "../../utils/utils";
+import { SearchProjectsFilter } from "../../project/types/Project";
+import { SearchTasksFilter } from "../../task/types/Task";
+import { SearchUsersFilter } from "../../user/types/User";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -27,16 +34,19 @@ export const createTeam = async (teamData: CreateTeamData): Promise<Team> => {
  * @returns {Team[]} - la liste d'équipes créées dans le système
  */
 export const getTeams = async (filter: SearchTeamsFilter): Promise<Team[]> => {
-    const { page, pageSize, ..._ } = filter;
-    const where: Prisma.TeamWhereInput = {};
-    if (filter.name) where.name = { contains: filter.name, mode: 'insensitive' };
-    const skip = (page - 1) * pageSize;
-    const take = pageSize;
-    const teams = await db.team.findMany({
+    const { page, pageSize, all, ..._ } = filter;
+    const where = buildTeamWhereInput(filter);
+    
+    const query: Prisma.TeamFindManyArgs = {
         where,
-        skip,
-        take
-    });
+        orderBy: { updatedAt: "desc" }
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+    const teams = await db.team.findMany(query);
     return teams;
 };
 
@@ -159,16 +169,32 @@ export const updateUserRoleInTeam = async (userId: string, teamId: string, userR
  * Récupère les membres d'une équipe
  * @async
  * @param {string} teamId - identifiant de l'équipe dont on veux récupérer les membres
+ * @param {SearchUsersFilter} filter - filtre de recherche à utiliser
  * @returns {SafeUser[]} - la liste des utilisateurs membres de l'équipe
  */
-export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
-    const users = await db.user.findMany({
-        where: {
-            userTeams: {
-                some: { teamId }
-            }
+export const getTeamMembers = async (teamId: string, filter:SearchUsersFilter): Promise<SafeUser[]> => {
+    const { page, pageSize,all, ..._ } = filter;
+    const teamMemberCondition: Prisma.UserWhereInput = {
+        userTeams: {
+            some: { teamId }
         }
-    });
+    };
+
+    const userFilter = buildUserWhereInput(filter);
+
+    const query: Prisma.UserFindManyArgs = {
+        where: {
+            AND:[teamMemberCondition, userFilter]
+        },
+        orderBy:{updatedAt:"desc"}
+    };
+    
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const users = await db.user.findMany(query);
     const teamMembers = users.map(toSafeUser);
     return teamMembers;
 };
@@ -176,31 +202,58 @@ export const getTeamMembers = async (teamId: string): Promise<SafeUser[]> => {
 /**
  * Récupère tous les projets dans lesquels une équipe intervient
  * @param teamId - identifiant de l'équipe
+ * @param {SearchProjectsFilter} filter - filtre de recherche à utiliser
  * @returns {Project[]} - la liste de projets dans lesquels l'équipe est impliquée
  */
-export const getTeamProjects = async (teamId: string): Promise<Project[]> => {
-    const teamProjects = await db.project.findMany({
-        where: {
-            projectTeams: {
-                some: { teamId }
-            }
+export const getTeamProjects = async (teamId: string, filter: SearchProjectsFilter): Promise<Project[]> => {
+    const { page, pageSize,all, ..._ } = filter;
+    const teamProjectCondition: Prisma.ProjectWhereInput = {
+        projectTeams: {
+            some: { teamId }
         }
-    });
+    };
+
+    const projectFilter = buildProjectWhereInput(filter);
+
+    const query: Prisma.ProjectFindManyArgs = {
+        where: {
+            AND:[teamProjectCondition, projectFilter]
+        },
+        orderBy:{deadline:"desc"}
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const teamProjects = await db.project.findMany(query);
     return teamProjects;
 };
 
 /**
  * Récupère toutes les taches assignées à une équipe
  * @param teamId - identifiant de l'équipe
+ * @param {SearchTasksFilter} filter - filtre de recherche à utiliser
  * @returns {Task[]} - la liste de taches dans lesquelles l'équipe est impliquée
  */
-export const getTeamTasks = async (teamId: string): Promise<Task[]> => {
-    const team = await db.team.findUnique({
-        where: { id: teamId },
-        include: {
-            teamTasks: true
-        }
-    });
-    if (!team) throw new TeamNotFoundError(teamId);
-    return team.teamTasks;
+export const getTeamTasks = async (teamId: string, filter: SearchTasksFilter): Promise<Task[]> => {
+    const { page, pageSize,all, ..._ } = filter;
+    
+    const taskFilter = buildTaskWhereInput(filter);
+
+    const query: Prisma.TaskFindManyArgs = {
+        where: {
+            AND:[{teamId}, taskFilter]
+        },
+        orderBy:{deadline:"desc"}
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const teamTasks = await db.task.findMany(query);
+    return teamTasks;
 };

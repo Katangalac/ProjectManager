@@ -1,4 +1,4 @@
-import { messageSchema, createMessageSchema, editMessageSchema } from "../schemas/message.schemas";
+import { messageSchema, createMessageSchema, editMessageSchema, searchMessagesFilterSchema } from "../schemas/message.schemas";
 import { z } from "zod";
 import { editMessage } from "../services/message.services";
 
@@ -16,3 +16,8 @@ export type CreateMessageData = z.infer<typeof createMessageSchema>;
  * Type représentant les données attendues lors de la modification d'un message
  */
 export type EditMessageData = z.infer<typeof editMessageSchema>;
+
+/**
+ * Type représentant les données attendues comme filtre de recherche des messages
+ */
+export type SearchMessagesFilter = z.infer<typeof searchMessagesFilterSchema>;

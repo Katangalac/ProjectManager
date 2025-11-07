@@ -4,6 +4,8 @@ import * as conversationSchema from "../schemas/conversation.schemas";
 import { ConversationNotFoundError, UserAlreadyInConversationError, NotEnoughParticipantsInConversationError } from "../errors";
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
+import { searchMessagesFilterSchema } from "../../message/schemas/message.schemas";
+import { searchUsersFilterSchema } from "../../user/schemas/user.schemas";
 
 /**
  * Crée une nouvelle conversation
@@ -83,7 +85,8 @@ export const updateConversationController = async (req: Request, res: Response) 
 export const getConversationsParticipantsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const participants = await conversationService.getConversationParticipants(id);
+        const filter = searchUsersFilterSchema.parse(req.query);
+        const participants = await conversationService.getConversationParticipants(id, filter);
         res.status(200).json(participants);
     } catch (err) {
         console.error("Erreur lors de la récupération des participants de la conversation", err);
@@ -103,7 +106,8 @@ export const getConversationsParticipantsController = async (req: Request, res: 
 export const getConversationMessagesController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const messages = await conversationService.getConversationMessages(id);
+        const filter = searchMessagesFilterSchema.parse(req.query);
+        const messages = await conversationService.getConversationMessages(id, filter);
         res.status(200).json(messages);
     } catch (err) {
         console.error("Erreur lors de la récupération des messages de la conversation", err);
@@ -159,4 +163,4 @@ export const deleteConversationController = async (req: Request, res: Response) 
         }
         res.status(500).json({ erreur: "Erreur lors de la suppression de la conversation" });
     }
-}
+};

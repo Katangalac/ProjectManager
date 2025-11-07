@@ -1,6 +1,7 @@
 import { Notification, CreateNotificationData, SearchNotificationsFilter} from "../types/Notification";
 import { db } from "../../db";
 import { NotificationNotFoundError } from "../errors";
+import { buildNotificationWhereInput } from "../../utils/utils";
 import { Prisma } from "@prisma/client";
 
 /**
@@ -24,17 +25,19 @@ export const createNotification = async (notificationData: CreateNotificationDat
  * @returns {Notification[]} - la liste de notifications respectant le filtre de recherche
  */
 export const getNotifications = async (filter: SearchNotificationsFilter): Promise<Notification[]> => {
-    const { page, pageSize, ..._ } = filter;
-    const where: Prisma.NotificationWhereInput = {};
-    console.log(filter.read);
-    if (filter.read !== undefined) where.read = filter.read;
-    const skip = (page - 1) * pageSize;
-    const take = pageSize;
-    const notifications = await db.notification.findMany({
+    const { page, pageSize,all, ..._ } = filter;
+    const where = buildNotificationWhereInput(filter);
+    const query: Prisma.NotificationFindManyArgs = {
         where,
-        skip,
-        take
-    });
+        orderBy:{createdAt:"desc"}
+    };
+
+    if (!all) {
+        query.skip = (page - 1) * pageSize;
+        query.take = pageSize;
+    }
+
+    const notifications = await db.notification.findMany(query);
     return notifications;
 };
 
@@ -48,19 +51,6 @@ export const getNotificationById = async (id: string): Promise<Notification> => 
     const notification = await db.notification.findUnique({ where: { id } });
     if (!notification) throw new NotificationNotFoundError(id);
     return notification;
-};
-
-/**
- * Récupère toutes les notifications de l'utilisateur ayant l'identifiant donné de la plus recente à la moins
- * @param {string} userId - identifiant de l'utilisateur
- * @return {Notification[]} - la liste des notifications de l'utilisateur 
- */
-export const getUserNotifications = async (userId: string): Promise<Notification[]> => {
-    const userNotifications = await db.notification.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-    });
-    return userNotifications;
 };
 
 /**

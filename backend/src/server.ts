@@ -12,7 +12,7 @@ import taskRoutes from "./task/routes/task.routes";
 import notificationRoutes from "./notification/routes/notification.routes";
 import conversationRoutes from "./conversation/routes/conversation.routes";
 import messageRoutes from "./message/routes/message.routes";
-import { authenticate } from "./auth/middleware/authenticate";
+import { isAuthenticated } from "./auth/middleware/authenticate";
 import { setupSocket } from "./chat/chat.socket";
 import morgan from "morgan";
 
@@ -52,9 +52,9 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", googleAuthRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/teams", authenticate, teamRoutes);
-app.use("/api/projects", authenticate, projectRoutes);
-app.use("/api/tasks", authenticate, taskRoutes);
+app.use("/api/teams", isAuthenticated, teamRoutes);
+app.use("/api/projects", isAuthenticated, projectRoutes);
+app.use("/api/tasks", isAuthenticated, taskRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);

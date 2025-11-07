@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
 import { updateUserDataSchema, searchUsersFilterSchema } from "../schemas/user.schemas";
+import { searchTasksFilterSchema } from "../../task/schemas/task.schemas";
 import { EmailAlreadyUsedError, PhoneNumberAlreadyUsedError, UserNotFoundError, UsernameAlreadyUsedError } from "../errors/index";
 import * as userService from "../services/user.services";
-import { getUserNotifications } from "../../notification/services/notification.services";
-import { getUserConversations } from "../../conversation/services/conversation.services";
-import { getUserMessages } from "../../message/services/message.services";
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
+import { searchProjectsFilterSchema } from "../../project/schemas/project.schemas";
+import { searchTeamsFilterSchema } from "../../team/schemas/team.schemas";
+import { searchNotificationsFilterSchema } from "../../notification/schemas/notification.schemas";
+import { searchMessagesFilterSchema } from "../../message/schemas/message.schemas";
+import { searchConversationsFilterSchema } from "../../conversation/schemas/conversation.schemas";
+
 
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
@@ -129,7 +133,8 @@ export const deleteUserController = async (req: Request, res: Response) => {
 export const getUserTeamsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const teams = await userService.getUserTeams(id);
+        const filter = searchTeamsFilterSchema.parse(req.query);
+        const teams = await userService.getUserTeams(id, filter);
         res.status(200).json(teams);
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes de l'utilisateur : ", err);
@@ -148,7 +153,8 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
 export const getUserProjectsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const projects = await userService.getUserProjects(id);
+        const filter = searchProjectsFilterSchema.parse(req.query);
+        const projects = await userService.getUserProjects(id, filter);
         res.status(200).json(projects);
     } catch (err) {
         console.error("Erreur lors de la récupération des projets de l'utilisateur : ", err);
@@ -167,7 +173,8 @@ export const getUserProjectsController = async (req: Request, res: Response) => 
 export const getUserTasksController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const userTasks = await userService.getUserTasks(id);
+        const filter = searchTasksFilterSchema.parse(req.query);
+        const userTasks = await userService.getUserTasks(id, filter);
         res.status(200).json(userTasks);
     } catch (err) {
         console.error("Erreur lors de la récupération des taches de l'utilisateur : ", err);
@@ -186,7 +193,8 @@ export const getUserTasksController = async (req: Request, res: Response) => {
 export const getUserNotificationsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const userNotifications = await getUserNotifications(id);
+        const filter = searchNotificationsFilterSchema.parse(req.query);
+        const userNotifications = await userService.getUserNotifications(id, filter);
         res.status(200).json(userNotifications);
     } catch (err) {
         console.error("Erreur lors de la récupération des notifications de l'utilisateur : ", err);
@@ -205,7 +213,8 @@ export const getUserNotificationsController = async (req: Request, res: Response
 export const getUserConversationsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const userConversations = await getUserConversations(id);
+        const filter = searchConversationsFilterSchema.parse(req.query);
+        const userConversations = await userService.getUserConversations(id, filter);
         res.status(200).json(userConversations);
     } catch (err) {
         console.error("Erreur lors de la récupération des conversations de l'utilisateur : ", err);
@@ -224,7 +233,8 @@ export const getUserConversationsController = async (req: Request, res: Response
 export const getUserMessagesController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const userMessages = await getUserMessages(id);
+        const filter = searchMessagesFilterSchema.parse(req.query);
+        const userMessages = await userService.getUserMessages(id, filter);
         res.status(200).json(userMessages);
     } catch (err) {
         console.error("Erreur lors de la récupération des messages de l'utilisateur : ", err);

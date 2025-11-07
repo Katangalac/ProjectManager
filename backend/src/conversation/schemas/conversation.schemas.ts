@@ -33,3 +33,43 @@ export const createConversationSchema = z.object({
     { message: "Une conversation privée doit max 2 participants", path: ["participantIds"] }
   );
 
+  /**
+   * Schéma de validation des filtres de recherche des conversations
+   * Vérifie que les données sont valides
+   */
+export const searchConversationsFilterSchema = z.object({
+    teamId: z.uuid("ID invalide").optional(),
+    isGroup: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
+  });
+  

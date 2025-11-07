@@ -10,7 +10,7 @@ import { tokenPayloadSchema } from "../schemas/auth.schemas";
  * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
  * @param {NextFunction} next - la fonction qui sera exécuté une fois le token validé
  */
-export const authenticate = (req:Request, res:Response, next:NextFunction) => {
+export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: "Jeton d'authentification manquant" });
 
@@ -22,4 +22,4 @@ export const authenticate = (req:Request, res:Response, next:NextFunction) => {
     } catch {
         res.status(401).json({ error: "Jeton d'authentification invalide" });
     }
-}
+};

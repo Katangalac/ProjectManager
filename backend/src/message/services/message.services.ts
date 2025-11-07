@@ -64,20 +64,6 @@ export const editMessage = async (messageId: string, updateData: EditMessageData
 };
 
 /**
- * Récupère les messages d'un utilisateur
- * @async
- * @param {string} userId - identifiant de l'utilisateur
- * @returns {Message[]} - les messages de l'utilisateur
- */
-export const getUserMessages = async (userId: string): Promise<Message[]> => {
-    const userMessages = await db.message.findMany({
-        where: { senderId: userId },
-        orderBy:{createdAt: "desc"}
-    });
-    return userMessages;
-};
-
-/**
  * Marque un message comme lu
  * @async
  * @param {string} messageId - identifiant du message

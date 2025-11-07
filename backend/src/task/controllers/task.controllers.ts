@@ -4,6 +4,7 @@ import * as taskError from "../errors";
 import { Request, Response } from "express";
 import { z } from "zod";
 import { idParamSchema } from "../../schemas/idparam.schema";
+import { searchUsersFilterSchema } from "../../user/schemas/user.schemas";
 
 /**
  * Crée une nouvelle tache
@@ -175,7 +176,8 @@ export const unassignUserFromTaskController = async (req: Request, res: Response
 export const getTaskContributorsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
-        const taskContributors = await taskService.getTaskContributors(id);
+        const filter = searchUsersFilterSchema.parse(req.query);
+        const taskContributors = await taskService.getTaskContributors(id, filter);
         res.status(200).json(taskContributors);
     } catch (err) {
         console.error("Erreur lors de la récupération des contributeurs : ", err);

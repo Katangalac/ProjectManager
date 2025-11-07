@@ -67,5 +67,20 @@ export const searchTasksFilterSchema = z.object({
     completedBefore: z.coerce.date().optional(),
     completedAfter: z.coerce.date().optional(),
     page: z.coerce.number().int().min(1).default(1),
-    pageSize: z.coerce.number().int().min(1).max(100).default(20)
+    pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
 });

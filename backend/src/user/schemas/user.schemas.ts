@@ -46,7 +46,7 @@ export const publicUserSchema = userSchema.omit({
 export const createUserSchema = z.object({
     userName: z.string().min(2, "Nom d'utilisateur trop court").max(30, "Nom d'utilisateur trop long"),
     email: z.email().max(254, "Email trop long"),
-    password: z.string().min(8, "Le mot de passe doit avoir au moins 8 caractères")
+    password: z.string().min(8, "Le mot de passe doit avoir au moins 8 caractères").nullable()
 });
 
 /**
@@ -75,6 +75,21 @@ export const searchUsersFilterSchema = z.object({
     profession: z.string().max(100, "Nom de profession trop long").optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
+    all: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (val === undefined) return undefined;
+            if (val.toLowerCase() === "true") return true;
+            if (val.toLowerCase() === "false") return false;
+            throw new z.ZodError([
+                {
+                    code: 'custom',
+                    message: "Invalid boolean value for 'read'",
+                    path:["read"]
+                }
+            ]);
+        }),
 });
 
 
