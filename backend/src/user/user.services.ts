@@ -34,7 +34,7 @@ export const createUser = async (newUserData: CreateUserData, provider: UserProv
             data: {
                 ...newUserData,
                 password: hashedPassword,
-                role: UserRole.MEMBER,
+                role: UserRole.USER,
                 provider: provider,
                 oauthId: oauthId
             }

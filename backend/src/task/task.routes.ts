@@ -1,7 +1,11 @@
 import { Router } from "express";
 import * as taskController from "./task.controllers";
+import { isAuthenticated } from "../auth/auth.middleware";
 
 const router = Router();
+
+//Toutes les routes suivant nécessitent d'être connecté
+router.use(isAuthenticated);
 
 /**
  * @route POST /api/tasks
@@ -22,6 +26,11 @@ router.get("/:id", taskController.getTaskByIdController);
  * @route PATCH /api/tasks/:id
  */
 router.patch("/:id", taskController.updateTaskController);
+
+/**
+ * @route PATCH /api/tasks/:id/status
+ */
+router.patch("/:id/status", taskController.updateTaskStatusController);
 
 /**
  * @route DELETE /api/tasks/:id

@@ -11,12 +11,12 @@ export const projectSchema = z.object({
     description: z.string(),
     status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING),        
     budgetPlanned: z.float64().default(0.00),
-    actualCost:z.float64().default(0.00),     
-    startedAt:z.coerce.date(),    
-    deadline:z.coerce.date(),      
-    completedAt:z.coerce.date().nullable(),
-    updatedAt:z.coerce.date(),
-    createdAt:z.coerce.date()
+    actualCost: z.float64().default(0.00),     
+    startedAt: z.coerce.date(),    
+    deadline: z.coerce.date(),      
+    completedAt: z.coerce.date().nullable(),
+    updatedAt: z.date(),
+    createdAt: z.date()
 });
 
 /**

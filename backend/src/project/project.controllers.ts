@@ -7,6 +7,7 @@ import { z } from "zod";
 import { searchUsersFilterSchema } from "../user/user.schemas";
 import { searchTasksFilterSchema } from "../task/task.schemas";
 import { searchTeamsFilterSchema } from "../team/team.schemas";
+import { ProjectStatus } from "@prisma/client";
 
 /**
  * Crée un nouveau projet
@@ -85,6 +86,30 @@ export const updateProjectController = async (req: Request, res: Response) => {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const projectData = projectSchemas.updateProjectDataSchema.parse(req.body);
         const updatedProject = await projectService.updateProject(id, projectData);
+        res.status(200).json({ message: "Projet mis à jour avec succès", updatedProject: updatedProject });
+    } catch (err) {
+        console.error("Erreur lors de la mise à jour du projet : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        if (err instanceof projectError.ProjectNotFoundError) {
+            res.status(404).json({ error: "Aucun projet correspond à l'idetifiant donné" });
+        }
+        res.status(500).json({ error: "Erreur lors de la mise à jour du projet" });
+    }
+};
+
+/**
+ * Met à jour le status d'un projet
+ * @async
+ * @param {Request} req - requete Express contenant l'identifiant du projet
+ * @param {Response} res - rponse Express en JSON
+ */
+export const updateProjectStatusController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const newStatus = z.enum(ProjectStatus).parse(req.body);
+        const updatedProject = await projectService.updateProject(id, {status:newStatus});
         res.status(200).json({ message: "Projet mis à jour avec succès", updatedProject: updatedProject });
     } catch (err) {
         console.error("Erreur lors de la mise à jour du projet : ", err);

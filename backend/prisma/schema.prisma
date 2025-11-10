@@ -18,6 +18,7 @@ enum UserRole {
   ADMIN
   MEMBER
   VIEWER
+  USER
 }
 
 // Indique la méthode d'inscription utilisée par un utilisateur lors de son enregistrement
@@ -67,7 +68,7 @@ model User {
   assignedTasks     UserTask[]
   userNotifications Notification[]
   lastLoginAt       DateTime?          @map("last_login_at")
-  updatedAt         DateTime           @default(now()) @map("updated_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
   createdAt         DateTime           @default(now()) @map("created_at")
 
   @@map("users")
@@ -84,7 +85,7 @@ model Team {
   teamUsers         UserTeam[]
   teamProjects      ProjectTeam[]
   teamConversations Conversation[]
-  updatedAt         DateTime       @default(now()) @map("updated_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
   createdAt         DateTime       @default(now()) @map("created_at")
 
   @@map("teams")
@@ -105,7 +106,7 @@ model Project {
   user          User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
   projectTasks  Task[]
   projectTeams  ProjectTeam[]
-  updatedAt     DateTime      @default(now()) @map("updated_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
   createdAt     DateTime      @default(now()) @map("created_at")
 
   @@map("projects")
@@ -129,7 +130,7 @@ model Task {
   project       Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
   team          Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
   assignedTo    UserTask[]
-  updatedAt     DateTime   @default(now()) @map("updated_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
   createdAt     DateTime   @default(now()) @map("created_at")
 
   @@map("tasks")
@@ -142,7 +143,7 @@ model Notification {
   message   String   @map("message")
   read      Boolean  @default(false) @map("read")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("notifications")
@@ -156,7 +157,7 @@ model Conversation {
   team         Team?              @relation(fields: [teamId], references: [id], onDelete: SetNull)
   participants UserConversation[]
   messages     Message[]
-  updatedAt    DateTime           @default(now()) @map("updated_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
   createdAt    DateTime           @default(now()) @map("created_at")
 
   @@map("conversations")
@@ -172,7 +173,7 @@ model Message {
   sender         User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   attachments    Attachment[]
-  updatedAt      DateTime     @default(now()) @map("updated_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
   createdAt      DateTime     @default(now()) @map("created_at")
 
   @@map("messages")
@@ -185,7 +186,7 @@ model Attachment {
   url       String   @map("url")
   type      String   @map("type")
   message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("attachments")
@@ -197,7 +198,7 @@ model UserConversation {
   conversationId String       @map("conversation_id")
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  updatedAt      DateTime     @default(now()) @map("updated_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
   createdAt      DateTime     @default(now()) @map("created_at")
 
   @@id([userId, conversationId], name: "pk_user_conversation")
@@ -211,7 +212,7 @@ model UserTeam {
   userRole  String   @map("user_role")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@id([userId, teamId], name: "pk_user_team")
@@ -224,7 +225,7 @@ model ProjectTeam {
   teamId    String   @map("team_id")
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@id([projectId, teamId], name: "pk_project_team")
@@ -237,7 +238,7 @@ model UserTask {
   taskId    String   @map("task_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  updatedAt DateTime @default(now()) @map("updated_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@id([userId, taskId], name: "pk_user_task")

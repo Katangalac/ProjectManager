@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { searchUsersFilterSchema } from "../user/user.schemas";
+import { TaskStatus } from "@prisma/client";
 
 /**
  * Crée une nouvelle tache
@@ -82,6 +83,29 @@ export const updateTaskController = async (req: Request, res: Response) => {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const taskData = taskSchemas.updateTaskDataSchema.parse(req.body);
         const updatedTask = await taskService.updateTask(id, taskData);
+        res.status(200).json({ message: "Tâche mise à jour avec succès", updatedTask: updatedTask });
+    } catch (err) {
+        console.error("Erreur lors de la mise à jour de la tâche : ", err);
+        if (err instanceof z.ZodError) {
+            res.status(400).json({ error: "Données invalides" });
+        }
+        if (err instanceof taskError.TaskNotFoundError) {
+            res.status(404).json({ error: "Aucune tâche correspond à l'idetifiant donné" });
+        }
+        res.status(500).json({ error: "Erreur lors de la mise à jour de la tâche" });
+    }
+};
+
+/**
+ * Met à jour le status d'une tache
+ * @param {Request} req - requete Express contenant l'identifiant de la tache
+ * @param {Response} res - réponse Express en JSON
+ */
+export const updateTaskStatusController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.params.id });
+        const newStatus = z.enum(TaskStatus).parse(req.body);
+        const updatedTask = await taskService.updateTask(id, {status:newStatus});
         res.status(200).json({ message: "Tâche mise à jour avec succès", updatedTask: updatedTask });
     } catch (err) {
         console.error("Erreur lors de la mise à jour de la tâche : ", err);

@@ -10,6 +10,8 @@ import { searchTeamsFilterSchema } from "../team/team.schemas";
 import { searchNotificationsFilterSchema } from "../notification/notification.schemas";
 import { searchMessagesFilterSchema } from "../message/message.schemas";
 import { searchConversationsFilterSchema } from "../conversation/conversation.schemas";
+import { getUserIdFromRequest } from "../utils/utils";
+import { successResponse, errorResponse , successCollectionResponse} from "../utils/apiResponse";
 
 
 /**
@@ -23,13 +25,13 @@ export const getUsersController = async(req: Request, res: Response) => {
     try {
         const filter = searchUsersFilterSchema.parse(req.query);
         const users = await userService.getUsers(filter);
-        res.status(200).json(users);
+        res.status(200).json(successResponse(users, "Utilisateurs récupérés"));
     } catch (err) {
         console.error("Erreur lors de la récupération des utilisateurs", err);
         if (err instanceof z.ZodError) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des utilisateurs"));
     }
 };
 
@@ -42,20 +44,20 @@ export const getUsersController = async(req: Request, res: Response) => {
  */
 export const getUserByIdController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({id:req.params.id});
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const user = await userService.getUserById(id);
-        res.status(200).json(user);
+        res.status(200).json(successResponse(user, "Utilisateur récupéré"));
     } catch (err) {
         console.error("Erreur lors de la récupération de l'utilisateur", err);
         if (err instanceof z.ZodError) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
 
         if (err instanceof UserNotFoundError) {
-            return res.status(404).json({ message: err.message });
+            return res.status(404).json(errorResponse(err.code?err.code:"USER_NOT_FOUND", err.message));
         }
 
-        res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération de l'utilisateur"));
     }
 };
 
@@ -69,33 +71,33 @@ export const getUserByIdController = async (req: Request, res: Response) => {
  */
 export const updateUserController = async(req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({id:req.params.id});
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const input = updateUserDataSchema.parse(req.body);
         const user = await userService.updateUser(id, input);
-        res.status(200).json({message:"Utilisateur mis à jour avec succès", user});
+        res.status(200).json(successResponse(user, "Utilisateur mis à jour avec succès"));
     } catch (err) {
         console.error("Erreur lors de la mise à jour de l'utilisateur", err);
         if (err instanceof z.ZodError) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
 
         if (err instanceof UserNotFoundError) {
-            return res.status(404).json({ message: err.message });
+            return res.status(404).json(errorResponse(err.code?err.code:"USER_NOT_FOUND", err.message));
         }
 
         if (err instanceof EmailAlreadyUsedError) {
-            return res.status(409).json({ message: err.message });
+            return res.status(409).json(errorResponse(err.code?err.code:"EMAIL_CONFLICT", err.message));
         }
 
         if (err instanceof UsernameAlreadyUsedError) {
-            return res.status(409).json({ message: err.message });
+            return res.status(409).json(errorResponse(err.code?err.code:"USERNAME_CONFLICT", err.message));
         }
 
         if (err instanceof PhoneNumberAlreadyUsedError) {
-            return res.status(409).json({ message: err.message });
+            return res.status(409).json(errorResponse(err.code?err.code:"PHONE_NUMBER_CONFLICT", err.message));
         }
 
-        res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la mise à jour de l'utilisateur"));
     }
 };
 
@@ -107,21 +109,21 @@ export const updateUserController = async(req: Request, res: Response) => {
  */
 export const deleteUserController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({id:req.params.id});
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         await userService.deleteUser(id);
         res.status(204).send();
     }
     catch (err) {
         console.error("Erreur de la suppression de l'utilisateur", err);
         if (err instanceof z.ZodError) {
-            return res.status(400).json({ message: err.message });
+            return res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
 
         if (err instanceof UserNotFoundError) {
-            return res.status(404).json({ message: err.message });
+            return res.status(404).json(errorResponse(err.code?err.code:"USER_NOT_FOUND", err.message));
         }
 
-        res.status(500).json({ message: "Erreur de la suppression de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la suppression de l'utilisateur"));
     }
 };
 
@@ -132,16 +134,16 @@ export const deleteUserController = async (req: Request, res: Response) => {
  */
 export const getUserTeamsController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchTeamsFilterSchema.parse(req.query);
         const teams = await userService.getUserTeams(id, filter);
-        res.status(200).json(teams);
+        res.status(200).json(successResponse(teams, "Équipes de l'utilisateur récupérées"));
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des équipes de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des équipes de l'utilisateur"));
     }
 };
 
@@ -152,16 +154,16 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
  */
 export const getUserProjectsController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchProjectsFilterSchema.parse(req.query);
         const projects = await userService.getUserProjects(id, filter);
-        res.status(200).json(projects);
+        res.status(200).json(successResponse(projects, "Projets de l'utilisateur récupérés"));
     } catch (err) {
         console.error("Erreur lors de la récupération des projets de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des projets de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des projets de l'utilisateur"));
     }
 };
 
@@ -172,16 +174,16 @@ export const getUserProjectsController = async (req: Request, res: Response) => 
  */
 export const getUserTasksController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchTasksFilterSchema.parse(req.query);
         const userTasks = await userService.getUserTasks(id, filter);
-        res.status(200).json(userTasks);
+        res.status(200).json(successResponse(userTasks, "Tâches de l'utilisateur récupérées"));
     } catch (err) {
         console.error("Erreur lors de la récupération des taches de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des taches de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des tâches de l'utilisateur"));
     }
 };
 
@@ -192,16 +194,16 @@ export const getUserTasksController = async (req: Request, res: Response) => {
  */
 export const getUserNotificationsController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchNotificationsFilterSchema.parse(req.query);
         const userNotifications = await userService.getUserNotifications(id, filter);
-        res.status(200).json(userNotifications);
+        res.status(200).json(successResponse(userNotifications, "Notifications de l'utilisateur récupérées"));
     } catch (err) {
         console.error("Erreur lors de la récupération des notifications de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des notifications de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des notifications de l'utilisateur"));
     }
 };
 
@@ -212,16 +214,16 @@ export const getUserNotificationsController = async (req: Request, res: Response
  */
 export const getUserConversationsController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchConversationsFilterSchema.parse(req.query);
         const userConversations = await userService.getUserConversations(id, filter);
-        res.status(200).json(userConversations);
+        res.status(200).json(successResponse(userConversations, "Conversations de l'utilisateur récupérées"));
     } catch (err) {
         console.error("Erreur lors de la récupération des conversations de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des conversations de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des conversations de l'utilisateur"));
     }
 };
 
@@ -232,16 +234,16 @@ export const getUserConversationsController = async (req: Request, res: Response
  */
 export const getUserMessagesController = async (req: Request, res: Response) => {
     try {
-        const { id } = idParamSchema.parse({ id: req.params.id });
+        const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchMessagesFilterSchema.parse(req.query);
         const userMessages = await userService.getUserMessages(id, filter);
-        res.status(200).json(userMessages);
+        res.status(200).json(successResponse(userMessages, "Messages de l'utilisateur récupérés"));
     } catch (err) {
         console.error("Erreur lors de la récupération des messages de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des messages de l'utilisateur" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des messages de l'utilisateur"));
     }
 };
 

@@ -49,21 +49,21 @@ app.get("/", (req, res) => {
         version:"v1.0.0",
     })
 })
-app.use("/api/auth", authRoutes);
-app.use("/api/auth", googleAuthRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/teams", isAuthenticated, teamRoutes);
-app.use("/api/projects", isAuthenticated, projectRoutes);
-app.use("/api/tasks", isAuthenticated, taskRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/conversations", conversationRoutes);
-app.use("/api/messages", messageRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/auth", googleAuthRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/teams", teamRoutes);
+app.use("/api/v1/projects", projectRoutes);
+app.use("/api/v1/tasks", taskRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1/conversations", conversationRoutes);
+app.use("/api/v1/messages", messageRoutes);
 
 //TODO:Interaction entre service
-//TODO:Déterminer les routes à exposer à l'API
-//TODO:Corriger le createdAt qui change à chaque fois
-//TODO:Parachever les routes pour un user connnecté, routes "me"
-//TODO:Revoir le decoupage/architecture
+//TODO:Déterminer les routes à exposer à l'API X
+//TODO:Corriger le createdAt qui change à chaque fois X
+//TODO:Parachever les routes pour un user connnecté, routes "me" X
+//TODO:Revoir le decoupage/architecture X
 
 //Serveur pour faire du temps réel
 const server = http.createServer(app);

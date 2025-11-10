@@ -1,7 +1,11 @@
 import { Router } from "express";
 import * as teamController from "./team.controllers";
+import { isAuthenticated } from "../auth/auth.middleware";
 
 const router = Router();
+
+//Toutes les routes suivant nécessitent d'être connecté
+router.use(isAuthenticated);
 
 /**
  * @route POST /api/teams
@@ -29,14 +33,14 @@ router.patch("/:id", teamController.updateTeamController);
 router.delete("/:id", teamController.deleteTeamController);
 
 /**
- * @route POST /api/teams/:id/members
- */
-router.post("/:id/members", teamController.addUserToTeamController);
-
-/**
  * @route GET /api/teams/:id/members
  */
 router.get("/:id/members", teamController.getTeamMembersController);
+
+/**
+ * @route POST /api/teams/:id/members
+ */
+router.post("/:id/members", teamController.addUserToTeamController);
 
 /**
  * @route PATCH /api/teams/:id/members/:userId
