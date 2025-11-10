@@ -3,16 +3,16 @@ import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import userRoutes from "./user/routes/user.routes";
-import authRoutes from "./auth/routes/auth.routes";
-import googleAuthRoutes from "./auth/routes/googleAuth.routes";
-import teamRoutes from "./team/routes/team.routes";
-import projectRoutes from "./project/routes/project.routes";
-import taskRoutes from "./task/routes/task.routes";
-import notificationRoutes from "./notification/routes/notification.routes";
-import conversationRoutes from "./conversation/routes/conversation.routes";
-import messageRoutes from "./message/routes/message.routes";
-import { isAuthenticated } from "./auth/middleware/authenticate";
+import userRoutes from "./user/user.routes";
+import authRoutes from "./auth/auth.routes";
+import googleAuthRoutes from "./auth/googleAuth/googleAuth.routes";
+import teamRoutes from "./team/team.routes";
+import projectRoutes from "./project/project.routes";
+import taskRoutes from "./task/task.routes";
+import notificationRoutes from "./notification/notification.routes";
+import conversationRoutes from "./conversation/conversation.routes";
+import messageRoutes from "./message/message.routes";
+import { isAuthenticated } from "./auth/auth.middleware";
 import { setupSocket } from "./chat/chat.socket";
 import morgan from "morgan";
 
@@ -58,6 +58,12 @@ app.use("/api/tasks", isAuthenticated, taskRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/messages", messageRoutes);
+
+//TODO:Interaction entre service
+//TODO:Déterminer les routes à exposer à l'API
+//TODO:Corriger le createdAt qui change à chaque fois
+//TODO:Parachever les routes pour un user connnecté, routes "me"
+//TODO:Revoir le decoupage/architecture
 
 //Serveur pour faire du temps réel
 const server = http.createServer(app);

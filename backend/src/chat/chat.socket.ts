@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import http from "http";
-import { Message } from "../message/types/Message";
+import { Message } from "../message/Message";
 
 //Instance du serveur Socket.io
 let io: Server;

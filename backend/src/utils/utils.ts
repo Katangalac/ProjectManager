@@ -1,12 +1,12 @@
 import { Request } from "express";
 import { Prisma } from "@prisma/client";
-import { SearchNotificationsFilter } from "../notification/types/Notification";
-import { SearchTasksFilter } from "../task/types/Task";
-import { SearchTeamsFilter } from "../team/types/Team";
-import { SearchUsersFilter } from "../user/types/User";
-import { SearchProjectsFilter } from "../project/types/Project";
-import { SearchMessagesFilter } from "../message/types/Message";
-import { SearchConversationsFilter } from "../conversation/types/Conversation";
+import { SearchNotificationsFilter } from "../notification/Notification";
+import { SearchTasksFilter } from "../task/Task";
+import { SearchTeamsFilter } from "../team/Team";
+import { SearchUsersFilter } from "../user/User";
+import { SearchProjectsFilter } from "../project/Project";
+import { SearchMessagesFilter } from "../message/Message";
+import { SearchConversationsFilter } from "../conversation/Conversation";
 
 //Format des numéros de téléphone
 export const phoneRegex = /^\+?[0-9\s\-()]{7,20}$/;
