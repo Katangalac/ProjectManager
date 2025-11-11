@@ -8,6 +8,7 @@ import { searchUsersFilterSchema } from "../user/user.schemas";
 import { searchTasksFilterSchema } from "../task/task.schemas";
 import { searchTeamsFilterSchema } from "../team/team.schemas";
 import { ProjectStatus } from "@prisma/client";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée un nouveau projet
@@ -22,13 +23,13 @@ export const createProjectController = async (req: Request, res: Response) => {
             projectData.creatorId = req.user?.sub;
         }
         const newProject = await projectService.createProject(projectData);
-        res.status(201).json({ message: "Projet créé", newProject: newProject });
+        res.status(201).json(successResponse(newProject, "Projet créé"));
     } catch (err) {
         console.error("Erreur lors de la création du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la création du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la création du projet"));
     }
 };
 
@@ -41,14 +42,14 @@ export const createProjectController = async (req: Request, res: Response) => {
 export const getProjectsController = async (req: Request, res: Response) => {
     try {
         const filter = projectSchemas.searchProjectsFilterSchema.parse(req.query);
-        const projects = await projectService.getProjects(filter);
-        res.status(200).json(projects);
+        const projectsCollection = await projectService.getProjects(filter);
+        res.status(200).json(successResponse(projectsCollection, "Projets récupérés"));
     }catch (err) {
         console.error("Erreur lors de la récupération des projets : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des projets" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des projets"));
     }
 };
 
@@ -62,16 +63,16 @@ export const getProjectByIdController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const project = await projectService.getProjectById(id);
-        res.status(200).json(project);
+        res.status(200).json(successResponse(project, "Projet récupéré"));
     } catch (err) {
         console.error("Erreur lors de la récupération du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.ProjectNotFoundError) {
-            res.status(404).json({ error: "Aucun projet correspond à l'idetifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"PROJECT_NOT_FOUND", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération du projet"));
     }
 };
 
@@ -86,16 +87,16 @@ export const updateProjectController = async (req: Request, res: Response) => {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const projectData = projectSchemas.updateProjectDataSchema.parse(req.body);
         const updatedProject = await projectService.updateProject(id, projectData);
-        res.status(200).json({ message: "Projet mis à jour avec succès", updatedProject: updatedProject });
+        res.status(200).json(successResponse(updatedProject, "Projet mis à jour avec succès"));
     } catch (err) {
         console.error("Erreur lors de la mise à jour du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.ProjectNotFoundError) {
-            res.status(404).json({ error: "Aucun projet correspond à l'idetifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"PROJECT_NOT_FOUND", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la mise à jour du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la mise à jour du projet"));
     }
 };
 
@@ -110,16 +111,16 @@ export const updateProjectStatusController = async (req: Request, res: Response)
         const { id } = idParamSchema.parse({ id: req.params.id });
         const newStatus = z.enum(ProjectStatus).parse(req.body);
         const updatedProject = await projectService.updateProject(id, {status:newStatus});
-        res.status(200).json({ message: "Projet mis à jour avec succès", updatedProject: updatedProject });
+        res.status(200).json(successResponse(updatedProject, "Status du projet mis à jour avec succès"));
     } catch (err) {
-        console.error("Erreur lors de la mise à jour du projet : ", err);
+        console.error("Erreur lors de la mise à jour du status du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.ProjectNotFoundError) {
-            res.status(404).json({ error: "Aucun projet correspond à l'idetifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"PROJECT_NOT_FOUND", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la mise à jour du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la mise à jour du status du projet"));
     }
 };
 
@@ -137,12 +138,12 @@ export const deleteProjectController = async (req: Request, res: Response) => {
     } catch (err) {
         console.error("Erreur lors de la suppression du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.ProjectNotFoundError) {
-            res.status(404).json({ error: "Aucun projet correspond à l'idetifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"PROJECT_NOT_FOUND", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la suppression du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la suppression du projet"));
     }
 };
 
@@ -157,16 +158,16 @@ export const addTeamToProjectController = async (req: Request, res: Response) =>
         const { id:projectId } = idParamSchema.parse({ id: req.params.id });
         const {id:teamId} = idParamSchema.parse({ id: req.params.teamId });
         const projectTeamPair = await projectService.addTeamToProject(teamId, projectId);
-        res.status(200).json({ message: "Équipe ajoutée au projet", projectTeamPair: projectTeamPair });
+        res.status(200).json(successResponse(projectTeamPair, "Équipe ajoutée au projet"));
     }catch (err) {
         console.error("Erreur lors de l'ajout de l'équipe au projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.TeamAlreadyInProjectError) {
-            res.status(409).json({ error: "L'équipe est déjà intégrée à ce projet" });
+            res.status(409).json(errorResponse(err.code?err.code:"TEAM_ALREADY_IN_PROJECT", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de l'ajout de l'équipe au projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de l'ajout de l'équipe au projet"));
     }
 };
 
@@ -185,12 +186,12 @@ export const removeTeamFromProjectController = async (req: Request, res: Respons
     }catch (err) {
         console.error("Erreur lors du retrait de l'équipe du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.TeamNotInProjectError) {
-            res.status(409).json({ error: "L'équipe n'est pas impliquée dans ce projet" });
+            res.status(404).json(errorResponse(err.code?err.code:"TEAM_NOT_IN_PROJECT", err.message));
         }
-        res.status(500).json({ error: "Erreur lors du retrait de l'équipe du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors du retrait de l'équipe du projet"));
     }
 };
 
@@ -205,13 +206,13 @@ export const getProjectTeamsController = async (req: Request, res: Response) => 
         const { id } = idParamSchema.parse({ id: req.params.id });
         const filter = searchTeamsFilterSchema.parse(req.query);
         const projectTeams = await projectService.getProjectTeams(id, filter);
-        res.status(200).json(projectTeams);
+        res.status(200).json(successResponse(projectTeams.teams, "Équipes du projets récupérées", projectTeams.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des équipes du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des équipes du projet"));
     }
 }; 
 
@@ -227,13 +228,13 @@ export const getProjectMembersController = async (req: Request, res: Response) =
         const { id } = idParamSchema.parse({ id: req.params.id });
         const filter = searchUsersFilterSchema.parse(req.query);
         const projectMembers = await projectService.getProjectMembers(id, filter);
-        res.status(200).json(projectMembers);
+        res.status(200).json(successResponse(projectMembers.users, "Membres du projet récupérés", projectMembers.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des membres du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des membres du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des membres du projet"));
     }
 }; 
 
@@ -248,15 +249,15 @@ export const getProjectTasksController = async (req: Request, res: Response) => 
         const { id } = idParamSchema.parse({ id: req.params.id });
         const filter = searchTasksFilterSchema.parse(req.query);
         const projectTasks = await projectService.getProjectTasks(id, filter);
-        res.status(200).json(projectTasks);
+        res.status(200).json(successResponse(projectTasks.tasks, "Tâches du projet récupérées", projectTasks.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des taches du projet : ", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ error: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof projectError.ProjectNotFoundError) {
-            res.status(404).json({ error: "Aucun projet avec l'identifiant donné n'a été trouvé" });
+            res.status(404).json(errorResponse(err.code?err.code:"PROJECT_NOT_FOUND", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la récupération des taches du projet" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des taches du projet"));
     }
 };

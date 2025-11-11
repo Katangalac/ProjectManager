@@ -15,6 +15,7 @@ import messageRoutes from "./message/message.routes";
 import { isAuthenticated } from "./auth/auth.middleware";
 import { setupSocket } from "./chat/chat.socket";
 import morgan from "morgan";
+import * as emailService from "../src/utils/email";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,9 +47,10 @@ app.get("/", (req, res) => {
         message: "Bienvenue sur l'API de ProjectManager",
         status: "OK",
         timestamp: new Date().toISOString(),
-        version:"v1.0.0",
+        version: "v1.0.0",
     })
-})
+});
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/auth", googleAuthRoutes);
 app.use("/api/v1/users", userRoutes);
@@ -59,11 +61,27 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/messages", messageRoutes);
 
+app.post("/api/v1/welcomeEmail", async (req, res) => {
+    try {
+        const { to, name } = req.body;
+        await emailService.sendWelcomeEmail(to, name);
+        res.status(200).json({message:"Email envoyé"});
+    } catch (err) {
+        console.error("Erreur lors de l'envoie de l'email", err);
+        res.status(500).json({error:"Erreur lors de l'envoie de l'email"});
+    }
+});
+
 //TODO:Interaction entre service
 //TODO:Déterminer les routes à exposer à l'API X
 //TODO:Corriger le createdAt qui change à chaque fois X
 //TODO:Parachever les routes pour un user connnecté, routes "me" X
 //TODO:Revoir le decoupage/architecture X
+//TODO:Ajouter les informations de paginations comme retour des requetes X
+//TODO:Ajouter la route patch auth/password X
+//TODO:Determiner si oui ou non ajouter les routes du profile utilisateur
+//TODO:Mécanisme de mot de passe oublié
+//TODO:Mettre en place le service d'envoi d'email
 
 //Serveur pour faire du temps réel
 const server = http.createServer(app);

@@ -1,13 +1,16 @@
 import { createUser } from "../user/user.services";
-import { loginDataSchema} from "./auth.schemas";
+import { loginDataSchema, updatePasswordSchema} from "./auth.schemas";
 import { createUserSchema } from "../user/user.schemas";
 import { UserProvider } from "@prisma/client";
 import { Request, Response } from "express";
-import { generateAuthResponse } from "./auth.services";
+import { generateAuthResponse, updatePassword } from "./auth.services";
 import { updateUserLastLoginDateToNow } from "../user/user.services";
 import { db } from "../db";
 import { verify} from "argon2";
-import { ZodError } from "zod";
+import { z } from "zod";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+import { UserNotFoundError } from "../user/errors";
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
@@ -22,13 +25,13 @@ export const register = async (req: Request, res: Response) => {
         const { token, cookieOptions } = generateAuthResponse(user);
         res.cookie("projectManagerToken", token, cookieOptions);
         user = await updateUserLastLoginDateToNow(user.id);
-        res.status(201).json({ message: "Utilisateur créé", user });
+        res.status(201).json(successResponse(user, "Utilisateur créé"));
     } catch (err) {
         console.error("Erreur lors de l'inscription : ", err);
-        if (err instanceof ZodError) {
-            res.status(400).json({ error: "Données d'inscription invalides"});
+        if (err instanceof z.ZodError) {
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de l'inscription"});
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de l'inscription"));
     }
 };
 
@@ -58,17 +61,17 @@ export const login = async (req: Request, res: Response) => {
             const { token, cookieOptions } = generateAuthResponse(safeUser);
             res.cookie("projectManagerToken", token, cookieOptions);
             const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
-            res.status(200).json({ message: "Connexion réussie", updatedUser });
+            res.status(200).json(successResponse(updatedUser, "Connexion réussie"));
         }
         else {
-            res.status(500).json({error: `Cet utilisateur est inscrit avec ${user.provider}`})
+            res.status(500).json(errorResponse("NOT_A_LOCAL_USER", `Cet utilisateur s'est inscrit avec ${user.provider} et ne peut pas se connecter via le login local`))
         }
     } catch (err) {
         console.error("Erreur lors de la connexion : ", err);
-        if (err instanceof ZodError) {
-            res.status(400).json({ error: "Données de connexion invalides"});
+        if (err instanceof z.ZodError) {
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ error: "Erreur lors de la connexion"});
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la connexion"));
     }
 };
 
@@ -86,10 +89,36 @@ export const logout = async (req: Request, res: Response) => {
             sameSite: "lax" as const
         };
         res.clearCookie("projectManagerToken", cookieOptions);
-        res.json({ message: "Déconnexion réussie" });
+        res.json(successResponse(null, "Déconnexion réussie"));
     } catch (err) {
         console.error("Erreur lors de la déconnexion : ", err);
-        res.status(500).json({ error: "Erreur lors de la déconnexion"});
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la déconnexion"));
+    }
+};
+
+/**
+ * Modifie le mot de passe de l'utilisateur connecté
+ * @async
+ * @param {Request} req - requête Express
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
+ */
+export const updatePasswordController = async (req: Request, res: Response) => {
+    try {
+        const { id } = idParamSchema.parse({ id: req.user?.sub });
+        const updatePasswordData = updatePasswordSchema.parse(req.body);
+        await updatePassword(id, updatePasswordData);
+        res.status(200).json(successResponse(null, "Mot de passe modifié avec succès"));
+    } catch (err) {
+        console.error("Erreur de la modification du mot de passe", err);
+        if (err instanceof z.ZodError) {
+            return res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
+        }
+
+        if (err instanceof UserNotFoundError) {
+            return res.status(404).json(errorResponse(err.code?err.code:"USER_NOT_FOUND", err.message));
+        }
+
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la modification du mot de passe"));
     }
 };
 

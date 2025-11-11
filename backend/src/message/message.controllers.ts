@@ -4,6 +4,7 @@ import { MessageNotFoundError, NotUserMessageError } from "./errors";
 import { z } from "zod";
 import { Request, Response } from "express";
 import * as messageService from "./message.services";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée et envoi un nouveau message
@@ -15,13 +16,13 @@ export const sendMessageController = async (req: Request, res: Response) => {
     try {
         const messageData = createMessageSchema.parse(req.body);
         const message = await messageService.sendMessage(messageData);
-        res.status(201).json({ message: "Message créé et envoyé avec succès", newMessage: message });
+        res.status(201).json(successResponse(message, "Message envoyé avec succès"));
     } catch (err) {
         console.error("Erreur lors de l'envoi du message", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de l'envoi du message" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de l'envoi du message"));
     }
 };
 
@@ -36,19 +37,19 @@ export const editMessageController = async (req: Request, res: Response) => {
         const { id: messageId } = idParamSchema.parse({id:req.params.id});
         const updateData = editMessageSchema.parse(req.body);
         const editedMessage = await messageService.editMessage(messageId, updateData);
-        res.status(200).json({ message: "Message modifié avec succès", editedMessage: editedMessage });
+        res.status(200).json(successResponse(editedMessage, "Message modifié avec succès"));
     } catch (err) {
         console.error("Erreur lors de la modification du message", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof MessageNotFoundError) {
-            res.status(404).json({ erreur: "Aucun message ayant l'identifiant passé en paramètre a été trouvé" });
+            res.status(404).json(errorResponse(err.code?err.code:"MESSAGE_NOT_FOUND", err.message));
         }
         if (err instanceof NotUserMessageError) {
-            res.status(401).json({ erreur: "L'utilisateur n'est pas autorisé à modifier ce message car il ne lui appartient pas" });
+            res.status(401).json(errorResponse(err.code?err.code:"NOT_USER_MESSAGE", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la modification du message" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la modification du message"));
     }
 };
 
@@ -63,16 +64,16 @@ export const markMessageAsReadController = async (req: Request, res: Response) =
         const { id: messageId } = idParamSchema.parse({id:req.params.id});
         const {id:userId} = idParamSchema.parse(req.body);
         const updatedMessage = await messageService.markMessageAsRead(messageId, userId);
-        res.status(200).json({message:"Message marqué comme lu", updatedMessage:updatedMessage});
+        res.status(200).json(successResponse(updatedMessage, "Message marqué comme lu"));
     } catch (err) {
         console.error("Erreur lors de la mise à jour du message", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof MessageNotFoundError) {
-            res.status(404).json({ erreur: "Aucun message ayant l'identifiant passé en paramètre a été trouvé" });
+            res.status(404).json(errorResponse(err.code?err.code:"MESSAGE_NOT_FOUND", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la mise à jour du message" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la mise à jour du message"));
     }
 };
 
@@ -91,14 +92,14 @@ export const deleteMessageController = async (req: Request, res: Response) => {
     } catch (err) {
         console.error("Erreur lors de la suppression du message", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof MessageNotFoundError) {
-            res.status(404).json({ erreur: "Aucun message ayant l'identifiant passé en paramètre a été trouvé" });
+            res.status(404).json(errorResponse(err.code?err.code:"MESSAGE_NOT_FOUND", err.message));
         }
         if (err instanceof NotUserMessageError) {
-            res.status(401).json({ erreur: "L'utilisateur n'est pas autorisé à supprimer ce message car il ne lui appartient pas" });
+            res.status(401).json(errorResponse(err.code?err.code:"NOT_USER_MESSAGE", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la suppression du message" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la suppression du message"));
     }
 };

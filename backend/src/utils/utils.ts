@@ -7,6 +7,7 @@ import { SearchUsersFilter } from "../user/User";
 import { SearchProjectsFilter } from "../project/Project";
 import { SearchMessagesFilter } from "../message/Message";
 import { SearchConversationsFilter } from "../conversation/Conversation";
+import { Pagination } from "../types/Pagination";
 
 //Format des numéros de téléphone
 export const phoneRegex = /^\+?[0-9\s\-()]{7,20}$/;
@@ -142,6 +143,26 @@ export const buildConversationWhereInput = (filter: SearchConversationsFilter): 
     if (filter.isGroup !== undefined) where.isGroup = filter.isGroup;
     if (filter.teamId) where.teamId = { equals: filter.teamId };
     return where;
+};
+
+/**
+ * Construit les informations de pagination
+ * @param {boolean} all - indique si tous les items ont été demandés
+ * @param {number} page - indique le numéro de la page demandé
+ * @param {number} pageSize - indique le nombre d'items par page demandé
+ * @param {number} totalItems - indique le nombre total d'items
+ */
+export const buildPaginationInfos = (all:boolean|undefined, page:number, pageSize:number, totalItems:number): Pagination => {
+    const totalPages = all ? 1 : Math.ceil(totalItems / pageSize);
+    const pagination: Pagination = {
+        page: all ? "All" : page,
+        pageSize: all ? "All" : pageSize,
+        totalItems,
+        totalPages,
+        hasNextPage: !all && page < totalPages,
+        hasPreviousPage: !all && page > 1,
+    };
+    return pagination;
 };
 
 

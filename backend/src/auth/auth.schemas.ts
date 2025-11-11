@@ -20,3 +20,11 @@ export const tokenPayloadSchema = z.object({
     provider: z.enum(UserProvider),
 });
 
+/**
+ * Schéma de validation de données d'entrée pour la modification du mot de passe
+ */
+export const updatePasswordSchema = z.object({
+    currentPassword: z.string().min(8, "Le mot de passe doit avoir au moins 8 caractères"),
+    newPassword: z.string().min(8, "Le mot de passe doit avoir au moins 8 caractères")
+});
+

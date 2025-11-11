@@ -4,6 +4,7 @@ import { NotificationNotFoundError } from "./errors";
 import { Request, Response } from "express";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { z } from "zod";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle notification
@@ -14,13 +15,13 @@ export const createNotificationController = async (req: Request, res: Response) 
     try {
         const notificationData = notificationSchema.createNotificationSchema.parse(req.body);
         const newNotification = await notificationService.createNotification(notificationData);
-        res.status(201).json({ message: "Notification créée", newNotification: newNotification });
+        res.status(201).json(successResponse(newNotification, "Notification créée"));
     } catch (err) {
         console.error("Erreur lors de la création de la notification", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la création de la notification" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la création de la notification"));
     }
 };
 
@@ -32,14 +33,14 @@ export const createNotificationController = async (req: Request, res: Response) 
 export const getNotificationsController = async (req: Request, res: Response) => {
     try {
         const filter = notificationSchema.searchNotificationsFilterSchema.parse(req.query);
-        const notifications = await notificationService.getNotifications(filter);
-        res.status(200).json(notifications);
+        const notificationsCollection = await notificationService.getNotifications(filter);
+        res.status(200).json(successResponse(notificationsCollection.notifications, "Notifications récpérées", notificationsCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des notifications", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la récupération des notifications" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération des notifications"));
     }
 };
 
@@ -52,16 +53,16 @@ export const getNotificationByIdController = async (req: Request, res: Response)
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const notification = await notificationService.getNotificationById(id);
-        res.status(200).json(notification);
+        res.status(200).json(successResponse(notification, "Notification récupérée"));
     } catch (err) {
         console.error("Erreur lors de la récupération de la notification", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof NotificationNotFoundError) {
-            res.status(404).json({ erreur: "Aucune notification correspond à l'identifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"NOTIFICATION_NOT_FOUND", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la récupération de la notification" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la récupération de la notification"));
     }
 };
 
@@ -74,16 +75,16 @@ export const markNotificationAsReadController = async (req: Request, res: Respon
     try {
         const { id } = idParamSchema.parse({ id: req.params.id });
         const updatedNotification = await notificationService.markNotificationAsRead(id);
-        res.status(200).json({ message: "Notification mise à jour", notification: updatedNotification });
+        res.status(200).json(successResponse(updatedNotification, "Notification marquée lue"));
     } catch (err) {
         console.error("Erreur lors de la mise à jour de la notification", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof NotificationNotFoundError) {
-            res.status(404).json({ erreur: "Aucune notification correspond à l'identifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"NOTIFICATION_NOT_FOUND", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la mise à jour de la notification" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la mise à jour de la notification"));
     }
 };
 
@@ -100,11 +101,11 @@ export const deleteNotificationController = async (req: Request, res: Response) 
     } catch (err) {
         console.error("Erreur lors de la suppression de la notification", err);
         if (err instanceof z.ZodError) {
-            res.status(400).json({ erreur: "Données invalides" });
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
         }
         if (err instanceof NotificationNotFoundError) {
-            res.status(404).json({ erreur: "Aucune notification correspond à l'identifiant donné" });
+            res.status(404).json(errorResponse(err.code?err.code:"NOTIFICATION_NOT_FOUND", err.message));
         }
-        res.status(500).json({ erreur: "Erreur lors de la suppression de la notification" });
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la suppression de la notification"));
     }
 };

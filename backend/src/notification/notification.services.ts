@@ -1,8 +1,9 @@
 import { Notification, CreateNotificationData, SearchNotificationsFilter} from "./Notification";
 import { db } from "../db";
 import { NotificationNotFoundError } from "./errors";
-import { buildNotificationWhereInput } from "../utils/utils";
+import { buildNotificationWhereInput, buildPaginationInfos } from "../utils/utils";
 import { Prisma } from "@prisma/client";
+import { NotificationsCollection } from "./Notification";
 
 /**
  * Créer une nouvelle notification
@@ -22,11 +23,18 @@ export const createNotification = async (notificationData: CreateNotificationDat
 /**
  * Récupère toutes les notifications respectant le filtre de recherche donné
  * @param {SearchNotificationsFilter} filter - filtre de recherche à utiliser
- * @returns {Notification[]} - la liste de notifications respectant le filtre de recherche
+ * @returns {NotificationsCollection} - la liste de notifications respectant le filtre de recherche
  */
-export const getNotifications = async (filter: SearchNotificationsFilter): Promise<Notification[]> => {
-    const { page, pageSize,all, ..._ } = filter;
+export const getNotifications = async (filter: SearchNotificationsFilter): Promise<NotificationsCollection> => {
+    const { page, pageSize, all, ..._ } = filter;
+    
+    //Construction du WHERE à partir des filtres
     const where = buildNotificationWhereInput(filter);
+
+    //Compte total des notifications correspondant au filtre
+    const totalItems = await db.notification.count({where});
+    
+    //Construction de la requête principale
     const query: Prisma.NotificationFindManyArgs = {
         where,
         orderBy:{createdAt:"desc"}
@@ -37,8 +45,16 @@ export const getNotifications = async (filter: SearchNotificationsFilter): Promi
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const notifications = await db.notification.findMany(query);
-    return notifications;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+    return {
+        notifications,
+        pagination
+    };
 };
 
 /**

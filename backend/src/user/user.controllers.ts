@@ -11,7 +11,7 @@ import { searchNotificationsFilterSchema } from "../notification/notification.sc
 import { searchMessagesFilterSchema } from "../message/message.schemas";
 import { searchConversationsFilterSchema } from "../conversation/conversation.schemas";
 import { getUserIdFromRequest } from "../utils/utils";
-import { successResponse, errorResponse , successCollectionResponse} from "../utils/apiResponse";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 
 /**
@@ -19,13 +19,13 @@ import { successResponse, errorResponse , successCollectionResponse} from "../ut
  * @async
  * @param {Request} req - requête Express contenant les données de filtre à utiliser dans req.query
  * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
- * @returns {Promise<SafeUser>} - retourne un objet JSON contenant la liste des utilisateurs
+ * @returns {Promise<UsersCollection>} - retourne un objet JSON contenant la liste des utilisateurs
  */
 export const getUsersController = async(req: Request, res: Response) => {
     try {
         const filter = searchUsersFilterSchema.parse(req.query);
-        const users = await userService.getUsers(filter);
-        res.status(200).json(successResponse(users, "Utilisateurs récupérés"));
+        const userCollection = await userService.getUsers(filter);
+        res.status(200).json(successResponse(userCollection.users, "Utilisateurs récupérés", userCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des utilisateurs", err);
         if (err instanceof z.ZodError) {
@@ -136,8 +136,8 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchTeamsFilterSchema.parse(req.query);
-        const teams = await userService.getUserTeams(id, filter);
-        res.status(200).json(successResponse(teams, "Équipes de l'utilisateur récupérées"));
+        const teamCollection = await userService.getUserTeams(id, filter);
+        res.status(200).json(successResponse(teamCollection.teams, "Équipes de l'utilisateur récupérées", teamCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des équipes de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -156,8 +156,8 @@ export const getUserProjectsController = async (req: Request, res: Response) => 
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchProjectsFilterSchema.parse(req.query);
-        const projects = await userService.getUserProjects(id, filter);
-        res.status(200).json(successResponse(projects, "Projets de l'utilisateur récupérés"));
+        const projectCollection = await userService.getUserProjects(id, filter);
+        res.status(200).json(successResponse(projectCollection.projects, "Projets de l'utilisateur récupérés", projectCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des projets de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -176,8 +176,8 @@ export const getUserTasksController = async (req: Request, res: Response) => {
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchTasksFilterSchema.parse(req.query);
-        const userTasks = await userService.getUserTasks(id, filter);
-        res.status(200).json(successResponse(userTasks, "Tâches de l'utilisateur récupérées"));
+        const userTaskCollection = await userService.getUserTasks(id, filter);
+        res.status(200).json(successResponse(userTaskCollection.tasks, "Tâches de l'utilisateur récupérées", userTaskCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des taches de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -196,8 +196,8 @@ export const getUserNotificationsController = async (req: Request, res: Response
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchNotificationsFilterSchema.parse(req.query);
-        const userNotifications = await userService.getUserNotifications(id, filter);
-        res.status(200).json(successResponse(userNotifications, "Notifications de l'utilisateur récupérées"));
+        const userNotificationCollection = await userService.getUserNotifications(id, filter);
+        res.status(200).json(successResponse(userNotificationCollection.notifications, "Notifications de l'utilisateur récupérées", userNotificationCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des notifications de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -216,8 +216,8 @@ export const getUserConversationsController = async (req: Request, res: Response
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchConversationsFilterSchema.parse(req.query);
-        const userConversations = await userService.getUserConversations(id, filter);
-        res.status(200).json(successResponse(userConversations, "Conversations de l'utilisateur récupérées"));
+        const userConversationCollection = await userService.getUserConversations(id, filter);
+        res.status(200).json(successResponse(userConversationCollection.conversations, "Conversations de l'utilisateur récupérées", userConversationCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des conversations de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -236,8 +236,8 @@ export const getUserMessagesController = async (req: Request, res: Response) => 
     try {
         const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
         const filter = searchMessagesFilterSchema.parse(req.query);
-        const userMessages = await userService.getUserMessages(id, filter);
-        res.status(200).json(successResponse(userMessages, "Messages de l'utilisateur récupérés"));
+        const userMessageCollection = await userService.getUserMessages(id, filter);
+        res.status(200).json(successResponse(userMessageCollection.messages, "Messages de l'utilisateur récupérés", userMessageCollection.pagination));
     } catch (err) {
         console.error("Erreur lors de la récupération des messages de l'utilisateur : ", err);
         if (err instanceof z.ZodError) {

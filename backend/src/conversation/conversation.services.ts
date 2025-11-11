@@ -7,8 +7,10 @@ import { Message, SearchMessagesFilter} from "../message/Message";
 import { UserConversation } from "@prisma/client";
 import { ConversationNotFoundError, UserAlreadyInConversationError, NotEnoughParticipantsInConversationError } from "./errors";
 import { searchUsersFilterSchema } from "../user/user.schemas";
-import { buildUserWhereInput, buildMessageWhereInput} from "../utils/utils";
+import { buildUserWhereInput, buildMessageWhereInput, buildPaginationInfos} from "../utils/utils";
 import { Prisma } from "@prisma/client";
+import { UsersCollection } from "../user/User";
+import { MessagesCollection } from "../message/Message";
 
 /**
  * Crée une nouvelle conversation
@@ -23,7 +25,7 @@ export const createConversation = async (conversationData: CreateConversationDat
     if (teamId) {
         const memberFilter = searchUsersFilterSchema.parse({ all: true });
         const teamMembers = await getTeamMembers(teamId, memberFilter);
-        const teamMemberIds = teamMembers.map((user) => user.id);
+        const teamMemberIds = teamMembers.users.map((user) => user.id);
         finalParticipantIds = Array.from(new Set([...finalParticipantIds, ...teamMemberIds]));
     }
     if (!finalParticipantIds || finalParticipantIds.length < 1) throw new NotEnoughParticipantsInConversationError();
@@ -115,9 +117,9 @@ export const updateConversation = async (id: string): Promise<Conversation> => {
  * @async
  * @param {string} conversationId - identifiant de la conversation
  * @param {SearchUsersFilter} filter - filtre de recherche à utiliser
- * @returns {SafeUser[]} - la liste des participants
+ * @returns {UsersCollection} - la liste des participants
  */
-export const getConversationParticipants = async (conversationId: string, filter: SearchUsersFilter): Promise<SafeUser[]> => {
+export const getConversationParticipants = async (conversationId: string, filter: SearchUsersFilter): Promise<UsersCollection> => {
     const { page, pageSize, all, ..._ } = filter;
     const conversatioParticipantCondition: Prisma.UserWhereInput = {
         userConversations: {
@@ -125,8 +127,17 @@ export const getConversationParticipants = async (conversationId: string, filter
         }
     };
 
+    //Construction du WHERE à partir des filtres
     const userFilter = buildUserWhereInput(filter);
 
+    //Compte total d'utilisateurs correspondant au filtre
+    const totalItems = await db.user.count({
+        where: {
+            AND:[conversatioParticipantCondition, userFilter]
+        }
+    });
+
+    //Construction de la requête principale
     const query: Prisma.UserFindManyArgs = {
         where: {
             AND:[conversatioParticipantCondition, userFilter]
@@ -139,9 +150,17 @@ export const getConversationParticipants = async (conversationId: string, filter
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const participants = await db.user.findMany(query);
     const safeParticipants = participants.map(toSafeUser);
-    return safeParticipants;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+    return {
+        users: safeParticipants,
+        pagination
+    };
 };
 
 /**
@@ -149,12 +168,22 @@ export const getConversationParticipants = async (conversationId: string, filter
  * @async
  * @param {string} conversationId - identifiant de la conversation
  * @param {SearchMessagesFilter} filter - filtre de recherche à utiliser
- * @returns {Message[]} - la liste des messages
+ * @returns {MessagesCollection} - la liste des messages
  */
-export const getConversationMessages = async (conversationId: string, filter: SearchMessagesFilter): Promise<Message[]> => {
+export const getConversationMessages = async (conversationId: string, filter: SearchMessagesFilter): Promise<MessagesCollection> => {
     const { page, pageSize, all, ..._ } = filter;
+
+    //Construction du WHERE à partir des filtres
     const messageFilter = buildMessageWhereInput(filter);
 
+    //Compte total des messages correspondant au filtre
+    const totalItems = await db.message.count({
+        where: {
+            AND:[{conversationId}, messageFilter]
+        }
+    });
+    
+    //Construction de la requête principale
     const query: Prisma.MessageFindManyArgs = {
         where: {
             AND:[{conversationId}, messageFilter]
@@ -170,8 +199,16 @@ export const getConversationMessages = async (conversationId: string, filter: Se
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const messages = await db.message.findMany(query);
-    return messages;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+    
+    return {
+        messages,
+        pagination
+    };
 };
 
 /**

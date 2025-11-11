@@ -6,6 +6,7 @@ import { UserProvider } from "@prisma/client";
 import { createUser } from "../../user/user.services";
 import { ZodError } from "zod";
 import { getUserByEmail, updateUserLastLoginDateToNow } from "../../user/user.services";
+import { successResponse, errorResponse } from "../../utils/apiResponse";
 
 const REDIRECT_URI = "http://localhost:3000/api/auth/google/callback"
 
@@ -62,12 +63,12 @@ export const googleCallback = async (req: Request, res: Response) => {
         const { token, cookieOptions } = generateAuthResponse(user);
         res.cookie("projectManagerToken", token, cookieOptions);
         user = await updateUserLastLoginDateToNow(user.id);
-        res.status(200).json({ message: "Connexion Google réussie", user });
+        res.status(200).json(successResponse(user, "Connexion avec Google réussie"));
     } catch (err) {
         console.error("Erreur d’authentification Google", err);
         if (err instanceof ZodError) {
-                    res.status(400).json({ error: "Erreur d’authentification Google : données d'inscription invalides"});
-                }
-        res.status(500).json({ error: "Erreur d’authentification Google"});
+            res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
+        }
+        res.status(500).json(errorResponse("INTERNAL_SERVER_ERROR", "Erreur d’authentification Google"));
     }
 };

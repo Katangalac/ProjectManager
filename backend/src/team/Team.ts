@@ -1,5 +1,6 @@
 import { teamSchema, createTeamSchema, updateTeamDataSchema, searchTeamsFilterSchema,  userTeamSchema} from "./team.schemas";
 import { z } from "zod";
+import { Pagination } from "../types/Pagination";
 
 
 /**
@@ -26,3 +27,11 @@ export type SearchTeamsFilter = z.infer<typeof searchTeamsFilterSchema>;
  * Type représentant un utilisateur membre d'une équipe
  */
 export type UserTeam = z.infer<typeof userTeamSchema>;
+
+/**
+ * Type représentant une liste d'équipes ainsi que les informations sur la pagination
+ */
+export type TeamsCollection = {
+    teams: Team[],
+    pagination: Pagination
+};

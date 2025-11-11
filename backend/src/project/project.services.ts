@@ -1,4 +1,4 @@
-import { CreateProjectData, SearchProjectsFilter, Project, UpdateProjectData } from "./Project";
+import { CreateProjectData, SearchProjectsFilter, Project, UpdateProjectData, ProjectsCollection } from "./Project";
 import { ProjectNotFoundError, TeamAlreadyInProjectError, TeamNotInProjectError } from "./errors";
 import { db } from "../db";
 import { Prisma, ProjectTeam } from "@prisma/client";
@@ -6,8 +6,10 @@ import { Team,SearchTeamsFilter } from "../team/Team";
 import { toSafeUser } from "../user/user.transforms";
 import { SafeUser, SearchUsersFilter } from "../user/User";
 import { Task, SearchTasksFilter} from "../task/Task";
-import { buildProjectWhereInput, buildUserWhereInput, buildTaskWhereInput, buildTeamWhereInput} from "../utils/utils";
-
+import { buildProjectWhereInput, buildUserWhereInput, buildTaskWhereInput, buildTeamWhereInput, buildPaginationInfos} from "../utils/utils";
+import { UsersCollection } from "../user/User";
+import { TasksCollection } from "../task/Task";
+import { TeamsCollection } from "../team/Team";
 
 /**
  * Crée un nouveau projet 
@@ -39,11 +41,18 @@ export const getProjectById = async (id: string):Promise<Project> => {
  * Récupère les projets remplissant les critères de filtre passé en paramètre
  * @async
  * @param {SearchProjectsFilter} - les filtres de recherche à utiliser 
- * @returns {Project[]} - la liste de projets remplissant les critères de recherche
+ * @returns {ProjectsCollection} - la liste de projets remplissant les critères de recherche
  */
-export const getProjects = async (filter: SearchProjectsFilter): Promise<Project[]> => {
-    const { page, pageSize,all, ..._} = filter;
+export const getProjects = async (filter: SearchProjectsFilter): Promise<ProjectsCollection> => {
+    const { page, pageSize, all, ..._ } = filter;
+    
+    //Construction du WHERE à partir des filtres
     const where = buildProjectWhereInput(filter);
+
+    //Compte total des projets correspondant au filtre
+    const totalItems = await db.project.count({ where });
+    
+    //Construction de la requête principale
     const query: Prisma.ProjectFindManyArgs = {
         where,
         orderBy:{updatedAt:"desc"}
@@ -52,8 +61,17 @@ export const getProjects = async (filter: SearchProjectsFilter): Promise<Project
         query.skip = (page - 1) * pageSize;
         query.take = pageSize;
     }
+
+    //Exécution de la requête
     const projects = await db.project.findMany(query);
-    return projects;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+    return {
+        projects,
+        pagination
+    };
 };
 
 /**
@@ -139,9 +157,9 @@ export const removeTeamFromProject = async (teamId: string, projectId: string) =
  * @async
  * @param projectId - identifiant du projet
  * @param {SearchTeamssFilter} filter - filtre de recherche à utiliser
- * @returns {Team[]} - la liste d'équipes intervenant dans le projet
+ * @returns {TeamsCollection} - la liste d'équipes intervenant dans le projet
  */
-export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilter): Promise<Team[]> => {
+export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilter): Promise<TeamsCollection> => {
     const { page, pageSize,all, ..._ } = filter;
     const projectTeamCondition: Prisma.TeamWhereInput = {
         teamProjects: {
@@ -149,8 +167,16 @@ export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilt
         }
     };
 
+    //Construction du WHERE à partir des filtres
     const teamFilter = buildTeamWhereInput(filter);
 
+    //Compte total d'équipes correspondant au filtre
+    const totalItems = await db.team.count({
+        where: {
+            AND:[projectTeamCondition, teamFilter]
+    }});
+
+    //Construction de la requête principale
     const query: Prisma.TeamFindManyArgs = {
         where: {
             AND:[projectTeamCondition, teamFilter]
@@ -163,17 +189,25 @@ export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilt
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const projectTeams = await db.team.findMany(query);
-    return projectTeams;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+    return {
+        teams: projectTeams,
+        pagination
+    };
 };
 
 /**
  * Récupère tous les utilisateurs impliqués dans un projet
  * @param projectId - identifiant du projet
  * @param {SearchUsersFilter} - filtre de recherche à utiliser
- * @returns {SafeUser[]} - les utilisateurs intervenant dans le projet
+ * @returns {UsersCollection} - les utilisateurs intervenant dans le projet
  */
-export const getProjectMembers = async (projectId: string, filter: SearchUsersFilter): Promise<SafeUser[]> => {
+export const getProjectMembers = async (projectId: string, filter: SearchUsersFilter): Promise<UsersCollection> => {
     const { page, pageSize,all, ..._ } = filter;
     const projectMemberCondition: Prisma.UserWhereInput = {
         userTeams: {
@@ -187,8 +221,17 @@ export const getProjectMembers = async (projectId: string, filter: SearchUsersFi
         }
     };
 
+    //Construction du WHERE à partir des filtres
     const userFilter = buildUserWhereInput(filter);
 
+    //Compte total d'utilisateur correspondant au filtre
+    const totalItems = await db.user.count({
+        where: {
+            AND:[projectMemberCondition, userFilter]
+        }
+    });
+    
+    //Construction de la requête principale
     const query: Prisma.UserFindManyArgs = {
         where: {
             AND:[projectMemberCondition, userFilter]
@@ -201,23 +244,38 @@ export const getProjectMembers = async (projectId: string, filter: SearchUsersFi
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const projectUsers = await db.user.findMany(query);
-
     const projectSafeUsers = projectUsers.map(toSafeUser);
-    return projectSafeUsers;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+    
+    return {
+        users: projectSafeUsers,
+        pagination
+    };
 };
 
 /**
  * Récupère toutes les taches d'un projet
  * @param projectId - identifiant du projet
  * @param {SearchTasksFilter} filter - filtre de recherche à utiliser
- * @returns {Task[]} - la liste de taches du projet
+ * @returns {TasksCollection} - la liste de taches du projet
  */
-export const getProjectTasks = async (projectId: string, filter: SearchTasksFilter): Promise<Task[]> => {
+export const getProjectTasks = async (projectId: string, filter: SearchTasksFilter): Promise<TasksCollection> => {
     const { page, pageSize,all, ..._ } = filter;
     
+    //Construction du WHERE à partir des filtres
     const taskfilter = buildTaskWhereInput(filter);
         
+    //Compte total des tâches correspondant au filtre
+    const totalItems = await db.task.count({
+        where: {
+            AND: [{projectId}, taskfilter]
+    }});
+
+    //Construction de la requête principale
     const query: Prisma.TaskFindManyArgs = {
         where: {
             AND: [{projectId}, taskfilter]
@@ -230,6 +288,14 @@ export const getProjectTasks = async (projectId: string, filter: SearchTasksFilt
         query.take = pageSize;
     }
 
+    //Exécution de la requête
     const projectTasks = await db.task.findMany(query);
-    return projectTasks;
+
+    //Calcul pagination
+    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+    return {
+        tasks: projectTasks,
+        pagination
+    };
 };
