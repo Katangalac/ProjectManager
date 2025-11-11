@@ -8,6 +8,7 @@ import { searchTasksFilterSchema } from "../task/task.schemas";
 import { searchUsersFilterSchema } from "../user/user.schemas";
 import { searchProjectsFilterSchema } from "../project/project.schemas";
 import { successResponse, errorResponse } from "../utils/apiResponse";
+import { addNotificationToQueue } from "../notification/notification.queue";
 
 /**
  * Crée une nouvelle équipe
@@ -135,6 +136,7 @@ export const addUserToTeamController = async (req: Request, res: Response) => {
         const inputData = teamSchemas.addUserToTeamInputSchema.parse(req.body);
         const userTeamPair = await teamService.addUserToTeam(inputData.userId, id, inputData.userRole);
         res.status(200).json(successResponse(userTeamPair, "Utilisateur ajouté à l'équipe"));
+        addNotificationToQueue(inputData.userId, "Nouvelle équipe de travail", "Vous avez été ajouté à une équipe");
     }catch (err) {
         console.error("Erreur lors de l'ajout de l'utilisateur à l'équipe : ", err);
         if (err instanceof z.ZodError) {
@@ -159,6 +161,7 @@ export const removeUserFromTeamController = async (req: Request, res: Response) 
         const { id:userId } = idParamSchema.parse({ id: req.params.userId });
         await teamService.removeUserFromTeam(userId, teamId);
         res.status(204).send();
+        addNotificationToQueue(userId, "Retrait d'un équipe", "Vous avez été rétiré d'une équipe");
     }catch (err) {
         console.error("Erreur lors du retrait de l'utilisateur de l'équipe : ", err);
         if (err instanceof z.ZodError) {
@@ -184,6 +187,7 @@ export const updateUserRoleInTeamController = async (req: Request, res: Response
         const {userRole} = teamSchemas.userTeamRoleSchema.parse(req.body);
         const updatedUserTeamPair = await teamService.updateUserRoleInTeam(userId, teamId, userRole);
         res.status(200).json(successResponse(updatedUserTeamPair, "Rôle de l'utilisateur mis à jour"));
+        addNotificationToQueue(userId, "Nouveau rôle", "Un nouveau rôle vous a été assigné");
     } catch (err) {
         console.error("Erreur lors de la modification du rôle de l'utilisateur dans l'équipe", err);
         if (err instanceof z.ZodError) {

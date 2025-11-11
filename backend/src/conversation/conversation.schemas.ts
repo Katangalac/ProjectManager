@@ -41,7 +41,6 @@ export const searchConversationsFilterSchema = z.object({
     teamId: z.uuid("ID invalide").optional(),
     isGroup: z
         .string()
-        .optional()
         .transform((val) => {
             if (val === undefined) return undefined;
             if (val.toLowerCase() === "true") return true;
@@ -53,12 +52,11 @@ export const searchConversationsFilterSchema = z.object({
                     path:["read"]
                 }
             ]);
-        }),
+        }).optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
     all: z
         .string()
-        .optional()
         .transform((val) => {
             if (val === undefined) return undefined;
             if (val.toLowerCase() === "true") return true;
@@ -70,6 +68,6 @@ export const searchConversationsFilterSchema = z.object({
                     path:["read"]
                 }
             ]);
-        }),
+        }).optional(),
   });
   

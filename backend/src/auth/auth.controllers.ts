@@ -11,6 +11,10 @@ import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 import { UserNotFoundError } from "../user/errors";
+import { addEmailToQueue } from "../email/email.queue";
+import { addNotificationToQueue } from "../notification/notification.queue";
+import { getWelcomeMessageHtml } from "../utils/utils";
+
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
@@ -26,6 +30,9 @@ export const register = async (req: Request, res: Response) => {
         res.cookie("projectManagerToken", token, cookieOptions);
         user = await updateUserLastLoginDateToNow(user.id);
         res.status(201).json(successResponse(user, "Utilisateur créé"));
+        addNotificationToQueue(user.id, "Bienvenue 🎉", "Votre compte a été créé avec succès!");
+        const html = getWelcomeMessageHtml(user.userName);
+        addEmailToQueue(user.email, "Bienvenue sur ProjectManager", html);
     } catch (err) {
         console.error("Erreur lors de l'inscription : ", err);
         if (err instanceof z.ZodError) {

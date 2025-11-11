@@ -165,6 +165,14 @@ export const buildPaginationInfos = (all:boolean|undefined, page:number, pageSiz
     return pagination;
 };
 
+/**
+ * Retourne le message de bienvenue dans un html
+ */
+export const getWelcomeMessageHtml = (userName:string): string => {
+    const html = `<h2>Bienvenue ${userName} 👋</h2><p>Merci de rejoindre ProjectManager 🚀</p>`;
+    return html;
+};
+
 
 
 

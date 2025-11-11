@@ -14,7 +14,7 @@ import { successResponse, errorResponse } from "../utils/apiResponse";
 export const createNotificationController = async (req: Request, res: Response) => {
     try {
         const notificationData = notificationSchema.createNotificationSchema.parse(req.body);
-        const newNotification = await notificationService.createNotification(notificationData);
+        const newNotification = await notificationService.sendNotification(notificationData);
         res.status(201).json(successResponse(newNotification, "Notification créée"));
     } catch (err) {
         console.error("Erreur lors de la création de la notification", err);

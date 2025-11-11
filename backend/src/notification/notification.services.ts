@@ -10,7 +10,7 @@ import { NotificationsCollection } from "./Notification";
  * @param {CreateNotificationData} notificationData - données sur la notification à créer
  * @returns {Notification} - la notification créée
  */
-export const createNotification = async (notificationData: CreateNotificationData): Promise<Notification> => {
+export const sendNotification = async (notificationData: CreateNotificationData): Promise<Notification> => {
     const newNotification = await db.notification.create({
         data: {
             ...notificationData,

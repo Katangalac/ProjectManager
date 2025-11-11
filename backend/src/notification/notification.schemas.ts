@@ -7,6 +7,7 @@ import {z} from 'zod'
 export const notificationSchema = z.object({
     id: z.uuid("ID invalide"),
     userId: z.uuid("ID invalide"),
+    title: z.string().default("Untitled"),
     message: z.string(),
     read: z.boolean().default(false),     
     updatedAt: z.date(),
@@ -30,7 +31,6 @@ export const createNotificationSchema = notificationSchema.omit({
 export const searchNotificationsFilterSchema = z.object({
     read: z
         .string()
-        .optional()
         .transform((val) => {
             if (val === undefined) return undefined;
             if (val.toLowerCase() === "true") return true;
@@ -42,12 +42,11 @@ export const searchNotificationsFilterSchema = z.object({
                     path:["read"]
                 }
             ]);
-        }),
+        }).optional(),
     page: z.coerce.number().int().min(1).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
     all: z
         .string()
-        .optional()
         .transform((val) => {
             if (val === undefined) return undefined;
             if (val.toLowerCase() === "true") return true;
@@ -59,5 +58,5 @@ export const searchNotificationsFilterSchema = z.object({
                     path:["read"]
                 }
             ]);
-        }),
+        }).optional(),
 });

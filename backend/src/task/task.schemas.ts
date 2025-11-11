@@ -70,7 +70,6 @@ export const searchTasksFilterSchema = z.object({
     pageSize: z.coerce.number().int().min(1).max(100).default(20),
     all: z
         .string()
-        .optional()
         .transform((val) => {
             if (val === undefined) return undefined;
             if (val.toLowerCase() === "true") return true;
@@ -82,5 +81,5 @@ export const searchTasksFilterSchema = z.object({
                     path:["read"]
                 }
             ]);
-        }),
+        }).optional(),
 });

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { searchUsersFilterSchema } from "../user/user.schemas";
 import { TaskStatus } from "@prisma/client";
+import { addNotificationToQueue } from "../notification/notification.queue";
 
 /**
  * Crée une nouvelle tache
@@ -154,6 +155,7 @@ export const assignTaskToUserController = async (req: Request, res: Response) =>
         const {id:userId} = idParamSchema.parse({ id: req.params.userId });
         const userTaskPair = await taskService.assignTaskToUser(taskId, userId);
         res.status(200).json({ message: "La tâche a été assignée à l'utilisateur", userTaskPair: userTaskPair });
+        addNotificationToQueue(userId, "Nouvelle tâche assignée", "Une nouvelle tâche vous a été assignée");
     }catch (err) {
         console.error("Erreur lors de l'assignation de la tâche à l'utilisateur : ", err);
         if (err instanceof z.ZodError) {
@@ -177,6 +179,7 @@ export const unassignUserFromTaskController = async (req: Request, res: Response
         const { id:taskId } = idParamSchema.parse({ id: req.params.id });
         const { id:userId } = idParamSchema.parse({ id: req.params.userId });
         await taskService.unassignUserFromTask(userId, taskId);
+        addNotificationToQueue(userId,"Tâche desassignée", "Une tâche vous a été desassignée");
         res.status(204).send();
     }catch (err) {
         console.error("Erreur lors de la désassignation de l'utilisateur de la tâche : ", err);
