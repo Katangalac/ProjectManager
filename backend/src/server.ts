@@ -62,7 +62,7 @@ app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/messages", messageRoutes);
 //app.use("/api/v1/email", emailRoutes); test d'envoie d'email
 
-//TODO:Interaction entre service
+//TODO:Interaction entre service X
 //TODO:Déterminer les routes à exposer à l'API X
 //TODO:Corriger le createdAt qui change à chaque fois X
 //TODO:Parachever les routes pour un user connnecté, routes "me" X

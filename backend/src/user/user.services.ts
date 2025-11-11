@@ -234,15 +234,22 @@ export const getUserTeams = async (userId: string, filter: SearchTeamsFilter): P
 export const getUserProjects = async (userId: string, filter: SearchProjectsFilter): Promise<ProjectsCollection> => {
     const { page, pageSize,all, ..._ } = filter;
     const userProjectCondition: Prisma.ProjectWhereInput = {
-        projectTeams: {
-            some: {
-                team: {
-                    teamUsers: {
-                        some: { userId }
+        OR: [
+            {
+                projectTeams: {
+                    some: {
+                        team: {
+                            teamUsers: {
+                                some: { userId }
+                            }
+                        }
                     }
                 }
+            },
+            {
+                creatorId:userId
             }
-        }
+        ]
     };
 
     //Construction du WHERE à partir des filtres
