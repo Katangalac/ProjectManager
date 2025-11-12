@@ -1,6 +1,10 @@
 import { Server } from "socket.io";
 import http from "http";
-import { Message } from "../message/types/Message";
+import { Message } from "../message/Message";
+import { getUserProjects } from "../user/user.services";
+import { getUserTasks } from "../user/user.services";
+import { getUserTeams } from "../user/user.services";
+import { getUserConversations } from "../user/user.services";
 
 //Instance du serveur Socket.io
 let io: Server;
@@ -22,6 +26,31 @@ export const setupSocket = (server: http.Server) => {
 
   io.on("connection", (socket) => {
     console.log("🟢 Client connecté:", socket.id);
+
+    /**
+     * Déclenché lorsque l'utilisateur est inscrit dans le système
+     * Cela permet ensuite d'envoyer des messages/notifications en temps réel à cet utilisateur
+     */
+    socket.on("login", async(userId: string) => {
+      console.log(`Utilisateur ${userId} enregistré sur le socket ${socket.id}`);
+      socket.join(userId); // Permet de cibler l'utilisateur dans io.to(userId)
+
+      //Écoute les évenements des équipes de l'utilisateur
+      const teams = await getUserTeams(userId, { all: true, page: 1, pageSize: 20 });
+      teams.teams.forEach(team => socket.join(team.id));
+
+      //Écoute les évenements des tâches de l'utilisateur
+      const tasks = await getUserTasks(userId, { all: true, page: 1, pageSize: 20 });
+      tasks.tasks.forEach(task => socket.join(task.id));
+
+      //Écoute les évenements des projets de l'utilisateur
+      const projects = await getUserProjects(userId, { all: true, page: 1, pageSize: 20 });
+      projects.projects.forEach(project => socket.join(project.id));
+
+      //Écoute sur les évenements des conversations de l'utilisateur
+      const conversations = await getUserConversations(userId, { all: true, page: 1, pageSize: 20 });
+      conversations.conversations.forEach(conversation => socket.join(conversation.id));
+    });
 
     /**
      * Le client rejoint une conversation spécifique.
