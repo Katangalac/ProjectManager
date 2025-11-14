@@ -1,10 +1,13 @@
-import AuthForm from "../components/auth/AuthForm";
 import AuthLayout from "../components/auth/AuthLayout";
+import RegisterForm from "../components/auth/RegisterForm";
 
-export default function LoginPage() {
+/**
+ * Page d'inscription
+ */
+export default function RegisterPage() {
     return (
         <AuthLayout>
-            <AuthForm type="REGISTER"></AuthForm>
+            <RegisterForm/>
         </AuthLayout>
     );
 };
