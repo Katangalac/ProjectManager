@@ -11,7 +11,7 @@ import { tokenPayloadSchema } from "./auth.schemas";
  * @param {NextFunction} next - la fonction qui sera exécuté une fois le token validé
  */
 export const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    const token = req.cookies.projectFlowToken || req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: "Jeton d'authentification manquant" });
 
     try {

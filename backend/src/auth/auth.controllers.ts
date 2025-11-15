@@ -27,12 +27,12 @@ export const register = async (req: Request, res: Response) => {
         const newUserData = createUserSchema.parse(req.body);
         let user = await createUser(newUserData, UserProvider.LOCAL);
         const { token, cookieOptions } = generateAuthResponse(user);
-        res.cookie("projectManagerToken", token, cookieOptions);
+        res.cookie("projectFlowToken", token, cookieOptions);
         user = await updateUserLastLoginDateToNow(user.id);
         res.status(201).json(successResponse(user, "Utilisateur créé"));
         addNotificationToQueue(user.id, "Bienvenue 🎉", "Votre compte a été créé avec succès!");
         const html = getWelcomeMessageHtml(user.userName);
-        addEmailToQueue(user.email, "Bienvenue sur ProjectManager", html);
+        addEmailToQueue(user.email, "Bienvenue sur ProjectFlow", html);
     } catch (err) {
         console.error("Erreur lors de l'inscription : ", err);
         if (err instanceof z.ZodError) {
@@ -66,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
             const isValidPassword = await verify(password, loginData.password);
             if (!isValidPassword) return res.status(401).json({ error: "Mot de passe invalide" });
             const { token, cookieOptions } = generateAuthResponse(safeUser);
-            res.cookie("projectManagerToken", token, cookieOptions);
+            res.cookie("projectFlowToken", token, cookieOptions);
             const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
             res.status(200).json(successResponse(updatedUser, "Connexion réussie"));
         }
@@ -95,7 +95,7 @@ export const logout = async (req: Request, res: Response) => {
             secure: true,
             sameSite: "lax" as const
         };
-        res.clearCookie("projectManagerToken", cookieOptions);
+        res.clearCookie("projectFlowToken", cookieOptions);
         res.json(successResponse(null, "Déconnexion réussie"));
     } catch (err) {
         console.error("Erreur lors de la déconnexion : ", err);
