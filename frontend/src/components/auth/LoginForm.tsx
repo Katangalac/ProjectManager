@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../schemas/auth.schemas.ts";
-import {LoginInputs} from "../../types/Auth.ts";
+import { LoginInputs } from "../../types/Auth.ts";
+import { loginRequest } from "../../services/auth/auth.services.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 
@@ -20,9 +21,14 @@ export default function LoginForm() {
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = (data: LoginInputs) => {
-        console.log("Login data:", data);
-        navigate("/dashboard");
+    const onSubmit = async(data: LoginInputs) => {
+       try {
+            const result = await loginRequest(data.identifier, data.password);
+            console.log("User logged in:", result.data);
+            navigate("/dashboard");
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

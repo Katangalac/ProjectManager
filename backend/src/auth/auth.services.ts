@@ -20,7 +20,7 @@ export const generateAuthResponse = (user: SafeUser) => {
             httpOnly: true,
             secure: true,
             sameSite:"lax" as const,
-            maxAge:3600_000,
+            maxAge:3600_000_000,
         },
     };
 };

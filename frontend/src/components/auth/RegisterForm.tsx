@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schemas.ts";
-import {RegisterInputs} from "../../types/Auth.ts";
+import { RegisterInputs } from "../../types/Auth.ts";
+import { registerRequest } from "../../services/auth/auth.services.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 
@@ -20,9 +21,14 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: RegisterInputs) => {
-    console.log("Register data:", data);
-    navigate("/dashboard");
+  const onSubmit = async(data: RegisterInputs) => {
+    try {
+        const result = await registerRequest(data.username, data.email, data.password);
+        console.log("User signed up:", result.data);
+        navigate("/dashboard");
+    } catch (err) {
+        console.log(err);
+    }
   };
 
   return (
