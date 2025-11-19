@@ -12,17 +12,17 @@ import { UserNotFoundError } from "../user/errors";
  * @returns : le token d'authentification signé ainsi que les options du cookie dans lequel il sera stocké
  */
 export const generateAuthResponse = (user: SafeUser) => {
-    const payload = toTokenPayload(user);
-    const token = signToken(payload);
-    return {
-        token,
-        cookieOptions: {
-            httpOnly: true,
-            secure: true,
-            sameSite:"lax" as const,
-            maxAge:3600_000_000,
-        },
-    };
+  const payload = toTokenPayload(user);
+  const token = signToken(payload);
+  return {
+    token,
+    cookieOptions: {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax" as const,
+      maxAge: 3600_000_000,
+    },
+  };
 };
 
 /**
@@ -32,17 +32,20 @@ export const generateAuthResponse = (user: SafeUser) => {
  * @param {string} updatePasswordData - objet contenant l'ancien et le nouveau mot de passe
  * @throws {UserNotFoundError} - Si aucun utilisaeur ayant l'identifiant n'a été trouvé
  */
-export const updatePassword = async (userId: string, updatePasswordData: updatePasswordData) => {
-    const {currentPassword, newPassword } = updatePasswordData;
-    const user = await db.user.findUnique({ where: { id: userId } });
-    if (!user) throw new UserNotFoundError(userId);
-    if (!user.password) throw new Error("L'utilisateur ne possède pas de mot de passe");
-    const isValidPassword = await verify(user.password, currentPassword);
-    if (!isValidPassword) throw new Error("Mot de passe invalide");
-    const hashedPassword = await hash(newPassword);
-    await db.user.update({
-        where: { id: userId },
-        data: {password: hashedPassword}
-    });
+export const updatePassword = async (
+  userId: string,
+  updatePasswordData: updatePasswordData
+) => {
+  const { currentPassword, newPassword } = updatePasswordData;
+  const user = await db.user.findUnique({ where: { id: userId } });
+  if (!user) throw new UserNotFoundError(userId);
+  if (!user.password)
+    throw new Error("L'utilisateur ne possède pas de mot de passe");
+  const isValidPassword = await verify(user.password, currentPassword);
+  if (!isValidPassword) throw new Error("Mot de passe invalide");
+  const hashedPassword = await hash(newPassword);
+  await db.user.update({
+    where: { id: userId },
+    data: { password: hashedPassword },
+  });
 };
-

@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import https from "https";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -20,10 +21,10 @@ import morgan from "morgan";
 const app = express();
 const PORT = process.env.PORT || 3000;
 const corsOption = {
-    origin: "http://localhost:5173",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(express.json());
@@ -43,12 +44,12 @@ app.use(cookieParser());
 
 //Routes
 app.get("/", (req, res) => {
-    res.json({
-        message: "Bienvenue sur l'API de ProjectManager",
-        status: "OK",
-        timestamp: new Date().toISOString(),
-        version: "v1.0.0",
-    })
+  res.json({
+    message: "Bienvenue sur l'API de ProjectManager",
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    version: "v1.0.0",
+  });
 });
 
 app.use("/api/v1/auth", authRoutes);
@@ -78,4 +79,7 @@ app.use("/api/v1/messages", messageRoutes);
 const server = http.createServer(app);
 setupSocket(server);
 
-app.listen(PORT, () => console.log("Serveur démarré sur http://localhost:3000"));
+app.listen(PORT, () =>
+  console.log("Serveur démarré sur http://localhost:3000")
+);
+//https.createServer(app).listen(PORT, () => console.log("Serveur démarré sur https://localhost:3000"));

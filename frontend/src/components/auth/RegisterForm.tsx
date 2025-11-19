@@ -5,6 +5,8 @@ import { RegisterInputs } from "../../types/Auth.ts";
 import { registerRequest } from "../../services/auth/auth.services.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
+import { clsx } from "clsx";
+import { useUserStore } from "../../stores/userStore.ts";
 
 /**
  * Formulaire d'inscription
@@ -12,6 +14,8 @@ import { Google } from "@lobehub/icons";
  */
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_API_URL;
+  const setUser = useUserStore((state) => state.setUser);
 
   const {
     register,
@@ -21,105 +25,174 @@ export default function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async(data: RegisterInputs) => {
+  const onSubmit = async (data: RegisterInputs) => {
     try {
-        const result = await registerRequest(data.username, data.email, data.password);
-        console.log("User signed up:", result.data);
-        navigate("/dashboard");
+      const result = await registerRequest(
+        data.username,
+        data.email,
+        data.password
+      );
+      setUser(result.data);
+      console.log("User signed up:", result.data);
+      navigate("/dashboard");
     } catch (err) {
-        console.log(err);
+      console.log(err);
+      alert("Erreur lors de l'inscription : erreur interne du serveur");
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white dark:bg-gray-900 p-8">
-      <h2 className="text-3xl text-black font-bold text-center mb-4 dark:text-white">
+    <div
+      className={clsx(
+        "mx-auto w-full max-w-md p-8",
+        "bg-white",
+        "dark:bg-gray-900"
+      )}
+    >
+      <h2
+        className={clsx(
+          "mb-4 text-center text-3xl font-bold text-black",
+          "dark:text-white"
+        )}
+      >
         Créer un compte
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
         <div>
-          <div className="flex justify-between mb-1">
-            <label className="text-left text-black block text-sm font-medium dark:text-white">
-                Nom d'utilisateur
+          <div className={clsx("mb-1 flex justify-between")}>
+            <label
+              className={clsx(
+                "block text-left text-sm font-medium text-black",
+                "dark:text-white"
+              )}
+            >
+              Nom d'utilisateur
             </label>
             {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+              <p className={clsx("mt-1 text-sm text-red-500")}>
+                {errors.username.message}
+              </p>
             )}
           </div>
           <input
             type="text"
-            className={`w-full px-4 py-2 border rounded-sm bg-white dark:bg-gray-800 dark:text-white ${
-                errors.username ? "border-red-500" : "border-gray-300"
-            }`}
+            className={clsx(
+              "w-full px-4 py-2",
+              "rounded-sm border bg-white",
+              "dark:bg-gray-800 dark:text-white",
+              errors.username ? "border-red-500" : "border-gray-300"
+            )}
             {...register("username")}
           />
         </div>
 
         <div>
-          <div className="flex justify-between mb-1">
-            <label className="text-left text-black block text-sm font-medium dark:text-white">
-                Email
-            </label> 
+          <div className={clsx("mb-1 flex justify-between")}>
+            <label
+              className={clsx(
+                "block text-left text-sm font-medium text-black",
+                "dark:text-white"
+              )}
+            >
+              Email
+            </label>
             {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-            )}          
+              <p className={clsx("mt-1 text-sm text-red-500")}>
+                {errors.email.message}
+              </p>
+            )}
           </div>
           <input
             type="email"
-            className={`w-full px-4 py-2 border rounded-sm bg-white dark:bg-gray-800 dark:text-white ${
-                errors.email ? "border-red-500" : "border-gray-300"
-            }`}
+            className={clsx(
+              "w-full px-4 py-2",
+              "rounded-sm border bg-white",
+              "dark:bg-gray-800 dark:text-white",
+              errors.email ? "border-red-500" : "border-gray-300"
+            )}
             {...register("email")}
           />
         </div>
 
         <div>
-          <div className="flex justify-between mb-1">
-            <label className="text-left text-black block mb-1 text-sm font-medium dark:text-white">
-                Mot de passe
+          <div className={clsx("mb-1 flex justify-between")}>
+            <label
+              className={clsx(
+                "block text-left text-sm font-medium text-black",
+                "dark:text-white"
+              )}
+            >
+              Mot de passe
             </label>
             {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-            )}          
+              <p className={clsx("mt-1 text-sm text-red-500")}>
+                {errors.password.message}
+              </p>
+            )}
           </div>
           <input
             type="password"
-            className={`w-full px-4 py-2 border rounded-sm bg-white dark:bg-gray-800 dark:text-white ${
-                errors.password ? "border-red-500" : "border-gray-300"
-            }`}
+            className={clsx(
+              "w-full px-4 py-2",
+              "rounded-sm border bg-white",
+              "dark:bg-gray-800 dark:text-white",
+              errors.password ? "border-red-500" : "border-gray-300"
+            )}
             {...register("password")}
           />
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 font-semibold rounded-sm bg-cyan-500 hover:bg-cyan-600 text-white"
+          className={clsx(
+            "w-full py-2 font-semibold text-white",
+            "rounded-sm bg-cyan-500 hover:bg-cyan-600"
+          )}
         >
           Créer un compte
         </button>
       </form>
 
-      <div className="relative flex items-center my-6">
-        <div className="flex-grow border-t border-gray-300"></div>
-            <span className="mx-4 text-gray-500 text-sm font-medium whitespace-nowrap">
-            Ou s'inscrire avec
-            </span>
-        <div className="flex-grow border-t border-gray-300"></div>
+      <div className={clsx("relative my-6 flex items-center")}>
+        <div className={clsx("grow border-t border-gray-300")}></div>
+        <span
+          className={clsx(
+            "mx-4 text-sm font-medium whitespace-nowrap text-gray-500"
+          )}
+        >
+          Ou s'inscrire avec
+        </span>
+        <div className={clsx("grow border-t border-gray-300")}></div>
       </div>
 
-      <div>
-        <button className="flex text-gray-600 font-medium w-full px-2 py-2 border border-gray-300 rounded-sm items-center justify-center gap-2 bg-gray-50 hover:bg-gray-200">
-          <Google.Color size={16} /> Google
-        </button>
+      <div className={clsx("flex items-center justify-between gap-2")}>
+        <a className={clsx("w-full")} href={`${backendUrl}/auth/google`}>
+          <button
+            className={clsx(
+              "flex w-full items-center justify-center gap-2 px-2 py-2",
+              "rounded-sm border border-gray-300 bg-gray-50 hover:bg-gray-200",
+              "font-medium text-gray-600"
+            )}
+          >
+            <Google.Color size={16} /> Google
+          </button>
+        </a>
       </div>
 
-      <p className="mt-6 text-center text-sm">
-        <span className="text-gray-500 dark:text-gray-400 font-medium">Vous avez déjà un compte ? </span>
-        <a href="/" className="text-blue-500 font-medium hover:underline">
+      <p className={clsx("mt-6 text-center text-sm")}>
+        <span
+          className={clsx("font-medium text-gray-500", "dark:text-gray-400")}
+        >
+          Vous avez déjà un compte ?{" "}
+        </span>
+        <a
+          className={clsx("font-medium text-blue-500 hover:underline")}
+          href="/"
+        >
           Se connecter
         </a>
       </p>
     </div>
   );
-};
+}
