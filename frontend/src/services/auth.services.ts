@@ -1,4 +1,4 @@
-import { axiosClient } from "../../lib/axiosClient";
+import { axiosClient } from "../lib/axiosClient";
 import axios from "axios";
 
 /**

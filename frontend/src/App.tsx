@@ -7,20 +7,31 @@ import RootRedirect from "./pages/RootRedirect.tsx";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashBoard from "./pages/DashBoard.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
-import { getMe } from "./services/auth/auth.services.ts";
-//import { useAuth } from "./hooks/useAuth.ts";
+import { useQuery } from "@tanstack/react-query";
+import { getMe } from "./services/auth.services.ts";
 
 function App() {
   const { setUser, logout } = useUserStore();
 
+  const { data, isError, isSuccess } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+    retry: false,
+  });
+
   useEffect(() => {
-    getMe()
-      .then((res) => setUser(res.data))
-      .catch(() => logout());
-  }, []);
+    if (isSuccess && data) {
+      setUser(data.data);
+    }
+
+    if (isError) {
+      logout();
+    }
+  }, [isSuccess, isError, data, logout, setUser]);
 
   return (
     <BrowserRouter>
@@ -33,6 +44,14 @@ function App() {
           element={
             <ProtectedRoute>
               <DashBoard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:id?"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

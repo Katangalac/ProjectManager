@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schemas.ts";
 import { RegisterInputs } from "../../types/Auth.ts";
-import { registerRequest } from "../../services/auth/auth.services.ts";
+import { registerRequest } from "../../services/auth.services.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
