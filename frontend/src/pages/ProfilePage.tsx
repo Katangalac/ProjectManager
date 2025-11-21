@@ -14,7 +14,9 @@ export default function ProfilePage() {
     const isOwnProfile = !id || (currentUser && currentUser.id === id); */
 
   return (
-    <>
+    <div
+      className={clsx("min-h-screen w-full", "bg-white", "dark:bg-gray-900")}
+    >
       {currentUser && (
         <div className={clsx("flex flex-col gap-2")}>
           <span className={clsx("text-black dark:text-white")}>
@@ -51,6 +53,6 @@ export default function ProfilePage() {
           </span>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -11,13 +11,18 @@ import {
   CalendarDotsIcon,
 } from "@phosphor-icons/react";
 
+/**
+ * Barre de navigation latéral
+ * Permet de naviguer entre les pages de l'application
+ */
 export default function SideBar() {
   return (
     <aside
       className={clsx(
-        "flex min-h-screen w-64 flex-col px-5 shadow-lg shadow-gray-500",
-        "border-r border-gray-400 bg-white",
-        "dark:bg-gray-900"
+        "flex min-h-screen flex-col px-5 drop-shadow-2xl lg:min-w-60",
+        "border-r border-gray-300 bg-white",
+        "dark:bg-gray-900 dark:drop-shadow-gray-950",
+        "dark:border-gray-500"
       )}
     >
       <div
