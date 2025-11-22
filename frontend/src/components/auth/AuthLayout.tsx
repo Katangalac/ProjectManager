@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { ChartDonutIcon } from "@phosphor-icons/react/ChartDonut";
 import { clsx } from "clsx";
+import AppLogo from "../AppLogo";
 
 /**
  * Composant qui structure la page d'authentification
@@ -18,15 +18,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         )}
       >
         <div className={clsx("absolute top-10 left-10 flex items-center")}>
-          <ChartDonutIcon size={20} color="#0095b3" weight="fill" />
-          <p
-            className={clsx(
-              "text-left font-bold text-cyan-600",
-              "dark:font-white dark:text-cyan-500"
-            )}
-          >
-            ProjectFlow
-          </p>
+          <AppLogo />
         </div>
         {children}
       </div>

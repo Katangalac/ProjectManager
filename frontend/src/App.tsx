@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashBoard from "./pages/DashBoard.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import MainLayout from "./components/MainLayout.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -39,22 +40,24 @@ function App() {
         <Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashBoard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile/:id?"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<MainLayout />}>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashBoard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:id?"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

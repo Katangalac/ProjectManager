@@ -9,6 +9,7 @@ import {
   ListDashesIcon,
   SignOutIcon,
   CalendarDotsIcon,
+  GearIcon,
 } from "@phosphor-icons/react";
 
 /**
@@ -86,6 +87,11 @@ export default function SideBar() {
         General
       </h3>
       <nav className={clsx("flex h-fit flex-col space-y-1 py-4")}>
+        <NavItem
+          icon={<GearIcon size={18} weight="regular" />}
+          label="Paramètres"
+          to="/settings"
+        />
         <NavItem
           icon={<UserIcon size={18} weight="regular" />}
           label="Profile"

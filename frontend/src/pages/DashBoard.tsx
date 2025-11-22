@@ -1,13 +1,11 @@
 import { clsx } from "clsx";
 import { useUserStore } from "../stores/userStore";
-import SideBar from "../components/SideBar";
 
 export default function DashBoard() {
   const { user } = useUserStore();
 
   return (
     <div className={clsx("flex")}>
-      <SideBar />
       <div
         className={clsx(
           "flex min-h-screen min-w-full items-center justify-center",
