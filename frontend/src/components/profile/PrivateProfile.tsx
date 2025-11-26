@@ -28,8 +28,8 @@ export default function PrivateProfile({ user }: PrivateProfileProps) {
       )}
     >
       <h2 className="mb-2 text-left text-lg font-medium text-black">Profile</h2>
-      <ProfileHeader user={user} isEditable={false} />
-      <ProfileUserInfo user={user} isEditable={false} />
+      <ProfileHeader user={user} isEditable={true} />
+      <ProfileUserInfo user={user} isEditable={true} />
     </div>
   );
 }

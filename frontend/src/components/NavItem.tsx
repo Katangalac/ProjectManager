@@ -26,7 +26,7 @@ export default function NavItem({ icon, label, to }: NavItemProps) {
         clsx(
           "relative flex items-center gap-2 p-2",
           "rounded-lg",
-          "text-gray-700",
+          "text-sm text-gray-500",
           "transition-colors",
           "dark:text-white",
           isActive

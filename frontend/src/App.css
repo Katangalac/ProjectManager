@@ -1,9 +1,33 @@
 #root {
   max-width: 1280px;
   margin: 0;
-  padding:0;
-  width:100%;
+  padding: 0;
+  width: 100%;
   text-align: center;
+}
+
+uc-file-uploader-regular,
+uc-file-uploader-regular * {
+  --uc-simple-btn-light: rgb(230, 230, 230) !important;
+  --uc-simple-btn-dark: #101828 !important;
+  --uc-simple-btn-hover-light: rgb(200, 200, 200) !important;
+  --uc-simple-btn-hover-dark: rgb(118, 118, 118) !important;
+  --uc-button-size: 24px !important;
+
+  --uc-border-light: rgb(205, 207, 207) !important;
+  --uc-border-dark: rgb(205, 207, 207) !important;
+  --uc-simple-btn-font-size: 14px !important;
+  --uc-simple-btn-padding: 3px 3px !important;
+}
+
+uc-file-uploader-regular uc-simple-btn {
+  --uc-radius: 25px !important;
+}
+
+uc-file-uploader-regular uc-simple-btn button > span,
+uc-file-uploader-regular uc-simple-btn button .uploadcare--button__text,
+uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
+  display: none !important;
 }
 
 .logo {

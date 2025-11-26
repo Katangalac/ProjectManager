@@ -20,9 +20,9 @@ export default function SideBar() {
   return (
     <aside
       className={clsx(
-        "flex min-h-screen flex-col px-5 drop-shadow-2xl lg:min-w-60",
+        "flex min-h-screen flex-col px-5 lg:min-w-60",
         "border-r border-gray-300 bg-white",
-        "dark:bg-gray-900 dark:drop-shadow-gray-950",
+        "dark:bg-gray-900",
         "dark:border-gray-500"
       )}
     >
@@ -30,7 +30,7 @@ export default function SideBar() {
         className={clsx(
           "mb-3 flex h-16 items-center justify-start",
           "border-b",
-          "text-left text-lg font-bold",
+          "text-left font-bold",
           "dark:border-none"
         )}
       >
@@ -41,7 +41,7 @@ export default function SideBar() {
 
       <h3
         className={clsx(
-          "text-left font-medium text-gray-600",
+          "text-left text-sm font-medium text-gray-600",
           "dark:text-gray-400"
         )}
       >
@@ -80,7 +80,7 @@ export default function SideBar() {
 
       <h3
         className={clsx(
-          "text-left font-medium text-gray-600",
+          "text-left text-sm font-medium text-gray-600",
           "dark:text-gray-400"
         )}
       >

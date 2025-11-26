@@ -16,23 +16,34 @@ import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./services/auth.services.ts";
 
 function App() {
-  const { setUser, logout } = useUserStore();
+  const {
+    setUser,
+    logout,
+    isAuthenticated,
+    user: currentUser,
+  } = useUserStore();
 
   const { data, isError, isSuccess } = useQuery({
     queryKey: ["me"],
     queryFn: getMe,
+    enabled: !!isAuthenticated,
     retry: false,
   });
 
   useEffect(() => {
     if (isSuccess && data) {
-      setUser(data.data);
+      const remote = data.data;
+      const changed =
+        !currentUser ||
+        remote.id !== currentUser?.id ||
+        JSON.stringify(remote) !== JSON.stringify(currentUser);
+      if (changed) setUser(data.data);
     }
 
     if (isError) {
       logout();
     }
-  }, [isSuccess, isError, data, logout, setUser]);
+  }, [isSuccess, isError, data, logout, setUser, currentUser]);
 
   return (
     <BrowserRouter>

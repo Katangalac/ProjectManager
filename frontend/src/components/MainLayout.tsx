@@ -7,7 +7,7 @@ import { clsx } from "clsx";
  */
 export default function MainLayout() {
   return (
-    <div className={clsx("flex")}>
+    <div className={clsx("flex gap-4")}>
       <SideBar />
 
       <div className={clsx("flex-1 p-4", "bg-white", "dark:bg-gray-900")}>
