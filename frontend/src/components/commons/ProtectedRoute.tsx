@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { JSX } from "react";
-import { useUserStore } from "../stores/userStore";
+import { useUserStore } from "../../stores/userStore";
 
 /**
  * Composant qui vérifie que l'utilisateur est connecté avant de
