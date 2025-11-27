@@ -3,9 +3,11 @@ import axios from "axios";
 import { UpdateUserData } from "../types/User";
 
 /**
+ * Récupère un utilisateur par son ID
  *
- * @param userId
- * @returns
+ * @param {string} userId - L'ID de l'utilisateur à récupérer
+ * @returns - Les données de l'utilisateur
+ * @throws - Une erreur si la requête échoue
  */
 export const getUserById = async (userId: string) => {
   try {
@@ -24,8 +26,10 @@ export const getUserById = async (userId: string) => {
 };
 
 /**
+ * Récupère la liste de tous les utilisateurs
  *
- * @returns
+ * @returns - La liste des utilisateurs
+ * @throws - Une erreur si la requête échoue
  */
 export const getUsers = async () => {
   try {
@@ -43,6 +47,13 @@ export const getUsers = async () => {
   }
 };
 
+/**
+ * Met à jour les informations de l'utilisateur connecté
+ *
+ * @param {UpdateUserData}  updateUserInput - Les nouvelles données de l'utilisateur
+ * @returns - Les données mises à jour de l'utilisateur
+ * @throws - Une erreur si la requête échoue
+ */
 export const updateUser = async (updateUserInput: UpdateUserData) => {
   try {
     const axiosResponse = await axiosClient.patch("/users/me", updateUserInput);

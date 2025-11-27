@@ -18,16 +18,6 @@ export default function DashBoard() {
         >
           Bonjour {user?.userName}! Bon retour parmi nous
         </h1>
-        <a className={clsx("w-fit")} href="/profile">
-          <button
-            className={clsx(
-              "w-fit px-2 py-2 font-semibold text-white",
-              "rounded-sm bg-cyan-500 hover:bg-cyan-600"
-            )}
-          >
-            Profile
-          </button>
-        </a>
       </div>
     </div>
   );

@@ -22,6 +22,8 @@ type ProfileUserInfoProps = {
 
 /**
  * Affiche les informations personnelles de l'utilisateur dans le profil
+ * Permet la modification des informations si l'utilisateur est le propriétaire du profil
+ *
  * @param {ProfileUserInfoProps} param0 - Propriétés du ProfileUserInfos
  */
 export default function ProfileUserInfo({
@@ -34,6 +36,9 @@ export default function ProfileUserInfo({
 
   if (saving) console.log("Saving user info...");
 
+  /**
+   * Configuration de react-hook-form avec validation Zod
+   */
   const {
     register,
     handleSubmit,
@@ -51,6 +56,9 @@ export default function ProfileUserInfo({
     },
   });
 
+  /**
+   * Réinitialise le formulaire aux valeurs de l'utilisateur actuel
+   */
   const resetToUser = useCallback(() => {
     reset({
       userName: user.userName,
@@ -62,10 +70,17 @@ export default function ProfileUserInfo({
     });
   }, [reset, user]);
 
+  /**
+   * Effet de bord pour réinitialiser le formulaire lorsque l'utilisateur change
+   */
   useEffect(() => {
     resetToUser();
   }, [user, reset, resetToUser]);
 
+  /**
+   * Bascule le mode édition
+   * Si on quitte le mode édition sans sauvegarder, réinitialise le formulaire aux valeurs de l'utilisateur actuel
+   */
   const toogleEditingMode = () => {
     if (editing) {
       resetToUser();
@@ -75,6 +90,12 @@ export default function ProfileUserInfo({
     }
   };
 
+  /**
+   * Fonction appelée lors de la soumission du formulaire de modification des informations utilisateur
+   * Met à jour les informations de l'utilisateur et l'état global de l'utilisateur
+   * En cas d'erreur, affiche un message dans la console
+   * @param {UpdateUserData} data - données du formulaire de modification
+   */
   const onSubmit = async (data: UpdateUserData) => {
     setSaving(true);
     try {
@@ -113,6 +134,8 @@ export default function ProfileUserInfo({
           >
             Informations personnelles
           </h3>
+
+          {/** Bouton de bascule du mode édition **/}
           {isEditable && (
             <button
               className={clsx(
@@ -142,6 +165,7 @@ export default function ProfileUserInfo({
         <div
           className={clsx("grid grid-cols-1 gap-x-28 gap-y-6 md:grid-cols-3")}
         >
+          {/**Prénom de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -175,6 +199,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Nom de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -208,6 +233,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Nom d'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -241,6 +267,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Email de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -274,6 +301,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Téléphone de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -307,6 +335,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Profession de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
               <span
@@ -340,6 +369,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Date de dernière connexion */}
           <div className={clsx("flex flex-col")}>
             <span
               className={clsx(
@@ -368,6 +398,7 @@ export default function ProfileUserInfo({
             />
           </div>
 
+          {/**Date d'inscription */}
           <div className={clsx("flex flex-col")}>
             <span
               className={clsx(
@@ -396,6 +427,8 @@ export default function ProfileUserInfo({
             />
           </div>
         </div>
+
+        {/**Bouton de soumission du formulaire de modification */}
         {editing && (
           <div className={clsx("flex w-full justify-end")}>
             <button

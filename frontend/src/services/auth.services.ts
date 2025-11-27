@@ -61,6 +61,7 @@ export const registerRequest = async (
 export const getMe = async () => {
   try {
     const axiosResponse = await axiosClient.get("/users/me");
+    console.log("getMe response:", axiosResponse.data);
     return axiosResponse.data;
   } catch (err: unknown) {
     if (axios.isAxiosError?.(err)) {

@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import AppLogo from "./AppLogo";
+import AppLogo from "../commons/AppLogo";
 import NavItem from "./NavItem";
 import {
   UsersThreeIcon,

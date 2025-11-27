@@ -1,4 +1,4 @@
-import SideBar from "./SideBar";
+import SideBar from "../components/navigation/SideBar";
 import { Outlet } from "react-router-dom";
 import { clsx } from "clsx";
 

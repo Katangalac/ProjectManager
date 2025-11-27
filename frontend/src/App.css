@@ -6,6 +6,7 @@
   text-align: center;
 }
 
+/* CSS du File Uploader d'Uploadcare*/
 uc-file-uploader-regular,
 uc-file-uploader-regular * {
   --uc-simple-btn-light: rgb(230, 230, 230) !important;
@@ -20,15 +21,18 @@ uc-file-uploader-regular * {
   --uc-simple-btn-padding: 3px 3px !important;
 }
 
+/* Définition de l'arrondissement des bords du bouton de chargement*/
 uc-file-uploader-regular uc-simple-btn {
   --uc-radius: 25px !important;
 }
 
+/* Cacher le texte par défaut du bouton de chargement */
 uc-file-uploader-regular uc-simple-btn button > span,
 uc-file-uploader-regular uc-simple-btn button .uploadcare--button__text,
 uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
   display: none !important;
 }
+/* Fin CSS du File Uploader d'Uploadcare*/
 
 .logo {
   height: 6em;

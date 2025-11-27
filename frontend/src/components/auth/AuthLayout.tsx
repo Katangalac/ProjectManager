@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { clsx } from "clsx";
-import AppLogo from "../AppLogo";
+import AppLogo from "../commons/AppLogo";
 
 /**
  * Composant qui structure la page d'authentification

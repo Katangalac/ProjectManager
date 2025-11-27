@@ -17,6 +17,9 @@ export default function LoginForm() {
   const backendUrl = import.meta.env.VITE_API_URL;
   const setUser = useUserStore((state) => state.setUser);
 
+  /**
+   * Configuration de react-hook-form avec validation Zod
+   */
   const {
     register,
     handleSubmit,
@@ -25,6 +28,12 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
+  /**
+   * Fonction appelée lors de la soumission du formulaire de connexion
+   * Met à jour l'état de l'utilisateur et redirige vers le dashboard
+   *
+   * @param {LoginInputs} data - données du formulaire de connexion
+   */
   const onSubmit = async (data: LoginInputs) => {
     try {
       const result = await loginRequest(data.identifier, data.password);
@@ -84,8 +93,9 @@ export default function LoginForm() {
             className={clsx(
               "w-full px-4 py-2",
               "rounded-sm border bg-white",
+              "text-black",
               "dark:bg-gray-800 dark:text-white",
-              errors.password ? "border-red-500" : "border-gray-300"
+              errors.identifier ? "border-red-500" : "border-gray-300"
             )}
             {...register("identifier")}
           />
@@ -112,6 +122,7 @@ export default function LoginForm() {
             className={clsx(
               "w-full px-4 py-2",
               "rounded-sm border bg-white",
+              "text-black",
               "dark:bg-gray-800 dark:text-white",
               errors.password ? "border-red-500" : "border-gray-300"
             )}

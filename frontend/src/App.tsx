@@ -1,6 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootRedirect from "./pages/RootRedirect.tsx";
@@ -8,21 +5,22 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashBoard from "./pages/DashBoard.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
-import ProtectedRoute from "./components/ProtectedRoute.tsx";
-import MainLayout from "./components/MainLayout.tsx";
+import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
+import MainLayout from "./layouts/MainLayout.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./services/auth.services.ts";
 
+/**
+ * Point d'entrée de l'application
+ */
 function App() {
-  const {
-    setUser,
-    logout,
-    isAuthenticated,
-    user: currentUser,
-  } = useUserStore();
+  const { setUser, logout, isAuthenticated } = useUserStore();
 
+  /**
+   * Récupère les informations de l'utilisateur connecté
+   */
   const { data, isError, isSuccess } = useQuery({
     queryKey: ["me"],
     queryFn: getMe,
@@ -30,20 +28,19 @@ function App() {
     retry: false,
   });
 
+  /**
+   * Met à jour le store avec les informations de l'utilisateur connecté
+   * S'assure de déconnecter l'utilisateur en cas d'erreur de la requête avec useQuery
+   */
   useEffect(() => {
     if (isSuccess && data) {
-      const remote = data.data;
-      const changed =
-        !currentUser ||
-        remote.id !== currentUser?.id ||
-        JSON.stringify(remote) !== JSON.stringify(currentUser);
-      if (changed) setUser(data.data);
+      setUser(data.data);
     }
 
     if (isError) {
       logout();
     }
-  }, [isSuccess, isError, data, logout, setUser, currentUser]);
+  }, [isSuccess, isError, data, logout, setUser]);
 
   return (
     <BrowserRouter>

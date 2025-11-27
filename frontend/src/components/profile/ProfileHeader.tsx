@@ -1,11 +1,12 @@
 import { clsx } from "clsx";
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { User } from "../../types/User";
-import { FileUploaderRegular } from "@uploadcare/react-uploader";
-import { useState } from "react";
+import { FileUploaderRegular, defineLocale } from "@uploadcare/react-uploader";
+import { useState, useEffect } from "react";
 import { useUserStore } from "../../stores/userStore";
 import { updateUser } from "../../services/user.services";
 import "@uploadcare/react-uploader/core.css";
+import fr from "@uploadcare/file-uploader/locales/file-uploader/fr.js";
 
 /**
  * Propriétés du ProfileHeader
@@ -21,6 +22,9 @@ type ProfileHeaderProps = {
 
 /**
  * En-têce du profil de l'utilisateur
+ * Affiche l'image de profil, le nom, le prénom, la profession et l'email
+ * Permet la modification de l'image de profil si l'utilisateur est le propriétaire du profil
+ *
  * @param {ProfileHeaderProps} param0 - Propriétés du ProfileHeader
  */
 export default function ProfileHeader({
@@ -29,11 +33,27 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const { setUser } = useUserStore();
   const uploadcarePubKey = import.meta.env.VITE_UPLOAD_CARE_PUBLIC_KEY;
+
+  /**
+   * Configuration de la locale française pour l'uploadeur de fichiers
+   */
+  useEffect(() => {
+    defineLocale("fr", fr);
+  }, []);
+
   const [imageUrl, setImageUrl] = useState<string | null>(
     user.imageUrl ?? null
   );
   const [saving, setSaving] = useState(false);
   if (saving) console.log("Saving image...");
+
+  /**
+   * Fonction appelée lors du changement de l'image de profil
+   * Met à jour l'image de profil de l'utilisateur et l'état global de l'utilisateur
+   * En cas d'erreur, rétablit l'ancienne image de profil
+   *
+   * @param {string} url - URL de la nouvelle image de profil
+   */
   const handleImageChange = async (url: string) => {
     if (url === undefined) return;
     setImageUrl(url);
@@ -68,6 +88,7 @@ export default function ProfileHeader({
           "dark:text-gray-400"
         )}
       >
+        {/**Image de profil de l'utilisateur */}
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -80,6 +101,8 @@ export default function ProfileHeader({
         ) : (
           <UserCircleIcon className={clsx("size-20")} />
         )}
+
+        {/**Uploader de fichier pour changer l'image de profil */}
         {isEditable && (
           <div title="Téléverser une photo">
             <FileUploaderRegular
@@ -88,17 +111,6 @@ export default function ProfileHeader({
               pubkey={uploadcarePubKey}
               multiple={false}
               localeName="fr"
-              localeDefinitionOverride={{
-                fr: {
-                  "locale-id": "fr",
-                  "social-source-lang": "fr",
-                  "upload-file": "Modifier",
-                  file__one: "fichier",
-                  file__other: "fichiers",
-                  "header-uploading":
-                    "Chargement {{count}} {{plural:fichier(count)}}",
-                },
-              }}
               iconHrefResolver={(iconName) => {
                 if (iconName === "upload") return "/icons/camera.svg";
                 if (iconName === "facebook") return "/icons/facebook.svg";
@@ -111,7 +123,6 @@ export default function ProfileHeader({
               className="absolute -right-1 bottom-2"
               onFileUploadSuccess={(file) => {
                 const url = file?.cdnUrl;
-                console.log("upload-success: ", url);
                 handleImageChange(url);
               }}
             />
@@ -120,6 +131,7 @@ export default function ProfileHeader({
       </div>
 
       <div className={clsx("flex flex-col")}>
+        {/**Nom et prénom de l'utilisateur ou UserName*/}
         <div className={clsx("flex gap-2")}>
           {user.firstName && (
             <span
@@ -141,7 +153,7 @@ export default function ProfileHeader({
               {user.lastName}
             </span>
           )}
-          {!user.firstName && (
+          {!user.firstName && !user.lastName && (
             <span
               className={clsx(
                 "text-sm font-medium text-black",
@@ -153,6 +165,7 @@ export default function ProfileHeader({
           )}
         </div>
 
+        {/**Profession et email de l'utilisateur */}
         <div className={clsx("flex flex-col items-start")}>
           {user.profession && (
             <span
