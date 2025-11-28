@@ -117,11 +117,11 @@ export const logout = async (req: Request, res: Response) => {
   try {
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "lax" as const,
     };
     res.clearCookie("projectFlowToken", cookieOptions);
-    res.json(successResponse(null, "Déconnexion réussie"));
+    res.status(200).json(successResponse(null, "Déconnexion réussie"));
   } catch (err) {
     console.error("Erreur lors de la déconnexion : ", err);
     res
