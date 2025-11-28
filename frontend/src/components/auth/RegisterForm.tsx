@@ -42,7 +42,6 @@ export default function RegisterForm() {
         data.password
       );
       setUser(result.data);
-      console.log("User signed up:", result.data);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);

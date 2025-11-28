@@ -1,22 +1,36 @@
 import { clsx } from "clsx";
 import AppLogo from "../commons/AppLogo";
 import NavItem from "./NavItem";
+import { useUserStore } from "../../stores/userStore";
+import { useNavigate } from "react-router-dom";
 import {
-  UsersThreeIcon,
-  UserIcon,
   ChatDotsIcon,
-  SquaresFourIcon,
   ListDashesIcon,
   SignOutIcon,
   CalendarDotsIcon,
   GearIcon,
+  HouseIcon,
+  ProjectorScreenChartIcon,
 } from "@phosphor-icons/react";
+
+import { UserCircleIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 /**
  * Barre de navigation latéral
  * Permet de naviguer entre les pages de l'application
  */
 export default function SideBar() {
+  const { logout } = useUserStore();
+  const navigate = useNavigate();
+
+  /**
+   * Gère la déconnexion de l'utilisateur
+   */
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
+
   return (
     <aside
       className={clsx(
@@ -50,14 +64,19 @@ export default function SideBar() {
 
       <nav className={clsx("flex h-fit flex-col space-y-1 py-4")}>
         <NavItem
-          icon={<SquaresFourIcon size={18} weight="regular" />}
+          icon={<HouseIcon size={18} weight="regular" />}
           label="Dashboard"
           to="/dashboard"
         />
         <NavItem
+          icon={<ProjectorScreenChartIcon size={18} weight="regular" />}
+          label="Projets"
+          to="/userProjects"
+        />
+        <NavItem
           icon={<ListDashesIcon size={18} weight="regular" />}
           label="Tâches"
-          to="/tasks"
+          to="/userTasks"
         />
         <NavItem
           icon={<CalendarDotsIcon size={18} weight="regular" />}
@@ -65,7 +84,7 @@ export default function SideBar() {
           to="/calendar"
         />
         <NavItem
-          icon={<UsersThreeIcon size={18} weight="regular" />}
+          icon={<UserGroupIcon className={clsx("size-4.5")} />}
           label="Équipes"
           to="/teams"
         />
@@ -93,15 +112,34 @@ export default function SideBar() {
           to="/settings"
         />
         <NavItem
-          icon={<UserIcon size={18} weight="regular" />}
+          icon={<UserCircleIcon className={clsx("size-4.5")} />}
           label="Profile"
           to="/profile"
         />
-        <NavItem
-          icon={<SignOutIcon size={18} weight="regular" />}
-          label="Déconnexion"
-          to="/logout"
-        />
+
+        <button
+          className={clsx(
+            "flex items-center gap-2 p-2",
+            "rounded-lg bg-white hover:bg-gray-100",
+            "text-sm text-gray-500",
+            "transition-colors",
+            "dark:text-white",
+            "dark:bg-gray-900 dark:hover:bg-gray-800"
+          )}
+          onClick={handleLogout}
+        >
+          <span
+            className={clsx(
+              "h-full w-1.5",
+              "rounded-r-full transition-all",
+              "bg-transparent"
+            )}
+          ></span>
+          <span>
+            <SignOutIcon size={18} weight="regular" />
+          </span>
+          <span>Déconnexion</span>
+        </button>
       </nav>
     </aside>
   );

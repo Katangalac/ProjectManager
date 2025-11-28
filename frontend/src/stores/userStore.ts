@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { User } from "../types/User";
 import { persist } from "zustand/middleware";
+import { logoutRequest } from "../services/auth.services";
 
 /**
  * UserStore représente l’état global lié à l’utilisateur dans l'application
@@ -17,7 +18,7 @@ interface UserStore {
   user: User | null;
   isAuthenticated: boolean;
   setUser: (u: User | null) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 /**
@@ -30,10 +31,17 @@ export const useUserStore = create<UserStore>()(
       user: null,
       isAuthenticated: false,
       setUser: (u) => {
-        console.log("SET USER", u);
         set({ user: u, isAuthenticated: true });
       },
-      logout: () => set({ user: null, isAuthenticated: false }),
+      logout: async () => {
+        try {
+          await logoutRequest();
+        } catch {
+          console.warn("Erreur lors de la déconnexion");
+        }
+        localStorage.removeItem("user-storage");
+        set({ user: null, isAuthenticated: false });
+      },
     }),
     {
       name: "user-storage",

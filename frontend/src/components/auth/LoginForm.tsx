@@ -38,7 +38,6 @@ export default function LoginForm() {
     try {
       const result = await loginRequest(data.identifier, data.password);
       setUser(result.data);
-      console.log("User logged in:", result.data);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);

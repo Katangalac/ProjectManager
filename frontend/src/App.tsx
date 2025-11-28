@@ -7,6 +7,7 @@ import DashBoard from "./pages/DashBoard.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
+import UserTasksPage from "./pages/UserTasksPage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -54,6 +55,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashBoard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/userTasks"
+            element={
+              <ProtectedRoute>
+                <UserTasksPage />
               </ProtectedRoute>
             }
           />

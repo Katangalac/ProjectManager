@@ -1,0 +1,125 @@
+import { clsx } from "clsx";
+import { Task } from "../../types/Task";
+import {
+  CalendarDateRangeIcon,
+  UserCircleIcon,
+  UserGroupIcon,
+  EllipsisHorizontalIcon,
+} from "@heroicons/react/24/outline";
+import { ProjectorScreenChartIcon } from "@phosphor-icons/react";
+import TaskPriority from "./TaskPriority";
+
+/**
+ * Propriétés du TaskCardProps
+ * - task : la tâche à afficher dans la carte
+ */
+type TaskCardProps = {
+  task: Task;
+};
+
+/**
+ * Affiche une carte représentant une tâche avec son titre, son statut et son niveau de priorité
+ *
+ * @param {TaskCardProps} param0 - Propriétés du TaskCardProps
+ * @returns - Le composant affichant la carte de la tâche
+ */
+export default function TaskCard({ task }: TaskCardProps) {
+  return (
+    <div
+      className={clsx(
+        "flex h-fit w-fit flex-col gap-3 p-2.5 lg:min-w-60",
+        "rounded-sm border border-gray-300 bg-white",
+        "dark:border-gray-600 dark:bg-gray-800"
+      )}
+    >
+      <div
+        className={clsx(
+          "flex w-full flex-col items-start justify-center gap-2"
+        )}
+      >
+        <div
+          className={clsx(
+            "flex w-full flex-col items-start justify-center gap-2"
+          )}
+        >
+          <div className="flex w-full items-center justify-between">
+            <span
+              className={clsx(
+                "text-xs font-medium text-gray-700",
+                "dark:text-white"
+              )}
+            >
+              {task.title}
+            </span>
+            <button title="Options">
+              <EllipsisHorizontalIcon
+                className={clsx("size-4 text-gray-700")}
+              />
+            </button>
+          </div>
+          <div
+            className={clsx("w-full border-t border-dotted border-gray-300")}
+          ></div>
+        </div>
+
+        <div className={clsx("flex w-full items-center justify-start gap-2")}>
+          <ProjectorScreenChartIcon
+            className={clsx("size-4 text-gray-500", "dark:text-white")}
+          />
+          <span
+            className={clsx(
+              "text-xs font-medium text-gray-500",
+              "dark:text-white"
+            )}
+          >
+            -
+          </span>
+        </div>
+
+        <div className={clsx("flex w-full items-center justify-start gap-2")}>
+          <UserGroupIcon
+            className={clsx("size-4 text-gray-500", "dark:text-white")}
+          />
+          <span
+            className={clsx(
+              "text-xs font-medium text-gray-500",
+              "dark:text-white"
+            )}
+          >
+            -
+          </span>
+        </div>
+
+        <div className={clsx("flex w-full items-center justify-start gap-2")}>
+          <UserCircleIcon
+            className={clsx("size-4 text-gray-500", "dark:text-white")}
+          />
+          <span
+            className={clsx(
+              "text-xs font-medium text-gray-500",
+              "dark:text-white"
+            )}
+          >
+            -
+          </span>
+        </div>
+
+        <div className={clsx("flex w-full items-center justify-start gap-2")}>
+          <CalendarDateRangeIcon
+            className={clsx("size-4 text-gray-500", "dark:text-white")}
+          />
+          <span
+            className={clsx(
+              "text-xs font-medium text-gray-500",
+              "dark:text-white"
+            )}
+          >
+            {new Date(task.deadline).toLocaleDateString()}
+          </span>
+        </div>
+
+        <TaskPriority priorityLevel={task.priorityLevel} />
+      </div>
+    </div>
+  );
+}
