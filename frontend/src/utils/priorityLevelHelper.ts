@@ -6,7 +6,8 @@
  */
 type PriorityLevelItems = {
   label: string;
-  style: string;
+  textStyle: string;
+  bgColor: string;
 };
 
 /**
@@ -15,26 +16,31 @@ type PriorityLevelItems = {
 export const priorityLevelHelper: Record<number, PriorityLevelItems> = {
   1: {
     label: "Très basse",
-    style: "text-gray-600",
+    textStyle: "text-gray-500",
+    bgColor: "bg-gray-200",
   },
 
   2: {
     label: "Basse",
-    style: "text-green-600",
+    textStyle: "text-blue-600",
+    bgColor: "bg-blue-200",
   },
 
   3: {
     label: "Normal",
-    style: "text-yellow-600",
+    textStyle: "text-yellow-600",
+    bgColor: "bg-yellow-200",
   },
 
   4: {
-    label: "Urgent",
-    style: "text-purple-600",
+    label: "Urgente",
+    textStyle: "text-purple-600",
+    bgColor: "bg-purple-200",
   },
 
   5: {
     label: "Critique",
-    style: "text-red-600",
+    textStyle: "text-red-600",
+    bgColor: "bg-red-200",
   },
 };

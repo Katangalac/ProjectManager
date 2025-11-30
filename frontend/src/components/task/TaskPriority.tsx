@@ -20,20 +20,26 @@ export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
   const priorityLevelItems = priorityLevelHelper[priorityLevel];
 
   return (
-    <div className={clsx("flex w-full items-center justify-start gap-2")}>
+    <div
+      className={clsx(
+        "flex w-fit items-center justify-start gap-2",
+        "rounded-sm",
+        priorityLevelItems.bgColor
+      )}
+    >
       <FlagPennantIcon
         weight="fill"
-        className={clsx("size-4", priorityLevelItems.style)}
+        className={clsx("size-4", priorityLevelItems.textStyle)}
       />
       <span
         className={clsx(
-          "flex h-fit w-fit items-center justify-center p-1",
+          "flex h-fit w-fit items-center justify-center py-0.5 pr-1",
           "rounded-sm",
           "text-xs font-medium",
-          priorityLevelItems.style
+          priorityLevelItems.textStyle
         )}
       >
-        {priorityLevelItems.label}
+        Priorité {priorityLevelItems.label}
       </span>
     </div>
   );

@@ -2,7 +2,7 @@ import TaskCard from "../components/task/TaskCard";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUserTasks } from "../services/task.services";
 import { clsx } from "clsx";
-import { Task } from "../types/Task";
+import { TaskWithRelations } from "../types/Task";
 
 export default function UserTasksPage() {
   const { data, isLoading, isError } = useQuery({
@@ -12,7 +12,7 @@ export default function UserTasksPage() {
   console.log("Données : ", data);
 
   return (
-    <div>
+    <div className={clsx("grid grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4")}>
       {isLoading && <div>Chargement des tâches...</div>}
       {isError && (
         <div>
@@ -21,7 +21,7 @@ export default function UserTasksPage() {
           </span>
         </div>
       )}
-      {data?.data?.map((task: Task) => (
+      {data?.data?.map((task: TaskWithRelations) => (
         <div key={task.id}>
           <TaskCard task={task} />
         </div>

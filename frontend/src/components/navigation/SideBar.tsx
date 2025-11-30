@@ -3,17 +3,23 @@ import AppLogo from "../commons/AppLogo";
 import NavItem from "./NavItem";
 import { useUserStore } from "../../stores/userStore";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   ChatDotsIcon,
-  ListDashesIcon,
   SignOutIcon,
   CalendarDotsIcon,
   GearIcon,
   HouseIcon,
   ProjectorScreenChartIcon,
+  CaretCircleRightIcon,
+  CaretCircleLeftIcon,
 } from "@phosphor-icons/react";
 
-import { UserCircleIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import {
+  UserCircleIcon,
+  UserGroupIcon,
+  ClipboardDocumentListIcon,
+} from "@heroicons/react/24/outline";
 
 /**
  * Barre de navigation latéral
@@ -22,6 +28,7 @@ import { UserCircleIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 export default function SideBar() {
   const { logout } = useUserStore();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   /**
    * Gère la déconnexion de l'utilisateur
@@ -34,111 +41,166 @@ export default function SideBar() {
   return (
     <aside
       className={clsx(
-        "flex min-h-screen flex-col px-5 lg:min-w-60",
+        "relative flex min-h-screen flex-col px-3 py-5",
         "border-r border-gray-300 bg-white",
         "dark:bg-gray-900",
-        "dark:border-gray-500"
+        "dark:border-gray-500",
+        open ? "lg:min-w-50" : "w-fit"
       )}
     >
+      <button
+        className={clsx(
+          "absolute top-2 -right-2 h-fit w-fit",
+          "rounded-full bg-white",
+          "text-gray-400",
+          "dark:bg-gray-900"
+        )}
+        title={open ? "Fermer le menu" : "Ouvrir le menu"}
+        onClick={() => setOpen(!open)}
+      >
+        {open ? (
+          <span>
+            <CaretCircleLeftIcon size={18} weight="regular" />
+          </span>
+        ) : (
+          <span>
+            <CaretCircleRightIcon size={18} weight="regular" />
+          </span>
+        )}
+      </button>
+
       <div
         className={clsx(
-          "mb-3 flex h-16 items-center justify-start",
-          "border-b",
-          "text-left font-bold",
-          "dark:border-none"
+          "mb-4 flex h-fit items-center justify-start",
+          "text-left font-bold"
         )}
       >
-        <a href="/dashboard" className={clsx("w-fit")}>
-          <AppLogo />
+        <a
+          href="/dashboard"
+          className={clsx("w-full", open ? "flex justify-start" : "")}
+        >
+          <AppLogo showText={open} />
         </a>
       </div>
 
-      <h3
+      {open && (
+        <h3
+          className={clsx(
+            "text-left text-sm font-medium text-gray-600",
+            "dark:text-gray-400"
+          )}
+        >
+          Menu
+        </h3>
+      )}
+
+      <nav
         className={clsx(
-          "text-left text-sm font-medium text-gray-600",
-          "dark:text-gray-400"
+          "flex h-fit flex-col space-y-1",
+          open ? "py-4" : "py-1"
         )}
       >
-        Menu
-      </h3>
-
-      <nav className={clsx("flex h-fit flex-col space-y-1 py-4")}>
         <NavItem
-          icon={<HouseIcon size={18} weight="regular" />}
+          icon={<HouseIcon size={open ? 18 : 22} weight="regular" />}
           label="Dashboard"
           to="/dashboard"
+          showText={open}
         />
         <NavItem
-          icon={<ProjectorScreenChartIcon size={18} weight="regular" />}
+          icon={
+            <ProjectorScreenChartIcon size={open ? 18 : 22} weight="regular" />
+          }
           label="Projets"
           to="/userProjects"
+          showText={open}
         />
         <NavItem
-          icon={<ListDashesIcon size={18} weight="regular" />}
+          icon={
+            <ClipboardDocumentListIcon
+              className={clsx(open ? "size-4.5" : "size-5.5")}
+            />
+          }
           label="Tâches"
           to="/userTasks"
+          showText={open}
         />
         <NavItem
-          icon={<CalendarDotsIcon size={18} weight="regular" />}
+          icon={<CalendarDotsIcon size={open ? 18 : 22} weight="regular" />}
           label="Calendrier"
           to="/calendar"
+          showText={open}
         />
         <NavItem
-          icon={<UserGroupIcon className={clsx("size-4.5")} />}
+          icon={
+            <UserGroupIcon className={clsx(open ? "size-4.5" : "size-5.5")} />
+          }
           label="Équipes"
           to="/teams"
+          showText={open}
         />
         <NavItem
-          icon={<ChatDotsIcon size={18} weight="regular" />}
+          icon={<ChatDotsIcon size={open ? 18 : 22} weight="regular" />}
           label="Chat"
           to="/chat"
+          showText={open}
         />
       </nav>
 
-      <div className={clsx("mb-3 w-full border-t border-gray-300")}></div>
-
-      <h3
+      <div
         className={clsx(
-          "text-left text-sm font-medium text-gray-600",
-          "dark:text-gray-400"
+          "mb-3 w-full border-t border-gray-300",
+          !open ? "mt-3" : ""
+        )}
+      ></div>
+
+      {open && (
+        <h3
+          className={clsx(
+            "text-left text-sm font-medium text-gray-600",
+            "dark:text-gray-400"
+          )}
+        >
+          General
+        </h3>
+      )}
+
+      <nav
+        className={clsx(
+          "flex h-fit flex-col space-y-1",
+          open ? "py-4" : "py-1"
         )}
       >
-        General
-      </h3>
-      <nav className={clsx("flex h-fit flex-col space-y-1 py-4")}>
         <NavItem
-          icon={<GearIcon size={18} weight="regular" />}
+          icon={<GearIcon size={open ? 18 : 22} weight="regular" />}
           label="Paramètres"
           to="/settings"
+          showText={open}
         />
         <NavItem
-          icon={<UserCircleIcon className={clsx("size-4.5")} />}
+          icon={
+            <UserCircleIcon className={clsx(open ? "size-4.5" : "size-5.5")} />
+          }
           label="Profile"
           to="/profile"
+          showText={open}
         />
 
         <button
           className={clsx(
             "flex items-center gap-2 p-2",
             "rounded-lg bg-white hover:bg-gray-100",
-            "text-sm text-gray-500",
+            "text-sm text-red-500",
             "transition-colors",
-            "dark:text-white",
-            "dark:bg-gray-900 dark:hover:bg-gray-800"
+            "dark:text-red-500",
+            "dark:bg-gray-900 dark:hover:bg-gray-800",
+            !open ? "w-fit" : ""
           )}
           onClick={handleLogout}
         >
-          <span
-            className={clsx(
-              "h-full w-1.5",
-              "rounded-r-full transition-all",
-              "bg-transparent"
-            )}
-          ></span>
           <span>
-            <SignOutIcon size={18} weight="regular" />
+            <SignOutIcon size={open ? 18 : 22} weight="regular" />
           </span>
-          <span>Déconnexion</span>
+          {open && <span>Déconnexion</span>}
         </button>
       </nav>
     </aside>

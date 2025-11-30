@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { Task } from "../../types/Task";
+import { TaskWithRelations } from "../../types/Task";
 import {
   CalendarDateRangeIcon,
   UserCircleIcon,
@@ -14,7 +14,7 @@ import TaskPriority from "./TaskPriority";
  * - task : la tâche à afficher dans la carte
  */
 type TaskCardProps = {
-  task: Task;
+  task: TaskWithRelations;
 };
 
 /**
@@ -27,7 +27,7 @@ export default function TaskCard({ task }: TaskCardProps) {
   return (
     <div
       className={clsx(
-        "flex h-fit w-fit flex-col gap-3 p-2.5 lg:min-w-60",
+        "flex h-fit w-fit min-w-50 flex-col gap-3 p-2.5",
         "rounded-sm border border-gray-300 bg-white",
         "dark:border-gray-600 dark:bg-gray-800"
       )}
@@ -42,7 +42,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             "flex w-full flex-col items-start justify-center gap-2"
           )}
         >
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between gap-3">
             <span
               className={clsx(
                 "text-xs font-medium text-gray-700",
@@ -58,7 +58,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             </button>
           </div>
           <div
-            className={clsx("w-full border-t border-dotted border-gray-300")}
+            className={clsx("w-full border-t border-dotted border-gray-400")}
           ></div>
         </div>
 
@@ -72,7 +72,7 @@ export default function TaskCard({ task }: TaskCardProps) {
               "dark:text-white"
             )}
           >
-            -
+            {task.project ? task.project.title : "-"}
           </span>
         </div>
 
@@ -86,7 +86,7 @@ export default function TaskCard({ task }: TaskCardProps) {
               "dark:text-white"
             )}
           >
-            -
+            {task.team ? task.team.name : "-"}
           </span>
         </div>
 
@@ -100,7 +100,9 @@ export default function TaskCard({ task }: TaskCardProps) {
               "dark:text-white"
             )}
           >
-            -
+            {task.assignedTo?.length
+              ? task.assignedTo.map((u) => u.user.userName).join(", ")
+              : "-"}
           </span>
         </div>
 

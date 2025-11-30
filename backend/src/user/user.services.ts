@@ -374,6 +374,9 @@ export const getUserTasks = async (
   const userTaskConditions: Prisma.TaskWhereInput = {
     OR: [
       {
+        creatorId: userId,
+      },
+      {
         assignedTo: {
           some: { userId },
         },
@@ -406,8 +409,13 @@ export const getUserTasks = async (
     include: {
       team: true,
       project: true,
+      assignedTo: {
+        include: {
+          user: true,
+        },
+      },
     },
-    orderBy: { deadline: "desc" },
+    orderBy: { deadline: "asc" },
   };
 
   if (!all) {

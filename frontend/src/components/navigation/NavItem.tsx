@@ -12,13 +12,14 @@ type NavItemProps = {
   icon: ReactNode;
   label: string;
   to: string;
+  showText: boolean;
 };
 
 /**
  * Composant représentant une option d'un menu de navigation
  * @param {NavItemProps} param0 - les propriétés du NavItem
  */
-export default function NavItem({ icon, label, to }: NavItemProps) {
+export default function NavItem({ icon, label, to, showText }: NavItemProps) {
   return (
     <NavLink
       to={to}
@@ -38,14 +39,12 @@ export default function NavItem({ icon, label, to }: NavItemProps) {
       {({ isActive }) => (
         <>
           <span
-            className={clsx(
-              "h-full w-1.5",
-              "rounded-r-full transition-all",
-              isActive ? "bg-cyan-500 dark:bg-cyan-600" : "bg-transparent"
-            )}
-          ></span>
-          <span className={clsx(isActive ? "text-cyan-500" : "")}>{icon}</span>
-          <span>{label}</span>
+            className={clsx(isActive ? "text-cyan-500" : "")}
+            title={showText ? "" : label}
+          >
+            {icon}
+          </span>
+          {showText && <span>{label}</span>}
         </>
       )}
     </NavLink>
