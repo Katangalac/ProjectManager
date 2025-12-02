@@ -1,8 +1,9 @@
-import TaskCard from "../components/task/TaskCard";
+import TaskCardContainer from "../components/task/TaskCardContainer";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUserTasks } from "../services/task.services";
 import { clsx } from "clsx";
 import { TaskWithRelations } from "../types/Task";
+import { TASK_STATUSES } from "../lib/constants/task";
 
 export default function UserTasksPage() {
   const { data, isLoading, isError } = useQuery({
@@ -21,10 +22,17 @@ export default function UserTasksPage() {
           </span>
         </div>
       )}
-      {data?.data?.map((task: TaskWithRelations) => (
-        <div key={task.id}>
-          <TaskCard task={task} />
-        </div>
+
+      {TASK_STATUSES.map((status) => (
+        <TaskCardContainer
+          key={status}
+          status={status}
+          tasks={
+            data?.data.filter(
+              (task: TaskWithRelations) => task.status === status
+            ) || []
+          }
+        />
       ))}
       {!data && !isError && <div>Aucune tâche</div>}
     </div>

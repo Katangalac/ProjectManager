@@ -45,7 +45,8 @@ export default function SideBar() {
         "border-r border-gray-300 bg-white",
         "dark:bg-gray-900",
         "dark:border-gray-500",
-        open ? "lg:min-w-50" : "w-fit"
+        "transition-all duration-300 ease-in-out",
+        open ? "w-50" : "w-16"
       )}
     >
       <button
@@ -71,14 +72,12 @@ export default function SideBar() {
 
       <div
         className={clsx(
-          "mb-4 flex h-fit items-center justify-start",
-          "text-left font-bold"
+          "mb-4 flex h-fit items-center",
+          "text-left font-bold",
+          !open ? "px-2" : ""
         )}
       >
-        <a
-          href="/dashboard"
-          className={clsx("w-full", open ? "flex justify-start" : "")}
-        >
+        <a href="/dashboard">
           <AppLogo showText={open} />
         </a>
       </div>
@@ -97,6 +96,7 @@ export default function SideBar() {
       <nav
         className={clsx(
           "flex h-fit flex-col space-y-1",
+          "transition-all duration-300",
           open ? "py-4" : "py-1"
         )}
       >
@@ -167,6 +167,7 @@ export default function SideBar() {
       <nav
         className={clsx(
           "flex h-fit flex-col space-y-1",
+          "transition-all duration-300",
           open ? "py-4" : "py-1"
         )}
       >

@@ -67,7 +67,7 @@ export default function LoginForm() {
           "dark:text-gray-400"
         )}
       >
-        Connectez-vous pour retrouver votre espace de travail.
+        Entrez vos identifiants pour accéder à votre compte
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>

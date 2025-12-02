@@ -11,7 +11,7 @@ export type Task = {
   title: string;
   description: string;
   priorityLevel: number;
-  status: "TODO" | "IN_PROGRESS" | "BLOCKED" | "DONE" | "CANCELLED";
+  status: TaskStatus;
   cost: number;
   startedAt: Date;
   deadline: Date;
@@ -28,6 +28,8 @@ export type TaskWithRelations = Task & {
   }[];
 };
 
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "BLOCKED" | "COMPLETED";
+
 export type CreateTaskData = {
   description: string;
   teamId: string | null;
@@ -35,7 +37,7 @@ export type CreateTaskData = {
   projectId: string | null;
   title: string;
   priorityLevel: number;
-  status: "TODO" | "IN_PROGRESS" | "BLOCKED" | "DONE" | "CANCELLED";
+  status: TaskStatus;
   cost: number;
   startedAt: Date;
   deadline: Date;
@@ -48,13 +50,7 @@ export type UpdateTaskData = {
   title?: string | undefined;
   description?: string | undefined;
   priorityLevel?: number | undefined;
-  status?:
-    | "TODO"
-    | "IN_PROGRESS"
-    | "BLOCKED"
-    | "DONE"
-    | "CANCELLED"
-    | undefined;
+  status?: TaskStatus | undefined;
   cost?: number | undefined;
   startedAt?: Date | undefined;
   deadline?: Date | undefined;
@@ -68,13 +64,7 @@ export type SearchTasksFilter = {
   priorityLevelEq?: number | undefined;
   priorityLevelLt?: number | undefined;
   priorityLevelGt?: number | undefined;
-  status?:
-    | "TODO"
-    | "IN_PROGRESS"
-    | "BLOCKED"
-    | "DONE"
-    | "CANCELLED"
-    | undefined;
+  status?: TaskStatus | undefined;
   startOn?: Date | undefined;
   endOn?: Date | undefined;
   startBefore?: Date | undefined;

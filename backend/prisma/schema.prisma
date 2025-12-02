@@ -16,8 +16,6 @@ datasource db {
 // Rôle d'un utilisateur de l'application. Détermine les permissions et actions de l'utilisateur
 enum UserRole {
   ADMIN
-  MEMBER
-  VIEWER
   USER
 }
 
@@ -32,17 +30,16 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   BLOCKED
-  DONE
-  CANCELLED
+  COMPLETED
 }
 
 // État d'un projet
 enum ProjectStatus {
   PLANNING
   ACTIVE
-  ON_HOLD
+  PAUSED
+  BLOCKED
   COMPLETED
-  CANCELLED
 }
 
 // Modèle représentant un utilisateur de l'application

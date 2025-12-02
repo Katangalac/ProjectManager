@@ -69,3 +69,25 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 .read-the-docs {
   color: #888;
 }
+
+/* Style personnalisé pour ton scrollbar */
+.my-scrollbar {
+  scrollbar-width: 5px; /* Firefox */
+}
+
+/* Chrome / Edge / Safari */
+.my-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.my-scrollbar::-webkit-scrollbar-track {
+  background-color: green !important;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb {
+  background-color: red !important;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: pink !important;
+}

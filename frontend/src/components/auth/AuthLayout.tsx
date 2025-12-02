@@ -24,17 +24,36 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </div>
       <div
         className={clsx(
-          "hidden flex-1 items-center justify-center p-8 lg:flex",
-          "bg-cyan-500",
-          "dark:bg-cyan-700"
+          "relative hidden flex-1 items-center p-8 lg:flex",
+          "bg-[url('/images/im5.jpg')] bg-cover bg-center"
         )}
       >
-        <div className={clsx("max-w-md text-center")}>
-          {/*<img src="/assets/project_illustration.svg" alt="Project management" className="w-full" />*/}
-          <h2 className={clsx("mt-6 text-2xl font-bold")}>
-            Gérez vos projets plus intelligemment.
+        {/**Overlay pour gérer l'apparence de l'image de fond */}
+        <div className={clsx("absolute inset-0 bg-black/40")}></div>
+
+        <div
+          className={clsx(
+            "relative flex h-full w-full flex-col justify-end py-4 text-left"
+          )}
+        >
+          <h2
+            className={clsx(
+              "mt-6 stroke-black stroke-1 text-3xl font-bold text-gray-200"
+            )}
+            style={{ WebkitTextStroke: "0.5px black" }}
+          >
+            Gérer vos projets efficacement!
           </h2>
-          <p className={clsx("mt-2 text-gray-500", "dark:text-gray-400")}>
+          <p
+            className={clsx("mt-2 text-lg font-medium text-gray-200")}
+            style={{ WebkitTextStroke: "0.5px black" }}
+          >
+            Connectez vous et accéder à votre espace de travail.
+          </p>
+          <p
+            className={clsx("mt-2 text-lg font-medium text-gray-200")}
+            style={{ WebkitTextStroke: "0.5px black" }}
+          >
             Formez vos équipes, planifiez vos tâches et collaborez en temps
             réel, le tout sur une seule plateforme.
           </p>

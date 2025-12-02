@@ -53,7 +53,10 @@ export default function TaskCard({ task }: TaskCardProps) {
             </span>
             <button title="Options">
               <EllipsisHorizontalIcon
-                className={clsx("size-4 text-gray-700")}
+                className={clsx(
+                  "size-4 cursor-pointer text-gray-700",
+                  "dark:text-gray-400"
+                )}
               />
             </button>
           </div>

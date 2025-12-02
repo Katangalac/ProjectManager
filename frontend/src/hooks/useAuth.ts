@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { axiosClient } from "../lib/axiosClient";
+import { axiosClient } from "../lib/axios/axiosClient";
 
 type UseAuthReturn = {
   isAuthenticated: boolean;

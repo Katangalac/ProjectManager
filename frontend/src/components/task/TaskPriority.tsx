@@ -23,8 +23,7 @@ export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
     <div
       className={clsx(
         "flex w-fit items-center justify-start gap-2",
-        "rounded-sm",
-        priorityLevelItems.bgColor
+        "rounded-sm"
       )}
     >
       <FlagPennantIcon
