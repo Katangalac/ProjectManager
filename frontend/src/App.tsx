@@ -12,6 +12,8 @@ import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./services/auth.services.ts";
+import { ConfirmDialog } from "primereact/confirmdialog";
+import { clsx } from "clsx";
 
 /**
  * Point d'entrée de l'application
@@ -44,39 +46,49 @@ function App() {
   }, [isSuccess, isError, data, logout, setUser]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<RootRedirect />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route element={<MainLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashBoard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/userTasks"
-            element={
-              <ProtectedRoute>
-                <UserTasksPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile/:id?"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <ConfirmDialog
+        className={clsx(
+          "min-w-fit gap-5 rounded-lg border border-gray-300 bg-white p-5 text-sm",
+          "dark:border-gray-600 dark:bg-gray-900",
+          "text-gray-700 dark:text-gray-300",
+          "myDialog"
+        )}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route element={<MainLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashBoard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userTasks"
+              element={
+                <ProtectedRoute>
+                  <UserTasksPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/:id?"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

@@ -91,3 +91,62 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 .my-scrollbar::-webkit-scrollbar-thumb:hover {
   background: pink !important;
 }
+
+.p-sortable-column-icon {
+  font-size: 8px !important; /* 20px */
+  margin-left: 3px !important; /* 8px */
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.myMenu .p-menuitem-content {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:hover {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:focus {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:active {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-link {
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-text {
+  color: inherit !important;
+}
+
+.myMenu .p-submenu-header {
+  color: inherit !important;
+  background-color: inherit !important;
+  border: inherit !important ;
+}
+
+.p-submenu-header {
+  color: inherit !important;
+  background-color: inherit !important;
+  border: inherit !important ;
+}
+
+.p-dialog .p-dialog-content {
+  background-color: inherit !important;
+}

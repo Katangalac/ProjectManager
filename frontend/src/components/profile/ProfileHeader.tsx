@@ -104,13 +104,12 @@ export default function ProfileHeader({
 
         {/**Uploader de fichier pour changer l'image de profil */}
         {isEditable && (
-          <div title="Téléverser une photo">
+          <div title="Upload a photo">
             <FileUploaderRegular
               sourceList="local, camera, facebook, gdrive"
               cameraModes="photo"
               pubkey={uploadcarePubKey}
               multiple={false}
-              localeName="fr"
               iconHrefResolver={(iconName) => {
                 if (iconName === "upload") return "/icons/camera.svg";
                 if (iconName === "facebook") return "/icons/facebook.svg";

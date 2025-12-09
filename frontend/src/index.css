@@ -29,3 +29,95 @@ body {
     background-color: #101828;
   }
 }
+
+.p-dialog .p-dialog-header {
+  background-color: inherit !important;
+  @apply text-gray-800 dark:text-gray-200;
+}
+
+.p-dropdown .p-dropdown-label.p-placeholder {
+  @apply text-sm text-gray-700 dark:text-gray-200;
+}
+
+.p-inputtext {
+  @apply text-sm text-gray-700 dark:text-gray-200;
+}
+
+.p-inputtext::placeholder {
+  @apply text-gray-400;
+}
+
+.myText.p-inputtext:focus {
+  @apply border-2 border-black;
+}
+
+.myInput .p-icon {
+  @apply size-3;
+}
+
+.p-datepicker {
+  @apply text-sm text-gray-700 dark:text-gray-200;
+}
+
+.p-datepicker-calendar-container {
+  @apply flex items-center justify-center;
+}
+
+.p-datepicker-calendar-container .p-datepicker-calendar {
+  @apply text-xs text-gray-700 dark:text-gray-200;
+}
+
+.p-datepicker-calendar-container .p-datepicker-calendar thead {
+  @apply text-sm text-gray-700 dark:text-gray-200;
+}
+
+.p-datepicker-title {
+  @apply flex gap-1;
+}
+
+.p-datepicker-next,
+.p-datepicker-prev {
+  @apply size-3;
+}
+
+.p-datepicker-calendar thead th,
+.p-datepicker-calendar tbody td {
+  @apply w-10 p-2 text-center;
+}
+
+.p-datepicker-group {
+  @apply dark:border dark:border-gray-700 dark:shadow-gray-800;
+}
+
+.p-datepicker-group .p-datepicker-header {
+  @apply dark:border dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200;
+}
+
+.p-datepicker-group .p-datepicker-calendar {
+  @apply dark:rounded-b-md dark:bg-gray-900;
+}
+
+.p-monthpicker,
+.p-yearpicker {
+  @apply dark:bg-gray-900 dark:text-gray-200;
+}
+
+.p-dropdown-items {
+  @apply text-sm text-gray-700 dark:text-gray-200;
+}
+
+.p-dropdown-item {
+  @apply p-2;
+}
+
+.p-dialog-footer {
+  @apply flex justify-end gap-2 dark:bg-inherit;
+}
+
+button.p-confirm-dialog-accept.p-button.p-component {
+  @apply rounded-sm bg-green-500 px-2 py-1 text-white hover:bg-green-700;
+}
+
+button.p-confirm-dialog-reject.p-button-text.p-button.p-component {
+  @apply rounded-sm bg-red-500 px-2 py-1 text-white hover:bg-red-700;
+}

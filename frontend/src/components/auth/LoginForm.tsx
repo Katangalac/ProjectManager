@@ -59,7 +59,7 @@ export default function LoginForm() {
           "dark:text-white"
         )}
       >
-        Bienvenue!
+        Welcome back!
       </h2>
       <p
         className={clsx(
@@ -67,7 +67,7 @@ export default function LoginForm() {
           "dark:text-gray-400"
         )}
       >
-        Entrez vos identifiants pour accéder à votre compte
+        Enter your identifiers to get access to your account
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
@@ -79,7 +79,7 @@ export default function LoginForm() {
                 "dark:text-white"
               )}
             >
-              Nom d'utilisateur/Email
+              Username or Email
             </label>
             {errors.identifier && (
               <p className={clsx("mt-1 text-sm text-red-500")}>
@@ -108,7 +108,7 @@ export default function LoginForm() {
                 "dark:text-white"
               )}
             >
-              Mot de passe
+              Password
             </label>
             {errors.password && (
               <p className={clsx("mt-1 text-sm text-red-500")}>
@@ -132,7 +132,7 @@ export default function LoginForm() {
               className={clsx("font-medium text-blue-500 hover:underline")}
               href="/"
             >
-              Mot de passe oublié?
+              Forget password?
             </a>
           </p>
         </div>
@@ -144,7 +144,7 @@ export default function LoginForm() {
             "rounded-sm bg-cyan-500 hover:bg-cyan-600"
           )}
         >
-          Connexion
+          Login
         </button>
       </form>
 
@@ -155,7 +155,7 @@ export default function LoginForm() {
             "mx-4 text-sm font-medium whitespace-nowrap text-gray-500"
           )}
         >
-          Ou se connecter avec
+          Or login with
         </span>
         <div className={clsx("grow border-t border-gray-300")}></div>
       </div>
@@ -178,13 +178,13 @@ export default function LoginForm() {
         <span
           className={clsx("font-medium text-gray-500", "dark:text-gray-400")}
         >
-          Pas encore de compte ?{" "}
+          Don't have an account ?{" "}
         </span>
         <a
           className={clsx("font-medium text-blue-500 hover:underline")}
           href="/register"
         >
-          S'inscrire
+          Sign up
         </a>
       </p>
     </div>

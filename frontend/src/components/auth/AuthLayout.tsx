@@ -42,20 +42,20 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             )}
             style={{ WebkitTextStroke: "0.5px black" }}
           >
-            Gérer vos projets efficacement!
+            Manage your projects efficiently!
           </h2>
           <p
             className={clsx("mt-2 text-lg font-medium text-gray-200")}
             style={{ WebkitTextStroke: "0.5px black" }}
           >
-            Connectez vous et accéder à votre espace de travail.
+            Login to access your workspace.
           </p>
           <p
             className={clsx("mt-2 text-lg font-medium text-gray-200")}
             style={{ WebkitTextStroke: "0.5px black" }}
           >
-            Formez vos équipes, planifiez vos tâches et collaborez en temps
-            réel, le tout sur une seule plateforme.
+            Create teams, manage tasks, and collaborate with your peers, all in
+            one plateform.
           </p>
         </div>
       </div>

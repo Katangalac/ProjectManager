@@ -1,17 +1,20 @@
-import { ProjectStatus } from "@prisma/client";
 import { z } from "zod";
 
 /**
- * Schéma pour valider la structure de base d'un objet projet
+ * Schéma pour valider la structure de base d'une tâche dans la BD
  */
-export const projectSchema = z.object({
+export const taskSchema = z.object({
   id: z.uuid("ID invalide"),
   creatorId: z.uuid("ID invalide").nullable(),
-  title: z.string().max(100, "Titre trop long"),
+  projectId: z.uuid("ID invalide").nullable(),
+  teamId: z.uuid("ID invalide").nullable(),
+  title: z.string(),
   description: z.string(),
-  status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING),
-  budgetPlanned: z.float64().default(0.0),
-  actualCost: z.float64().default(0.0),
+  priorityLevel: z.number().int().min(0).max(5),
+  status: z
+    .enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"])
+    .default("TODO"),
+  cost: z.float64().default(0.0),
   progress: z.number().int().min(0).max(100).default(0),
   startedAt: z.coerce.date(),
   deadline: z.coerce.date(),
@@ -21,41 +24,45 @@ export const projectSchema = z.object({
 });
 
 /**
- * Schéma pour valider les données attendues lors de la création d'un nouveau projet
+ * Schéma pour valider les données attendues lors de la création d'une nouvelle tâche
  */
-export const createProjectSchema = projectSchema.omit({
+export const createTaskSchema = taskSchema.omit({
   id: true,
-  actualCost: true,
   completedAt: true,
   updatedAt: true,
   createdAt: true,
 });
 
 /**
- * Schéma pour valider les données attendues lors de la modification d'un projet
+ * Schéma pour valider les données attendues lors de la modification d'une tâche
  */
-export const updateProjectDataSchema = z.object({
+export const updateTaskDataSchema = z.object({
   creatorId: z.uuid("ID invalide").nullable().optional(),
-  title: z.string().max(100, "Titre trop long").optional(),
+  projectId: z.uuid("ID invalide").nullable().optional(),
+  teamId: z.uuid("ID invalide").nullable().optional(),
+  title: z.string().optional(),
   description: z.string().optional(),
-  status: z.enum(ProjectStatus).default(ProjectStatus.PLANNING).optional(),
-  budgetPlanned: z.float64().default(0.0).optional(),
-  actualCost: z.float64().default(0.0).optional(),
-  progress: z.number().int().min(0).max(100).optional(),
+  priorityLevel: z.coerce.number().int().min(0).max(5).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"]).optional(),
+  cost: z.float64().optional(),
+  progress: z.coerce.number().int().min(0).max(100).optional(),
   startedAt: z.coerce.date().optional(),
   deadline: z.coerce.date().optional(),
-  completedAt: z.coerce.date().nullable().optional(),
+  completedAt: z.coerce.date().optional(),
 });
 
 /**
- * Schéma pour valider les données attendues comme filtre de recherche des projets
+ * Schéma pour valider les données attendues comme filtre de recherche des taches
  */
-export const searchProjectsFilterSchema = z.object({
-  title: z.string().max(100, "Titre trop long").optional(),
-  status: z.enum(ProjectStatus).optional(),
+export const searchTasksFilterSchema = z.object({
+  title: z.string().optional(),
+  priorityLevelEq: z.coerce.number().int().min(0).max(5).optional(),
+  priorityLevelLt: z.coerce.number().int().min(0).max(5).optional(),
+  priorityLevelGt: z.coerce.number().int().min(0).max(5).optional(),
   progressEq: z.coerce.number().int().min(0).max(100).optional(),
   progressLt: z.coerce.number().int().min(0).max(100).optional(),
   progessGt: z.coerce.number().int().min(0).max(100).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"]).optional(),
   startOn: z.coerce.date().optional(),
   endOn: z.coerce.date().optional(),
   startBefore: z.coerce.date().optional(),

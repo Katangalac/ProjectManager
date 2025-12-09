@@ -1,29 +1,31 @@
-import type { Pagination } from "./Pagination";
-
+/**
+ * Type représentant une notification
+ */
 export type Notification = {
-    id: string;
-    userId: string;
-    title: string;
-    message: string;
-    read: boolean;
-    updatedAt: Date;
-    createdAt: Date;
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  read: boolean;
+  updatedAt: Date;
+  createdAt: Date;
 };
 
+/**
+ * Type des données attendues lors de la création d'une notification
+ */
 export type CreateNotificationData = {
-    message: string;
-    userId: string;
-    title: string;
+  message: string;
+  userId: string;
+  title: string;
 };
 
+/**
+ * Type des données attendues comme paramètre de recherche des notifications
+ */
 export type SearchNotificationsFilter = {
-    page: number;
-    pageSize: number;
-    read?: boolean | undefined;
-    all?: boolean | undefined;
-};
-
-export type NotificationsCollection = {
-    notifications: Notification[],
-    pagination: Pagination
+  page?: number | undefined;
+  pageSize?: number | undefined;
+  read?: boolean | undefined;
+  all?: boolean | undefined;
 };

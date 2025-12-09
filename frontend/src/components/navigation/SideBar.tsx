@@ -110,7 +110,7 @@ export default function SideBar() {
           icon={
             <ProjectorScreenChartIcon size={open ? 18 : 22} weight="regular" />
           }
-          label="Projets"
+          label="Projects"
           to="/userProjects"
           showText={open}
         />
@@ -120,13 +120,13 @@ export default function SideBar() {
               className={clsx(open ? "size-4.5" : "size-5.5")}
             />
           }
-          label="Tâches"
+          label="Tasks"
           to="/userTasks"
           showText={open}
         />
         <NavItem
           icon={<CalendarDotsIcon size={open ? 18 : 22} weight="regular" />}
-          label="Calendrier"
+          label="Calendar"
           to="/calendar"
           showText={open}
         />
@@ -134,7 +134,7 @@ export default function SideBar() {
           icon={
             <UserGroupIcon className={clsx(open ? "size-4.5" : "size-5.5")} />
           }
-          label="Équipes"
+          label="Teams"
           to="/teams"
           showText={open}
         />
@@ -173,7 +173,7 @@ export default function SideBar() {
       >
         <NavItem
           icon={<GearIcon size={open ? 18 : 22} weight="regular" />}
-          label="Paramètres"
+          label="Settings"
           to="/settings"
           showText={open}
         />
@@ -201,7 +201,7 @@ export default function SideBar() {
           <span>
             <SignOutIcon size={open ? 18 : 22} weight="regular" />
           </span>
-          {open && <span>Déconnexion</span>}
+          {open && <span>Logout</span>}
         </button>
       </nav>
     </aside>

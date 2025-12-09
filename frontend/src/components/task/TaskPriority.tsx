@@ -17,7 +17,7 @@ type TaskPriorityProps = {
  * @returns - Le composant affichant le niveau de priorité
  */
 export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
-  const priorityLevelItems = priorityLevelHelper[priorityLevel];
+  const priorityLevelMeta = priorityLevelHelper[priorityLevel];
 
   return (
     <div
@@ -28,17 +28,17 @@ export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
     >
       <FlagPennantIcon
         weight="fill"
-        className={clsx("size-4", priorityLevelItems.textStyle)}
+        className={clsx("size-4", priorityLevelMeta.textStyle)}
       />
       <span
         className={clsx(
           "flex h-fit w-fit items-center justify-center py-0.5 pr-1",
           "rounded-sm",
           "text-xs font-medium",
-          priorityLevelItems.textStyle
+          priorityLevelMeta.textStyle
         )}
       >
-        Priorité {priorityLevelItems.label}
+        Priorité {priorityLevelMeta.label}
       </span>
     </div>
   );

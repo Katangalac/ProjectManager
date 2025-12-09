@@ -1,5 +1,6 @@
-import type { Pagination } from "./Pagination";
-
+/**
+ * Type représentant les status d'un projet
+ */
 export type ProjectStatus =
   | "BLOCKED"
   | "PLANNING"
@@ -7,6 +8,9 @@ export type ProjectStatus =
   | "PAUSED"
   | "COMPLETED";
 
+/**
+ * Type représentant un projet
+ */
 export type Project = {
   id: string;
   creatorId: string | null;
@@ -22,6 +26,9 @@ export type Project = {
   createdAt: Date;
 };
 
+/**
+ * Type des données attendues lors de la création d'un projet
+ */
 export type CreateProjectData = {
   description: string;
   creatorId: string | null;
@@ -32,6 +39,9 @@ export type CreateProjectData = {
   budgetPlanned: number;
 };
 
+/**
+ * Type des données attendues lors de la modification d'un projet
+ */
 export type UpdateProjectData = {
   creatorId?: string | null | undefined;
   title?: string | undefined;
@@ -44,9 +54,12 @@ export type UpdateProjectData = {
   completedAt?: Date | null | undefined;
 };
 
+/**
+ * Type des données attendues comme paramètre de recherche des projets
+ */
 export type SearchProjectsFilter = {
-  page: number;
-  pageSize: number;
+  page?: number | undefined;
+  pageSize?: number | undefined;
   title?: string | undefined;
   status?: ProjectStatus | undefined;
   startOn?: Date | undefined;
@@ -59,9 +72,4 @@ export type SearchProjectsFilter = {
   completedBefore?: Date | undefined;
   completedAfter?: Date | undefined;
   all?: boolean | undefined;
-};
-
-export type ProjectsCollection = {
-  projects: Project[];
-  pagination: Pagination;
 };

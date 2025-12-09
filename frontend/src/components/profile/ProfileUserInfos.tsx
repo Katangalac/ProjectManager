@@ -132,7 +132,7 @@ export default function ProfileUserInfo({
               "dark:text-white"
             )}
           >
-            Informations personnelles
+            Personal informations
           </h3>
 
           {/** Bouton de bascule du mode édition **/}
@@ -147,7 +147,7 @@ export default function ProfileUserInfo({
               )}
               onClick={toogleEditingMode}
             >
-              <span>{editing ? "Annuler" : "Modifier"}</span>
+              <span>{editing ? "Cancel" : "Edit"}</span>
               <PencilSquareIcon className={clsx("size-3.5")} />
             </button>
           )}
@@ -175,7 +175,7 @@ export default function ProfileUserInfo({
                   "dark:text-gray-300"
                 )}
               >
-                Prénom
+                Firstname
               </span>
               {errors.firstName && (
                 <p className={clsx("text-sm text-red-500")}>
@@ -209,7 +209,7 @@ export default function ProfileUserInfo({
                   "dark:text-gray-300"
                 )}
               >
-                Nom
+                Lastname
               </span>
               {errors.lastName && (
                 <p className={clsx("text-sm text-red-500")}>
@@ -311,7 +311,7 @@ export default function ProfileUserInfo({
                   "dark:text-gray-300"
                 )}
               >
-                Téléphone
+                Phone number
               </span>
               {errors.phoneNumber && (
                 <p className={clsx("text-sm text-red-500")}>
@@ -378,7 +378,7 @@ export default function ProfileUserInfo({
                 "dark:text-gray-300"
               )}
             >
-              Dernière connexion
+              Last login
             </span>
 
             <input
@@ -407,7 +407,7 @@ export default function ProfileUserInfo({
                 "dark:text-gray-300"
               )}
             >
-              Inscrit depuis
+              Signup since
             </span>
 
             <input
@@ -438,7 +438,7 @@ export default function ProfileUserInfo({
                 "rounded-sm bg-gray-300 hover:bg-gray-500"
               )}
             >
-              Sauvegarder
+              Save
             </button>
           </div>
         )}

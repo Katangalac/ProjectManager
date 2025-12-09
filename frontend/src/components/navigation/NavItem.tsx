@@ -31,7 +31,7 @@ export default function NavItem({ icon, label, to, showText }: NavItemProps) {
           "transition-colors",
           "dark:text-white",
           isActive
-            ? "bg-white dark:bg-gray-900"
+            ? "bg-cyan-100 dark:bg-gray-900"
             : "hover:bg-gray-100 dark:hover:bg-gray-800"
         )
       }

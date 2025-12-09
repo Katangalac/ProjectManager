@@ -1,8 +1,10 @@
-import type { Pagination } from "./Pagination";
 import { Project } from "./Project";
 import { Team } from "./Team";
 import { User } from "./User";
 
+/**
+ * Type représentant une tache
+ */
 export type Task = {
   id: string;
   creatorId: string | null;
@@ -13,6 +15,7 @@ export type Task = {
   priorityLevel: number;
   status: TaskStatus;
   cost: number;
+  progress: number;
   startedAt: Date;
   deadline: Date;
   completedAt: Date | null;
@@ -20,6 +23,9 @@ export type Task = {
   createdAt: Date;
 };
 
+/**
+ * Type représentant une tache avec ses différentes relations
+ */
 export type TaskWithRelations = Task & {
   project?: Project | null;
   team?: Team | null;
@@ -28,6 +34,9 @@ export type TaskWithRelations = Task & {
   }[];
 };
 
+/**
+ * Type représentant les status d'une tache
+ */
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "BLOCKED" | "COMPLETED";
 
 export type CreateTaskData = {
@@ -43,6 +52,9 @@ export type CreateTaskData = {
   deadline: Date;
 };
 
+/**
+ * Type des données attendues lors de la modification d'une tache
+ */
 export type UpdateTaskData = {
   creatorId?: string | null | undefined;
   projectId?: string | null | undefined;
@@ -50,6 +62,7 @@ export type UpdateTaskData = {
   title?: string | undefined;
   description?: string | undefined;
   priorityLevel?: number | undefined;
+  progress?: number | undefined;
   status?: TaskStatus | undefined;
   cost?: number | undefined;
   startedAt?: Date | undefined;
@@ -57,13 +70,19 @@ export type UpdateTaskData = {
   completedAt?: Date | undefined;
 };
 
+/**
+ * Type des données attendues comme paramètre de recherche des taches
+ */
 export type SearchTasksFilter = {
-  page: number;
-  pageSize: number;
+  page?: number | undefined;
+  pageSize?: number | undefined;
   title?: string | undefined;
   priorityLevelEq?: number | undefined;
   priorityLevelLt?: number | undefined;
   priorityLevelGt?: number | undefined;
+  progressEq?: number | undefined;
+  progressLt?: number | undefined;
+  progressGt?: number | undefined;
   status?: TaskStatus | undefined;
   startOn?: Date | undefined;
   endOn?: Date | undefined;
@@ -75,9 +94,4 @@ export type SearchTasksFilter = {
   completedBefore?: Date | undefined;
   completedAfter?: Date | undefined;
   all?: boolean | undefined;
-};
-
-export type TasksCollection = {
-  tasks: Task[];
-  pagination: Pagination;
 };

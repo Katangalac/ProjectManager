@@ -1,40 +1,48 @@
-import type { Pagination } from "./Pagination";
-
+/**
+ * Type représentant un message
+ */
 export type Message = {
-    id: string;
-    senderId: string | null;
-    conversationId: string;
-    content: string | null;
-    read: boolean;
-    updatedAt: Date;
-    createdAt: Date;
+  id: string;
+  senderId: string | null;
+  conversationId: string;
+  content: string | null;
+  read: boolean;
+  updatedAt: Date;
+  createdAt: Date;
 };
 
+/**
+ * Type représentant un élément joint/attaché à un message
+ */
 export type Attachment = {
-    url: string;
-    type: string;
+  url: string;
+  type: string;
 };
 
+/**
+ * Type des données attendues lors de la création d'un message
+ */
 export type CreateMessageData = {
-    senderId: string;
-    conversationId: string;
-    content: string;
-    attachments?: Attachment[] | undefined;
+  senderId: string;
+  conversationId: string;
+  content: string;
+  attachments?: Attachment[] | undefined;
 };
 
+/**
+ * Type des données attendues lors de la modification d'un message
+ */
 export type EditMessageData = {
-    userId: string;
-    newContent: string;
+  userId: string;
+  newContent: string;
 };
 
+/**
+ * Type des données attendues comme paramètre de recherche des messages
+ */
 export type SearchMessagesFilter = {
-    read: boolean | undefined;
-    page: number;
-    pageSize: number;
-    all?: boolean | undefined;
-};
-
-export type MessagesCollection = {
-    messages: Message[],
-    pagination: Pagination
+  read?: boolean | undefined;
+  page?: number | undefined;
+  pageSize?: number | undefined;
+  all?: boolean | undefined;
 };

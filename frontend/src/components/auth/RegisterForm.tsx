@@ -63,7 +63,7 @@ export default function RegisterForm() {
           "dark:text-white"
         )}
       >
-        Créer un compte
+        Create an account
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
@@ -75,7 +75,7 @@ export default function RegisterForm() {
                 "dark:text-white"
               )}
             >
-              Nom d'utilisateur
+              Username
             </label>
             {errors.userName && (
               <p className={clsx("mt-1 text-sm text-red-500")}>
@@ -133,7 +133,7 @@ export default function RegisterForm() {
                 "dark:text-white"
               )}
             >
-              Mot de passe
+              Password
             </label>
             {errors.password && (
               <p className={clsx("mt-1 text-sm text-red-500")}>
@@ -161,7 +161,7 @@ export default function RegisterForm() {
             "rounded-sm bg-cyan-500 hover:bg-cyan-600"
           )}
         >
-          Créer un compte
+          Sign up
         </button>
       </form>
 
@@ -172,7 +172,7 @@ export default function RegisterForm() {
             "mx-4 text-sm font-medium whitespace-nowrap text-gray-500"
           )}
         >
-          Ou s'inscrire avec
+          Or sign up with
         </span>
         <div className={clsx("grow border-t border-gray-300")}></div>
       </div>
@@ -195,13 +195,13 @@ export default function RegisterForm() {
         <span
           className={clsx("font-medium text-gray-500", "dark:text-gray-400")}
         >
-          Vous avez déjà un compte ?{" "}
+          Already have an account ?
         </span>
         <a
           className={clsx("font-medium text-blue-500 hover:underline")}
           href="/"
         >
-          Se connecter
+          Login
         </a>
       </p>
     </div>

@@ -4,10 +4,11 @@ import {
   CalendarDateRangeIcon,
   UserCircleIcon,
   UserGroupIcon,
-  EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import { ProjectorScreenChartIcon } from "@phosphor-icons/react";
 import TaskPriority from "./TaskPriority";
+import UserProfilePhoto from "../profile/UserProfilePhoto";
+import TaskActionMenu from "./TaskActionMenu";
 
 /**
  * Propriétés du TaskCardProps
@@ -28,7 +29,7 @@ export default function TaskCard({ task }: TaskCardProps) {
     <div
       className={clsx(
         "flex h-fit w-fit min-w-50 flex-col gap-3 p-2.5",
-        "rounded-sm border border-gray-300 bg-white",
+        "rounded-md border border-gray-300 bg-white",
         "dark:border-gray-600 dark:bg-gray-800"
       )}
     >
@@ -51,14 +52,7 @@ export default function TaskCard({ task }: TaskCardProps) {
             >
               {task.title}
             </span>
-            <button title="Options">
-              <EllipsisHorizontalIcon
-                className={clsx(
-                  "size-4 cursor-pointer text-gray-700",
-                  "dark:text-gray-400"
-                )}
-              />
-            </button>
+            <TaskActionMenu task={task} />
           </div>
           <div
             className={clsx("w-full border-t border-dotted border-gray-400")}
@@ -103,9 +97,20 @@ export default function TaskCard({ task }: TaskCardProps) {
               "dark:text-white"
             )}
           >
-            {task.assignedTo?.length
-              ? task.assignedTo.map((u) => u.user.userName).join(", ")
-              : "-"}
+            {task.assignedTo && task.assignedTo.length > 0 ? (
+              <div className={clsx("flex gap-0.5")}>
+                {task.assignedTo.map((a) => (
+                  <UserProfilePhoto
+                    key={a.user.id}
+                    imageUrl={a.user.imageUrl}
+                    username={a.user.userName}
+                    email={a.user.email}
+                  />
+                ))}
+              </div>
+            ) : (
+              "-"
+            )}
           </span>
         </div>
 
