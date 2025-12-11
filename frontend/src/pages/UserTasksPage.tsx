@@ -10,6 +10,7 @@ import { Dialog } from "primereact/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../lib/constants/task";
 import TaskForm from "../components/task/TaskForm";
 import { ViewColumnsIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 /**
  * Page d'affichage des tâches de l'utilisateur courant
@@ -52,16 +53,16 @@ export default function UserTasksPage() {
           onClick={() => setShowDialog(true)}
           className={clsx(
             "flex h-fit w-fit cursor-pointer items-center gap-1 p-2",
-            "rounded-md border border-cyan-500 bg-cyan-200 hover:bg-cyan-300",
-            "text-xs text-cyan-800"
+            "rounded-md bg-sky-400 hover:bg-sky-500",
+            "text-xs font-medium text-white"
           )}
         >
-          <PlusIcon className={clsx("size-3 stroke-2")} />
+          <PlusIcon className={clsx("size-3 stroke-3")} />
           Add New
         </button>
       </div>
 
-      {isLoading && <div>Chargement des tâches...</div>}
+      {isLoading && <ProgressSpinner />}
 
       {isError && (
         <div>
@@ -92,6 +93,7 @@ export default function UserTasksPage() {
           isUpdateForm={false}
           disableStatusInput={false}
           defaultValues={TASKFORM_DEFAULT_VALUES}
+          onSuccess={() => setShowDialog(false)}
         />
       </Dialog>
     </>

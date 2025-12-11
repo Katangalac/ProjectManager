@@ -27,11 +27,11 @@ export default function NavItem({ icon, label, to, showText }: NavItemProps) {
         clsx(
           "relative flex items-center gap-2 p-2",
           "rounded-lg",
-          "text-sm text-gray-500",
+          "text-sm font-medium text-gray-500",
           "transition-colors",
           "dark:text-white",
           isActive
-            ? "bg-cyan-100 dark:bg-gray-900"
+            ? "border border-sky-300 bg-sky-100 text-sky-600 dark:bg-gray-900"
             : "hover:bg-gray-100 dark:hover:bg-gray-800"
         )
       }
@@ -39,7 +39,7 @@ export default function NavItem({ icon, label, to, showText }: NavItemProps) {
       {({ isActive }) => (
         <>
           <span
-            className={clsx(isActive ? "text-cyan-500" : "")}
+            className={clsx(isActive ? "text-sky-600" : "")}
             title={showText ? "" : label}
           >
             {icon}

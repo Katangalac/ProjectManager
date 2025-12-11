@@ -43,7 +43,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
     <>
       <div
         className={clsx(
-          "flex h-fit max-h-[calc(100vh-48px)] w-fit flex-col justify-start",
+          "flex h-fit max-h-[calc(100vh-110px)] min-h-[calc(100vh-110px)] w-fit flex-col justify-start",
           "rounded-lg border bg-gray-50",
           "dark:border-gray-400 dark:bg-gray-600",
           borderColor
@@ -59,8 +59,10 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             <span className={clsx(textColor)}>
               <StatusIcon size={16} weight={"duotone"} />
             </span>
-            <span className={clsx("text-xs font-medium", textColor)}>
-              {label}
+            <span
+              className={clsx("text-center text-xs font-medium", textColor)}
+            >
+              {label} [{tasks.length}]
             </span>
           </div>
           <div className={clsx("flex w-fit items-center justify-start gap-2")}>
@@ -77,46 +79,40 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
           </div>
         </div>
         {tasks.length > 0 ? (
-          <>
-            <div
-              className={clsx(
-                "flex h-fit max-h-[calc(100vh-48px)] w-fit min-w-50 flex-col gap-4 px-2 py-4",
-                "overflow-x-hidden overflow-y-auto",
-                "[&::-webkit-scrollbar]:w-1",
-                "[&::-webkit-scrollbar-track]:bg-neutral-200",
-                "[&::-webkit-scrollbar-thumb]:bg-neutral-300",
-                "dark:[&::-webkit-scrollbar-track]:bg-neutral-700",
-                "dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-              )}
-            >
-              {tasks.map(
-                (task) =>
-                  task.status === status && (
-                    <TaskCard key={task.id} task={task} />
-                  )
-              )}
-            </div>
-          </>
+          <div
+            className={clsx(
+              "flex h-fit w-fit min-w-50 flex-col gap-4 px-2 py-4",
+              "overflow-x-hidden overflow-y-auto",
+              "[&::-webkit-scrollbar]:w-1",
+              "[&::-webkit-scrollbar-track]:bg-neutral-200",
+              "[&::-webkit-scrollbar-thumb]:bg-neutral-300",
+              "dark:[&::-webkit-scrollbar-track]:bg-neutral-700",
+              "dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
+            )}
+          >
+            {tasks.map(
+              (task) =>
+                task.status === status && <TaskCard key={task.id} task={task} />
+            )}
+          </div>
         ) : (
-          <>
-            <div
+          <div
+            className={clsx(
+              "flex h-full min-h-[calc(100vh-200px)] min-w-50 flex-col items-center justify-center py-4"
+            )}
+          >
+            <InboxIcon
+              className={clsx("size-5 text-gray-400", "dark:text-gray-200")}
+            />
+            <span
               className={clsx(
-                "flex h-full min-w-50 flex-col items-center justify-center py-4"
+                "text-xs font-medium text-gray-400",
+                "dark:text-gray-200"
               )}
             >
-              <InboxIcon
-                className={clsx("size-5 text-gray-400", "dark:text-gray-200")}
-              />
-              <span
-                className={clsx(
-                  "text-xs font-medium text-gray-400",
-                  "dark:text-gray-200"
-                )}
-              >
-                Aucune tâche
-              </span>
-            </div>
-          </>
+              Aucune tâche
+            </span>
+          </div>
         )}
       </div>
       <Dialog
@@ -136,6 +132,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
           isUpdateForm={false}
           disableStatusInput={true}
           defaultValues={taskFormDefaultValues}
+          onSuccess={() => setShowDialog(false)}
         />
       </Dialog>
     </>

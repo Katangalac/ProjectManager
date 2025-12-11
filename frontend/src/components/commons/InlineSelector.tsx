@@ -46,7 +46,7 @@ export function InlineSelector({
     <div
       className={clsx(
         `flex gap-3 px-2 py-1 ${className}`,
-        "rounded-md bg-gray-100"
+        "rounded-md border border-sky-100 bg-sky-50"
       )}
     >
       {options.map((opt) => {
@@ -62,7 +62,7 @@ export function InlineSelector({
               "rounded-md",
               "text-xs font-medium",
               selected
-                ? "border border-cyan-500 bg-cyan-100 text-cyan-600 shadow-lg"
+                ? "border border-sky-300 bg-sky-100 text-sky-600 shadow-lg"
                 : "border-gray-300 text-gray-600 hover:bg-white"
             )}
           >

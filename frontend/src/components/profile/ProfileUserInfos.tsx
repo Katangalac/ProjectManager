@@ -140,9 +140,9 @@ export default function ProfileUserInfo({
             <button
               className={clsx(
                 "flex items-center justify-between gap-3 px-2 py-1",
-                "rounded-sm border border-gray-300 bg-gray-200 hover:bg-gray-100",
-                "text-sm font-medium text-black",
-                "dark:border-gray-400 dark:bg-cyan-800 dark:hover:bg-cyan-700",
+                "rounded-sm bg-sky-400 hover:bg-sky-500",
+                "text-sm font-medium text-white",
+                "dark:bg-sky-800 dark:hover:bg-sky-700",
                 "dark:text-white"
               )}
               onClick={toogleEditingMode}

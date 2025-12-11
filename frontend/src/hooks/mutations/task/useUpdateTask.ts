@@ -3,10 +3,19 @@ import { updateTask } from "../../../services/task.services";
 import { UpdateTaskData } from "../../../types/Task";
 
 /**
+ * Propriété du hook de la mutation de mdofication d'une tâche
+ *
+ * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ */
+type UpdateTaskMutationParams = {
+  onSuccess?: () => void;
+};
+
+/**
  * Mutation de modification d'une nouvelle tâche
  * @returns la fontion de mutation ainsi que le status de la requête
  */
-export const useUpdateTask = () => {
+export const useUpdateTask = (params: UpdateTaskMutationParams = {}) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({
@@ -21,6 +30,7 @@ export const useUpdateTask = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUserTasks"] });
+      params.onSuccess?.();
     },
     onError: (error) => {
       console.error(error);

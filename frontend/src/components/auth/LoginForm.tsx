@@ -141,7 +141,7 @@ export default function LoginForm() {
           type="submit"
           className={clsx(
             "w-full py-2 font-semibold text-white",
-            "rounded-sm bg-cyan-500 hover:bg-cyan-600"
+            "rounded-sm bg-sky-400 hover:bg-sky-500"
           )}
         >
           Login

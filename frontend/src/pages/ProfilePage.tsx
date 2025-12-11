@@ -6,6 +6,7 @@ import { clsx } from "clsx";
 import PublicProfile from "../components/profile/PublicProfile";
 import PrivateProfile from "../components/profile/PrivateProfile";
 import { useParams } from "react-router-dom";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function ProfilePage() {
   const { id } = useParams();
@@ -41,11 +42,7 @@ export default function ProfilePage() {
     <div
       className={clsx("min-h-screen w-full", "bg-white", "dark:bg-gray-900")}
     >
-      {loading && (
-        <span className={clsx("text-black dark:text-white")}>
-          Chargement du profil...
-        </span>
-      )}
+      {loading && <ProgressSpinner />}
       {isOwnProfile && viewedUser && <PrivateProfile user={viewedUser} />}
       {!isOwnProfile && viewedUser && <PublicProfile user={viewedUser} />}
 

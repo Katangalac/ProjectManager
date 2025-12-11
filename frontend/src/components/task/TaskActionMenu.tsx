@@ -67,7 +67,11 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogTitle("Edit task");
             setDialogContent(
-              <TaskForm isUpdateForm={true} defaultValues={task} />
+              <TaskForm
+                isUpdateForm={true}
+                defaultValues={task}
+                onSuccess={() => setShowDialog(false)}
+              />
             );
             setShowDialog(true);
           },

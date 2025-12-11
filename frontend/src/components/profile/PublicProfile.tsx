@@ -27,14 +27,6 @@ export default function PublicProfile({ user }: PublicProfileProps) {
         "bg-white dark:bg-gray-900"
       )}
     >
-      <h2
-        className={clsx(
-          "mb-2 text-left text-lg font-medium text-black",
-          "dark:text-white"
-        )}
-      >
-        Profile
-      </h2>
       <ProfileHeader user={user} isEditable={false} />
       <ProfileUserInfo user={user} isEditable={false} />
     </div>

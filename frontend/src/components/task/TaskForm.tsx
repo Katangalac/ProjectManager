@@ -21,18 +21,21 @@ import { useCreateTask } from "../../hooks/mutations/task/useCreateTask";
 import { useUpdateTask } from "../../hooks/mutations/task/useUpdateTask";
 import { useTeams } from "../../hooks/queries/team/useTeams";
 import { useProjects } from "../../hooks/queries/project/useProjects";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 type TaskFormProps = {
   defaultValues?: Partial<Task>;
   isUpdateForm: boolean;
   status?: TaskStatus;
   disableStatusInput?: boolean;
+  onSuccess: () => void;
 };
 
 export default function TaskForm({
   isUpdateForm,
   defaultValues,
   disableStatusInput,
+  onSuccess,
 }: TaskFormProps) {
   const {
     data: projects = [],
@@ -54,19 +57,21 @@ export default function TaskForm({
     defaultValues: defaultValues,
   });
 
-  const { createTask } = useCreateTask();
-  const { updateTask } = useUpdateTask();
+  const { createTask } = useCreateTask({ onSuccess });
+  const { updateTask } = useUpdateTask({ onSuccess });
 
   if (projectLoading || teamLoading) {
-    <div>Chargement...</div>;
+    <div>
+      <ProgressSpinner />
+    </div>;
   }
   if (projectError || teamError) {
     if (projectError) {
-      return <div>Erreur de chargement des projets</div>;
+      return <div>An error occur while loading user projects</div>;
     }
 
     if (teamError) {
-      return <div>Erreur de chargement des équipes</div>;
+      return <div>An error occur while loading user teams</div>;
     }
   }
   const projectOptions = [
@@ -513,7 +518,7 @@ export default function TaskForm({
             type="submit"
             className={clsx(
               "w-full p-2 text-center font-semibold text-white",
-              "rounded-sm bg-cyan-500 hover:bg-cyan-600"
+              "rounded-sm bg-sky-400 hover:bg-sky-500"
             )}
           >
             Confirm
