@@ -8,7 +8,11 @@ type IconWeightProps = "fill" | "regular" | "bold" | "duotone" | "light";
 type pageLocationMeta = {
   title: string;
   message?: string;
-  icone?: ComponentType<{ size?: number; weight?: IconWeightProps }>;
+  icone?: ComponentType<{
+    size?: number;
+    weight?: IconWeightProps;
+    className?: string;
+  }>;
   iconeColor?: string;
 };
 
@@ -21,7 +25,7 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
       icone: HandWavingIcon,
       iconeColor: "text-yellow-600",
     },
-    "/projects": {
+    "/userProjects": {
       title: "My Projets",
     },
     "/userTasks": {
@@ -29,6 +33,9 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
     },
     "/profile": {
       title: "Profile",
+    },
+    "/calendar": {
+      title: "Calendar",
     },
   };
 };

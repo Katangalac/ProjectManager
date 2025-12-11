@@ -83,7 +83,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             className={clsx(
               "flex h-fit w-fit min-w-50 flex-col gap-4 px-2 py-4",
               "overflow-x-hidden overflow-y-auto",
-              "[&::-webkit-scrollbar]:w-1",
+              "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:bg-neutral-200",
               "[&::-webkit-scrollbar-thumb]:bg-neutral-300",
               "dark:[&::-webkit-scrollbar-track]:bg-neutral-700",

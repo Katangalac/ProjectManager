@@ -150,3 +150,44 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 .p-dialog .p-dialog-content {
   background-color: inherit !important;
 }
+
+.resource-project.mbsc-material.mbsc-timeline-resource {
+  background: #fff;
+  color: #3c86dc !important;
+  font-weight: 200 !important;
+}
+
+.resource-task.mbsc-material.mbsc-timeline-resource {
+  background: #fff;
+  color: #6a6a6a !important;
+  font-weight: 200 !important;
+}
+
+.mbsc-material.mbsc-timeline-header-active {
+  color: #fff;
+}
+
+.mbsc-material.mbsc-timeline-header-active:after {
+  background-color: #78b3f6 !important;
+  border-radius: 8px;
+}
+
+.mbsc-calendar-button-next:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-button-prev:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-button-today:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-material.mbsc-calendar-button.mbsc-button:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-text.mbsc-ltr {
+  text-align: center;
+}

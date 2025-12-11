@@ -31,13 +31,12 @@ export default function Header({ className = "" }: HeaderProps) {
           </h1>
           <div className={clsx("flex items-center justify-start")}>
             {currentPageMeta.icone && (
-              <span
-                className={clsx(
-                  "mr-0.5 stroke-black stroke-2",
-                  currentPageMeta.iconeColor
-                )}
-              >
-                <currentPageMeta.icone size={12} weight="fill" />
+              <span className={clsx("mr-0.5", currentPageMeta.iconeColor)}>
+                <currentPageMeta.icone
+                  size={12}
+                  weight="fill"
+                  className="stroke-black stroke-3"
+                />
               </span>
             )}
 
@@ -50,16 +49,17 @@ export default function Header({ className = "" }: HeaderProps) {
         <div className={"flex items-center gap-3"}>
           <button
             className={clsx(
-              "rounded-md border border-gray-300 p-2.5 text-black hover:bg-gray-200"
+              "cursor-poin rounded-md border border-gray-300 p-2.5 text-black hover:bg-gray-100"
             )}
             title="Notifications"
           >
             <BellIcon size={20} weight="regular" />
           </button>
-          <div
+          <a
             className={
-              "flex items-center gap-1 rounded-md border border-gray-300 px-2 py-1"
+              "flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 px-2 py-1 hover:bg-gray-100"
             }
+            href={"/profile"}
           >
             {user ? (
               <>
@@ -95,7 +95,7 @@ export default function Header({ className = "" }: HeaderProps) {
                 </span>
               </>
             )}
-          </div>
+          </a>
         </div>
       </div>
     </header>

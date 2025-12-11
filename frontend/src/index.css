@@ -121,3 +121,7 @@ button.p-confirm-dialog-accept.p-button.p-component {
 button.p-confirm-dialog-reject.p-button-text.p-button.p-component {
   @apply rounded-sm bg-red-500 px-2 py-1 text-white hover:bg-red-700;
 }
+
+.p-progress-spinner-circle {
+  stroke: #379cfa !important;
+}

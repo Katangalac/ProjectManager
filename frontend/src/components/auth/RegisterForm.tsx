@@ -195,7 +195,7 @@ export default function RegisterForm() {
         <span
           className={clsx("font-medium text-gray-500", "dark:text-gray-400")}
         >
-          Already have an account ?
+          Already have an account ?{" "}
         </span>
         <a
           className={clsx("font-medium text-blue-500 hover:underline")}

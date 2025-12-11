@@ -8,6 +8,8 @@ import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
 import UserTasksPage from "./pages/UserTasksPage.tsx";
+import CalendarPage from "./pages/CalendarPage.tsx";
+import ProjectPage from "./pages/ProjectsPage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -82,6 +84,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userProjects"
+              element={
+                <ProtectedRoute>
+                  <ProjectPage />
                 </ProtectedRoute>
               }
             />
