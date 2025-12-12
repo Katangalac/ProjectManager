@@ -156,7 +156,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
               />
             }
             label="Teams"
-            to="/teams"
+            to="/userTeams"
             showText={!isCollapsed}
           />
           <NavItem

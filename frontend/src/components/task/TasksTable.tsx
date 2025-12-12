@@ -22,13 +22,13 @@ type TasksTableProps = {
  */
 export default function TasksTable({ tasks }: TasksTableProps) {
   return (
-    <div>
+    <div className={clsx("min-h-screen")}>
       <DataTable
         value={tasks}
         emptyMessage="No tasks."
         scrollable
         className={clsx(
-          "min-w-fit rounded-sm border border-gray-200 text-black",
+          "min-w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
           "dark:border-gray-500"
         )}

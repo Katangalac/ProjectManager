@@ -106,9 +106,9 @@ export function mapProjectsAndTasksToResources(
   for (const t of tasks) {
     const taskRes: Resource = {
       id: t.id,
-      name: t.title,
+      name: "- " + t.title,
       color: TASK_STATUS_META[t.status].hexColor,
-      cssClass: "text-left resource-task",
+      cssClass: "text-left ml-2",
     };
 
     if (t.projectId && projectMap[t.projectId]) {

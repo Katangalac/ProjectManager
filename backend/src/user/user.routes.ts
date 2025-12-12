@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as userController from "./user.controllers";
 import { isAuthenticated } from "../auth/auth.middleware";
 import { isAdmin } from "../middlewares/admin.middleware";
+import * as teamController from "../team/team.controllers";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
 router.use(isAuthenticated);
 
 /**
- * @route GET /api/users 
+ * @route GET /api/users
  */
 router.get("/", userController.getUsersController);
 
@@ -30,13 +31,16 @@ router.patch("/me", userController.updateUserController);
 
 /**
  * @route DELETE /api/users/me
- */ 
+ */
 router.delete("/me", userController.deleteUserController);
 
 /**
  * @route GET /api/users/me/teams
  */
 router.get("/me/teams", userController.getUserTeamsController);
+
+//TODO
+router.get("/me/teams/:id", teamController.getTeamByIdController);
 
 /**
  * @route GET /api/users/me/projects
@@ -63,9 +67,7 @@ router.get("/me/conversations", userController.getUserConversationsController);
  */
 router.get("/me/messages", userController.getUserMessagesController);
 
-
-
-//Toutes les routes suivant nécessitent connecté et admin 
+//Toutes les routes suivant nécessitent connecté et admin
 router.use(isAdmin);
 
 /**
@@ -75,7 +77,7 @@ router.patch("/:id", userController.updateUserController);
 
 /**
  * @route DELETE /api/users/:id
- */ 
+ */
 router.delete("/:id", userController.deleteUserController);
 
 /**

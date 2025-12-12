@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 /**
  * Type représentant une équipe
  */
@@ -8,6 +10,19 @@ export type Team = {
   description: string;
   updatedAt: Date;
   createdAt: Date;
+};
+
+/**
+ * Type représentant une équipe avec ses relations
+ */
+export type TeamWithRelations = Team & {
+  user?: User | null;
+  teamUsers?: {
+    teamId: string;
+    userId: string;
+    userRole: string;
+    user: User;
+  }[];
 };
 
 /**

@@ -10,6 +10,8 @@ import MainLayout from "./layouts/MainLayout.tsx";
 import UserTasksPage from "./pages/UserTasksPage.tsx";
 import CalendarPage from "./pages/CalendarPage.tsx";
 import ProjectPage from "./pages/ProjectsPage.tsx";
+import UserTeamsPage from "./pages/UserTeamsPage.tsx";
+import TeamDetailsPage from "./pages/TeamDetailsPage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -100,6 +102,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProjectPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userTeams"
+              element={
+                <ProtectedRoute>
+                  <UserTeamsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userTeams/:teamId"
+              element={
+                <ProtectedRoute>
+                  <TeamDetailsPage />
                 </ProtectedRoute>
               }
             />

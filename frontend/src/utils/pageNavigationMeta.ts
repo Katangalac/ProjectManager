@@ -31,6 +31,9 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
     "/userTasks": {
       title: "My Tasks",
     },
+    "/userTeams": {
+      title: "My Teams",
+    },
     "/profile": {
       title: "Profile",
     },

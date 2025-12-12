@@ -53,7 +53,7 @@ export default function UserTasksPage() {
           onClick={() => setShowDialog(true)}
           className={clsx(
             "flex h-fit w-fit cursor-pointer items-center gap-1 p-2",
-            "rounded-md bg-sky-400 hover:bg-sky-500",
+            "rounded-md bg-sky-600 hover:bg-sky-700",
             "text-xs font-medium text-white"
           )}
         >

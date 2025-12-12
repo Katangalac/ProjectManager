@@ -518,7 +518,7 @@ export default function TaskForm({
             type="submit"
             className={clsx(
               "w-full p-2 text-center font-semibold text-white",
-              "rounded-sm bg-sky-400 hover:bg-sky-500"
+              "rounded-sm bg-sky-600 hover:bg-sky-700"
             )}
           >
             Confirm

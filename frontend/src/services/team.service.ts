@@ -1,6 +1,10 @@
 import { axiosClient } from "../lib/axios/axiosClient";
 import axios from "axios";
-import { SearchTeamsFilter } from "../types/Team";
+import {
+  SearchTeamsFilter,
+  UpdateTeamData,
+  CreateTeamData,
+} from "../types/Team";
 
 /**
  * Récupère les équipes de l'utilisateur courant correspondant aux paramètres de recherche
@@ -22,5 +26,78 @@ export const getUserTeams = async (params: SearchTeamsFilter) => {
     throw new Error(
       "Erreur lors de l arécupération des équipes de l'utilisateur"
     );
+  }
+};
+
+/**
+ * Récupère l'équipe de l'utilisateur ayant l'identifiant passé en paramètre
+ * En cas d'erreur, lance une exception avec le message d'erreur
+ *
+ * @param {string} id - identifiant de l'équipe à trouver
+ * @returns - L'équipe de l,utilisateur ayant l'identifiant passé en paramètre
+ * @throws - Une erreur si la requête échoue
+ */
+export const getUserTeamById = async (id: string) => {
+  try {
+    const axiosResponse = await axiosClient.get(`/users/me/teams/${id}`);
+    return axiosResponse.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error(
+      "Erreur lors de l arécupération de l'équipe de l'utilisateur"
+    );
+  }
+};
+
+export const createTeam = async (teamData: CreateTeamData) => {
+  try {
+    const axiosResponse = await axiosClient.post("/teams", teamData);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur inconnue lors de la création de l'équipe");
+  }
+};
+
+/**
+ *
+ * @param teamId
+ * @param teamData
+ * @returns
+ */
+export const updateTeam = async (teamId: string, teamData: UpdateTeamData) => {
+  try {
+    const axiosResponse = await axiosClient.patch(`/teams/${teamId}`, teamData);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur inconnue lors de la mise à jour de l'équipe");
+  }
+};
+
+/**
+ *
+ * @param teamId
+ * @returns
+ */
+export const deleteTeam = async (teamId: string) => {
+  try {
+    const axiosResponse = await axiosClient.delete(`/teams/${teamId}`);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur inconnue lors de la suppression de l'équipe");
   }
 };

@@ -16,7 +16,11 @@ type TasksBoardProps = {
  */
 export default function TasksBoard({ tasks }: TasksBoardProps) {
   return (
-    <div className={clsx("grid grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4")}>
+    <div
+      className={clsx(
+        "grid min-h-screen grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4"
+      )}
+    >
       {!tasks && <div>No tasks</div>}
       {tasks.map((task) => (
         <TaskCard key={task.id} task={task} />

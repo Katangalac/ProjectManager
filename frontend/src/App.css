@@ -189,5 +189,22 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 
 .mbsc-calendar-text.mbsc-ltr {
-  text-align: center;
+  text-align: center !important;
+}
+
+.p-accordion-header-link {
+  font-weight: inherit !important;
+  background-color: white !important;
+}
+
+.p-accordion-toggle-icon {
+  height: 14px !important;
+  width: 14px !important;
+  stroke-width: 0.5px !important;
+  -webkit-text-stroke-width: 0.5px !important;
+  margin-right: 5px;
+}
+
+.memberPage {
+  max-width: 800px !important;
 }

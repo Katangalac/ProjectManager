@@ -6,10 +6,9 @@ import {
   PencilIcon,
   TrashIcon,
   EllipsisHorizontalIcon,
-  UserMinusIcon,
-  UserPlusIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
+import { UserCircleMinusIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
 import { TaskWithRelations } from "../../types/Task";
 import { MenuItem } from "primereact/menuitem";
 import { Dialog } from "primereact/dialog";
@@ -46,8 +45,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
       items: [
         {
           label: "See details",
-          className:
-            "px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 myMenu",
+          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           icon: (
             <DocumentMagnifyingGlassIcon
               className={clsx("stroke-1.5 mr-1 size-4")}
@@ -62,8 +60,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
         {
           label: "Edit",
           icon: <PencilIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className:
-            "px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 myMenu",
+          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             setDialogTitle("Edit task");
             setDialogContent(
@@ -78,18 +75,26 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
         },
         {
           label: "Assign",
-          icon: <UserPlusIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className:
-            "px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <UserCirclePlusIcon
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1 size-4")}
+            />
+          ),
+          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour assigner la tâche
           },
         },
         {
           label: "Unassign",
-          icon: <UserMinusIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className:
-            "px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <UserCircleMinusIcon
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1 size-4")}
+            />
+          ),
+          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour desassigner la tâche
           },
@@ -97,8 +102,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
         {
           label: "Delete",
           icon: <TrashIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className:
-            "px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 myMenu",
+          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             confirmDialog({
               message: "Do you really want to delete this task?",
@@ -136,7 +140,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
       <button title="Options" onClick={(event) => menu.current?.toggle(event)}>
         <EllipsisHorizontalIcon
           className={clsx(
-            "size-4 cursor-pointer text-gray-700",
+            "size-4 cursor-pointer text-gray-700 hover:stroke-2",
             "dark:text-white"
           )}
         />

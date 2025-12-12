@@ -42,7 +42,7 @@ export default function ProfilePage() {
     <div
       className={clsx("min-h-screen w-full", "bg-white", "dark:bg-gray-900")}
     >
-      {loading && <ProgressSpinner />}
+      {loading && <ProgressSpinner strokeWidth="5" />}
       {isOwnProfile && viewedUser && <PrivateProfile user={viewedUser} />}
       {!isOwnProfile && viewedUser && <PublicProfile user={viewedUser} />}
 

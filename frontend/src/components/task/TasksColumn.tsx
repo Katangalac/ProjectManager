@@ -73,7 +73,9 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             </button>
             <button title="New task" onClick={() => setShowDialog(true)}>
               <PlusIcon
-                className={clsx("size-3 cursor-pointer stroke-2 text-gray-700")}
+                className={clsx(
+                  "size-3 cursor-pointer stroke-2 text-gray-700 hover:stroke-3"
+                )}
               />
             </button>
           </div>

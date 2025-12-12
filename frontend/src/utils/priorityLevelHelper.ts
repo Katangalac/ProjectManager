@@ -22,8 +22,8 @@ export const priorityLevelHelper: Record<number, PriorityLevelMeta> = {
 
   2: {
     label: "Low",
-    textStyle: "text-blue-600",
-    bgColor: "bg-blue-200",
+    textStyle: "text-sky-600",
+    bgColor: "bg-sky-200",
   },
 
   3: {
