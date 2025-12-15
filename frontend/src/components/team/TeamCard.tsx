@@ -17,7 +17,6 @@ export default function TeamCard({ team }: TeamCardProps) {
         "gap-5 rounded-md border border-gray-300 shadow-lg hover:brightness-85",
         "dark:border-gray-600 dark:bg-gray-800"
       )}
-      onClick={() => navigate(`/userTeams/${team.id}`)}
     >
       <div className={clsx("flex w-full justify-center")}>
         <div
@@ -25,6 +24,7 @@ export default function TeamCard({ team }: TeamCardProps) {
             "flex items-center justify-center rounded-md bg-sky-600 px-3 py-5",
             "h-16 w-fit min-w-16"
           )}
+          onClick={() => navigate(`/userTeams/${team.id}`)}
         >
           <span className={clsx("text-lg font-medium text-white")}>
             {getAcronymeFromName(team.name)}

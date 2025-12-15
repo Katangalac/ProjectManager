@@ -124,7 +124,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
         modal
         onHide={() => setShowDialog(false)}
         className={clsx(
-          "min-w-fit gap-5 rounded-lg border border-gray-300 bg-white p-5 text-sm",
+          "min-w-fit gap-5 rounded-lg border border-gray-300 bg-white text-sm",
           "dark:border-gray-600 dark:bg-gray-900",
           "text-gray-700 dark:text-gray-300",
           "myDialog"

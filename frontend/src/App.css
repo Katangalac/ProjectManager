@@ -24,6 +24,15 @@ uc-file-uploader-regular * {
 /* Définition de l'arrondissement des bords du bouton de chargement*/
 uc-file-uploader-regular uc-simple-btn {
   --uc-radius: 25px !important;
+  background-color: rgb(240, 240, 240);
+  border-radius: 25px;
+  border: solid rgb(230, 230, 230);
+  padding: 4px;
+}
+
+uc-file-uploader-regular uc-simple-btn:hover {
+  background-color: rgb(185, 221, 252);
+  border: solid rgb(185, 221, 252);
 }
 
 /* Cacher le texte par défaut du bouton de chargement */
@@ -45,6 +54,28 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.data-\[selected-single\=true\]\:bg-primary {
+  &[data-selected-single="true"] {
+    background-color: rgb(40, 140, 228);
+  }
+}
+
+.group-data-\[focused\=true\]\/day\:ring-\[3px\]:focus {
+  outline: 3px solid #0ea5e9; /* sky-500 */
+  outline-offset: 0px;
+}
+
+.group-data-\[focused\=true\]\/day\:ring-ring\/50:focus {
+  outline: 3px solid #7dd1f9; /* sky-500 */
+  outline-offset: 0px;
+}
+
+.group-data-\[focused\=true\]\/day\:border-ring:focus {
+  border: #7dd1f9;
+  outline: 3px solid #7dd1f9; /* sky-500 */
+  outline-offset: 0px;
 }
 
 @keyframes logo-spin {
@@ -135,20 +166,9 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
   color: inherit !important;
 }
 
-.myMenu .p-submenu-header {
-  color: inherit !important;
-  background-color: inherit !important;
-  border: inherit !important ;
-}
-
-.p-submenu-header {
-  color: inherit !important;
-  background-color: inherit !important;
-  border: inherit !important ;
-}
-
 .p-dialog .p-dialog-content {
   background-color: inherit !important;
+  scrollbar-width: thin;
 }
 
 .resource-project.mbsc-material.mbsc-timeline-resource {

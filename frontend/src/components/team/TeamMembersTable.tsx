@@ -40,7 +40,7 @@ export default function TeamMembersTable({
               "flex items-center justify-start p-2 text-xs font-medium"
             )}
             headerClassName={clsx(
-              "border-b border-gray-200 p-2 text-left text-xs font-medium text-gray-500",
+              "border-b border-gray-200 p-2 bg-sky-50 text-left text-xs font-medium text-gray-500",
               "dark:text-gray-400",
               "dark:border-gray-500"
             )}
@@ -66,7 +66,7 @@ export default function TeamMembersTable({
             body={(teamUser) => teamUser.user.firstName ?? "—"}
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
-              "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+              "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
               "dark:text-gray-400",
               "dark:border-gray-500"
             )}
@@ -78,7 +78,7 @@ export default function TeamMembersTable({
             body={(teamUser) => teamUser.user.lastName ?? "—"}
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
-              "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+              "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
               "dark:text-gray-400",
               "dark:border-gray-500"
             )}
@@ -89,7 +89,7 @@ export default function TeamMembersTable({
             body={(teamUser) => teamUser.user.profession ?? "—"}
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
-              "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+              "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
               "dark:text-gray-400",
               "dark:border-gray-500"
             )}
@@ -104,7 +104,7 @@ export default function TeamMembersTable({
             }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
-              "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+              "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
               "dark:text-gray-400",
               "dark:border-gray-500"
             )}

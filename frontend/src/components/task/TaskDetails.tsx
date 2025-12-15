@@ -20,25 +20,41 @@ export type TaskDetailsProps = {
  */
 export default function TaskDetails({ task }: TaskDetailsProps) {
   return (
-    <div className={clsx("flex flex-col gap-4")}>
+    <div className={clsx("flex flex-col gap-4 pr-4")}>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Project :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {task.project ? task.project.title : "-"}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Team :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {task.team ? task.team.name : "-"}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Assigned to :
         </span>
         {task.assignedTo && task.assignedTo.length > 0 ? (
@@ -58,12 +74,16 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         )}
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           status :
         </span>
         <span
           className={clsx(
-            "font-normal",
+            "text-sm font-normal",
             TASK_STATUS_META[task.status].textColor
           )}
         >
@@ -71,12 +91,16 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Priority :
         </span>
         <span
           className={clsx(
-            "font-normal",
+            "text-sm font-normal",
             priorityLevelHelper[task.priorityLevel].textStyle
           )}
         >
@@ -84,56 +108,90 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Progress :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {task.progress}%
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Cost :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {task.cost}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Started on :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {new Date(task.startedAt).toLocaleDateString()}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Deadline :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {new Date(task.deadline).toLocaleDateString()}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Completed At :
         </span>
-        <span className={clsx("font-normal text-gray-800 dark:text-gray-200")}>
+        <span
+          className={clsx("text-sm font-normal text-black dark:text-gray-200")}
+        >
           {task.completedAt
             ? new Date(task.completedAt).toLocaleDateString()
             : "Not completed yet"}
         </span>
       </div>
       <div className={clsx("flex flex-col items-start justify-start gap-1")}>
-        <span className={clsx("font-medium text-gray-500 dark:text-gray-400")}>
+        <span
+          className={clsx(
+            "text-sm font-medium text-gray-500 dark:text-gray-400"
+          )}
+        >
           Description :
         </span>
         <p
           className={clsx(
-            "h-30 w-sm overflow-y-auto p-2 text-wrap",
+            "h-30 w-full overflow-y-auto p-2 text-wrap",
             "rounded-sm border border-gray-200",
-            "font-normal text-gray-800 dark:text-gray-200"
+            "text-sm font-normal text-black dark:text-gray-200"
           )}
         >
           {task.description ? task.description : "-"}

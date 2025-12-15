@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
 import { useUserStore } from "../../stores/userStore.ts";
+import { InputText } from "../ui/InputText.tsx";
+import { InputPassword } from "../ui/InputPassword.tsx";
 
 /**
  * Formulaire d'inscription
@@ -68,88 +70,30 @@ export default function RegisterForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
         <div>
-          <div className={clsx("mb-1 flex justify-between")}>
-            <label
-              className={clsx(
-                "block text-left text-sm font-medium text-black",
-                "dark:text-white"
-              )}
-            >
-              Username
-            </label>
-            {errors.userName && (
-              <p className={clsx("mt-1 text-sm text-red-500")}>
-                {errors.userName.message}
-              </p>
-            )}
-          </div>
-          <input
-            type="text"
-            className={clsx(
-              "w-full px-4 py-2",
-              "rounded-sm border bg-white",
-              "text-black",
-              "dark:bg-gray-800 dark:text-white",
-              errors.userName ? "border-red-500" : "border-gray-300"
-            )}
+          <InputText
+            icon={<i className="pi pi-user size-4" />}
+            placeholder="Username"
+            iconPosition="right"
+            error={errors.userName?.message}
             {...register("userName")}
           />
         </div>
 
         <div>
-          <div className={clsx("mb-1 flex justify-between")}>
-            <label
-              className={clsx(
-                "block text-left text-sm font-medium text-black",
-                "dark:text-white"
-              )}
-            >
-              Email
-            </label>
-            {errors.email && (
-              <p className={clsx("mt-1 text-sm text-red-500")}>
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <input
-            type="email"
-            className={clsx(
-              "w-full px-4 py-2",
-              "rounded-sm border bg-white",
-              "text-black",
-              "dark:bg-gray-800 dark:text-white",
-              errors.email ? "border-red-500" : "border-gray-300"
-            )}
+          <InputText
+            icon={<i className="pi pi-envelope size-4" />}
+            placeholder="Email"
+            iconPosition="right"
+            error={errors.email?.message}
             {...register("email")}
           />
         </div>
 
         <div>
-          <div className={clsx("mb-1 flex justify-between")}>
-            <label
-              className={clsx(
-                "block text-left text-sm font-medium text-black",
-                "dark:text-white"
-              )}
-            >
-              Password
-            </label>
-            {errors.password && (
-              <p className={clsx("mt-1 text-sm text-red-500")}>
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-          <input
-            type="password"
-            className={clsx(
-              "w-full px-4 py-2",
-              "rounded-sm border bg-white",
-              "text-black",
-              "dark:bg-gray-800 dark:text-white",
-              errors.password ? "border-red-500" : "border-gray-300"
-            )}
+          <InputPassword
+            placeholder="Password"
+            iconPosition="right"
+            error={errors.password?.message}
             {...register("password")}
           />
         </div>

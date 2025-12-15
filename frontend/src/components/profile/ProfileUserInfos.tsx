@@ -128,7 +128,7 @@ export default function ProfileUserInfo({
         <div className={clsx("flex w-full items-center justify-between")}>
           <h3
             className={clsx(
-              "text-sm font-medium text-black",
+              "text-sm font-medium text-sky-700",
               "dark:text-white"
             )}
           >
@@ -140,7 +140,7 @@ export default function ProfileUserInfo({
             <button
               className={clsx(
                 "flex items-center justify-between gap-3 px-2 py-1",
-                "rounded-sm bg-sky-400 hover:bg-sky-500",
+                "rounded-sm bg-sky-600 hover:bg-sky-700",
                 "text-sm font-medium text-white",
                 "dark:bg-sky-800 dark:hover:bg-sky-700",
                 "dark:text-white"
@@ -434,8 +434,8 @@ export default function ProfileUserInfo({
             <button
               type="submit"
               className={clsx(
-                "px-2 py-1 font-semibold text-black",
-                "rounded-sm bg-gray-300 hover:bg-gray-500"
+                "px-5 py-1 font-semibold text-white",
+                "rounded-sm bg-sky-600 hover:bg-sky-700"
               )}
             >
               Save

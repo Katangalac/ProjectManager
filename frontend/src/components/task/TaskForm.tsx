@@ -1,8 +1,6 @@
 import { clsx } from "clsx";
 import { TaskStatus, Task } from "../../types/Task";
-import { Calendar } from "primereact/calendar";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Dropdown } from "primereact/dropdown";
+
 import React from "react";
 import { TASK_STATUS_META } from "../../lib/constants/task";
 import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
@@ -23,6 +21,17 @@ import { useTeams } from "../../hooks/queries/team/useTeams";
 import { useProjects } from "../../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
 
+import DatePicker from "../ui/DatePicker";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
 type TaskFormProps = {
   defaultValues?: Partial<Task>;
   isUpdateForm: boolean;
@@ -37,6 +46,7 @@ export default function TaskForm({
   disableStatusInput,
   onSuccess,
 }: TaskFormProps) {
+  const NULL_VALUE = "__null__";
   const {
     data: projects = [],
     isLoading: projectLoading,
@@ -75,7 +85,7 @@ export default function TaskForm({
     }
   }
   const projectOptions = [
-    { label: "Isolated task", value: "null" }, // <-- Pour gérer null
+    // <-- Pour gérer null
     ...projects.map((p: Project) => ({
       label: p.title,
       value: p.id,
@@ -83,7 +93,6 @@ export default function TaskForm({
   ];
 
   const teamOptions = [
-    { label: "Isolated task", value: "null" }, // <-- Pour gérer null
     ...teams.map((t: Team) => ({
       label: t.name,
       value: t.id,
@@ -107,8 +116,6 @@ export default function TaskForm({
   const onSubmit = (data: unknown) => {
     console.log(form.formState.errors);
     if (!isUpdateForm) {
-      console.log("Creation");
-      console.log("Data:", createTaskSchema.parse(data));
       createTask(createTaskSchema.parse(data));
     } else {
       if (defaultValues?.id) {
@@ -133,25 +140,22 @@ export default function TaskForm({
           onSubmit={form.handleSubmit(onSubmit, onError)}
           className={clsx("flex flex-col gap-3.5")}
         >
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Title
-              </label>
-              {form.formState.errors.title && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.title.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Title
+            </label>
             <input
               type="text"
               className={clsx(
                 "w-full px-4 py-2",
                 "rounded-sm border border-gray-300 bg-inherit",
-                "text-gray-700",
+                "text-sm text-black",
+                "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                "hover:border-sky-400",
                 form.formState.errors.title
                   ? "border-red-500"
                   : "border-gray-300"
@@ -159,163 +163,249 @@ export default function TaskForm({
               placeholder="Ex: Tâche1"
               {...form.register("title")}
             />
+            {form.formState.errors.title && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.title.message}
+              </p>
+            )}
           </div>
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Project
-              </label>
-              {form.formState.errors.projectId && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.projectId.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Project
+            </label>
             <Controller
               control={form.control}
               name="projectId"
               render={({ field }) => (
-                <Dropdown
-                  value={field.value}
-                  onChange={(e) => {
-                    console.log(typeof e.value);
-                    field.onChange(e.value === "null" ? null : e.value);
-                  }}
-                  options={projectOptions || []}
-                  placeholder="Isolated task"
-                  className={clsx(
-                    "md:w-14rem myInput w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300 bg-inherit",
-                    form.formState.errors.projectId
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  )}
-                />
+                <Select
+                  value={field.value ?? NULL_VALUE}
+                  onValueChange={(val) =>
+                    field.onChange(val === NULL_VALUE ? null : val)
+                  }
+                >
+                  <SelectTrigger
+                    className={clsx(
+                      "w-full px-4 py-2",
+                      "rounded-sm border",
+                      "hover:border-sky-400",
+                      "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200",
+                      "text-black",
+                      "shadow-none",
+                      form.formState.errors.projectId
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    )}
+                  >
+                    <SelectValue
+                      className="text-black"
+                      placeholder="Sélectionner une option"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg border border-gray-200 bg-white shadow-lg">
+                    <SelectItem key="isolated-task-pr" value={NULL_VALUE}>
+                      Isolated task
+                    </SelectItem>
+                    {projectOptions.map((option) => (
+                      <SelectItem
+                        key={option.value ?? "null-option"}
+                        value={option.value ?? ""}
+                        className="cursor-pointer px-4 py-2 text-gray-700 transition-colors hover:bg-sky-50 hover:text-sky-700 focus:bg-sky-100"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
+            {form.formState.errors.projectId && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.projectId.message}
+              </p>
+            )}
           </div>
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Team
-              </label>
-              {form.formState.errors.teamId && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.teamId.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Team
+            </label>
             <Controller
               control={form.control}
               name="teamId"
               render={({ field }) => (
-                <Dropdown
-                  value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e.value === "null" ? null : e.value);
-                  }}
-                  options={teamOptions || []}
-                  placeholder="Isolated task"
-                  className={clsx(
-                    "md:w-14rem myInput w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300 bg-inherit",
-                    form.formState.errors.teamId
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  )}
-                />
+                <Select
+                  value={field.value ?? NULL_VALUE}
+                  onValueChange={(val) =>
+                    field.onChange(val === NULL_VALUE ? null : val)
+                  }
+                >
+                  <SelectTrigger
+                    className={clsx(
+                      "w-full px-4 py-2",
+                      "rounded-sm border",
+                      "hover:border-sky-400",
+                      "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200",
+                      "text-black",
+                      "shadow-none",
+                      form.formState.errors.teamId
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    )}
+                  >
+                    <SelectValue
+                      className="text-black"
+                      placeholder="Sélectionner une option"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg border border-gray-200 bg-white shadow-lg">
+                    <SelectItem key="isolated-task-pr" value={NULL_VALUE}>
+                      Isolated task
+                    </SelectItem>
+                    {teamOptions.map((option) => (
+                      <SelectItem
+                        key={option.value ?? "null-option"}
+                        value={option.value ?? ""}
+                        className="cursor-pointer px-4 py-2 text-gray-700 transition-colors hover:bg-sky-50 hover:text-sky-700 focus:bg-sky-100"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
+            {form.formState.errors.teamId && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.teamId.message}
+              </p>
+            )}
           </div>
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Status
-              </label>
-              {form.formState.errors.status && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.status.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Status
+            </label>
             <Controller
               control={form.control}
               name="status"
               render={({ field }) => (
-                <Dropdown
+                <Select
                   value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e.value);
-                  }}
-                  options={statusOptions}
-                  placeholder="--Sélectionner un status--"
-                  className={clsx(
-                    "md:w-14rem myInput w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300 bg-inherit",
-                    form.formState.errors.status
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  )}
+                  onValueChange={(value) => field.onChange(value)}
                   disabled={disableStatusInput}
-                />
+                >
+                  <SelectTrigger
+                    className={clsx(
+                      "w-full px-4 py-2",
+                      "rounded-sm border",
+                      "hover:border-sky-400",
+                      "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200",
+                      "text-black",
+                      "shadow-none",
+                      form.formState.errors.status
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    )}
+                  >
+                    <SelectValue
+                      className="text-black"
+                      placeholder="Sélectionner une option"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg border border-gray-200 bg-white shadow-lg">
+                    {statusOptions.map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={option.value}
+                        className="cursor-pointer px-4 py-2 text-gray-700 transition-colors hover:bg-sky-50 hover:text-sky-700 focus:bg-sky-100"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
+            {form.formState.errors.status && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.status.message}
+              </p>
+            )}
           </div>
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Priority
-              </label>
-              {form.formState.errors.priorityLevel && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.priorityLevel.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Priority
+            </label>
             <Controller
               control={form.control}
               name="priorityLevel"
               render={({ field }) => (
-                <Dropdown
-                  value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e.value);
-                  }}
-                  options={priorityOptions}
-                  placeholder="--Sélectionner une priorité--"
-                  className={clsx(
-                    "md:w-14rem myInput w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300 bg-inherit",
-                    form.formState.errors.priorityLevel
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  )}
-                />
+                <Select
+                  value={String(field.value)}
+                  onValueChange={(value) => field.onChange(parseInt(value))}
+                  disabled={disableStatusInput}
+                >
+                  <SelectTrigger
+                    className={clsx(
+                      "w-full px-4 py-2",
+                      "rounded-sm border",
+                      "hover:border-sky-400",
+                      "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200",
+                      "text-black",
+                      "shadow-none",
+                      form.formState.errors.priorityLevel
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    )}
+                  >
+                    <SelectValue
+                      className="text-black"
+                      placeholder="Sélectionner une option"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg border border-gray-200 bg-white shadow-lg">
+                    {priorityOptions.map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={option.value.toString()}
+                        className="cursor-pointer px-4 py-2 text-gray-700 transition-colors hover:bg-sky-50 hover:text-sky-700 focus:bg-sky-100"
+                      >
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
+            {form.formState.errors.priorityLevel && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.priorityLevel.message}
+              </p>
+            )}
           </div>
 
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Progress
-              </label>
-              {form.formState.errors.progress && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.progress.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Progress
+            </label>
             <Controller
               control={form.control}
               name="progress"
@@ -326,7 +416,9 @@ export default function TaskForm({
                   className={clsx(
                     "w-full px-4 py-2",
                     "rounded-sm border border-gray-300 bg-inherit",
-                    "text-gray-700",
+                    "text-sm text-black",
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                    "hover:border-sky-400",
                     form.formState.errors.progress
                       ? "border-red-500"
                       : "border-gray-300"
@@ -338,21 +430,21 @@ export default function TaskForm({
                 />
               )}
             />
+            {form.formState.errors.progress && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.progress.message}
+              </p>
+            )}
           </div>
 
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Cost
-              </label>
-              {form.formState.errors.cost && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.cost.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Cost
+            </label>
             <Controller
               control={form.control}
               name="cost"
@@ -363,7 +455,9 @@ export default function TaskForm({
                   className={clsx(
                     "w-full px-4 py-2",
                     "rounded-sm border border-gray-300 bg-inherit",
-                    "text-gray-700",
+                    "text-sm text-black",
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                    "hover:border-sky-400",
                     form.formState.errors.cost
                       ? "border-red-500"
                       : "border-gray-300"
@@ -373,138 +467,133 @@ export default function TaskForm({
                 />
               )}
             />
+            {form.formState.errors.cost && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.cost.message}
+              </p>
+            )}
           </div>
 
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Started on
-              </label>
-              {form.formState.errors.startedAt && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.startedAt.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Started on
+            </label>
             <Controller
               control={form.control}
               name="startedAt"
               render={({ field }) => (
-                <Calendar
-                  value={new Date(field.value as Date)}
-                  onChange={(e) => field.onChange(e.value)}
-                  dateFormat="dd-mm-yy"
-                  className={clsx(
-                    "md:w-14rem w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300",
-                    form.formState.errors.startedAt
+                <DatePicker
+                  value={
+                    field.value ? new Date(field.value as Date) : undefined
+                  }
+                  onChange={(e) => field.onChange(e)}
+                  buttonClassName={clsx(
+                    form.formState.errors.completedAt
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
-                  placeholder="dd-mm-yyyy"
                 />
               )}
             />
+            {form.formState.errors.startedAt && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.startedAt.message}
+              </p>
+            )}
           </div>
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Deadline
-              </label>
-              {form.formState.errors.deadline && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.deadline.message}
-                </p>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
               )}
-            </div>
+            >
+              Deadline
+            </label>
+
             <Controller
               control={form.control}
               name="deadline"
               render={({ field }) => (
-                <Calendar
-                  value={new Date(field.value as Date)}
-                  onChange={(e) => field.onChange(e.value)}
-                  dateFormat="dd-mm-yy"
-                  className={clsx(
-                    "md:w-14rem w-full py-2 pl-4",
-                    "rounded-sm border border-gray-300",
-                    form.formState.errors.deadline
+                <DatePicker
+                  value={
+                    field.value ? new Date(field.value as Date) : undefined
+                  }
+                  onChange={(e) => field.onChange(e)}
+                  buttonClassName={clsx(
+                    form.formState.errors.completedAt
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
-                  placeholder="dd-mm-yyyy"
                 />
               )}
             />
+            {form.formState.errors.deadline && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.deadline.message}
+              </p>
+            )}
           </div>
           {isUpdateForm && (
-            <div className={clsx("flex w-full flex-col gap-2")}>
-              <div className={clsx("flex justify-between")}>
-                <label
-                  className={clsx(
-                    "font-medium text-gray-500 dark:text-gray-200"
-                  )}
-                >
-                  Completed at
-                </label>
-                {form.formState.errors.completedAt && (
-                  <p className={clsx("text-sm text-red-500")}>
-                    {form.formState.errors.completedAt.message}
-                  </p>
+            <div className={clsx("flex w-full flex-col gap-1")}>
+              <label
+                className={clsx(
+                  "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
                 )}
-              </div>
+              >
+                Completed at
+              </label>
               <Controller
                 control={form.control}
                 name="completedAt"
                 render={({ field }) => (
-                  <Calendar
-                    value={field.value ? new Date(field.value as Date) : null}
-                    onChange={(e) => field.onChange(e.value)}
-                    dateFormat="dd-mm-yy"
-                    className={clsx(
-                      "md:w-14rem w-full py-2 pl-4",
-                      "rounded-sm border border-gray-300",
+                  <DatePicker
+                    value={
+                      field.value ? new Date(field.value as Date) : undefined
+                    }
+                    onChange={(e) => field.onChange(e)}
+                    buttonClassName={clsx(
                       form.formState.errors.completedAt
                         ? "border-red-500"
                         : "border-gray-300"
                     )}
-                    placeholder="dd-mm-yyyy"
+                    buttonPlaceholder="Not completed yet"
                   />
                 )}
               />
-            </div>
-          )}
-          <div className={clsx("flex w-full flex-col gap-2")}>
-            <div className={clsx("flex justify-between")}>
-              <label
-                className={clsx("font-medium text-gray-500 dark:text-gray-200")}
-              >
-                Description
-              </label>
-              {form.formState.errors.description && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {form.formState.errors.description.message}
+              {form.formState.errors.completedAt && (
+                <p className={clsx("text-left text-sm text-red-500")}>
+                  {form.formState.errors.completedAt.message}
                 </p>
               )}
             </div>
+          )}
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <label
+              className={clsx(
+                "text-left text-sm font-medium text-gray-500 dark:text-gray-200"
+              )}
+            >
+              Description
+            </label>
             <Controller
               control={form.control}
               name="description"
               render={({ field }) => (
-                <InputTextarea
+                <Textarea
                   value={field.value}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    field.onChange(e.target.value)
-                  }
+                  onChange={(e) => field.onChange(e.target.value)}
                   rows={5}
                   cols={30}
                   className={clsx(
-                    "myText md:w-14rem w-full py-1.5 pl-4",
+                    "myText md:w-14rem w-full px-4 py-1.5",
                     "rounded-sm border border-gray-300",
+                    "text-sm text-black",
+                    "focus:border-2 focus:border-sky-500 focus:outline-2 focus:outline-sky-600",
+                    "hover:border-sky-400",
                     form.formState.errors.description
                       ? "border-red-500"
                       : "border-gray-300"
@@ -513,11 +602,16 @@ export default function TaskForm({
                 />
               )}
             />
+            {form.formState.errors.description && (
+              <p className={clsx("text-left text-sm text-red-500")}>
+                {form.formState.errors.description.message}
+              </p>
+            )}
           </div>
           <button
             type="submit"
             className={clsx(
-              "w-full p-2 text-center font-semibold text-white",
+              "mt-2 w-full p-2 text-center font-semibold text-white",
               "rounded-sm bg-sky-600 hover:bg-sky-700"
             )}
           >

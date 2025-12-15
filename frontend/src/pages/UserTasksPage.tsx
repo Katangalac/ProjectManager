@@ -6,7 +6,12 @@ import TasksKanban from "../components/task/TasksKanban";
 import { useTasks } from "../hooks/queries/task/useTasks";
 import { InlineSelector } from "../components/commons/InlineSelector";
 import { NumberedListIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
-import { Dialog } from "primereact/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../lib/constants/task";
 import TaskForm from "../components/task/TaskForm";
 import { ViewColumnsIcon, PlusIcon } from "@heroicons/react/24/outline";
@@ -76,25 +81,33 @@ export default function UserTasksPage() {
       {viewMode === "kanban" && <TasksKanban tasks={data?.data || []} />}
       {viewMode === "table" && <TasksTable tasks={data?.data || []} />}
 
-      <Dialog
-        header="New task"
-        visible={showDialog}
-        style={{ width: "40vw" }}
-        modal
-        onHide={() => setShowDialog(false)}
-        className={clsx(
-          "min-w-fit gap-5 rounded-lg border border-gray-300 bg-white p-5 text-sm",
-          "dark:border-gray-600 dark:bg-gray-900",
-          "text-gray-700 dark:text-gray-300",
-          "myDialog"
-        )}
-      >
-        <TaskForm
-          isUpdateForm={false}
-          disableStatusInput={false}
-          defaultValues={TASKFORM_DEFAULT_VALUES}
-          onSuccess={() => setShowDialog(false)}
-        />
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white"
+          )}
+        >
+          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
+            <DialogTitle className="text-lg text-white">New task</DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            <TaskForm
+              isUpdateForm={false}
+              disableStatusInput={false}
+              defaultValues={TASKFORM_DEFAULT_VALUES}
+              onSuccess={() => setShowDialog(false)}
+            />
+          </div>
+        </DialogContent>
       </Dialog>
     </>
   );

@@ -29,7 +29,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         )}
       >
         {/**Overlay pour gérer l'apparence de l'image de fond */}
-        <div className={clsx("absolute inset-0 bg-black/40")}></div>
+        <div className={clsx("absolute inset-0 bg-black/20")}></div>
 
         <div
           className={clsx(
@@ -38,21 +38,22 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         >
           <h2
             className={clsx(
-              "mt-6 stroke-black stroke-1 text-3xl font-bold text-gray-200"
+              "mt-6 text-3xl font-bold text-gray-200 text-shadow-black text-shadow-lg"
             )}
-            style={{ WebkitTextStroke: "0.5px black" }}
           >
             Manage your projects efficiently!
           </h2>
           <p
-            className={clsx("mt-2 text-lg font-medium text-gray-200")}
-            style={{ WebkitTextStroke: "0.5px black" }}
+            className={clsx(
+              "mt-2 text-lg font-medium text-gray-200 text-shadow-black text-shadow-lg"
+            )}
           >
             Login to access your workspace.
           </p>
           <p
-            className={clsx("mt-2 text-lg font-medium text-gray-200")}
-            style={{ WebkitTextStroke: "0.5px black" }}
+            className={clsx(
+              "mt-2 text-lg font-medium text-gray-200 text-shadow-black text-shadow-lg"
+            )}
           >
             Create teams, manage tasks, and collaborate with your peers, all in
             one plateform.

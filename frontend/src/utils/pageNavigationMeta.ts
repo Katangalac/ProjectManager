@@ -23,7 +23,7 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
 
       message: `Welcome back! Here's your latest snapshot`,
       icone: HandWavingIcon,
-      iconeColor: "text-yellow-600",
+      iconeColor: "text-yellow-500",
     },
     "/userProjects": {
       title: "My Projets",

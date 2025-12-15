@@ -11,12 +11,17 @@ import {
 import { UserCircleMinusIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
 import { TaskWithRelations } from "../../types/Task";
 import { MenuItem } from "primereact/menuitem";
-import { Dialog } from "primereact/dialog";
 import { confirmDialog } from "primereact/confirmdialog";
 import { useState, ReactNode } from "react";
 import TaskDetails from "./TaskDetails";
 import TaskForm from "./TaskForm";
 import { useDeleteTask } from "../../hooks/mutations/task/useDeleteTask";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 /**
  * Propriétés du menu d'une tâche
@@ -145,20 +150,31 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           )}
         />
       </button>
-      <Dialog
-        header={dialogTitle}
-        visible={showDialog}
-        style={{ width: "40vw" }}
-        modal
-        onHide={() => setShowDialog(false)}
-        className={clsx(
-          "min-w-fit gap-5 rounded-lg border border-gray-300 bg-white p-5 text-sm",
-          "dark:border-gray-600 dark:bg-gray-900",
-          "text-gray-700 dark:text-gray-300",
-          "myDialog"
-        )}
-      >
-        {dialogContent}
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white"
+          )}
+        >
+          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
+            <DialogTitle className="text-lg text-white">
+              {dialogTitle}
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            {dialogContent}
+          </div>
+        </DialogContent>
       </Dialog>
     </div>
   );

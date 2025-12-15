@@ -24,7 +24,8 @@ export default function Footer({ className = "" }: FooterProps) {
       <div className={clsx("flex flex-col items-center justify-center")}>
         <AppLogo showText={true} />
         <span className={clsx("text-sm font-medium underline")}>
-          © {new Date().getFullYear()} ProjectFlow. Tous droits réservés.
+          Copyright © {new Date().getFullYear()} ProjectFlow. All rights
+          reserved.
         </span>
       </div>
     </footer>

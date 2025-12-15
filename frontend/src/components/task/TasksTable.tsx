@@ -37,8 +37,8 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         header={
           <div
             className={clsx(
-              "border-b border-gray-200 p-2",
-              "text-left text-sm font-semibold",
+              "rounded-t-sm bg-sky-600 p-2",
+              "text-left text-sm font-semibold text-white",
               "dark:border-gray-500"
             )}
           >
@@ -53,7 +53,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
             "flex items-center justify-start p-2 text-xs font-medium"
           )}
           headerClassName={clsx(
-            "border-b border-gray-200 p-2 text-left text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -65,7 +65,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(task) => task.project?.title ?? "—"}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -78,7 +78,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(task) => task.team?.name ?? "—"}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -105,7 +105,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -132,7 +132,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           )}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -157,7 +157,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           )}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -168,7 +168,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(rowData) => new Date(rowData.deadline).toLocaleDateString()}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200  text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -179,7 +179,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(task) => <TaskActionMenu task={task} />}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200  text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-medium text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}

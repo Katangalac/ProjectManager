@@ -6,11 +6,20 @@ import TeamMembersTable from "../components/team/TeamMembersTable";
 import { InputTextarea } from "primereact/inputtextarea";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Accordion, AccordionTab } from "primereact/accordion";
+import { TabMenu } from "primereact/tabmenu";
+import { useState } from "react";
+import { tailwindPreset } from "../utils/primereactTailwindPreset";
 
 export default function TeamDetailsPage() {
   const { teamId } = useParams();
   const { data, isLoading, isError } = useTeamById(teamId!);
-  console.log(data);
+  const [activeIndex, setActiveIndex] = useState(3);
+  const items = [
+    { label: "Dashboard", icon: "pi pi-home" },
+    { label: "Transactions", icon: "pi pi-chart-line" },
+    { label: "Products", icon: "pi pi-list" },
+    { label: "Messages", icon: "pi pi-inbox" },
+  ];
   if (isError) return <div>An error occur while loading team</div>;
   return (
     <div className={clsx("flex min-h-screen items-start justify-start gap-5")}>
@@ -23,6 +32,13 @@ export default function TeamDetailsPage() {
               "flex w-full flex-col items-start justify-start gap-5"
             )}
           >
+            <span>Text white</span>
+            <TabMenu
+              model={items}
+              activeIndex={activeIndex}
+              onTabChange={(e) => setActiveIndex(e.index)}
+              pt={tailwindPreset.tabmenu}
+            />
             <div
               className={clsx(
                 "memberPage flex w-full items-center justify-between"

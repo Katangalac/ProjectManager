@@ -95,7 +95,7 @@ export default function ProfileHeader({
             alt={user.userName}
             onError={() => setImageUrl(null)}
             className={clsx(
-              "h-20 w-20 rounded-full border bg-gray-200 object-cover object-center"
+              "h-20 w-20 rounded-full border border-gray-300 bg-gray-200 object-cover object-center"
             )}
           />
         ) : (
@@ -119,11 +119,11 @@ export default function ProfileHeader({
                 if (iconName === "default") return "/icons/arrow-down.svg";
                 return "";
               }}
-              className="absolute -right-1 bottom-2"
               onFileUploadSuccess={(file) => {
                 const url = file?.cdnUrl;
                 handleImageChange(url);
               }}
+              className="absolute -right-1 bottom-2"
             />
           </div>
         )}
