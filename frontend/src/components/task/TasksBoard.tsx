@@ -23,7 +23,7 @@ export default function TasksBoard({ tasks }: TasksBoardProps) {
     >
       {!tasks && <div>No tasks</div>}
       {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
+        <TaskCard key={task.id} task={task} className={clsx("shadow-lg")} />
       ))}
     </div>
   );

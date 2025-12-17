@@ -63,7 +63,7 @@ export function InlineSelector({
               "text-xs font-medium",
               selected
                 ? "border border-sky-300 bg-sky-100 text-sky-600 shadow-lg"
-                : "border-gray-300 text-gray-600 hover:bg-white"
+                : "border-gray-300 text-gray-600 hover:bg-sky-200"
             )}
           >
             {opt.icon}

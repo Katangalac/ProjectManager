@@ -1,11 +1,12 @@
 import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { clsx } from "clsx";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import {
-  PencilIcon,
-  EllipsisHorizontalIcon,
-} from "@heroicons/react/24/outline";
-import { UserCircleMinusIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
+  UserCircleMinusIcon,
+  UserCirclePlusIcon,
+  PencilSimpleLineIcon,
+} from "@phosphor-icons/react";
 import { TeamWithRelations } from "../../types/Team";
 import { MenuItem } from "primereact/menuitem";
 import { useUserStore } from "../../stores/userStore";
@@ -46,8 +47,15 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
       items: [
         {
           label: "Edit",
-          icon: <PencilIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <PencilSimpleLineIcon
+              size={16}
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             if (user && team.leaderId && user.id === team.leaderId) {
               setDialogTitle("Edit team");
@@ -74,7 +82,8 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
               className={clsx("stroke-1.5 mr-1 size-4")}
             />
           ),
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour ajouter un membre
           },
@@ -87,7 +96,8 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
               className={clsx("stroke-1.5 mr-1 size-4")}
             />
           ),
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour quitter l'équipe
           },

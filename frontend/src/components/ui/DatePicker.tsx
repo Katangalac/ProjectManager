@@ -16,6 +16,7 @@ type Props = {
   onChange: (date: Date | undefined) => void;
   buttonClassName?: string;
   buttonPlaceholder?: string;
+  disabled?: boolean;
 };
 
 export default function DatePicker({
@@ -23,6 +24,7 @@ export default function DatePicker({
   onChange,
   buttonClassName,
   buttonPlaceholder,
+  disabled,
 }: Props) {
   const [open, setOpen] = useState(false);
   return (
@@ -39,6 +41,7 @@ export default function DatePicker({
             !value && "text-muted-foreground",
             buttonClassName
           )}
+          disabled={disabled}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? (

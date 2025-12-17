@@ -16,11 +16,84 @@ export const taskSchema = z.object({
     .default("TODO"),
   cost: z.float64().default(0.0),
   progress: z.number().int().min(0).max(100).default(0),
-  startedAt: z.coerce.date(),
-  deadline: z.coerce.date(),
-  completedAt: z.coerce.date().nullable(),
-  updatedAt: z.date(),
-  createdAt: z.date(),
+  startedAt: z.date().transform((val) => {
+    try {
+      const date = new Date(val);
+      return date;
+    } catch {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          message: "Invalid date value for 'startedAt'",
+          path: ["startedAt"],
+        },
+      ]);
+    }
+  }),
+  deadline: z.date().transform((val) => {
+    try {
+      const date = new Date(val);
+      return date;
+    } catch {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          message: "Invalid date value for 'deadline'",
+          path: ["deadline"],
+        },
+      ]);
+    }
+  }),
+  completedAt: z
+    .date()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      if (val === null) return null;
+      try {
+        const date = new Date(val);
+        return date;
+      } catch {
+        throw new z.ZodError([
+          {
+            code: "custom",
+            message: "Invalid date value for 'completedAt'",
+            path: ["completedAt"],
+          },
+        ]);
+      }
+    })
+    .nullable(),
+  updatedAt: z.date().transform((val) => {
+    if (val === undefined) return undefined;
+
+    try {
+      const date = new Date(val);
+      return date;
+    } catch {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          message: "Invalid date value for 'updatedAt'",
+          path: ["updatedAt"],
+        },
+      ]);
+    }
+  }),
+  createdAt: z.date().transform((val) => {
+    if (val === undefined) return undefined;
+    try {
+      const date = new Date(val);
+      return date;
+    } catch {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          message: "Invalid date value for 'createdAt'",
+          path: ["createdAt"],
+        },
+      ]);
+    }
+  }),
 });
 
 /**
@@ -45,10 +118,63 @@ export const updateTaskDataSchema = z.object({
   priorityLevel: z.coerce.number().int().min(0).max(5).optional(),
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"]).optional(),
   cost: z.float64().optional(),
-  progress: z.coerce.number().int().min(0).max(100).optional(),
-  startedAt: z.coerce.date().optional(),
-  deadline: z.coerce.date().optional(),
-  completedAt: z.coerce.date().optional(),
+  progress: z.number().int().min(0).max(100).optional(),
+  startedAt: z
+    .date()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      try {
+        const date = new Date(val);
+        return date;
+      } catch {
+        throw new z.ZodError([
+          {
+            code: "custom",
+            message: "Invalid date value for 'startedAt'",
+            path: ["startedAt"],
+          },
+        ]);
+      }
+    })
+    .optional(),
+  deadline: z
+    .date()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      try {
+        const date = new Date(val);
+        return date;
+      } catch {
+        throw new z.ZodError([
+          {
+            code: "custom",
+            message: "Invalid date value for 'deadline'",
+            path: ["deadline"],
+          },
+        ]);
+      }
+    })
+    .optional(),
+  completedAt: z
+    .date()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      if (val === null) return null;
+      try {
+        const date = new Date(val);
+        return date;
+      } catch {
+        throw new z.ZodError([
+          {
+            code: "custom",
+            message: "Invalid date value for 'completedAt'",
+            path: ["completedAt"],
+          },
+        ]);
+      }
+    })
+    .nullable()
+    .optional(),
 });
 
 /**

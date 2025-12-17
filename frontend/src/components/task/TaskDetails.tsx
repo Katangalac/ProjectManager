@@ -3,6 +3,7 @@ import { TaskWithRelations } from "../../types/Task";
 import { TASK_STATUS_META } from "../../lib/constants/task";
 import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
+import { dateToLongString } from "@/utils/dateUtils";
 
 /**
  * Propriétés du component TaskDetails
@@ -19,6 +20,8 @@ export type TaskDetailsProps = {
  * @param {TaskDetailsProps} param0 - propriétés du TaskDetails
  */
 export default function TaskDetails({ task }: TaskDetailsProps) {
+  const isOverDue =
+    task.status !== "COMPLETED" && new Date(task.deadline) < new Date();
   return (
     <div className={clsx("flex flex-col gap-4 pr-4")}>
       <div className={clsx("flex items-center justify-start gap-2")}>
@@ -57,21 +60,23 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         >
           Assigned to :
         </span>
-        {task.assignedTo && task.assignedTo.length > 0 ? (
-          <div className={clsx("flex gap-0.5")}>
-            {task.assignedTo.map((a) => (
-              <UserProfilePhoto
-                key={a.user.id}
-                imageUrl={a.user.imageUrl}
-                username={a.user.userName}
-                email={a.user.email}
-                size="h-9 w-9 size-4"
-              />
-            ))}
-          </div>
-        ) : (
-          "-"
-        )}
+        <span className={clsx("overflow-x-auto", "[&::-webkit-scrollbar]:w-0")}>
+          {task.assignedTo && task.assignedTo.length > 0 ? (
+            <div className={clsx("flex gap-0.5")}>
+              {task.assignedTo.map((a) => (
+                <UserProfilePhoto
+                  key={a.user.id}
+                  imageUrl={a.user.imageUrl}
+                  username={a.user.userName}
+                  email={a.user.email}
+                  size="h-9 w-9 size-4"
+                />
+              ))}
+            </div>
+          ) : (
+            "-"
+          )}
+        </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
@@ -146,7 +151,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         <span
           className={clsx("text-sm font-normal text-black dark:text-gray-200")}
         >
-          {new Date(task.startedAt).toLocaleDateString()}
+          {dateToLongString(new Date(task.startedAt))}
         </span>
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
@@ -160,8 +165,13 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
         <span
           className={clsx("text-sm font-normal text-black dark:text-gray-200")}
         >
-          {new Date(task.deadline).toLocaleDateString()}
+          {dateToLongString(new Date(task.deadline))}
         </span>
+        {isOverDue && (
+          <span className={clsx("text-sm font-medium text-red-600")}>
+            Overdue!
+          </span>
+        )}
       </div>
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
@@ -175,7 +185,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
           className={clsx("text-sm font-normal text-black dark:text-gray-200")}
         >
           {task.completedAt
-            ? new Date(task.completedAt).toLocaleDateString()
+            ? dateToLongString(new Date(task.completedAt))
             : "Not completed yet"}
         </span>
       </div>

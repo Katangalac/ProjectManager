@@ -17,7 +17,7 @@ export default function Footer({ className = "" }: FooterProps) {
   return (
     <footer
       className={clsx(
-        "mt-16 border-t-2 bg-gray-700 p-3 text-gray-200",
+        "mt-16 border-t-2 bg-gray-900 p-3 text-gray-200",
         className
       )}
     >

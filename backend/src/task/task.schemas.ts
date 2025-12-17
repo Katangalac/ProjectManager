@@ -70,7 +70,7 @@ export const searchTasksFilterSchema = z.object({
   endAfter: z.coerce.date().optional(),
   completedOn: z.coerce.date().optional(),
   completedBefore: z.coerce.date().optional(),
-  completedAfter: z.coerce.date().optional(),
+  completedAfter: z.coerce.date().nullable().optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
   all: z

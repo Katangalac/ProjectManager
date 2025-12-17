@@ -67,7 +67,7 @@ export type UpdateTaskData = {
   cost?: number | undefined;
   startedAt?: Date | undefined;
   deadline?: Date | undefined;
-  completedAt?: Date | undefined;
+  completedAt?: Date | null | undefined;
 };
 
 /**

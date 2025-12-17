@@ -1,17 +1,16 @@
 import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { clsx } from "clsx";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 import {
-  DocumentMagnifyingGlassIcon,
-  PencilIcon,
+  PencilSimpleLineIcon,
+  UserCircleMinusIcon,
+  UserCirclePlusIcon,
   TrashIcon,
-  EllipsisHorizontalIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
-import { UserCircleMinusIcon, UserCirclePlusIcon } from "@phosphor-icons/react";
+  FileMagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 import { TaskWithRelations } from "../../types/Task";
 import { MenuItem } from "primereact/menuitem";
-import { confirmDialog } from "primereact/confirmdialog";
 import { useState, ReactNode } from "react";
 import TaskDetails from "./TaskDetails";
 import TaskForm from "./TaskForm";
@@ -21,6 +20,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 /**
@@ -41,6 +41,10 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
   const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogStyle, setDialogStyle] = useState<string | null>(null);
+  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
+    null
+  );
   const { deleteTask } = useDeleteTask();
   const menu = useRef<Menu>(null);
   const menuItems: MenuItem[] = [
@@ -50,13 +54,18 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
       items: [
         {
           label: "See details",
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           icon: (
-            <DocumentMagnifyingGlassIcon
-              className={clsx("stroke-1.5 mr-1 size-4")}
+            <FileMagnifyingGlassIcon
+              weight="regular"
+              size={16}
+              className={clsx("stroke-1.5 mr-1")}
             />
           ),
           command: () => {
+            setDialogHeaderStyle(null);
+            setDialogStyle(null);
             setDialogTitle(`Task : ${task.title}`);
             setDialogContent(<TaskDetails task={task} />);
             setShowDialog(true);
@@ -64,14 +73,30 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
         },
         {
           label: "Edit",
-          icon: <PencilIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <PencilSimpleLineIcon
+              size={16}
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
+            setDialogHeaderStyle(null);
+            setDialogStyle(null);
             setDialogTitle("Edit task");
             setDialogContent(
               <TaskForm
                 isUpdateForm={true}
-                defaultValues={task}
+                defaultValues={{
+                  ...task,
+                  startedAt: new Date(task.startedAt),
+                  deadline: new Date(task.deadline),
+                  completedAt: task.completedAt
+                    ? new Date(task.completedAt)
+                    : null,
+                }}
                 onSuccess={() => setShowDialog(false)}
               />
             );
@@ -86,7 +111,8 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
               className={clsx("stroke-1.5 mr-1 size-4")}
             />
           ),
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour assigner la tâche
           },
@@ -99,28 +125,73 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
               className={clsx("stroke-1.5 mr-1 size-4")}
             />
           ),
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             // Action pour desassigner la tâche
           },
         },
         {
           label: "Delete",
-          icon: <TrashIcon className={clsx("stroke-1.5 mr-1 size-4")} />,
-          className: "px-2 py-1 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <TrashIcon
+              size={16}
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 rounded-b-md hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
-            confirmDialog({
-              message: "Do you really want to delete this task?",
-              header: "Confirmation",
-              icon: (
-                <ExclamationTriangleIcon
-                  className={clsx("mr-1 size-8 stroke-2 text-red-700")}
-                />
-              ),
-              accept: () => deleteTask(task.id),
-              acceptLabel: "Yes",
-              rejectLabel: "No",
-            });
+            setDialogHeaderStyle("bg-transparent px-0 py-0");
+            setDialogStyle("w-fit px-5");
+            setDialogTitle("");
+            setDialogContent(
+              <div
+                className={clsx(
+                  "flex w-full flex-col items-center justify-start"
+                )}
+              >
+                <span className={clsx("mb-4 rounded-md bg-red-200 p-2")}>
+                  <TrashIcon
+                    size={30}
+                    weight="regular"
+                    className={clsx("text-red-700")}
+                  />
+                </span>
+                <span className={clsx("text-lg font-medium text-black")}>
+                  Delete task?
+                </span>
+                <span className={clsx("text-sm font-medium text-gray-500")}>
+                  Are you sure you want to delete this task?
+                </span>
+                <div
+                  className={clsx(
+                    "flex w-full items-center justify-center gap-5 p-5"
+                  )}
+                >
+                  <DialogClose>
+                    <button
+                      className={clsx(
+                        "rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                      )}
+                    >
+                      No,cancel
+                    </button>
+                  </DialogClose>
+                  <button
+                    className={
+                      "rounded-md border border-red-700 bg-red-700 px-5 py-2 text-sm font-medium text-white hover:bg-red-800"
+                    }
+                    onClick={() => deleteTask(task.id)}
+                  >
+                    Yes, i'm sure
+                  </button>
+                </div>
+              </div>
+            );
+
+            setShowDialog(true);
           },
         },
       ],
@@ -142,7 +213,13 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           "dark:text-gray-300"
         )}
       />
-      <button title="Options" onClick={(event) => menu.current?.toggle(event)}>
+      <button
+        title="Options"
+        onClick={(event) => {
+          event.stopPropagation();
+          menu.current?.toggle(event);
+        }}
+      >
         <EllipsisHorizontalIcon
           className={clsx(
             "size-4 cursor-pointer text-gray-700 hover:stroke-2",
@@ -156,10 +233,16 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           className={clsx(
             "max-w-[500px] p-0",
             "[&>button]:text-white",
-            "[&>button]:hover:text-white"
+            "[&>button]:hover:text-white",
+            dialogStyle
           )}
         >
-          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
+          <DialogHeader
+            className={clsx(
+              "rounded-t-md bg-sky-600 px-4 py-4",
+              dialogHeaderStyle
+            )}
+          >
             <DialogTitle className="text-lg text-white">
               {dialogTitle}
             </DialogTitle>

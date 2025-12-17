@@ -7,6 +7,7 @@ import { updateUser } from "../../services/user.services";
 import { useUserStore } from "../../stores/userStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { timeAgo, dateToLongString } from "@/utils/dateUtils";
 
 /**
  * Propriétés du ProfileUserInfos
@@ -193,7 +194,7 @@ export default function ProfileUserInfo({
                 errors.firstName ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("firstName")}
             />
@@ -227,7 +228,7 @@ export default function ProfileUserInfo({
                 errors.lastName ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("lastName")}
             />
@@ -261,7 +262,7 @@ export default function ProfileUserInfo({
                 errors.userName ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("userName")}
             />
@@ -295,7 +296,7 @@ export default function ProfileUserInfo({
                 errors.email ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("email")}
             />
@@ -329,7 +330,7 @@ export default function ProfileUserInfo({
                 errors.phoneNumber ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("phoneNumber")}
             />
@@ -363,7 +364,7 @@ export default function ProfileUserInfo({
                 errors.profession ? "border-red-500" : ""
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={!editing}
               {...register("profession")}
             />
@@ -388,12 +389,10 @@ export default function ProfileUserInfo({
                 "dark:text-white"
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={true}
               value={
-                user.lastLoginAt
-                  ? new Date(user.lastLoginAt).toLocaleDateString()
-                  : ""
+                user.lastLoginAt ? timeAgo(new Date(user.lastLoginAt)) : ""
               }
             />
           </div>
@@ -417,12 +416,10 @@ export default function ProfileUserInfo({
                 "dark:text-white"
               )}
               type="text"
-              placeholder="<non defini>"
+              placeholder="Unkown"
               disabled={true}
               value={
-                user.createdAt
-                  ? new Date(user.createdAt).toLocaleDateString()
-                  : ""
+                user.createdAt ? dateToLongString(new Date(user.createdAt)) : ""
               }
             />
           </div>

@@ -57,7 +57,8 @@ export default function UserTasksPage() {
           title="New task"
           onClick={() => setShowDialog(true)}
           className={clsx(
-            "flex h-fit w-fit cursor-pointer items-center gap-1 p-2",
+            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-3",
+            "focus:ring-2 focus:ring-sky-200 focus:outline-none",
             "rounded-md bg-sky-600 hover:bg-sky-700",
             "text-xs font-medium text-white"
           )}

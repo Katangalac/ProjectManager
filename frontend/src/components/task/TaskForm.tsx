@@ -5,6 +5,7 @@ import React from "react";
 import { TASK_STATUS_META } from "../../lib/constants/task";
 import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
 import { useForm, Controller } from "react-hook-form";
+import { useEffect } from "react";
 
 import {
   createTaskSchema,
@@ -66,6 +67,17 @@ export default function TaskForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
   });
+
+  const status = form.watch("status");
+
+  useEffect(() => {
+    if (status !== "COMPLETED") {
+      form.setValue("completedAt", null, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  }, [status, form]);
 
   const { createTask } = useCreateTask({ onSuccess });
   const { updateTask } = useUpdateTask({ onSuccess });
@@ -487,12 +499,10 @@ export default function TaskForm({
               name="startedAt"
               render={({ field }) => (
                 <DatePicker
-                  value={
-                    field.value ? new Date(field.value as Date) : undefined
-                  }
+                  value={field.value ? new Date(field.value) : undefined}
                   onChange={(e) => field.onChange(e)}
                   buttonClassName={clsx(
-                    form.formState.errors.completedAt
+                    form.formState.errors.startedAt
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
@@ -524,7 +534,7 @@ export default function TaskForm({
                   }
                   onChange={(e) => field.onChange(e)}
                   buttonClassName={clsx(
-                    form.formState.errors.completedAt
+                    form.formState.errors.deadline
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
@@ -552,15 +562,20 @@ export default function TaskForm({
                 render={({ field }) => (
                   <DatePicker
                     value={
-                      field.value ? new Date(field.value as Date) : undefined
+                      field.value instanceof Date
+                        ? field.value
+                        : field.value
+                          ? new Date(field.value as Date)
+                          : undefined
                     }
-                    onChange={(e) => field.onChange(e)}
+                    onChange={(e) => field.onChange(e ?? null)}
                     buttonClassName={clsx(
                       form.formState.errors.completedAt
                         ? "border-red-500"
                         : "border-gray-300"
                     )}
                     buttonPlaceholder="Not completed yet"
+                    disabled={status !== "COMPLETED"}
                   />
                 )}
               />
