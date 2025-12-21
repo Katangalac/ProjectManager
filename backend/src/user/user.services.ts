@@ -574,6 +574,7 @@ export const getUserConversations = async (
               lastName: true,
               phoneNumber: true,
               email: true,
+              imageUrl: true,
             },
           },
         },

@@ -117,7 +117,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
                 "dark:text-gray-200"
               )}
             >
-              Aucune tâche
+              No task
             </span>
           </div>
         )}

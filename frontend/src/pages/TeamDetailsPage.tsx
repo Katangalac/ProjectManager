@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import { useTeamById } from "../hooks/queries/team/useTeamById";
+import { useTeamConversations } from "@/hooks/queries/team/useTeamConversations";
 import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
 import TeamMembersTable from "../components/team/TeamMembersTable";
@@ -13,6 +14,11 @@ import { tailwindPreset } from "../utils/primereactTailwindPreset";
 export default function TeamDetailsPage() {
   const { teamId } = useParams();
   const { data, isLoading, isError } = useTeamById(teamId!);
+  const {
+    data: teamConversations,
+    isLoading: teamConversationsIsLoading,
+    isError: teamConversationsIsError,
+  } = useTeamConversations(teamId!, { all: true });
   const [activeIndex, setActiveIndex] = useState(3);
   const items = [
     { label: "Dashboard", icon: "pi pi-home" },
@@ -21,89 +27,106 @@ export default function TeamDetailsPage() {
     { label: "Messages", icon: "pi pi-inbox" },
   ];
   if (isError) return <div>An error occur while loading team</div>;
+  if (teamConversationsIsError)
+    return <div>An error occur while loading team conversations</div>;
+  console.log(teamConversations);
   return (
-    <div className={clsx("flex min-h-screen items-start justify-start gap-5")}>
+    <div
+      className={clsx(
+        "flex h-full min-h-screen items-start justify-start gap-5"
+      )}
+    >
       {isLoading ? (
         <ProgressSpinner />
       ) : (
         <>
-          <div
-            className={clsx(
-              "flex w-full flex-col items-start justify-start gap-5"
-            )}
-          >
-            <span>Text white</span>
-            <TabMenu
-              model={items}
-              activeIndex={activeIndex}
-              onTabChange={(e) => setActiveIndex(e.index)}
-              pt={tailwindPreset.tabmenu}
-            />
-            <div
-              className={clsx(
-                "memberPage flex w-full items-center justify-between"
-              )}
-            >
-              <span
+          {teamConversationsIsLoading ? (
+            <ProgressSpinner />
+          ) : (
+            <>
+              {teamConversations?.map((conv) => (
+                <div>{conv.id}</div>
+              ))}
+              {/* <div
                 className={clsx(
-                  "flex cursor-pointer items-center gap-1 text-sm text-sky-600 hover:text-sky-700"
+                  "flex w-full flex-col items-start justify-start gap-5"
                 )}
               >
-                <PlusIcon className={clsx("size-3.5 stroke-2")} /> Add members
-              </span>
-              <input
-                className={clsx(
-                  "w-70 rounded-sm border border-gray-300 px-2 py-1 text-sm text-gray-700 placeholder:text-gray-500"
-                )}
-                title="Search members"
-                placeholder="Search members..."
-              />
-            </div>
-            <div className={clsx("flex w-full items-start justify-start")}>
-              <Accordion multiple className="flex flex-col gap-5">
-                <AccordionTab
-                  header="Leader"
+                <span>Text white</span>
+                <TabMenu
+                  model={items}
+                  activeIndex={activeIndex}
+                  onTabChange={(e) => setActiveIndex(e.index)}
+                  pt={tailwindPreset.tabmenu}
+                />
+                <div
                   className={clsx(
-                    "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
+                    "memberPage flex w-full items-center justify-between"
                   )}
                 >
-                  {data && (
-                    <TeamMembersTable showLeaderOnly={true} team={data} />
-                  )}
-                </AccordionTab>
-                <AccordionTab
-                  header={`Members (${data?.teamUsers?.length})`}
-                  className={clsx(
-                    "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
-                  )}
-                >
-                  {data && (
-                    <TeamMembersTable showLeaderOnly={false} team={data} />
-                  )}
-                </AccordionTab>
-                <AccordionTab
-                  header="Description"
-                  className={clsx(
-                    "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
-                  )}
-                >
-                  {data?.description && (
-                    <InputTextarea
-                      value={data.description}
-                      disabled={true}
-                      rows={5}
-                      cols={30}
+                  <span
+                    className={clsx(
+                      "flex cursor-pointer items-center gap-1 text-sm text-sky-600 hover:text-sky-700"
+                    )}
+                  >
+                    <PlusIcon className={clsx("size-3.5 stroke-2")} /> Add
+                    members
+                  </span>
+                  <input
+                    className={clsx(
+                      "w-70 rounded-sm border border-gray-300 px-2 py-1 text-sm text-gray-700 placeholder:text-gray-500"
+                    )}
+                    title="Search members"
+                    placeholder="Search members..."
+                  />
+                </div>
+                <div className={clsx("flex w-full items-start justify-start")}>
+                  <Accordion multiple className="flex flex-col gap-5">
+                    <AccordionTab
+                      header="Leader"
                       className={clsx(
-                        "myText md:w-14rem w-full py-1.5 pl-4",
-                        "rounded-sm border border-gray-300"
+                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
                       )}
-                      placeholder="No description"
-                    />
-                  )}
-                </AccordionTab>
-              </Accordion>
-            </div>
-          </div>
+                    >
+                      {data && (
+                        <TeamMembersTable showLeaderOnly={true} team={data} />
+                      )}
+                    </AccordionTab>
+                    <AccordionTab
+                      header={`Members (${data?.teamUsers?.length})`}
+                      className={clsx(
+                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
+                      )}
+                    >
+                      {data && (
+                        <TeamMembersTable showLeaderOnly={false} team={data} />
+                      )}
+                    </AccordionTab>
+                    <AccordionTab
+                      header="Description"
+                      className={clsx(
+                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
+                      )}
+                    >
+                      {data?.description && (
+                        <InputTextarea
+                          value={data.description}
+                          disabled={true}
+                          rows={5}
+                          cols={30}
+                          className={clsx(
+                            "myText md:w-14rem w-full py-1.5 pl-4",
+                            "rounded-sm border border-gray-300"
+                          )}
+                          placeholder="No description"
+                        />
+                      )}
+                    </AccordionTab>
+                  </Accordion>
+                </div>
+              </div> */}
+            </>
+          )}
         </>
       )}
     </div>

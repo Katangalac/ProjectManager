@@ -4,6 +4,12 @@ import { useTasks } from "../hooks/queries/task/useTasks";
 import { useTeams } from "../hooks/queries/team/useTeams";
 import { useProjects } from "../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { ArrowUpRightIcon } from "@phosphor-icons/react";
+import { Project } from "@/types/Project";
+import { Task, TaskWithRelations } from "@/types/Task";
+import TaskDashboardCard from "@/components/task/TaskDashBoardCard";
+import { Chart } from "primereact/chart";
+import { getTaskStats, getProjectStats } from "@/lib/utils";
 
 export default function DashBoard() {
   const { user } = useUserStore();
@@ -22,6 +28,68 @@ export default function DashBoard() {
     isLoading: teamsLoading,
     isError: teamsError,
   } = useTeams({ all: true });
+
+  const taskStats = getTaskStats(tasks?.data || []);
+  const projectStats = getProjectStats(projects || []);
+
+  const data = {
+    labels: ["Completed", "Blocked", "Todo", "In Progress"],
+    datasets: [
+      {
+        data: [
+          taskStats.completed,
+          taskStats.blocked,
+          taskStats.todo,
+          taskStats.inProgress,
+        ],
+        backgroundColor: [
+          "#22c55e", // green
+          "#ef4444", // red
+          "#facc15", // yellow
+          "#3399ff", // blue
+        ],
+        hoverBackgroundColor: ["#16a34a", "#dc2626", "#eab308", "#1A82FF"],
+      },
+    ],
+  };
+
+  const projectData = {
+    labels: ["Planning", "Active", "Paused", "Blocked", "Completed"],
+    datasets: [
+      {
+        data: [
+          projectStats.planning,
+          projectStats.active,
+          projectStats.paused,
+          projectStats.blocked,
+          projectStats.completed,
+        ],
+        backgroundColor: [
+          "#E0F2FE",
+          "#BAE6FD",
+          "#7DD3FC",
+          "#38BDF8",
+          "#0EA5E9",
+        ],
+        hoverBackgroundColor: [
+          "#BAE6FD",
+          "#7DD3FC",
+          "#38BDF8",
+          "#0EA5E9",
+          "#0284C7",
+        ],
+      },
+    ],
+  };
+
+  const options = {
+    cutout: "60%", // donut (plus grand = trou plus large)
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
+  };
 
   return (
     <div
@@ -42,17 +110,350 @@ export default function DashBoard() {
           <ProgressSpinner />
         </div>
       ) : (
-        <div>
-          <h1
-            className={clsx("text-2xl font-bold text-black", "dark:text-white")}
-          >
-            Bonjour {user?.userName}! Bon retour parmi nous
-          </h1>
-          <div className={clsx("flex flex-col gap-1 text-sm text-black")}>
-            <span>Tasks: {tasks?.data.length}</span>
-            <span>Projects: {projects?.length}</span>
-            <span>Teams: {teams?.length}</span>
+        <div
+          className={clsx(
+            "flex min-h-screen min-w-full flex-col items-start justify-start gap-4",
+            "bg-white",
+            "dark:bg-gray-900"
+          )}
+        >
+          <span className={clsx("text-sm text-gray-500")}>
+            Hi <strong className="text-black">{user?.userName}</strong>! Plan,
+            prioritize and accomplish your tasks and projects with ease.
+          </span>
+
+          {/**Projects snapshots */}
+          <div className={clsx("flex w-full gap-10")}>
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>
+                  Total projects
+                </span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {projects?.length}
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  projects
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>
+                  Active projects
+                </span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    projects?.filter(
+                      (project: Project) => project.status === "ACTIVE"
+                    ).length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  On going projects
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>
+                  Ended projects
+                </span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    projects?.filter(
+                      (project: Project) => project.status === "COMPLETED"
+                    ).length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  completed projects
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>
+                  Pending projects
+                </span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    projects?.filter(
+                      (project: Project) => project.status === "PLANNING"
+                    ).length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  projects on discuss
+                </span>
+              </div>
+            </div>
           </div>
+
+          {/**Tasks snapshots */}
+          <div className={clsx("flex w-full gap-10")}>
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>Total tasks</span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {tasks?.data.length}
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  tasks
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>In progress</span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    tasks?.data.filter(
+                      (task: Task) => task.status === "IN_PROGRESS"
+                    ).length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  On going tasks
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>Ended tasks</span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    tasks?.data.filter(
+                      (task: Task) => task.status === "COMPLETED"
+                    ).length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  completed tasks
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex h-24 w-50 flex-col justify-between gap-2",
+                "rounded-md border border-gray-300 bg-white p-3"
+              )}
+            >
+              <div className={clsx("flex items-center justify-between")}>
+                <span className={clsx("text-sm text-black")}>
+                  Pending tasks
+                </span>
+                <button
+                  title="See more"
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
+                    "border border-gray-500"
+                  )}
+                >
+                  <ArrowUpRightIcon className="text-gray-500" />
+                </button>
+              </div>
+              <div className={clsx("flex items-baseline justify-start gap-2")}>
+                <span
+                  className={clsx("text-left text-2xl font-bold text-black")}
+                >
+                  {
+                    tasks?.data.filter((task: Task) => task.status === "TODO")
+                      .length
+                  }
+                </span>
+                <span className={clsx("text-left text-xs text-gray-500")}>
+                  tasks to do
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className={clsx("flex w-full gap-3")}>
+            <div
+              className={clsx(
+                "flex flex-col justify-start gap-2",
+                "rounded-md border border-gray-300 p-3"
+              )}
+            >
+              <span className={clsx("mb-2 text-left text-sm text-gray-600")}>
+                Near-due tasks
+              </span>
+              <div className={clsx("flex gap-5")}>
+                {tasks?.data.length > 0 ? (
+                  <>
+                    {tasks?.data.slice(0, 2).map((task: TaskWithRelations) => (
+                      <TaskDashboardCard task={task} />
+                    ))}
+                  </>
+                ) : (
+                  <div>No tasks</div>
+                )}
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex w-75 flex-col justify-start gap-2",
+                "rounded-md border border-gray-300 p-3"
+              )}
+            >
+              <span className={clsx("text-left text-sm text-gray-600")}>
+                Tasks stats
+              </span>
+              <Chart
+                type="doughnut"
+                data={data}
+                options={options}
+                className="w-64"
+              />
+            </div>
+          </div>
+          {/* <div
+            className={clsx(
+              "flex w-75 flex-col justify-start gap-2",
+              "rounded-md border border-gray-300 p-3"
+            )}
+          >
+            <Chart
+              type="doughnut"
+              data={projectData}
+              options={options}
+              className="w-64"
+            />
+          </div> */}
         </div>
       )}
     </div>

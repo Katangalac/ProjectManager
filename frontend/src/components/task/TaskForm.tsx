@@ -607,7 +607,7 @@ export default function TaskForm({
                     "myText md:w-14rem w-full px-4 py-1.5",
                     "rounded-sm border border-gray-300",
                     "text-sm text-black",
-                    "focus:border-2 focus:border-sky-500 focus:outline-2 focus:outline-sky-600",
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none",
                     "hover:border-sky-400",
                     form.formState.errors.description
                       ? "border-red-500"

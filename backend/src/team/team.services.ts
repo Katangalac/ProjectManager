@@ -16,16 +16,19 @@ import { toSafeUser } from "../user/user.transforms";
 import { SearchUsersFilter } from "../user/User";
 import { ProjectsCollection, SearchProjectsFilter } from "../project/Project";
 import { SearchTasksFilter } from "../task/Task";
+import { SearchConversationsFilter } from "../conversation/Conversation";
 import {
   buildTeamWhereInput,
   buildUserWhereInput,
   buildProjectWhereInput,
   buildTaskWhereInput,
   buildPaginationInfos,
+  buildConversationWhereInput,
 } from "../utils/utils";
 import { TeamsCollection } from "./Team";
 import { UsersCollection } from "../user/User";
 import { TasksCollection } from "../task/Task";
+import { ConversationsCollection } from "../conversation/Conversation";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -373,6 +376,78 @@ export const getTeamTasks = async (
 
   return {
     tasks: teamTasks,
+    pagination,
+  };
+};
+
+/**
+ * Récupère les conversations d'une équipe en incluant les participants ainsi que le dernier message
+ * envoyé dans chacune de ces conversations
+ * @async
+ * @param {string} teamId - identifiant de l'équipe
+ * @param {SearchConversationsFilter} filter - filtre de recherche à utiliser
+ * @returns {ConversationsCollection} - la liste de conversations de l'équipe
+ */
+export const getTeamConversations = async (
+  teamId: string,
+  filter: SearchConversationsFilter
+): Promise<ConversationsCollection> => {
+  const { page, pageSize, all, ..._ } = filter;
+  const teamConversationCondition: Prisma.ConversationWhereInput = {
+    teamId,
+  };
+
+  //Construction du WHERE à partir des filtres
+  const conversationFilter = buildConversationWhereInput(filter);
+
+  //Compte total des conversations correspondant au filtre
+  const totalItems = await db.conversation.count({
+    where: {
+      AND: [teamConversationCondition, conversationFilter],
+    },
+  });
+
+  //Construction de la requête principale
+  const query: Prisma.ConversationFindManyArgs = {
+    where: {
+      AND: [teamConversationCondition, conversationFilter],
+    },
+    include: {
+      participants: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phoneNumber: true,
+              email: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+      messages: {
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
+    },
+    orderBy: { updatedAt: "desc" },
+  };
+
+  if (!all) {
+    query.skip = (page - 1) * pageSize;
+    query.take = pageSize;
+  }
+
+  //Exécution de la requête
+  const teamConversations = await db.conversation.findMany(query);
+
+  //Calcul pagination
+  const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+  return {
+    conversations: teamConversations,
     pagination,
   };
 };

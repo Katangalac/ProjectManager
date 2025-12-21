@@ -1,3 +1,6 @@
+import { Message } from "./Message";
+import { User } from "./User";
+
 /**
  * Type représentant une conversation
  */
@@ -7,6 +10,11 @@ export type Conversation = {
   teamId: string | null;
   updatedAt: Date;
   createdAt: Date;
+};
+
+export type ConversationWithRelation = Conversation & {
+  participants?: { user: User }[];
+  messages?: Message[];
 };
 
 /**

@@ -5,6 +5,7 @@ import {
   UpdateTeamData,
   CreateTeamData,
 } from "../types/Team";
+import { SearchConversationsFilter } from "@/types/Conversation";
 
 /**
  * Récupère les équipes de l'utilisateur courant correspondant aux paramètres de recherche
@@ -99,5 +100,26 @@ export const deleteTeam = async (teamId: string) => {
       throw new Error(message);
     }
     throw new Error("Erreur inconnue lors de la suppression de l'équipe");
+  }
+};
+
+export const getTeamConversations = async (
+  teamId: string,
+  params: SearchConversationsFilter
+) => {
+  try {
+    const axiosResponse = await axiosClient.get(
+      `/teams/${teamId}/conversations`,
+      { params }
+    );
+    return axiosResponse.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error(
+      "Erreur inconnue lors de la récupération des conversations de l'équipe"
+    );
   }
 };

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 import UserProfilePhoto from "../components/profile/UserProfilePhoto";
 import { getPageNavigationMeta } from "../utils/pageNavigationMeta";
+import { InputText } from "@/components/ui/InputText";
 
 /**
  * Propriétés du Header
@@ -49,7 +50,14 @@ export default function Header({ className = "" }: HeaderProps) {
           </div>
         </div>
 
-        <div className={"flex items-center gap-3"}>
+        <div className={"flex items-center gap-2"}>
+          {/* <div>
+            <InputText
+              icon={<i className={clsx("pi pi-search")} />}
+              iconPosition="left"
+              placeholder="search..."
+            />
+          </div> */}
           <button
             className={clsx(
               "cursor-pointer rounded-md border border-gray-200 px-3 py-2 text-white hover:bg-sky-700"

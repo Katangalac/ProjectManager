@@ -30,9 +30,19 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         className={clsx(
           "min-w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
-          "dark:border-gray-500"
+          "dark:border-gray-500",
+          "[&::-webkit-scrollbar]:w-1"
         )}
-        rowClassName={() => "border-b last:border-b-0 border-gray-200"}
+        rowClassName={() =>
+          clsx(
+            "border-b last:border-b-0 border-gray-200",
+            "[&>table]:rounded-b-md",
+            "[&>table]:border",
+            "[&>table]:border-red-500",
+            "[&>tr]:rounded-bl-md",
+            "[&>tr]:rounded-br-md"
+          )
+        }
         tableStyle={{ minWidth: "1000px" }}
         header={
           <div
@@ -50,10 +60,10 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           field="title"
           header="Title"
           className={clsx(
-            "flex items-center justify-start p-2 text-xs font-medium"
+            "flex items-center justify-start truncate p-2 text-xs font-medium"
           )}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -63,9 +73,9 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           field="project.title"
           header="Project"
           body={(task) => task.project?.title ?? "—"}
-          className={clsx("w-fit p-2 text-left text-xs")}
+          className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -76,9 +86,9 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           field="team.name"
           header="Team"
           body={(task) => task.team?.name ?? "—"}
-          className={clsx("w-fit p-2 text-left text-xs")}
+          className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -89,7 +99,12 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           header="Assigned to"
           body={(task: TaskWithRelations) =>
             task.assignedTo && task.assignedTo.length > 0 ? (
-              <div className={clsx("flex gap-0.5")}>
+              <div
+                className={clsx(
+                  "flex gap-0.5 overflow-x-auto",
+                  "[&::-webkit-scrollbar]:w-0"
+                )}
+              >
                 {task.assignedTo.map((a) => (
                   <UserProfilePhoto
                     key={a.user.id}
@@ -105,7 +120,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -132,7 +147,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           )}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -157,7 +172,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           )}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -168,7 +183,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(rowData) => new Date(rowData.deadline).toLocaleDateString()}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
@@ -179,7 +194,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(task) => <TaskActionMenu task={task} />}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-medium text-gray-500",
+            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
