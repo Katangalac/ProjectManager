@@ -1,35 +1,19 @@
 import { clsx } from "clsx";
 import { useTeamById } from "../hooks/queries/team/useTeamById";
-import { useTeamConversations } from "@/hooks/queries/team/useTeamConversations";
 import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
-import TeamMembersTable from "../components/team/TeamMembersTable";
-import { InputTextarea } from "primereact/inputtextarea";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import { Accordion, AccordionTab } from "primereact/accordion";
-import { TabMenu } from "primereact/tabmenu";
-import { useState } from "react";
-import { tailwindPreset } from "../utils/primereactTailwindPreset";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TeamNameAcronym from "@/components/team/TeamNameAcronym";
+import TeamMembersView from "@/components/team/TeamMembersView";
+import TeamAbout from "@/components/team/TeamAbout";
+import TeamConversationsView from "@/components/team/TeamConversationsView";
 
 export default function TeamDetailsPage() {
   const { teamId } = useParams();
   const { data, isLoading, isError } = useTeamById(teamId!);
-  const {
-    data: teamConversations,
-    isLoading: teamConversationsIsLoading,
-    isError: teamConversationsIsError,
-  } = useTeamConversations(teamId!, { all: true });
-  const [activeIndex, setActiveIndex] = useState(3);
-  const items = [
-    { label: "Dashboard", icon: "pi pi-home" },
-    { label: "Transactions", icon: "pi pi-chart-line" },
-    { label: "Products", icon: "pi pi-list" },
-    { label: "Messages", icon: "pi pi-inbox" },
-  ];
+
   if (isError) return <div>An error occur while loading team</div>;
-  if (teamConversationsIsError)
-    return <div>An error occur while loading team conversations</div>;
-  console.log(teamConversations);
+
   return (
     <div
       className={clsx(
@@ -40,92 +24,77 @@ export default function TeamDetailsPage() {
         <ProgressSpinner />
       ) : (
         <>
-          {teamConversationsIsLoading ? (
-            <ProgressSpinner />
-          ) : (
-            <>
-              {teamConversations?.map((conv) => (
-                <div>{conv.id}</div>
-              ))}
-              {/* <div
-                className={clsx(
-                  "flex w-full flex-col items-start justify-start gap-5"
-                )}
-              >
-                <span>Text white</span>
-                <TabMenu
-                  model={items}
-                  activeIndex={activeIndex}
-                  onTabChange={(e) => setActiveIndex(e.index)}
-                  pt={tailwindPreset.tabmenu}
-                />
-                <div
-                  className={clsx(
-                    "memberPage flex w-full items-center justify-between"
-                  )}
-                >
-                  <span
-                    className={clsx(
-                      "flex cursor-pointer items-center gap-1 text-sm text-sky-600 hover:text-sky-700"
-                    )}
-                  >
-                    <PlusIcon className={clsx("size-3.5 stroke-2")} /> Add
-                    members
-                  </span>
-                  <input
-                    className={clsx(
-                      "w-70 rounded-sm border border-gray-300 px-2 py-1 text-sm text-gray-700 placeholder:text-gray-500"
-                    )}
-                    title="Search members"
-                    placeholder="Search members..."
+          {data && (
+            <Tabs defaultValue="publications" className="h-fit w-full py-0">
+              <TabsList className="h-fit w-full justify-start gap-4 rounded-none border-b border-sky-200 bg-sky-100 px-5 py-0 shadow-xs shadow-gray-400">
+                <div className={clsx("mr-4 flex w-fit items-center gap-2")}>
+                  <TeamNameAcronym
+                    name={data.name}
+                    className="h-fit w-fit px-2 py-2"
+                    textClassName="text-red-500 text-xs font-medium"
                   />
+                  <span className="font-bold text-black">{data.name}</span>
                 </div>
-                <div className={clsx("flex w-full items-start justify-start")}>
-                  <Accordion multiple className="flex flex-col gap-5">
-                    <AccordionTab
-                      header="Leader"
-                      className={clsx(
-                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
-                      )}
-                    >
-                      {data && (
-                        <TeamMembersTable showLeaderOnly={true} team={data} />
-                      )}
-                    </AccordionTab>
-                    <AccordionTab
-                      header={`Members (${data?.teamUsers?.length})`}
-                      className={clsx(
-                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
-                      )}
-                    >
-                      {data && (
-                        <TeamMembersTable showLeaderOnly={false} team={data} />
-                      )}
-                    </AccordionTab>
-                    <AccordionTab
-                      header="Description"
-                      className={clsx(
-                        "bg-white py-1 text-left text-sm font-normal text-gray-700 hover:bg-white"
-                      )}
-                    >
-                      {data?.description && (
-                        <InputTextarea
-                          value={data.description}
-                          disabled={true}
-                          rows={5}
-                          cols={30}
-                          className={clsx(
-                            "myText md:w-14rem w-full py-1.5 pl-4",
-                            "rounded-sm border border-gray-300"
-                          )}
-                          placeholder="No description"
-                        />
-                      )}
-                    </AccordionTab>
-                  </Accordion>
-                </div>
-              </div> */}
-            </>
+                <TabsTrigger
+                  className={clsx(
+                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                    "data-[state=active]:text-black",
+                    "hover:text-black"
+                  )}
+                  value="publications"
+                >
+                  Publications
+                </TabsTrigger>
+                <TabsTrigger
+                  className={clsx(
+                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                    "data-[state=active]:text-black",
+                    "hover:text-black"
+                  )}
+                  value="members"
+                >
+                  Members
+                </TabsTrigger>
+                <TabsTrigger
+                  className={clsx(
+                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                    "data-[state=active]:text-black",
+                    "hover:text-black"
+                  )}
+                  value="invitations"
+                >
+                  Invitations
+                </TabsTrigger>
+                <TabsTrigger
+                  className={clsx(
+                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                    "data-[state=active]:text-black",
+                    "hover:text-black"
+                  )}
+                  value="about"
+                >
+                  About
+                </TabsTrigger>
+              </TabsList>
+              <div className={clsx("px-5")}>
+                <TabsContent value="publications">
+                  <TeamConversationsView teamId={teamId!} />
+                </TabsContent>
+                <TabsContent value="members">
+                  <TeamMembersView team={data} />
+                </TabsContent>
+                <TabsContent value="invitations">
+                  Will be add soon. Keep in touch!
+                </TabsContent>
+                <TabsContent value="about">
+                  <TeamAbout team={data} />
+                </TabsContent>
+              </div>
+            </Tabs>
           )}
         </>
       )}

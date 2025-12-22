@@ -20,7 +20,6 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
   return {
     "/dashboard": {
       title: "Dashboard",
-
       message: `Welcome back! Here's your latest snapshot`,
       icone: HandWavingIcon,
       iconeColor: "text-yellow-500",
@@ -30,6 +29,10 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
     },
     "/userTasks": {
       title: "My Tasks",
+    },
+    "/userTeams+": {
+      title: "My Teams",
+      message: `Here's your team details`,
     },
     "/userTeams": {
       title: "My Teams",

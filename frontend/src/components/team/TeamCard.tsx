@@ -1,8 +1,8 @@
 import { clsx } from "clsx";
 import { TeamWithRelations } from "../../types/Team";
 import TeamActionMenu from "./TeamActionMenu";
-import { getAcronymeFromName } from "../../utils/stringUtils";
 import { useNavigate } from "react-router-dom";
+import TeamNameAcronym from "./TeamNameAcronym";
 
 type TeamCardProps = {
   team: TeamWithRelations;
@@ -19,17 +19,11 @@ export default function TeamCard({ team }: TeamCardProps) {
       )}
     >
       <div className={clsx("flex w-full justify-center")}>
-        <div
-          className={clsx(
-            "flex items-center justify-center rounded-md bg-sky-600 px-3 py-5",
-            "h-16 w-fit min-w-16"
-          )}
+        <TeamNameAcronym
+          name={team.name}
           onClick={() => navigate(`/userTeams/${team.id}`)}
-        >
-          <span className={clsx("text-lg font-medium text-white")}>
-            {getAcronymeFromName(team.name)}
-          </span>
-        </div>
+          className="min-w-16 px-3 py-5"
+        />
       </div>
       <div className={clsx("flex w-full items-start justify-between pt-2")}>
         <span

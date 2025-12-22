@@ -45,7 +45,7 @@ export default function UserTasksPage() {
   const { data, isLoading, isError } = useTasks({ all: true });
 
   return (
-    <>
+    <div className="p-4">
       {/* Sélecteur de mode */}
       <div className="mb-4 flex items-center justify-start gap-3">
         <InlineSelector
@@ -110,6 +110,6 @@ export default function UserTasksPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

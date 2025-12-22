@@ -216,7 +216,6 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
       <button
         title="Options"
         onClick={(event) => {
-          event.stopPropagation();
           menu.current?.toggle(event);
         }}
       >

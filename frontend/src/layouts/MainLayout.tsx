@@ -19,7 +19,7 @@ export default function MainLayout() {
       <Header className={clsx(sideBarIsCollapsed ? "ml-16" : "ml-50")} />
       <div
         className={clsx(
-          "flex-1 p-4",
+          "flex-1",
           "bg-white",
           "dark:bg-gray-900",
           sideBarIsCollapsed ? "ml-16" : "ml-50"

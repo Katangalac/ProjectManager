@@ -21,7 +21,7 @@ export default function UserTeamsPage() {
   } = useTeams({ all: true });
   const [showDialog, setShowDialog] = useState(false);
   return (
-    <>
+    <div className="p-4">
       <div
         className={clsx(
           "flex min-w-full flex-col items-center justify-start",
@@ -79,6 +79,6 @@ export default function UserTeamsPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

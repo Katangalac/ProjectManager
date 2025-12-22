@@ -18,13 +18,15 @@ export default function Header({ className = "" }: HeaderProps) {
   const { user } = useUserStore();
   const pagesMeta = getPageNavigationMeta();
   const location = useLocation();
-  const currentPageMeta = pagesMeta[location.pathname] || "Page";
+  let currentPath = "/" + location.pathname.split("/")[1];
+  if (location.pathname.split("/").length > 2) currentPath += "+";
+  const currentPageMeta = pagesMeta[currentPath] || "Page";
   const navigate = useNavigate();
 
   return (
     <header
       className={clsx(
-        "mb-3 border-b border-gray-300 bg-sky-600 px-4 py-2 text-white",
+        "border-b border-gray-300 bg-sky-600 px-4 py-2 text-white",
         className
       )}
     >

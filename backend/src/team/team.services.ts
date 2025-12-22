@@ -429,6 +429,9 @@ export const getTeamConversations = async (
       },
       messages: {
         orderBy: { createdAt: "desc" },
+        include: {
+          sender: true,
+        },
         take: 1,
       },
     },

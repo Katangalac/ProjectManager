@@ -1,5 +1,6 @@
 import { forwardRef, ReactNode } from "react";
 import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 /**
  *
@@ -61,7 +62,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           <input
             ref={ref}
             type="text"
-            className={clsx(
+            className={cn(
               "w-full py-2",
               hasIcon && isLeft && "pr-4 pl-10",
               hasIcon && isRight && "pr-10 pl-4",

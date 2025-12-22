@@ -40,7 +40,11 @@ export default function ProfilePage() {
 
   return (
     <div
-      className={clsx("min-h-screen w-full", "bg-white", "dark:bg-gray-900")}
+      className={clsx(
+        "min-h-screen w-full p-4",
+        "bg-white",
+        "dark:bg-gray-900"
+      )}
     >
       {loading && <ProgressSpinner strokeWidth="5" />}
       {isOwnProfile && viewedUser && <PrivateProfile user={viewedUser} />}

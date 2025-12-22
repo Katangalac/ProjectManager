@@ -48,7 +48,7 @@ export default function CalendarPage() {
     return <div>An error occur while loading user projects</div>;
 
   return (
-    <div className={clsx("flex flex-col gap-2")}>
+    <div className={clsx("flex flex-col gap-2 p-4")}>
       <div className={clsx("w-fit")}>
         <InlineSelector
           value={viewMode}

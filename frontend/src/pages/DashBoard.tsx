@@ -10,9 +10,11 @@ import { Task, TaskWithRelations } from "@/types/Task";
 import TaskDashboardCard from "@/components/task/TaskDashBoardCard";
 import { Chart } from "primereact/chart";
 import { getTaskStats, getProjectStats } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function DashBoard() {
   const { user } = useUserStore();
+  const navigate = useNavigate();
   const {
     data: tasks,
     isLoading: tasksLoading,
@@ -112,7 +114,7 @@ export default function DashBoard() {
       ) : (
         <div
           className={clsx(
-            "flex min-h-screen min-w-full flex-col items-start justify-start gap-4",
+            "flex min-h-screen min-w-full flex-col items-start justify-start gap-4 p-4",
             "bg-white",
             "dark:bg-gray-900"
           )}
@@ -140,6 +142,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userProjects")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -172,6 +175,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userProjects")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -208,6 +212,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userProjects")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -244,6 +249,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userProjects")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -281,6 +287,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userTasks")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -311,6 +318,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userTasks")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -345,6 +353,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userTasks")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -381,6 +390,7 @@ export default function DashBoard() {
                     "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
                     "border border-gray-500"
                   )}
+                  onClick={() => navigate("/userTasks")}
                 >
                   <ArrowUpRightIcon className="text-gray-500" />
                 </button>
@@ -415,7 +425,10 @@ export default function DashBoard() {
                 {tasks?.data.length > 0 ? (
                   <>
                     {tasks?.data.slice(0, 2).map((task: TaskWithRelations) => (
-                      <TaskDashboardCard task={task} />
+                      <TaskDashboardCard
+                        task={task}
+                        onclick={() => navigate("/userTasks")}
+                      />
                     ))}
                   </>
                 ) : (

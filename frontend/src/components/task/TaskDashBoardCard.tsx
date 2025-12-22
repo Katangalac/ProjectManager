@@ -6,17 +6,23 @@ import { dateToLongString } from "@/utils/dateUtils";
 
 type TaskDashboardCardProps = {
   task: TaskWithRelations;
+  onclick?: () => void;
 };
 
-export default function TaskDashboardCard({ task }: TaskDashboardCardProps) {
+export default function TaskDashboardCard({
+  task,
+  onclick,
+}: TaskDashboardCardProps) {
   const isOverdue =
     task.status !== "COMPLETED" && new Date(task.deadline) < new Date();
   return (
     <div
       className={clsx(
         "flex flex-col gap-2 p-3 lg:w-70",
-        "rounded-md border border-gray-100 bg-sky-50"
+        "rounded-md border border-gray-100 bg-sky-50",
+        onclick ? "cursor-pointer" : ""
       )}
+      onClick={onclick}
     >
       <span
         className={clsx(

@@ -124,7 +124,6 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
       <button
         title="Options"
         onClick={(event) => {
-          event.stopPropagation();
           menu.current?.toggle(event);
         }}
       >
