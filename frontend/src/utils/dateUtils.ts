@@ -9,7 +9,7 @@ export const dateToLongString = (date: Date): string => {
   return dateString;
 };
 
-export const timeAgo = (date: Date): string => {
+export const timeAgo = (date: Date, short: boolean = false): string => {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
 
@@ -22,25 +22,27 @@ export const timeAgo = (date: Date): string => {
   const weeks = Math.floor(days / 7);
 
   if (seconds < 60) {
-    return seconds === 1 ? "1 second ago" : `${seconds} seconds ago`;
+    return short ? `${seconds}s ago` : `${seconds} sec ago`;
   }
 
   if (minutes < 60) {
-    return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+    return short ? `${minutes}m ago` : `${minutes} min ago`;
   }
 
   if (hours < 24) {
-    return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    return short ? `${hours}h ago` : `${hours} hour(s) ago`;
   }
 
   if (days < 7) {
-    return days === 1 ? "1 day ago" : `${days} days ago`;
+    return short ? `${days}d ago` : `${days} day(s) ago`;
   }
 
   if (weeks < 4) {
-    return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`;
+    return short ? `${weeks}w ago` : `${weeks} week(s) ago`;
   }
 
   // ≥ 1 month → return the date
-  return `Since ${dateToLongString(date)}`;
+  return short
+    ? `${date.toISOString().split("T")[0]}`
+    : `Since ${dateToLongString(date)}`;
 };

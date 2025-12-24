@@ -25,8 +25,8 @@ export default function TeamDetailsPage() {
       ) : (
         <>
           {data && (
-            <Tabs defaultValue="publications" className="h-fit w-full py-0">
-              <TabsList className="h-fit w-full justify-start gap-4 rounded-none border-b border-sky-200 bg-sky-100 px-5 py-0 shadow-xs shadow-gray-400">
+            <Tabs defaultValue="publications" className="h-fit w-full gap-0">
+              <TabsList className="h-fit w-full justify-start gap-4 rounded-none border-b border-sky-200 bg-sky-100 px-3 py-0">
                 <div className={clsx("mr-4 flex w-fit items-center gap-2")}>
                   <TeamNameAcronym
                     name={data.name}
@@ -80,17 +80,17 @@ export default function TeamDetailsPage() {
                   About
                 </TabsTrigger>
               </TabsList>
-              <div className={clsx("px-5")}>
-                <TabsContent value="publications">
+              <div>
+                <TabsContent value="publications" className="m-0">
                   <TeamConversationsView teamId={teamId!} />
                 </TabsContent>
-                <TabsContent value="members">
+                <TabsContent value="members" className={clsx("px-5")}>
                   <TeamMembersView team={data} />
                 </TabsContent>
-                <TabsContent value="invitations">
+                <TabsContent value="invitations" className={clsx("px-5")}>
                   Will be add soon. Keep in touch!
                 </TabsContent>
-                <TabsContent value="about">
+                <TabsContent value="about" className={clsx("px-5")}>
                   <TeamAbout team={data} />
                 </TabsContent>
               </div>

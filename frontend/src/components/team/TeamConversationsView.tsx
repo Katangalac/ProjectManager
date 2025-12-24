@@ -1,8 +1,10 @@
 import { clsx } from "clsx";
-import { ConversationWithRelation } from "@/types/Conversation";
 import { useTeamConversations } from "@/hooks/queries/team/useTeamConversations";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgressSpinner } from "primereact/progressspinner";
+import ConversationCard from "../conversation/ConversationView";
+import ConversationMessages from "../conversation/ConversationMessagesView";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 type TeamConversationsViewProps = {
   teamId: string;
@@ -27,53 +29,70 @@ export default function TeamConversationsView({
       {teamConversationsIsLoading ? (
         <ProgressSpinner />
       ) : (
-        <div>
-          <Tabs defaultValue="account" className="flex w-[400px]">
-            <TabsList className="flex h-screen max-w-50 flex-col items-start justify-start rounded-sm bg-gray-100">
-              {teamConversations.map((conv) => (
+        <div className="p-0">
+          <Tabs
+            defaultValue={teamConversations[0]?.id || "no-conversations"}
+            className="flex w-full"
+          >
+            <TabsList className="flex h-screen max-w-80 min-w-70 flex-col items-start justify-start rounded-none border-r border-gray-300 bg-gray-100 px-0 first:border-t">
+              <div className="mb-2 flex w-full items-center justify-between px-3 pt-2">
+                <span className="font-medium text-black">Conversations</span>
+                <button
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-center gap-1 p-2",
+                    "rounded-sm bg-sky-200 hover:bg-sky-300",
+                    "focus:ring-2 focus:ring-sky-400 focus:outline-0",
+                    "text-xs font-medium text-black"
+                  )}
+                >
+                  <PlusIcon className={clsx("size-3 stroke-3")} />
+                  New
+                </button>
+              </div>
+              {teamConversations.map((conv, index) => (
                 <TabsTrigger
                   key={conv.id}
                   value={conv.id}
-                  className="max-w-full rounded-sm"
+                  className={clsx(
+                    "max-h-30 min-h-30 max-w-full min-w-full cursor-pointer py-2",
+                    "rounded-none hover:bg-sky-100 data-[state=active]:bg-sky-100",
+                    "border-t border-gray-300 data-[state=active]:shadow-none",
+                    index === teamConversations.length - 1 ? "border-b" : ""
+                  )}
                 >
                   <div className="flex max-w-full flex-col">
-                    <span className="truncate">
-                      {conv.messages
-                        ? conv.messages[0]
-                          ? conv.messages[0].content
-                          : "Untitled"
-                        : "Untitled"}
-                    </span>
-                    <span className="text-right text-xs">
-                      {conv.messages
-                        ? conv.messages[0]
-                          ? new Date(conv.messages[0].createdAt)
-                              .toISOString()
-                              .split("T")[0]
-                          : "Untitled"
-                        : "Untitled"}
-                    </span>
+                    <ConversationCard
+                      conversation={conv}
+                      className="bg-transparent p-0 text-sm"
+                    />
                   </div>
                 </TabsTrigger>
               ))}
-              <TabsTrigger value="account">Account</TabsTrigger>
-              <TabsTrigger value="password">Password</TabsTrigger>
+              {teamConversations.length === 0 && (
+                <TabsTrigger
+                  value="no-conversations"
+                  className={clsx(
+                    "max-h-30 min-h-30 max-w-full min-w-full cursor-pointer py-2",
+                    "rounded-none hover:bg-sky-100 data-[state=active]:bg-sky-100",
+                    "border-t border-b border-gray-300 data-[state=active]:shadow-none"
+                  )}
+                >
+                  <span>No conversations</span>
+                </TabsTrigger>
+              )}
             </TabsList>
-            <TabsContent value="account">
-              Make changes to your account here.
-            </TabsContent>
-            <TabsContent value="password">
-              Change your password here.
-            </TabsContent>
+
             {teamConversations.map((conv) => (
-              <TabsContent key={conv.id} value={conv.id}>
-                {conv.messages
-                  ? conv.messages[0]
-                    ? conv.messages[0].content
-                    : "Untitled"
-                  : "Untitled"}
+              <TabsContent key={conv.id} value={conv.id} className="w-full p-5">
+                <ConversationMessages conversationId={conv.id} />
               </TabsContent>
             ))}
+
+            {teamConversations.length === 0 && (
+              <TabsContent value="no-conversations" className="w-full p-5">
+                <span>No conversations</span>
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       )}

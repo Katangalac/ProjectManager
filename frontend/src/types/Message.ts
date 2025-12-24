@@ -1,3 +1,4 @@
+import { User } from "./User";
 /**
  * Type représentant un message
  */
@@ -9,6 +10,11 @@ export type Message = {
   read: boolean;
   updatedAt: Date;
   createdAt: Date;
+};
+
+export type MessageWithRelation = Message & {
+  sender?: User;
+  attachments?: Attachment[];
 };
 
 /**

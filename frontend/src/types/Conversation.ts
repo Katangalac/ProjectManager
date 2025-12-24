@@ -1,4 +1,4 @@
-import { Message } from "./Message";
+import { MessageWithRelation } from "./Message";
 import { User } from "./User";
 
 /**
@@ -14,7 +14,7 @@ export type Conversation = {
 
 export type ConversationWithRelation = Conversation & {
   participants?: { user: User }[];
-  messages?: Message[];
+  messages?: MessageWithRelation[];
 };
 
 /**
