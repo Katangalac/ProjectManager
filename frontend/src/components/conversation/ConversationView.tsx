@@ -5,11 +5,21 @@ import clsx from "clsx";
 import { timeAgo } from "@/utils/dateUtils";
 import { useUserStore } from "@/stores/userStore";
 
+/**
+ * Propriétés du ConversationCard
+ *  - conversation : la conversation à afficher dans la carte
+ *  - className : style de la carte
+ */
 type ConversationCardProps = {
   conversation: ConversationWithRelation;
   className?: string;
 };
 
+/**
+ * Affiche une conversation dans une carte
+ *
+ * @param {ConversationCardProps} param0 - Propriétés du ConversationCard
+ */
 export default function ConversationCard({
   conversation,
   className,
@@ -23,9 +33,9 @@ export default function ConversationCard({
       )}
     >
       {conversation.messages && (
-        <div className="flex flex-col gap-3">
+        <div className="flex w-full flex-col gap-3">
           {conversation.messages[0] && conversation.messages[0].sender && (
-            <div className={clsx("flex justify-between")}>
+            <div className={clsx("flex w-full justify-between")}>
               <div className={clsx("flex items-center justify-start gap-2")}>
                 <UserProfilePhoto
                   email={conversation.messages[0].sender.email}

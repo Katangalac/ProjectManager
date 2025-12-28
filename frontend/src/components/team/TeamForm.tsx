@@ -12,12 +12,25 @@ import { createTeamSchema } from "../../schemas/team.schemas";
 import { updateTeamSchema } from "../../schemas/team.schemas";
 import { Textarea } from "../ui/textarea";
 
+/**
+ * Propriétés du formulaire de création/modification d'une équipe
+ *
+ *  - defaultValues : valeurs préchargées du formaulaire
+ *  - isUpdateForm : détermie si c'est un formulaire de modification ou création
+ *  - onSuccess : fonction appelée en cas de succès
+ *
+ */
 type TeamFormProps = {
   defaultValues?: Partial<Team>;
   isUpdateForm: boolean;
   onSuccess: () => void;
 };
 
+/**
+ * Formulaire de création/modification d'une équipe
+ *
+ * @param {TeamFormProps} param0 - Propriétés du formulaire
+ */
 export default function TeamForm({
   isUpdateForm,
   defaultValues,

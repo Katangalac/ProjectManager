@@ -1,7 +1,6 @@
 import { clsx } from "clsx";
 import { TeamWithRelations } from "@/types/Team";
 import { dateToLongString, timeAgo } from "@/utils/dateUtils";
-
 import {
   Accordion,
   AccordionContent,
@@ -9,10 +8,20 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+/**
+ * Propriétés du TeamAbout
+ *
+ * - team : l'équipe dont on veut afficher la carte
+ */
 type TeamAboutProps = {
   team: TeamWithRelations;
 };
 
+/**
+ * Affiche les informations sur une équipe
+ *
+ * @param {TeamAboutProps} param0 - Propriétés du TeamAbout
+ */
 export default function TeamAbout({ team }: TeamAboutProps) {
   return (
     <div className="flex w-[80%] flex-col items-start justify-start py-5">

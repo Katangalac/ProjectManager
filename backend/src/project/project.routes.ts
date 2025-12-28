@@ -50,12 +50,18 @@ router.post("/:id/teams/:teamId", projectController.addTeamToProjectController);
 /**
  * @route DELETE /api/projects/:id/teams/:teamId
  */
-router.delete("/:id/teams/:teamId", projectController.removeTeamFromProjectController);
+router.delete(
+  "/:id/teams/:teamId",
+  projectController.removeTeamFromProjectController
+);
 
 /**
  * @route GET /api/projects/:id/members
  */
-router.get("/:id/members", projectController.getProjectMembersController);
+router.get(
+  "/:id/collaborators",
+  projectController.getProjectCollaboratorsController
+);
 
 /**
  * @route GET /api/projects/:id/tasks

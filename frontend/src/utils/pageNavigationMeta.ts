@@ -25,17 +25,17 @@ export const getPageNavigationMeta = (): Record<string, pageLocationMeta> => {
       iconeColor: "text-yellow-500",
     },
     "/userProjects": {
-      title: "My Projets",
+      title: "Projets",
     },
     "/userTasks": {
-      title: "My Tasks",
+      title: "Tasks",
     },
     "/userTeams+": {
-      title: "My Teams",
+      title: "Teams",
       message: `Here's your team details`,
     },
     "/userTeams": {
-      title: "My Teams",
+      title: "Teams",
     },
     "/profile": {
       title: "Profile",

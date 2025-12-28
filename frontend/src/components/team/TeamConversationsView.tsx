@@ -34,7 +34,7 @@ export default function TeamConversationsView({
             defaultValue={teamConversations[0]?.id || "no-conversations"}
             className="flex w-full"
           >
-            <TabsList className="flex h-screen max-w-80 min-w-70 flex-col items-start justify-start rounded-none border-r border-gray-300 bg-gray-100 px-0 first:border-t">
+            <TabsList className="flex h-screen max-w-80 min-w-70 flex-col items-start justify-start rounded-none border-r border-gray-300 bg-gray-100 px-0">
               <div className="mb-2 flex w-full items-center justify-between px-3 pt-2">
                 <span className="font-medium text-black">Conversations</span>
                 <button
@@ -60,10 +60,10 @@ export default function TeamConversationsView({
                     index === teamConversations.length - 1 ? "border-b" : ""
                   )}
                 >
-                  <div className="flex max-w-full flex-col">
+                  <div className="flex h-full w-full max-w-full flex-col">
                     <ConversationCard
                       conversation={conv}
-                      className="bg-transparent p-0 text-sm"
+                      className="min-h-full min-w-full items-start justify-start bg-transparent p-0 text-sm"
                     />
                   </div>
                 </TabsTrigger>

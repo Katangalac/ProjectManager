@@ -45,7 +45,9 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
     null
   );
-  const { deleteTask } = useDeleteTask();
+  const { deleteTask } = useDeleteTask({
+    onSuccess: () => setShowDialog(false),
+  });
   const menu = useRef<Menu>(null);
   const menuItems: MenuItem[] = [
     {

@@ -1,6 +1,10 @@
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { cn } from "@/lib/utils";
+import { CircleIcon } from "@phosphor-icons/react";
 
+/**
+ *
+ */
 type UserProfilePhotoProps = {
   imageUrl: string | null;
   username: string;
@@ -8,8 +12,14 @@ type UserProfilePhotoProps = {
   size?: string;
   imageClassName?: string;
   className?: string;
+  isOnline?: boolean;
 };
 
+/**
+ *
+ * @param param0
+ * @returns
+ */
 export default function UserProfilePhoto({
   imageUrl,
   username,
@@ -17,11 +27,12 @@ export default function UserProfilePhoto({
   className,
   imageClassName,
   size = "h-5 w-5 min-w-5 min-h-5 size-2",
+  isOnline,
 }: UserProfilePhotoProps) {
   return (
     <div
       className={cn(
-        "flex h-fit max-h-fit w-fit max-w-fit items-center justify-center gap-1",
+        "relative flex h-fit max-h-fit w-fit max-w-fit items-center justify-center gap-1",
         "rounded-full",
         "text-gray-500",
         "dark:text-gray-400",
@@ -43,6 +54,13 @@ export default function UserProfilePhoto({
         />
       ) : (
         <UserCircleIcon className={cn(size, imageClassName)} />
+      )}
+      {isOnline && (
+        <CircleIcon
+          weight="fill"
+          size={8}
+          className="absolute right-0 bottom-1 text-green-500"
+        />
       )}
     </div>
   );

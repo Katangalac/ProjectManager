@@ -1,7 +1,5 @@
 import { clsx } from "clsx";
 import { TaskStatus, Task } from "../../types/Task";
-
-import React from "react";
 import { TASK_STATUS_META } from "../../lib/constants/task";
 import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
 import { useForm, Controller } from "react-hook-form";
@@ -33,6 +31,15 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+/**
+ * * Propriétés du TaskForm
+ *
+ *  - defaultValues : valeurs par défaut du formulaire
+ *  - isUpdateForm : détermine s'il s'agit d'une mise à jour ou d'une création
+ *  - status : status de la tâche à créer
+ *  - disableStatusInput : détermine si oui ou non rendre le champ du status non modifiable
+ *  - onSuccess : fonction appelée en cas de succès
+ */
 type TaskFormProps = {
   defaultValues?: Partial<Task>;
   isUpdateForm: boolean;
@@ -41,6 +48,10 @@ type TaskFormProps = {
   onSuccess: () => void;
 };
 
+/**
+ * Formulaire de création et mise à jour d'une tâche
+ * @param {TaskFormProps} param0 - Propriétés du formulaire
+ */
 export default function TaskForm({
   isUpdateForm,
   defaultValues,
@@ -172,7 +183,7 @@ export default function TaskForm({
                   ? "border-red-500"
                   : "border-gray-300"
               )}
-              placeholder="Ex: Tâche1"
+              placeholder="Ex: Task-1"
               {...form.register("title")}
             />
             {form.formState.errors.title && (
@@ -463,7 +474,7 @@ export default function TaskForm({
               render={({ field }) => (
                 <input
                   type="number"
-                  value={field.value}
+                  value={String(field.value)}
                   className={clsx(
                     "w-full px-4 py-2",
                     "rounded-sm border border-gray-300 bg-inherit",

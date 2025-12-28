@@ -26,13 +26,13 @@ export default function Header({ className = "" }: HeaderProps) {
   return (
     <header
       className={clsx(
-        "border-b border-gray-300 bg-sky-600 px-4 py-2 text-white",
+        "border-b border-sky-600 bg-sky-600 px-4 py-2 text-white",
         className
       )}
     >
       <div className={clsx("flex justify-between")}>
         <div className={clsx("flex flex-col justify-center gap-1")}>
-          <h1 className={clsx("text-left text-lg font-medium text-white")}>
+          <h1 className={clsx("text-left text-lg font-bold")}>
             {currentPageMeta.title}
           </h1>
           <div className={clsx("flex items-center justify-start")}>
@@ -46,9 +46,7 @@ export default function Header({ className = "" }: HeaderProps) {
               </span>
             )}
 
-            <span className={clsx("text-xs text-white")}>
-              {currentPageMeta.message}
-            </span>
+            <span className={clsx("text-xs")}>{currentPageMeta.message}</span>
           </div>
         </div>
 
@@ -62,7 +60,7 @@ export default function Header({ className = "" }: HeaderProps) {
           </div> */}
           <button
             className={clsx(
-              "cursor-pointer rounded-md border border-gray-200 px-3 py-2 text-white hover:bg-sky-700"
+              "cursor-pointer rounded-md border border-gray-300 px-3 py-2 hover:bg-sky-700"
             )}
             title="Notifications"
           >
@@ -70,7 +68,7 @@ export default function Header({ className = "" }: HeaderProps) {
           </button>
           <div
             className={
-              "flex cursor-pointer items-center gap-1 rounded-md border border-gray-200 px-2 py-1 hover:bg-sky-700"
+              "flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 px-2 py-1 hover:bg-sky-700"
             }
             onClick={() => navigate("/profile")}
           >
@@ -81,17 +79,18 @@ export default function Header({ className = "" }: HeaderProps) {
                   email={user.email}
                   username={user.userName}
                   size="size-8"
+                  isOnline={user !== null}
                 />
                 <div className={clsx("flex flex-col items-start")}>
                   {user.firstName && user.lastName ? (
                     <>
-                      <span className={clsx("text-xs font-medium text-white")}>
+                      <span className={clsx("text-xs font-medium")}>
                         {user.firstName} {user.lastName}
                       </span>
                     </>
                   ) : (
                     <>
-                      <span className={clsx("text-xs font-medium text-white")}>
+                      <span className={clsx("text-xs font-medium")}>
                         {user.userName}
                       </span>
                     </>
@@ -103,7 +102,7 @@ export default function Header({ className = "" }: HeaderProps) {
               </>
             ) : (
               <>
-                <span className={clsx("text-xs font-medium text-gray-300")}>
+                <span className={clsx("text-xs font-medium text-gray-600")}>
                   Déconnecté
                 </span>
               </>

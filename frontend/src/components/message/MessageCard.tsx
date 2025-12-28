@@ -3,6 +3,13 @@ import { cn } from "@/lib/utils";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import { clsx } from "clsx";
 
+/**
+ * Propriéts du MessageCard
+ *  - message : le message qu'on veut afficher
+ *  - className : le style de la carte du message
+ *  - currentUserMessagesStyle : le style de la carte d'un message de l'utilisateur courant
+ *  - isCurrentUserMessage : détermine si un message provient de l'utilisateur courant
+ */
 type MessageCardProps = {
   message: MessageWithRelation;
   className?: string;
@@ -10,6 +17,11 @@ type MessageCardProps = {
   isCurrentUserMessage: boolean;
 };
 
+/**
+ * Affcihe un message
+ *
+ * @param {MessageCardProps} param0 - Propriéts du MessageCard
+ */
 export default function MessageCard({
   message,
   className,
@@ -48,7 +60,12 @@ export default function MessageCard({
         </div>
 
         {/**Message wrapper */}
-        <div className="flex items-end justify-end gap-1">
+        <div
+          className={clsx(
+            "flex items-end gap-1",
+            isCurrentUserMessage ? "justify-end" : "justify-start"
+          )}
+        >
           {!isCurrentUserMessage && (
             <UserProfilePhoto
               email={message.sender!.email}

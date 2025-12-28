@@ -12,6 +12,11 @@ import { Chart } from "primereact/chart";
 import { getTaskStats, getProjectStats } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Tableau de bord de l'application
+ * Affiche les nombres de projets et taches ainsi que des statistiques
+ * Affiche les 2 taches qui arrivent à leur échéance prochainement
+ */
 export default function DashBoard() {
   const { user } = useUserStore();
   const navigate = useNavigate();

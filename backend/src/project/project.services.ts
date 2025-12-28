@@ -1,27 +1,45 @@
-import { CreateProjectData, SearchProjectsFilter, Project, UpdateProjectData, ProjectsCollection } from "./Project";
-import { ProjectNotFoundError, TeamAlreadyInProjectError, TeamNotInProjectError } from "./errors";
+import {
+  CreateProjectData,
+  SearchProjectsFilter,
+  Project,
+  UpdateProjectData,
+  ProjectsCollection,
+} from "./Project";
+import {
+  ProjectNotFoundError,
+  TeamAlreadyInProjectError,
+  TeamNotInProjectError,
+} from "./errors";
 import { db } from "../db";
 import { Prisma, ProjectTeam } from "@prisma/client";
-import { Team,SearchTeamsFilter } from "../team/Team";
+import { Team, SearchTeamsFilter } from "../team/Team";
 import { toSafeUser } from "../user/user.transforms";
 import { SafeUser, SearchUsersFilter } from "../user/User";
-import { Task, SearchTasksFilter} from "../task/Task";
-import { buildProjectWhereInput, buildUserWhereInput, buildTaskWhereInput, buildTeamWhereInput, buildPaginationInfos} from "../utils/utils";
+import { Task, SearchTasksFilter } from "../task/Task";
+import {
+  buildProjectWhereInput,
+  buildUserWhereInput,
+  buildTaskWhereInput,
+  buildTeamWhereInput,
+  buildPaginationInfos,
+} from "../utils/utils";
 import { UsersCollection } from "../user/User";
 import { TasksCollection } from "../task/Task";
 import { TeamsCollection } from "../team/Team";
 
 /**
- * Crée un nouveau projet 
+ * Crée un nouveau projet
  * @async
  * @param {CreateProjectData} projectData - informations sur le projet
  * @returns {Project} - un objet représentant le projet créé
  */
-export const createProject = async (projectData: CreateProjectData): Promise<Project> => {
-    const project = await db.project.create({
-        data: projectData
-    });
-    return project;
+export const createProject = async (
+  projectData: CreateProjectData
+): Promise<Project> => {
+  const project = await db.project.create({
+    data: projectData,
+  });
+  return project;
 };
 
 /**
@@ -31,67 +49,72 @@ export const createProject = async (projectData: CreateProjectData): Promise<Pro
  * @returns {Project} - le projet ayant l'identifiant passé en paramètre
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
-export const getProjectById = async (id: string):Promise<Project> => {
-    const project = await db.project.findUnique({ where: { id } });
-    if (!project) throw new ProjectNotFoundError(id);
-    return project;
+export const getProjectById = async (id: string): Promise<Project> => {
+  const project = await db.project.findUnique({ where: { id } });
+  if (!project) throw new ProjectNotFoundError(id);
+  return project;
 };
 
 /**
  * Récupère les projets remplissant les critères de filtre passé en paramètre
  * @async
- * @param {SearchProjectsFilter} - les filtres de recherche à utiliser 
+ * @param {SearchProjectsFilter} - les filtres de recherche à utiliser
  * @returns {ProjectsCollection} - la liste de projets remplissant les critères de recherche
  */
-export const getProjects = async (filter: SearchProjectsFilter): Promise<ProjectsCollection> => {
-    const { page, pageSize, all, ..._ } = filter;
-    
-    //Construction du WHERE à partir des filtres
-    const where = buildProjectWhereInput(filter);
+export const getProjects = async (
+  filter: SearchProjectsFilter
+): Promise<ProjectsCollection> => {
+  const { page, pageSize, all, ..._ } = filter;
 
-    //Compte total des projets correspondant au filtre
-    const totalItems = await db.project.count({ where });
-    
-    //Construction de la requête principale
-    const query: Prisma.ProjectFindManyArgs = {
-        where,
-        orderBy:{updatedAt:"desc"}
-    };
-    if (!all) {
-        query.skip = (page - 1) * pageSize;
-        query.take = pageSize;
-    }
+  //Construction du WHERE à partir des filtres
+  const where = buildProjectWhereInput(filter);
 
-    //Exécution de la requête
-    const projects = await db.project.findMany(query);
+  //Compte total des projets correspondant au filtre
+  const totalItems = await db.project.count({ where });
 
-    //Calcul pagination
-    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+  //Construction de la requête principale
+  const query: Prisma.ProjectFindManyArgs = {
+    where,
+    orderBy: { updatedAt: "desc" },
+  };
+  if (!all) {
+    query.skip = (page - 1) * pageSize;
+    query.take = pageSize;
+  }
 
-    return {
-        projects,
-        pagination
-    };
+  //Exécution de la requête
+  const projects = await db.project.findMany(query);
+
+  //Calcul pagination
+  const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+  return {
+    projects,
+    pagination,
+  };
 };
 
 /**
  * Met à jour les informations d'un projet
- * @async 
+ * @async
  * @returns {Project} - le projet ayant l'identifiant passé en paramètre
  * @param {UpdateProjectData} projectData - les nouvelles informations du projet
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
-export const updateProject = async (id: string, projectData: UpdateProjectData): Promise<Project> => {
-    try {
-        const updatedProject = await db.project.update({
-            where: { id },
-            data: projectData as Prisma.ProjectUpdateInput
-        });
-        return updatedProject;
-    } catch (err: any) {
-        if (err.code === "P2025") throw new ProjectNotFoundError(id);
-        throw err;
-    }
+export const updateProject = async (
+  id: string,
+  projectData: UpdateProjectData
+): Promise<Project> => {
+  try {
+    const updatedProject = await db.project.update({
+      where: { id },
+      data: projectData as Prisma.ProjectUpdateInput,
+    });
+    return updatedProject;
+  } catch (err: any) {
+    if (err.code === "P2025") throw new ProjectNotFoundError(id);
+    throw err;
+  }
 };
 
 /**
@@ -101,12 +124,12 @@ export const updateProject = async (id: string, projectData: UpdateProjectData):
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
 export const deleteProject = async (id: string) => {
-    try {
-        await db.project.delete({ where: { id } });
-    }catch (err: any) {
-        if (err.code === "P2025") throw new ProjectNotFoundError(id);
-        throw err;
-    }
+  try {
+    await db.project.delete({ where: { id } });
+  } catch (err: any) {
+    if (err.code === "P2025") throw new ProjectNotFoundError(id);
+    throw err;
+  }
 };
 
 /**
@@ -117,19 +140,23 @@ export const deleteProject = async (id: string) => {
  * @returns {ProjectTeam} - un objet représentant le lien créé entre l'équipe et le projet
  * @throws {TeamAlreadyInProjectError} - lorsque l'équipe est déjà dans le projet
  */
-export const addTeamToProject = async (teamId: string, projectId: string):Promise<ProjectTeam> => {
-    try {
-        const projectTeamPair = await db.projectTeam.create({
-            data: {
-                projectId: projectId,
-                teamId: teamId
-            }
-        });
-        return projectTeamPair;
-    } catch (err: any) {
-        if (err.code === "P2002") throw new TeamAlreadyInProjectError(teamId, projectId);
-        throw err;
-    }
+export const addTeamToProject = async (
+  teamId: string,
+  projectId: string
+): Promise<ProjectTeam> => {
+  try {
+    const projectTeamPair = await db.projectTeam.create({
+      data: {
+        projectId: projectId,
+        teamId: teamId,
+      },
+    });
+    return projectTeamPair;
+  } catch (err: any) {
+    if (err.code === "P2002")
+      throw new TeamAlreadyInProjectError(teamId, projectId);
+    throw err;
+  }
 };
 
 /**
@@ -139,17 +166,21 @@ export const addTeamToProject = async (teamId: string, projectId: string):Promis
  * @param {string} projectId - identifiant du projet
  * @throws {TeamNotInProjectError} - lorsque l'équipe n'est pas dans le projet
  */
-export const removeTeamFromProject = async (teamId: string, projectId: string) => {
-    try {
-        await db.projectTeam.delete({
-            where: {
-                pk_project_team: { projectId: projectId, teamId: teamId }
-            }
-        });
-    }catch (err: any) {
-        if (err.code === "P2025") throw new TeamNotInProjectError(teamId, projectId);
-        throw err;
-    }
+export const removeTeamFromProject = async (
+  teamId: string,
+  projectId: string
+) => {
+  try {
+    await db.projectTeam.delete({
+      where: {
+        pk_project_team: { projectId: projectId, teamId: teamId },
+      },
+    });
+  } catch (err: any) {
+    if (err.code === "P2025")
+      throw new TeamNotInProjectError(teamId, projectId);
+    throw err;
+  }
 };
 
 /**
@@ -159,46 +190,50 @@ export const removeTeamFromProject = async (teamId: string, projectId: string) =
  * @param {SearchTeamssFilter} filter - filtre de recherche à utiliser
  * @returns {TeamsCollection} - la liste d'équipes intervenant dans le projet
  */
-export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilter): Promise<TeamsCollection> => {
-    const { page, pageSize,all, ..._ } = filter;
-    const projectTeamCondition: Prisma.TeamWhereInput = {
-        teamProjects: {
-            some: { projectId }
-        }
-    };
+export const getProjectTeams = async (
+  projectId: string,
+  filter: SearchTeamsFilter
+): Promise<TeamsCollection> => {
+  const { page, pageSize, all, ..._ } = filter;
+  const projectTeamCondition: Prisma.TeamWhereInput = {
+    teamProjects: {
+      some: { projectId },
+    },
+  };
 
-    //Construction du WHERE à partir des filtres
-    const teamFilter = buildTeamWhereInput(filter);
+  //Construction du WHERE à partir des filtres
+  const teamFilter = buildTeamWhereInput(filter);
 
-    //Compte total d'équipes correspondant au filtre
-    const totalItems = await db.team.count({
-        where: {
-            AND:[projectTeamCondition, teamFilter]
-    }});
+  //Compte total d'équipes correspondant au filtre
+  const totalItems = await db.team.count({
+    where: {
+      AND: [projectTeamCondition, teamFilter],
+    },
+  });
 
-    //Construction de la requête principale
-    const query: Prisma.TeamFindManyArgs = {
-        where: {
-            AND:[projectTeamCondition, teamFilter]
-        },
-        orderBy:{updatedAt:"desc"}
-    };
+  //Construction de la requête principale
+  const query: Prisma.TeamFindManyArgs = {
+    where: {
+      AND: [projectTeamCondition, teamFilter],
+    },
+    orderBy: { updatedAt: "desc" },
+  };
 
-    if (!all) {
-        query.skip = (page - 1) * pageSize;
-        query.take = pageSize;
-    }
+  if (!all) {
+    query.skip = (page - 1) * pageSize;
+    query.take = pageSize;
+  }
 
-    //Exécution de la requête
-    const projectTeams = await db.team.findMany(query);
+  //Exécution de la requête
+  const projectTeams = await db.team.findMany(query);
 
-    //Calcul pagination
-    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+  //Calcul pagination
+  const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
 
-    return {
-        teams: projectTeams,
-        pagination
-    };
+  return {
+    teams: projectTeams,
+    pagination,
+  };
 };
 
 /**
@@ -207,54 +242,57 @@ export const getProjectTeams = async (projectId: string, filter: SearchTeamsFilt
  * @param {SearchUsersFilter} - filtre de recherche à utiliser
  * @returns {UsersCollection} - les utilisateurs intervenant dans le projet
  */
-export const getProjectMembers = async (projectId: string, filter: SearchUsersFilter): Promise<UsersCollection> => {
-    const { page, pageSize,all, ..._ } = filter;
-    const projectMemberCondition: Prisma.UserWhereInput = {
-        userTeams: {
-            some: {
-                team: {
-                    teamProjects: {
-                        some: { projectId }
-                    }
-                }
-            }
-        }
-    };
-
-    //Construction du WHERE à partir des filtres
-    const userFilter = buildUserWhereInput(filter);
-
-    //Compte total d'utilisateur correspondant au filtre
-    const totalItems = await db.user.count({
-        where: {
-            AND:[projectMemberCondition, userFilter]
-        }
-    });
-    
-    //Construction de la requête principale
-    const query: Prisma.UserFindManyArgs = {
-        where: {
-            AND:[projectMemberCondition, userFilter]
+export const getProjectCollaborators = async (
+  projectId: string,
+  filter: SearchUsersFilter
+): Promise<UsersCollection> => {
+  const { page, pageSize, all, ..._ } = filter;
+  const projectMemberCondition: Prisma.UserWhereInput = {
+    userTeams: {
+      some: {
+        team: {
+          teamProjects: {
+            some: { projectId },
+          },
         },
-        orderBy:{updatedAt:"desc"}
-    };
+      },
+    },
+  };
 
-    if (!all) {
-        query.skip = (page - 1) * pageSize;
-        query.take = pageSize;
-    }
+  //Construction du WHERE à partir des filtres
+  const userFilter = buildUserWhereInput(filter);
 
-    //Exécution de la requête
-    const projectUsers = await db.user.findMany(query);
-    const projectSafeUsers = projectUsers.map(toSafeUser);
+  //Compte total d'utilisateur correspondant au filtre
+  const totalItems = await db.user.count({
+    where: {
+      AND: [projectMemberCondition, userFilter],
+    },
+  });
 
-    //Calcul pagination
-    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
-    
-    return {
-        users: projectSafeUsers,
-        pagination
-    };
+  //Construction de la requête principale
+  const query: Prisma.UserFindManyArgs = {
+    where: {
+      AND: [projectMemberCondition, userFilter],
+    },
+    orderBy: { updatedAt: "desc" },
+  };
+
+  if (!all) {
+    query.skip = (page - 1) * pageSize;
+    query.take = pageSize;
+  }
+
+  //Exécution de la requête
+  const projectUsers = await db.user.findMany(query);
+  const projectSafeUsers = projectUsers.map(toSafeUser);
+
+  //Calcul pagination
+  const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+  return {
+    users: projectSafeUsers,
+    pagination,
+  };
 };
 
 /**
@@ -263,39 +301,49 @@ export const getProjectMembers = async (projectId: string, filter: SearchUsersFi
  * @param {SearchTasksFilter} filter - filtre de recherche à utiliser
  * @returns {TasksCollection} - la liste de taches du projet
  */
-export const getProjectTasks = async (projectId: string, filter: SearchTasksFilter): Promise<TasksCollection> => {
-    const { page, pageSize,all, ..._ } = filter;
-    
-    //Construction du WHERE à partir des filtres
-    const taskfilter = buildTaskWhereInput(filter);
-        
-    //Compte total des tâches correspondant au filtre
-    const totalItems = await db.task.count({
-        where: {
-            AND: [{projectId}, taskfilter]
-    }});
+export const getProjectTasks = async (
+  projectId: string,
+  filter: SearchTasksFilter
+): Promise<TasksCollection> => {
+  const { page, pageSize, all, ..._ } = filter;
 
-    //Construction de la requête principale
-    const query: Prisma.TaskFindManyArgs = {
-        where: {
-            AND: [{projectId}, taskfilter]
-        },
-        orderBy: { deadline: "desc" }
-    }
+  //Construction du WHERE à partir des filtres
+  const taskfilter = buildTaskWhereInput(filter);
 
-    if (!all) {
-        query.skip = (page - 1) * pageSize;
-        query.take = pageSize;
-    }
+  //Compte total des tâches correspondant au filtre
+  const totalItems = await db.task.count({
+    where: {
+      AND: [{ projectId }, taskfilter],
+    },
+  });
 
-    //Exécution de la requête
-    const projectTasks = await db.task.findMany(query);
+  //Construction de la requête principale
+  const query: Prisma.TaskFindManyArgs = {
+    where: {
+      AND: [{ projectId }, taskfilter],
+    },
+    include: {
+      team: true,
+      project: true,
+      user: true,
+      assignedTo: true,
+    },
+    orderBy: { deadline: "desc" },
+  };
 
-    //Calcul pagination
-    const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+  if (!all) {
+    query.skip = (page - 1) * pageSize;
+    query.take = pageSize;
+  }
 
-    return {
-        tasks: projectTasks,
-        pagination
-    };
+  //Exécution de la requête
+  const projectTasks = await db.task.findMany(query);
+
+  //Calcul pagination
+  const pagination = buildPaginationInfos(all, page, pageSize, totalItems);
+
+  return {
+    tasks: projectTasks,
+    pagination,
+  };
 };

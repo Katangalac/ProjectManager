@@ -11,10 +11,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+/**
+ * Propriétés du TeamMembersView
+ *
+ *  - team : l'équipe dont on veut afficher les membres
+ */
 type TeamMembersViewProps = {
   team: TeamWithRelations;
 };
 
+/**
+ * Affiche les membres d'une équipe
+ * Affiche les memebres dans différentes tables
+ *
+ * @param {TeamMembersViewProps} param0 - Propriétés du TeamMembersView
+ */
 export default function TeamMembersView({ team }: TeamMembersViewProps) {
   return (
     <div className={clsx("w-[90%] py-5")}>

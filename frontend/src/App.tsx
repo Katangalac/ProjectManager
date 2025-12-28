@@ -9,15 +9,23 @@ import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
 import UserTasksPage from "./pages/UserTasksPage.tsx";
 import CalendarPage from "./pages/CalendarPage.tsx";
-import ProjectPage from "./pages/ProjectsPage.tsx";
+import ProjectsPage from "./pages/ProjectsPage.tsx";
+import ProjectDetailsPage from "./pages/ProjectDetailsPage.tsx";
 import UserTeamsPage from "./pages/UserTeamsPage.tsx";
 import TeamDetailsPage from "./pages/TeamDetailsPage.tsx";
+import TestPage from "./pages/TestPage.tsx";
+import MessagePage from "./pages/MessagePage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./services/auth.services.ts";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { clsx } from "clsx";
+import { Toaster } from "@/components/ui/sonner";
+import { socket } from "./lib/socket/socketClient.ts";
+import { useSocket } from "./hooks/socket/useSocket.ts";
+import { toast } from "sonner";
+import { Message } from "./types/Message.ts";
 
 /**
  * Point d'entrée de l'application
@@ -49,6 +57,17 @@ function App() {
     }
   }, [isSuccess, isError, data, logout, setUser]);
 
+  /**
+   *
+   */
+  useEffect(() => {
+    if (data) {
+      socket.emit("login", data.data.id);
+    }
+  }, [data]);
+
+  useSocket<Message>("new_message", (data) => toast.info(data.content));
+
   return (
     <>
       <ConfirmDialog
@@ -59,6 +78,7 @@ function App() {
           "myDialog"
         )}
       />
+      <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<RootRedirect />} />
@@ -101,7 +121,15 @@ function App() {
               path="/userProjects"
               element={
                 <ProtectedRoute>
-                  <ProjectPage />
+                  <ProjectsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userProjects/:projectId"
+              element={
+                <ProtectedRoute>
+                  <ProjectDetailsPage />
                 </ProtectedRoute>
               }
             />
@@ -118,6 +146,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TeamDetailsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/test"
+              element={
+                <ProtectedRoute>
+                  <TestPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <MessagePage />
                 </ProtectedRoute>
               }
             />

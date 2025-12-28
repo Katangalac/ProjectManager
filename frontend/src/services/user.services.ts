@@ -1,6 +1,6 @@
 import { axiosClient } from "../lib/axios/axiosClient";
 import axios from "axios";
-import { UpdateUserData } from "../types/User";
+import { SearchUsersFilter, UpdateUserData } from "../types/User";
 
 /**
  * Récupère un utilisateur par son ID
@@ -31,9 +31,9 @@ export const getUserById = async (userId: string) => {
  * @returns - La liste des utilisateurs
  * @throws - Une erreur si la requête échoue
  */
-export const getUsers = async () => {
+export const getUsers = async (params: SearchUsersFilter) => {
   try {
-    const axiosResponse = await axiosClient.get(`/users`);
+    const axiosResponse = await axiosClient.get(`/users`, { params });
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {

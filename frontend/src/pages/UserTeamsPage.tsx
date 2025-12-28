@@ -13,6 +13,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+/**
+ * Affiche la liste des équipes d'un utilisateur
+ */
 export default function UserTeamsPage() {
   const {
     data: teams = [],

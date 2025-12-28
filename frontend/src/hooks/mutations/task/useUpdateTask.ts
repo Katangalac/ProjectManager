@@ -13,6 +13,7 @@ type UpdateTaskMutationParams = {
 
 /**
  * Mutation de modification d'une tâche
+ * @param {string} taskId - identifiant de la tâche
  * @returns la fontion de mutation ainsi que le status de la requête
  */
 export const useUpdateTask = (params: UpdateTaskMutationParams = {}) => {

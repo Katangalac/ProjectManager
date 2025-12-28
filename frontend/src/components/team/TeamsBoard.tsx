@@ -21,7 +21,7 @@ export default function TeamsBoard({ teams }: TeamsBoardProps) {
         "grid min-h-screen min-w-full grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4"
       )}
     >
-      {!teams && <div>No teams</div>}
+      {(!teams || teams.length === 0) && <div>No teams</div>}
       {teams.map((team) => (
         <TeamCard key={team.id} team={team} />
       ))}

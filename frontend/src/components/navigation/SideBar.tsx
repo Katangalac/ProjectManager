@@ -11,6 +11,7 @@ import {
   ProjectorScreenChartIcon,
   CaretCircleRightIcon,
   CaretCircleLeftIcon,
+  FlaskIcon,
 } from "@phosphor-icons/react";
 import {
   UserCircleIcon,
@@ -161,8 +162,15 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           />
           <NavItem
             icon={<ChatDotsIcon size={!isCollapsed ? 18 : 22} weight="bold" />}
-            label="Chat"
-            to="/chat"
+            label="Messages"
+            to="/messages"
+            showText={!isCollapsed}
+          />
+
+          <NavItem
+            icon={<FlaskIcon size={!isCollapsed ? 18 : 22} weight="bold" />}
+            label="Test"
+            to="/test"
             showText={!isCollapsed}
           />
         </nav>
@@ -209,7 +217,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           <button
             className={clsx(
               "flex items-center gap-2 p-2",
-              "rounded-lg bg-white hover:bg-gray-100",
+              "rounded-md bg-white hover:bg-red-100",
               "text-sm font-medium text-red-500",
               "transition-colors",
               "dark:text-red-500",

@@ -19,6 +19,7 @@ export type Project = {
   status: ProjectStatus;
   budgetPlanned: number;
   actualCost: number;
+  progress: number;
   startedAt: Date;
   deadline: Date;
   completedAt: Date | null;
@@ -37,6 +38,7 @@ export type CreateProjectData = {
   startedAt: Date;
   deadline: Date;
   budgetPlanned: number;
+  progress: number;
 };
 
 /**
@@ -48,6 +50,7 @@ export type UpdateProjectData = {
   description?: string | undefined;
   status?: ProjectStatus | undefined;
   budgetPlanned?: number | undefined;
+  progress?: number | undefined;
   actualCost?: number | undefined;
   startedAt?: Date | undefined;
   deadline?: Date | undefined;
@@ -67,6 +70,9 @@ export type SearchProjectsFilter = {
   startBefore?: Date | undefined;
   endBefore?: Date | undefined;
   startAfter?: Date | undefined;
+  progessEq?: number | undefined;
+  progessLt?: number | undefined;
+  progessGt?: number | undefined;
   endAfter?: Date | undefined;
   completedOn?: Date | undefined;
   completedBefore?: Date | undefined;

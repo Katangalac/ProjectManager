@@ -79,7 +79,7 @@ app.use("/api/v1/messages", messageRoutes);
 const server = http.createServer(app);
 setupSocket(server);
 
-app.listen(PORT, () =>
+server.listen(PORT, () =>
   console.log("Serveur démarré sur http://localhost:3000")
 );
 //https.createServer(app).listen(PORT, () => console.log("Serveur démarré sur https://localhost:3000"));

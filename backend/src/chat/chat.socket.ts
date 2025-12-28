@@ -21,7 +21,11 @@ let io: Server;
  */
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
-    cors: { origin: "*" },
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
   });
 
   io.on("connection", (socket) => {
@@ -31,25 +35,34 @@ export const setupSocket = (server: http.Server) => {
      * Déclenché lorsque l'utilisateur est inscrit dans le système
      * Cela permet ensuite d'envoyer des messages/notifications en temps réel à cet utilisateur
      */
-    socket.on("login", async(userId: string) => {
-      console.log(`Utilisateur ${userId} enregistré sur le socket ${socket.id}`);
+    socket.on("login", async (userId: string) => {
+      console.log(
+        `Utilisateur ${userId} enregistré sur le socket ${socket.id}`
+      );
       socket.join(userId); // Permet de cibler l'utilisateur dans io.to(userId)
 
       //Écoute les évenements des équipes de l'utilisateur
-      const teams = await getUserTeams(userId, { all: true, page: 1, pageSize: 20 });
-      teams.teams.forEach(team => socket.join(team.id));
+      // const teams = await getUserTeams(userId, { all: true, page: 1, pageSize: 20 });
+      // teams.teams.forEach(team => socket.join(team.id));
 
       //Écoute les évenements des tâches de l'utilisateur
-      const tasks = await getUserTasks(userId, { all: true, page: 1, pageSize: 20 });
-      tasks.tasks.forEach(task => socket.join(task.id));
+      // const tasks = await getUserTasks(userId, { all: true, page: 1, pageSize: 20 });
+      // tasks.tasks.forEach(task => socket.join(task.id));
 
       //Écoute les évenements des projets de l'utilisateur
-      const projects = await getUserProjects(userId, { all: true, page: 1, pageSize: 20 });
-      projects.projects.forEach(project => socket.join(project.id));
+      // const projects = await getUserProjects(userId, { all: true, page: 1, pageSize: 20 });
+      // projects.projects.forEach(project => socket.join(project.id));
 
       //Écoute sur les évenements des conversations de l'utilisateur
-      const conversations = await getUserConversations(userId, { all: true, page: 1, pageSize: 20 });
-      conversations.conversations.forEach(conversation => socket.join(conversation.id));
+      const conversations = await getUserConversations(userId, {
+        all: true,
+        page: 1,
+        pageSize: 20,
+      });
+      conversations.conversations.forEach((conversation) =>
+        socket.join(conversation.id)
+      );
+      io.to(userId).emit("welcome-back", "Welcome back!");
     });
 
     /**
@@ -57,7 +70,7 @@ export const setupSocket = (server: http.Server) => {
      * Chaque conversation est représentée par une "room" Socket.IO
      * permettant d’envoyer des messages uniquement aux participants.
      */
-    socket.on("join_conversation", (conversationId:string) => {
+    socket.on("join_conversation", (conversationId: string) => {
       socket.join(conversationId);
       console.log("Le client a joint la conversation : ", conversationId);
     });
@@ -67,7 +80,7 @@ export const setupSocket = (server: http.Server) => {
      * Le serveur diffuse ensuite ce message à tous les utilisateurs
      * connectés à la même conversation.
      */
-    socket.on("send_message", (message:Message) => {
+    socket.on("send_message", (message: Message) => {
       io.to(message.conversationId).emit("new_message", message);
       console.log("Nouveau message : ", message);
     });
@@ -76,9 +89,9 @@ export const setupSocket = (server: http.Server) => {
      * Lorsqu’un message est modifié par un utilisateur,
      * le serveur notifie tous les membres de la conversation.
      */
-    socket.on("edit_message", (message:Message) => {
+    socket.on("edit_message", (message: Message) => {
       io.to(message.conversationId).emit("message_edited", message);
-      console.log("Message modifié : ", message)
+      console.log("Message modifié : ", message);
     });
 
     /**

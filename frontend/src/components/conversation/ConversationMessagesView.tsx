@@ -3,10 +3,18 @@ import MessageList from "../message/MessagesList";
 import { useConversationMessages } from "@/hooks/queries/conversation/useConversationMessages";
 import { ProgressSpinner } from "primereact/progressspinner";
 
+/**
+ * Propriétés du ConversationMessages
+ *  - conversationId : identifiant de la conversation
+ */
 type ConversationMessagesProps = {
   conversationId: string;
 };
 
+/**
+ * Affiche les messages d'une conversations
+ * @param {ConversationMessagesProps} param0 - u ConversationMessages
+ */
 export default function ConversationMessages({
   conversationId,
 }: ConversationMessagesProps) {
@@ -15,14 +23,15 @@ export default function ConversationMessages({
     isLoading,
     isError,
   } = useConversationMessages(conversationId, { all: true });
-  console.log("CONVERSATION-MESSAGE : ", data);
   return (
-    <div className={clsx("w-full")}>
+    <div className={clsx("h-full w-full")}>
       {isLoading && <ProgressSpinner />}
       {isError && (
         <div>An error occcur while loading conversation messages</div>
       )}
-      {!isLoading && !isError && <MessageList messages={data} />}
+      {!isLoading && !isError && (
+        <MessageList messages={data} conversationId={conversationId} />
+      )}
     </div>
   );
 }

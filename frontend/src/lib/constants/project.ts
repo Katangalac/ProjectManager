@@ -1,4 +1,4 @@
-import { ProjectStatus } from "../../types/Project";
+import { ProjectStatus, Project } from "../../types/Project";
 
 /**
  * Liste composées des status possibles pour une tâche
@@ -40,7 +40,7 @@ export const PROJECT_STATUS_META: Record<ProjectStatus, StatusMeta> = {
     hexColor: "#E5E7EB",
   },
   PAUSED: {
-    label: "To-do",
+    label: "Paused",
     textColor: "text-yellow-600",
     bgColor: "bg-yellow-100",
     borderColor: "border-gray-300",
@@ -68,3 +68,16 @@ export const PROJECT_STATUS_META: Record<ProjectStatus, StatusMeta> = {
     hexColor: "#A7F3D0",
   },
 } as const;
+
+/**
+ * Valeurs par défaut du formulaire de création d'un projet
+ */
+export const PROJECTFORM_DEFAULT_VALUES: Partial<Project> = {
+  creatorId: null,
+  title: "",
+  progress: 0,
+  budgetPlanned: 0,
+  startedAt: new Date(),
+  deadline: new Date(),
+  description: "",
+};

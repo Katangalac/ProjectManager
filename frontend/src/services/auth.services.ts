@@ -88,7 +88,6 @@ export const registerRequest = async (
 export const getMe = async () => {
   try {
     const axiosResponse = await axiosClient.get("/users/me");
-
     return axiosResponse.data;
   } catch (err: unknown) {
     if (axios.isAxiosError?.(err)) {
@@ -99,5 +98,26 @@ export const getMe = async () => {
     }
 
     throw new Error("Erreur inconnue lors de la récupération de l'utilisateur");
+  }
+};
+
+/**
+ * Supprime l'utilisateur connecté
+ *
+ * @throws - une erreur si la requête échoue
+ */
+export const deleteMe = async () => {
+  try {
+    const axiosResponse = await axiosClient.get("/users/me");
+    return axiosResponse.data;
+  } catch (err: unknown) {
+    if (axios.isAxiosError?.(err)) {
+      const message =
+        err.response?.data?.message ||
+        "Erreur lors de la suppression de l'utilisateur";
+      throw new Error(message);
+    }
+
+    throw new Error("Erreur inconnue lors de la suppression de l'utilisateur");
   }
 };

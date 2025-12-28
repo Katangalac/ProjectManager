@@ -21,7 +21,7 @@ export default function TasksBoard({ tasks }: TasksBoardProps) {
         "grid min-h-screen grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4"
       )}
     >
-      {!tasks && <div>No tasks</div>}
+      {(!tasks || tasks.length === 0) && <div>No tasks</div>}
       {tasks.map((task) => (
         <TaskCard key={task.id} task={task} className={clsx("shadow-lg")} />
       ))}

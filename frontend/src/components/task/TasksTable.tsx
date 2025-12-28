@@ -180,7 +180,9 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="deadline"
           header="Deadline"
-          body={(rowData) => new Date(rowData.deadline).toLocaleDateString()}
+          body={(rowData) =>
+            new Date(rowData.deadline).toISOString().split("T")[0]
+          }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",

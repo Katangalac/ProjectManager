@@ -4,11 +4,22 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 
+/**
+ * Propriétés du TeamMembersTable
+ *
+ *  - team : l'équipe dont on veut afficher les membres
+ *  - showLeaderOnly: détermine si on affiche que les membres qui sont leaders de l'équipe
+ */
 type TeamMembersTableProps = {
   team: TeamWithRelations;
   showLeaderOnly: boolean;
 };
 
+/**
+ * Affiche les membres d'une équipe dans une table
+ *
+ * @param {TeamMembersTableProps} param0 - proprités du TeamMembersTable
+ */
 export default function TeamMembersTable({
   team,
   showLeaderOnly,
@@ -63,7 +74,7 @@ export default function TeamMembersTable({
           ></Column>
           <Column
             header="Firstname"
-            body={(teamUser) => teamUser.user.firstName ?? "—"}
+            body={(teamUser) => teamUser.user.firstName || "Unkown"}
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
               "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
@@ -75,7 +86,11 @@ export default function TeamMembersTable({
 
           <Column
             header="Lastname"
-            body={(teamUser) => teamUser.user.lastName ?? "—"}
+            body={(teamUser) =>
+              teamUser.user.lastName?.trim() !== ""
+                ? teamUser.user.lastName
+                : "Unknown"
+            }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
               "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
@@ -86,7 +101,11 @@ export default function TeamMembersTable({
           ></Column>
           <Column
             header="Profession"
-            body={(teamUser) => teamUser.user.profession ?? "—"}
+            body={(teamUser) =>
+              teamUser.user.profession?.trim() !== ""
+                ? teamUser.user.profession
+                : "Unknown"
+            }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
               "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
@@ -100,7 +119,7 @@ export default function TeamMembersTable({
             body={(teamUser) =>
               teamUser.userRole && teamUser.userRole.trim() !== ""
                 ? teamUser.userRole
-                : "—"
+                : "Undefined"
             }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(

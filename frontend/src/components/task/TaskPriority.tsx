@@ -38,7 +38,7 @@ export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
           priorityLevelMeta.textStyle
         )}
       >
-        Priorité {priorityLevelMeta.label}
+        {priorityLevelMeta.label} Priority
       </span>
     </div>
   );

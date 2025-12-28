@@ -4,10 +4,21 @@ import TeamActionMenu from "./TeamActionMenu";
 import { useNavigate } from "react-router-dom";
 import TeamNameAcronym from "./TeamNameAcronym";
 
+/**
+ * Prorpiéts du TeamCardProps
+ *
+ * - team : l'équipe dont on veut afficher la carte
+ */
 type TeamCardProps = {
   team: TeamWithRelations;
 };
 
+/**
+ * Affiche la carte de base d'une équipe :
+ *  - Nom de l'équipe, acronyme du nom et le bouton de menu
+ *
+ * @param {TeamCardProps} param0 - Proprités du TeamCard
+ */
 export default function TeamCard({ team }: TeamCardProps) {
   const navigate = useNavigate();
   return (

@@ -8,6 +8,9 @@ import PrivateProfile from "../components/profile/PrivateProfile";
 import { useParams } from "react-router-dom";
 import { ProgressSpinner } from "primereact/progressspinner";
 
+/**
+ * Affiche le profil de l'utilisateur
+ */
 export default function ProfilePage() {
   const { id } = useParams();
   const currentUser = useUserStore((s) => s.user);
