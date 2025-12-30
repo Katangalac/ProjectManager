@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx } from "clsx";
 import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * Type des options du sélecteur
@@ -44,9 +45,10 @@ export function InlineSelector({
 }: InlineSelectorProps) {
   return (
     <div
-      className={clsx(
-        `flex gap-3 px-2 py-1 ${className}`,
-        "rounded-md border border-sky-100 bg-sky-50"
+      className={cn(
+        "flex gap-3 px-2 py-1",
+        "rounded-md border border-sky-100 bg-sky-50",
+        className
       )}
     >
       {options.map((opt) => {
@@ -63,7 +65,7 @@ export function InlineSelector({
               "text-xs font-medium",
               selected
                 ? "border border-sky-300 bg-sky-100 text-sky-600 shadow-lg"
-                : "border-gray-300 text-gray-600 hover:bg-sky-200"
+                : "border-gray-300 text-gray-600 hover:bg-sky-100"
             )}
           >
             {opt.icon}

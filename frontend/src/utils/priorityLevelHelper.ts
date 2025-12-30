@@ -23,24 +23,24 @@ export const priorityLevelHelper: Record<number, PriorityLevelMeta> = {
   2: {
     label: "Low",
     textStyle: "text-sky-600",
-    bgColor: "bg-sky-200",
+    bgColor: "bg-sky-100",
   },
 
   3: {
     label: "Medium",
     textStyle: "text-yellow-600",
-    bgColor: "bg-yellow-200",
+    bgColor: "bg-yellow-100",
   },
 
   4: {
     label: "High",
-    textStyle: "text-purple-600",
-    bgColor: "bg-purple-200",
+    textStyle: "text-purple-500",
+    bgColor: "bg-purple-100",
   },
 
   5: {
     label: "Very high",
     textStyle: "text-red-600",
-    bgColor: "bg-red-200",
+    bgColor: "bg-red-100",
   },
 };

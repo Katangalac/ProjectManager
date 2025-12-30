@@ -47,7 +47,7 @@ export const updateTaskDataSchema = z.object({
   progress: z.coerce.number().int().min(0).max(100).optional(),
   startedAt: z.coerce.date().optional(),
   deadline: z.coerce.date().optional(),
-  completedAt: z.coerce.date().optional(),
+  completedAt: z.coerce.date().nullable().optional(),
 });
 
 /**

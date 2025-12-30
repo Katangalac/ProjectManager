@@ -265,7 +265,9 @@ export default function DashBoard() {
                 >
                   {
                     projects?.filter(
-                      (project: Project) => project.status === "PLANNING"
+                      (project: Project) =>
+                        project.status === "PLANNING" ||
+                        project.status === "PAUSED"
                     ).length
                   }
                 </span>

@@ -19,7 +19,7 @@ export default function TaskDashboardCard({
     <div
       className={clsx(
         "flex flex-col gap-2 p-3 lg:w-70",
-        "rounded-md border border-gray-100 bg-sky-50",
+        "rounded-md border border-gray-200 bg-sky-50",
         onclick ? "cursor-pointer" : ""
       )}
       onClick={onclick}
@@ -27,6 +27,7 @@ export default function TaskDashboardCard({
       <span
         className={clsx(
           "mb-1 h-fit w-fit rounded-sm px-2 py-1 text-xs font-medium",
+          "border border-gray-300",
           priorityLevelHelper[task.priorityLevel].bgColor,
           priorityLevelHelper[task.priorityLevel].textStyle
         )}
@@ -55,7 +56,7 @@ export default function TaskDashboardCard({
         </span> */}
         <Progress
           value={task.progress}
-          className={clsx("h-1.5 [&>div]:bg-green-300")}
+          className={clsx("h-1.5 [&>div]:bg-sky-500")}
         />
         <span className={clsx("text-left text-xs font-medium text-black")}>
           Progress {task.progress}%

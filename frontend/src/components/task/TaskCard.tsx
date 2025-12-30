@@ -108,13 +108,14 @@ export default function TaskCard({ task, className }: TaskCardProps) {
                   )}
                 >
                   {task.assignedTo && task.assignedTo.length > 0 ? (
-                    <div className={clsx("flex gap-0.5")}>
+                    <div className={clsx("flex -space-x-2")}>
                       {task.assignedTo.map((a) => (
                         <UserProfilePhoto
                           key={a.user.id}
                           imageUrl={a.user.imageUrl}
                           username={a.user.userName}
                           email={a.user.email}
+                          className="ring-1 ring-white"
                         />
                       ))}
                     </div>

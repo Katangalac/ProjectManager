@@ -101,7 +101,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
             task.assignedTo && task.assignedTo.length > 0 ? (
               <div
                 className={clsx(
-                  "flex gap-0.5 overflow-x-auto",
+                  "flex -space-x-2 overflow-x-auto",
                   "[&::-webkit-scrollbar]:w-0"
                 )}
               >
@@ -111,6 +111,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
                     imageUrl={a.user.imageUrl}
                     username={a.user.userName}
                     email={a.user.email}
+                    className="ring-1 ring-white"
                   />
                 ))}
               </div>

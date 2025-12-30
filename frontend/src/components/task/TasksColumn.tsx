@@ -56,11 +56,11 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
       >
         <div
           className={clsx(
-            "flex w-full items-center justify-between rounded-t-lg p-1.5",
+            "flex w-full items-center justify-between rounded-t-lg border-b border-gray-300 p-1.5",
             bgColor
           )}
         >
-          <div className={clsx("flex w-fit items-center justify-start gap-2")}>
+          <div className={clsx("flex w-fit items-center justify-start gap-1")}>
             <span className={clsx(textColor)}>
               <StatusIcon size={16} weight={"duotone"} />
             </span>
@@ -88,7 +88,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
         {tasks.length > 0 ? (
           <div
             className={clsx(
-              "flex h-fit w-fit min-w-50 flex-col gap-4 px-2 py-4",
+              "flex h-fit w-fit min-w-50 flex-col gap-2 px-2 py-4",
               "overflow-x-hidden overflow-y-auto",
               "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:bg-neutral-200",

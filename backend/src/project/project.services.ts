@@ -326,7 +326,7 @@ export const getProjectTasks = async (
       team: true,
       project: true,
       user: true,
-      assignedTo: true,
+      assignedTo: { include: { user: true } },
     },
     orderBy: { deadline: "desc" },
   };

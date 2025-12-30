@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { clsx } from "clsx";
-import TasksBoard from "../components/task/TasksBoard";
-import TasksTable from "../components/task/TasksTable";
-import TasksKanban from "../components/task/TasksKanban";
-import { useTasks } from "../hooks/queries/task/useTasks";
-import { InlineSelector } from "../components/commons/InlineSelector";
+import TasksBoard from "./TasksBoard";
+import TasksTable from "./TasksTable";
+import TasksKanban from "./TasksKanban";
+import { useTasks } from "../../hooks/queries/task/useTasks";
+import { useProjectTasks } from "@/hooks/queries/project/useProjectTasks";
+import { InlineSelector } from "../commons/InlineSelector";
 import { NumberedListIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import {
   Dialog,
@@ -12,15 +13,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { TASKFORM_DEFAULT_VALUES } from "../lib/constants/task";
-import TaskForm from "../components/task/TaskForm";
+import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
+import TaskForm from "./TaskForm";
 import { ViewColumnsIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
+
+type TasksViewProps = {
+  projectId: string;
+};
 
 /**
  * Page d'affichage des tâches de l'utilisateur courant
  */
-export default function UserTasksPage() {
+export default function TasksView({ projectId }: TasksViewProps) {
   const [viewMode, setViewMode] = useState<"kanban" | "board" | "table">(
     "board"
   );
@@ -42,10 +47,12 @@ export default function UserTasksPage() {
       icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
     },
   ];
-  const { data, isLoading, isError } = useTasks({ all: true });
+  const { data, isLoading, isError } = useProjectTasks(projectId, {
+    all: true,
+  });
 
   return (
-    <div className="p-4">
+    <div className="h-full w-full overflow-y-auto p-4">
       {/* Sélecteur de mode */}
       <div className="mb-4 flex items-center justify-start gap-3">
         <InlineSelector
@@ -78,9 +85,9 @@ export default function UserTasksPage() {
         </div>
       )}
 
-      {viewMode === "board" && <TasksBoard tasks={data?.data} />}
-      {viewMode === "kanban" && <TasksKanban tasks={data?.data} />}
-      {viewMode === "table" && <TasksTable tasks={data?.data} />}
+      {viewMode === "board" && <TasksBoard tasks={data || []} />}
+      {viewMode === "kanban" && <TasksKanban tasks={data || []} />}
+      {viewMode === "table" && <TasksTable tasks={data || []} />}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
