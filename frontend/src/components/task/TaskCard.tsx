@@ -32,18 +32,18 @@ export default function TaskCard({ task, className }: TaskCardProps) {
   const isOverDue =
     task.status !== "COMPLETED" && new Date(task.deadline) < new Date();
   return (
-    <div className={clsx("h-44 w-52 bg-transparent perspective-[1000px]")}>
+    <div className={clsx("h-44 w-full bg-transparent perspective-[1000px]")}>
       <div
         className={clsx(
-          "relative h-44 w-52 transition-transform duration-800 transform-3d",
+          "relative h-44 w-full transition-transform duration-800 transform-3d",
           flipped ? "rotate-y-180" : ""
         )}
       >
         {/**FRONT-SIDE */}
-        <div className={clsx("absolute h-44 w-52 backface-hidden")}>
+        <div className={clsx("absolute h-44 w-full backface-hidden")}>
           <div
             className={clsx(
-              "flex h-44 w-52 min-w-50 flex-col gap-3 p-2.5",
+              "flex h-44 w-full flex-col gap-3 p-2.5",
               "rounded-md border border-gray-300 bg-white",
               "dark:border-gray-600 dark:bg-gray-800",
               className
@@ -157,11 +157,11 @@ export default function TaskCard({ task, className }: TaskCardProps) {
 
         {/**BACK-SIDE*/}
         <div
-          className={clsx("absolute h-44 w-52 rotate-y-180 backface-hidden")}
+          className={clsx("absolute h-44 w-full rotate-y-180 backface-hidden")}
         >
           <div
             className={clsx(
-              "flex h-44 w-52 min-w-50 flex-col gap-3 p-2.5",
+              "flex h-44 w-full flex-col gap-3 p-2.5",
               "rounded-md border border-gray-300 bg-white",
               "dark:border-gray-600 dark:bg-gray-800",
               className

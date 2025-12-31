@@ -130,10 +130,14 @@ export default function DashBoard() {
           </span>
 
           {/**Projects snapshots */}
-          <div className={clsx("flex w-full gap-10")}>
+          <div
+            className={clsx(
+              "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6"
+            )}
+          >
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -166,7 +170,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -203,7 +207,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -240,7 +244,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -279,10 +283,14 @@ export default function DashBoard() {
           </div>
 
           {/**Tasks snapshots */}
-          <div className={clsx("flex w-full gap-10")}>
+          <div
+            className={clsx(
+              "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6"
+            )}
+          >
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -313,7 +321,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -348,7 +356,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -383,7 +391,7 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex h-24 w-50 flex-col justify-between gap-2",
+                "flex h-24 w-full flex-col justify-between gap-2",
                 "rounded-md border border-gray-300 bg-white p-3"
               )}
             >
@@ -418,17 +426,25 @@ export default function DashBoard() {
             </div>
           </div>
 
-          <div className={clsx("flex w-full gap-3")}>
+          <div
+            className={clsx(
+              "flex w-full items-stretch gap-6 sm:flex-col lg:flex-row"
+            )}
+          >
             <div
               className={clsx(
-                "flex flex-col justify-start gap-2",
+                "flex flex-1 flex-col justify-start gap-2",
                 "rounded-md border border-gray-300 p-3"
               )}
             >
               <span className={clsx("mb-2 text-left text-sm text-gray-600")}>
                 Near-due tasks
               </span>
-              <div className={clsx("flex gap-5")}>
+              <div
+                className={clsx(
+                  "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+                )}
+              >
                 {tasks?.data.length > 0 ? (
                   <>
                     {tasks?.data.slice(0, 2).map((task: TaskWithRelations) => (
@@ -446,19 +462,21 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex w-75 flex-col justify-start gap-2",
+                "flex flex-col justify-start gap-2",
                 "rounded-md border border-gray-300 p-3"
               )}
             >
               <span className={clsx("text-left text-sm text-gray-600")}>
                 Tasks stats
               </span>
-              <Chart
-                type="doughnut"
-                data={data}
-                options={options}
-                className="w-64"
-              />
+              <div className={clsx("flex justify-center")}>
+                <Chart
+                  type="doughnut"
+                  data={data}
+                  options={options}
+                  className="w-64"
+                />
+              </div>
             </div>
           </div>
           {/* <div

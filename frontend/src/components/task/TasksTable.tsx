@@ -22,13 +22,13 @@ type TasksTableProps = {
  */
 export default function TasksTable({ tasks }: TasksTableProps) {
   return (
-    <div className={clsx("min-h-screen")}>
+    <div className={clsx("h-full")}>
       <DataTable
         value={tasks}
         emptyMessage="No tasks."
         scrollable
         className={clsx(
-          "min-w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -43,7 +43,10 @@ export default function TasksTable({ tasks }: TasksTableProps) {
             "[&>tr]:rounded-br-md"
           )
         }
-        tableStyle={{ minWidth: "1000px" }}
+        tableStyle={{
+          minWidth: "500px",
+          height: "600px",
+        }}
         header={
           <div
             className={clsx(

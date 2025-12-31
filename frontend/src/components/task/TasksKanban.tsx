@@ -13,7 +13,11 @@ export type TasksKanbanProps = {
 
 export default function TasksKanban({ tasks }: TasksKanbanProps) {
   return (
-    <div className={clsx("flex w-full justify-between")}>
+    <div
+      className={clsx(
+        "flex h-full w-full justify-between gap-4 overflow-x-auto"
+      )}
+    >
       {TASK_STATUSES.map((status) => (
         <TasksColumns
           key={status}

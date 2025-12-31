@@ -11,23 +11,25 @@ import { useState } from "react";
 export default function MainLayout() {
   const [sideBarIsCollapsed, setSideBarIsCollapsed] = useState(false);
   return (
-    <div>
+    <div className={clsx("flex h-screen w-screen flex-col overflow-hidden")}>
       <SideBar
         isCollapsed={sideBarIsCollapsed}
         onToogle={() => setSideBarIsCollapsed(!sideBarIsCollapsed)}
       />
-      <Header className={clsx(sideBarIsCollapsed ? "ml-16" : "ml-50")} />
+
       <div
         className={clsx(
-          "flex-1",
+          "flex h-full flex-1 flex-col",
           "bg-white",
           "dark:bg-gray-900",
           sideBarIsCollapsed ? "ml-16" : "ml-50"
         )}
       >
-        <Outlet />
+        <Header />
+        <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-900">
+          <Outlet />
+        </main>
       </div>
-      <Footer className={clsx(sideBarIsCollapsed ? "ml-16" : "ml-50")} />
     </div>
   );
 }

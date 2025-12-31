@@ -18,7 +18,7 @@ export default function TaskDashboardCard({
   return (
     <div
       className={clsx(
-        "flex flex-col gap-2 p-3 lg:w-70",
+        "flex w-full flex-col gap-2 p-3",
         "rounded-md border border-gray-200 bg-sky-50",
         onclick ? "cursor-pointer" : ""
       )}

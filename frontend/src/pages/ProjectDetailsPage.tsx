@@ -103,7 +103,7 @@ export default function ProjectDetailsPage() {
                   </div>
                 </div>
               </div>
-              <Tabs defaultValue="overview" className="h-fit w-full gap-0">
+              <Tabs defaultValue="overview" className="h-full w-full gap-0">
                 <TabsList className="h-fit w-full justify-start gap-5 rounded-none border-b border-gray-300 px-3 py-0">
                   <TabsTrigger
                     className={clsx(

@@ -13,6 +13,7 @@ import UserProfilePhoto from "../profile/UserProfilePhoto";
 import { dateToLongString } from "@/utils/dateUtils";
 import { Progress } from "../ui/progress";
 import { Inbox } from "lucide-react";
+import ProjectTaskCheckList from "./ProjectTaskCheckList";
 
 type ProjectOverviewProps = {
   project: Project;
@@ -23,7 +24,7 @@ export default function ProjectOverview({ project }: ProjectOverviewProps) {
     data: projectTasks = [],
     isLoading: projectTasksLoading,
     isError: projectTasksError,
-  } = useProjectTasks(project.id, { page: 1, pageSize: 10 });
+  } = useProjectTasks(project.id, { page: 1, pageSize: 30 });
   const {
     data: projectTeams,
     isLoading: projectTeamsLoading,
@@ -37,7 +38,7 @@ export default function ProjectOverview({ project }: ProjectOverviewProps) {
   const [taskIndex, setTaskIndex] = useState<number>(0);
 
   return (
-    <div className={clsx("flex h-[550px] w-full items-center")}>
+    <div className={clsx("flex h-full w-full items-center")}>
       {projectTasksLoading ||
       projectTeamsLoading ||
       projectCollaboratorsLoading ? (
@@ -456,90 +457,7 @@ export default function ProjectOverview({ project }: ProjectOverviewProps) {
               </div>
             </div>
             <div className={clsx("flex h-full w-[35%] gap-2 p-1")}>
-              <div
-                className={clsx(
-                  "flex h-full w-full flex-col rounded-sm border border-gray-300"
-                )}
-              >
-                <div
-                  className={clsx(
-                    "flex h-fit w-full items-center justify-start px-2 py-3",
-                    "rounded-t-sm bg-sky-50"
-                  )}
-                >
-                  <span
-                    className={clsx("text-left text-sm font-medium text-black")}
-                  >
-                    Tasks check list
-                  </span>
-                </div>
-                <div className={clsx("flex h-full w-full")}>
-                  {projectTasks.length > 0 ? (
-                    <div
-                      className={clsx("flex h-full w-full flex-col gap-1 px-2")}
-                    >
-                      {projectTasks.map((task) => (
-                        <div
-                          key={task.id}
-                          className={clsx(
-                            "flex h-fit w-full items-center gap-1 py-2",
-                            "border-b border-dotted border-gray-400"
-                          )}
-                        >
-                          {task.status === "COMPLETED" ? (
-                            <CheckCircleIcon
-                              weight="fill"
-                              className={clsx(
-                                "size-4 stroke-1 text-green-500",
-                                "cursor-pointer"
-                              )}
-                            />
-                          ) : (
-                            <CircleIcon
-                              weight="regular"
-                              className={clsx(
-                                "size-4 stroke-1 text-gray-500",
-                                "cursor-pointer"
-                              )}
-                            />
-                          )}
-                          <span
-                            className={clsx(
-                              "line-clamp-2 text-left text-sm text-wrap text-black",
-                              task.status === "COMPLETED"
-                                ? "text-gray-500 line-through"
-                                : ""
-                            )}
-                          >
-                            {task.title}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div
-                      className={clsx(
-                        "flex h-full w-full flex-col items-center justify-center gap-2 text-gray-500"
-                      )}
-                    >
-                      <Inbox className={clsx("size-10 stroke-1")} />
-                      <span>No tasks</span>
-                    </div>
-                  )}
-                </div>
-                <div className={clsx("h-fit w-full px-2 pb-3")}>
-                  <button
-                    className={clsx(
-                      "flex w-full cursor-pointer justify-center px-2 py-1",
-                      "rounded-md border border-gray-300",
-                      "hover:bg-gray-100 hover:text-gray-700",
-                      "text-sm text-gray-500"
-                    )}
-                  >
-                    See all
-                  </button>
-                </div>
-              </div>
+              <ProjectTaskCheckList tasks={projectTasks} />
             </div>
           </div>
         </div>

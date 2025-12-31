@@ -11,12 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
-import {
-  EllipsisHorizontalIcon,
-  PlusIcon,
-  InboxIcon,
-} from "@heroicons/react/24/outline";
+import { EllipsisHorizontalIcon, PlusIcon } from "@heroicons/react/24/outline";
 import TaskForm from "./TaskForm";
+import { Inbox } from "lucide-react";
 
 /**
  * Propriétés du TasksColumns
@@ -48,12 +45,13 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
     <>
       <div
         className={clsx(
-          "flex h-fit max-h-[calc(100vh-110px)] min-h-[calc(100vh-110px)] w-fit flex-col justify-start",
+          "flex h-full w-60 flex-col justify-start overflow-hidden",
           "rounded-lg border bg-gray-50",
           "dark:border-gray-400 dark:bg-gray-600",
           borderColor
         )}
       >
+        {/**Header */}
         <div
           className={clsx(
             "flex w-full items-center justify-between rounded-t-lg border-b border-gray-300 p-1.5",
@@ -85,10 +83,11 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             </button>
           </div>
         </div>
+
         {tasks.length > 0 ? (
           <div
             className={clsx(
-              "flex h-fit w-fit min-w-50 flex-col gap-2 px-2 py-4",
+              "flex w-full flex-1 flex-col items-center gap-2 px-1 py-1",
               "overflow-x-hidden overflow-y-auto",
               "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:bg-neutral-200",
@@ -105,20 +104,11 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
         ) : (
           <div
             className={clsx(
-              "flex h-full min-h-[calc(100vh-200px)] min-w-50 flex-col items-center justify-center py-4"
+              "flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-500"
             )}
           >
-            <InboxIcon
-              className={clsx("size-5 text-gray-400", "dark:text-gray-200")}
-            />
-            <span
-              className={clsx(
-                "text-xs font-medium text-gray-400",
-                "dark:text-gray-200"
-              )}
-            >
-              No task
-            </span>
+            <Inbox className={clsx("size-10 stroke-1")} />
+            <span>No tasks</span>
           </div>
         )}
       </div>

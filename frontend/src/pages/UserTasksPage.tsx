@@ -45,7 +45,7 @@ export default function UserTasksPage() {
   const { data, isLoading, isError } = useTasks({ all: true });
 
   return (
-    <div className="p-4">
+    <div className="h-full p-4">
       {/* Sélecteur de mode */}
       <div className="mb-4 flex items-center justify-start gap-3">
         <InlineSelector
@@ -78,9 +78,9 @@ export default function UserTasksPage() {
         </div>
       )}
 
-      {viewMode === "board" && <TasksBoard tasks={data?.data} />}
-      {viewMode === "kanban" && <TasksKanban tasks={data?.data} />}
-      {viewMode === "table" && <TasksTable tasks={data?.data} />}
+      {viewMode === "board" && <TasksBoard tasks={data?.data || []} />}
+      {viewMode === "kanban" && <TasksKanban tasks={data?.data || []} />}
+      {viewMode === "table" && <TasksTable tasks={data?.data || []} />}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
