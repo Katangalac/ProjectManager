@@ -17,3 +17,8 @@ export const registerSchema = z.object({
   email: z.email("Email invalide"),
   password: z.string().min(8, "Mot de passe trop court (min 8)"),
 });
+
+export const updatePasswordSchema = z.object({
+  currentPassword: z.string(),
+  newPassword: z.string().min(8, "Password should have at least 8 characters"),
+});

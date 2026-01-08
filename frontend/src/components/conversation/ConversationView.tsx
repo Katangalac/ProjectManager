@@ -38,10 +38,17 @@ export default function ConversationCard({
             <div className={clsx("flex w-full justify-between")}>
               <div className={clsx("flex items-center justify-start gap-2")}>
                 <UserProfilePhoto
+                  userId={conversation.messages[0].sender.id}
                   email={conversation.messages[0].sender.email}
                   username={conversation.messages[0].sender.userName}
                   imageUrl={conversation.messages[0].sender.imageUrl}
-                  imageClassName="min-h-8 min-w-8"
+                  imageClassName="min-h-8 min-w-8 text-sm"
+                  imagefallback={
+                    conversation.messages[0].sender.firstName &&
+                    conversation.messages[0].sender.lastName
+                      ? `${conversation.messages[0].sender.firstName[0].toUpperCase() + conversation.messages[0].sender.lastName[0].toUpperCase()}`
+                      : undefined
+                  }
                 />
                 {user?.id === conversation.messages[0].sender.id ? (
                   <span className={clsx("font-bold text-sky-600")}>You</span>

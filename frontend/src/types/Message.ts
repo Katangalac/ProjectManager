@@ -1,3 +1,4 @@
+import { Pagination } from "./Pagination";
 import { User } from "./User";
 /**
  * Type représentant un message
@@ -15,6 +16,16 @@ export type Message = {
 export type MessageWithRelation = Message & {
   sender?: User;
   attachments?: Attachment[];
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des messages
+ */
+export type MessagesApiResponse = {
+  data: MessageWithRelation[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

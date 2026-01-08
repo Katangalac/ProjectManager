@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProjectCollaborators } from "@/services/project.services";
+import { getProjectCollaborators } from "@/api/project.api";
 import { SearchUsersFilter } from "@/types/User";
 import { User } from "@/types/User";
 

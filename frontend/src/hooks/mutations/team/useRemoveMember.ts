@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { removeMemberFromTeam } from "../../../services/team.service";
+import { removeMemberFromTeam } from "../../../api/team.api";
 
 /**
  * Propriété du hook de la mutation de retrait d'un membre d'une équipe
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type RemoveMemberMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -27,7 +29,7 @@ export const useRemoveMember = (params: RemoveMemberMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors du retrait du membre de l'équipe");
+      params.onError?.();
     },
   });
   return {

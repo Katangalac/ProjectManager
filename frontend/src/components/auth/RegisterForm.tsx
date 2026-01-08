@@ -2,13 +2,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../schemas/auth.schemas.ts";
 import { RegisterInputs } from "../../types/Auth.ts";
-import { registerRequest } from "../../services/auth.services.ts";
+import { registerRequest } from "../../api/auth.api.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
 import { useUserStore } from "../../stores/userStore.ts";
 import { InputText } from "../ui/InputText.tsx";
 import { InputPassword } from "../ui/InputPassword.tsx";
+import { User, Mail } from "lucide-react";
+import { toast } from "sonner";
+import { toastStyle } from "@/utils/toastStyle.ts";
+import { AppError } from "@/errors/AppError.ts";
 
 /**
  * Formulaire d'inscription
@@ -25,6 +29,7 @@ export default function RegisterForm() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegisterInputs>({
     resolver: zodResolver(registerSchema),
@@ -47,7 +52,32 @@ export default function RegisterForm() {
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
-      alert("Erreur lors de l'inscription : erreur interne du serveur");
+
+      if (err instanceof AppError) {
+        switch (err.code) {
+          case "EMAIL_CONFLICT":
+            setError("email", {
+              type: "server",
+              message: err.message,
+            });
+            break;
+          case "USERNAME_CONFLICT":
+            setError("userName", {
+              type: "server",
+              message: err.message,
+            });
+            break;
+          default:
+            setError("root", {
+              type: "server",
+              message: err.message,
+            });
+        }
+      }
+      toast.error("Oops, something went wrong while processing your request.", {
+        style: toastStyle["soft-error"],
+        position: "top-center",
+      });
     }
   };
 
@@ -69,23 +99,26 @@ export default function RegisterForm() {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
+        {errors.root && <p className="text-red-500">{errors.root.message}</p>}
         <div>
           <InputText
-            icon={<i className="pi pi-user size-4" />}
+            icon={<User className="size-6 stroke-[1.25px]" />}
             placeholder="Username"
             iconPosition="right"
             error={errors.userName?.message}
             {...register("userName")}
+            className="border-gray-400"
           />
         </div>
 
         <div>
           <InputText
-            icon={<i className="pi pi-envelope size-4" />}
+            icon={<Mail className="size-6 stroke-[1.25px]" />}
             placeholder="Email"
             iconPosition="right"
             error={errors.email?.message}
             {...register("email")}
+            className="border-gray-400"
           />
         </div>
 
@@ -95,6 +128,7 @@ export default function RegisterForm() {
             iconPosition="right"
             error={errors.password?.message}
             {...register("password")}
+            className="border-gray-400"
           />
         </div>
 
@@ -102,7 +136,7 @@ export default function RegisterForm() {
           type="submit"
           className={clsx(
             "w-full py-2 font-semibold text-white",
-            "rounded-sm bg-sky-600 hover:bg-sky-700"
+            "rounded-sm bg-sky-500 hover:bg-sky-600"
           )}
         >
           Sign up
@@ -142,7 +176,7 @@ export default function RegisterForm() {
           Already have an account ?{" "}
         </span>
         <a
-          className={clsx("font-medium text-blue-500 hover:underline")}
+          className={clsx("font-medium text-sky-600 hover:underline")}
           href="/"
         >
           Login

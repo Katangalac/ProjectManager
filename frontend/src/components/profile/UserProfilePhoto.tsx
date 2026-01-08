@@ -1,11 +1,16 @@
-import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { cn } from "@/lib/utils";
 import { CircleIcon } from "@phosphor-icons/react";
+import { useUserStatus } from "@/hooks/queries/user/useUserStatus";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
+import { stringToColor } from "@/utils/stringUtils";
+import { colors } from "@/lib/constants/color";
+import { useMemo } from "react";
 
 /**
  *
  */
 type UserProfilePhotoProps = {
+  userId: string;
   imageUrl: string | null;
   username: string;
   email: string;
@@ -13,6 +18,8 @@ type UserProfilePhotoProps = {
   imageClassName?: string;
   className?: string;
   isOnline?: boolean;
+  showOnlineStatus?: boolean;
+  imagefallback?: string;
 };
 
 /**
@@ -21,47 +28,75 @@ type UserProfilePhotoProps = {
  * @returns
  */
 export default function UserProfilePhoto({
+  userId,
   imageUrl,
   username,
   email,
   className,
   imageClassName,
   size = "h-5 w-5 min-w-5 min-h-5 size-2",
-  isOnline,
+  imagefallback,
+  showOnlineStatus = false,
 }: UserProfilePhotoProps) {
+  const { isOnline } = useUserStatus(userId);
+  const fallback =
+    username.length > 2
+      ? username[0].toUpperCase() + username[1].toUpperCase()
+      : username[0].toUpperCase();
+  const bgColor = useMemo(() => {
+    return stringToColor(userId, colors);
+  }, [userId]);
+
   return (
-    <div
-      className={cn(
-        "relative flex h-fit max-h-fit w-fit max-w-fit items-center justify-center gap-1",
-        "rounded-full",
-        "text-gray-500",
-        "dark:text-gray-400",
-        className
-      )}
-    >
-      {/**Image de profil de l'utilisateur */}
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={username + "/" + email}
-          title={username + "/" + email}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
           className={cn(
-            "rounded-full border border-gray-400 bg-gray-200 object-cover object-center",
-            size,
-            "dark:border-gray-700",
-            imageClassName
+            "relative flex h-fit max-h-fit w-fit max-w-fit cursor-default items-center justify-center gap-1",
+            "rounded-full",
+            "text-gray-500",
+            "dark:text-gray-400",
+            className
           )}
-        />
-      ) : (
-        <UserCircleIcon className={cn(size, imageClassName)} />
-      )}
-      {isOnline && (
-        <CircleIcon
-          weight="fill"
-          size={8}
-          className="absolute right-0 bottom-1 text-green-500"
-        />
-      )}
-    </div>
+        >
+          {/**Image de profil de l'utilisateur */}
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={username + "/" + email}
+              className={cn(
+                "rounded-full border border-gray-400 bg-gray-200 object-cover object-center",
+                size,
+                "dark:border-gray-700",
+                imageClassName
+              )}
+            />
+          ) : (
+            <div
+              className={cn(
+                size,
+                "flex items-center justify-center rounded-full text-center text-lg font-bold text-white",
+                imageClassName
+              )}
+              style={{ backgroundColor: bgColor }}
+            >
+              {imagefallback ? imagefallback : fallback}
+            </div>
+          )}
+          {showOnlineStatus && (
+            // <CircleIcon
+            //   weight="fill"
+            //   size={8}
+            //   className={cn(
+            //     "absolute right-0 bottom-1",
+            //     isOnline ? "text-green-500" : "text-gray-400"
+            //   )}
+            // />
+            <></>
+          )}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>{username}</TooltipContent>
+    </Tooltip>
   );
 }

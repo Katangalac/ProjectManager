@@ -1,19 +1,30 @@
 import { TaskWithRelations } from "@/types/Task";
 import { CircleIcon, CheckCircleIcon } from "@phosphor-icons/react";
 import { clsx } from "clsx";
-import { Inbox } from "lucide-react";
+import NoItems from "../commons/NoItems";
+import { useUpdateTask } from "@/hooks/mutations/task/useUpdateTask";
+import TaskActionMenu from "../task/TaskActionMenu";
 
 type ProjectTaskCheckListProps = {
   tasks: TaskWithRelations[];
+  hideSeeAllButton?: boolean;
+  onSeeMore?: () => void;
 };
 
 export default function ProjectTaskCheckList({
   tasks,
+  hideSeeAllButton = false,
+  onSeeMore,
 }: ProjectTaskCheckListProps) {
+  const { updateTask } = useUpdateTask();
+  const toggleTaskStatus = (task: TaskWithRelations) => {
+    const newStatus = task.status === "COMPLETED" ? "TODO" : "COMPLETED";
+    updateTask({ taskId: task.id, data: { status: newStatus } });
+  };
   return (
     <div
       className={clsx(
-        "flex h-[80%] w-full flex-col rounded-sm border border-gray-300"
+        "flex h-full w-full flex-col rounded-sm border border-gray-300 pb-1"
       )}
     >
       {/**Header */}
@@ -28,13 +39,18 @@ export default function ProjectTaskCheckList({
         </span>
       </div>
 
-      <div className={clsx("flex flex-1 flex-col gap-3 overflow-hidden")}>
+      <div className={clsx("flex flex-1 flex-col gap-4")}>
         {/**Content wrapper */}
-        <div className="flex w-full flex-1 flex-col">
+        <div
+          className={clsx(
+            "flex w-full flex-1 flex-col",
+            tasks.length === 0 && "items-center justify-center"
+          )}
+        >
           {tasks.length > 0 ? (
             <div
               className={clsx(
-                "flex-1 overflow-y-auto px-2",
+                "max-h-[500px] flex-1 overflow-y-auto px-2",
                 "[&::-webkit-scrollbar]:w-0"
               )}
             >
@@ -42,10 +58,17 @@ export default function ProjectTaskCheckList({
                 <div
                   key={task.id}
                   className={clsx(
-                    "flex h-fit w-full items-center gap-1 py-3",
-                    "border-b border-dotted border-gray-400"
+                    "flex h-fit w-full items-center gap-1 py-2",
+                    "border-b border-dotted border-gray-400 last:border-b-0"
                   )}
                 >
+                  {/* <span
+                    className={clsx(
+                      "text-left text-sm font-light text-wrap text-black"
+                    )}
+                  >
+                    {index + 1}.
+                  </span> */}
                   {task.status === "COMPLETED" ? (
                     <CheckCircleIcon
                       weight="fill"
@@ -53,6 +76,7 @@ export default function ProjectTaskCheckList({
                         "size-4 stroke-1 text-green-500",
                         "cursor-pointer"
                       )}
+                      onClick={() => toggleTaskStatus(task)}
                     />
                   ) : (
                     <CircleIcon
@@ -61,36 +85,52 @@ export default function ProjectTaskCheckList({
                         "size-4 stroke-1 text-gray-500",
                         "cursor-pointer"
                       )}
+                      onClick={() => toggleTaskStatus(task)}
                     />
                   )}
-                  <span
-                    className={clsx(
-                      "line-clamp-2 text-left text-sm text-wrap text-black",
-                      task.status === "COMPLETED"
-                        ? "text-gray-500 line-through"
-                        : ""
-                    )}
-                  >
-                    {task.title}
-                  </span>
+                  <div className={clsx("flex flex-1 justify-between")}>
+                    <span
+                      className={clsx(
+                        "line-clamp-2 text-left text-sm text-wrap text-black",
+                        task.status === "COMPLETED"
+                          ? "text-gray-500 line-through"
+                          : ""
+                      )}
+                    >
+                      {task.title}
+                    </span>
+
+                    <div className={clsx("flex gap-4")}>
+                      <span
+                        className={clsx(
+                          "w-fit text-left text-[10px] text-wrap text-gray-600"
+                        )}
+                      >
+                        {new Date(task.deadline).toISOString().split("T")[0]}
+                      </span>
+                      <TaskActionMenu task={task} />
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div
-              className={clsx(
-                "flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-500"
-              )}
-            >
-              <Inbox className={clsx("size-10 stroke-1")} />
-              <span>No tasks</span>
-            </div>
+            <NoItems
+              message="No tasks available"
+              textStyle="text-sm font-medium text-gray-400"
+            />
           )}
         </div>
 
         {/**Footer */}
-        <div className={clsx("h-fit w-full px-2 pb-3")}>
+        <div
+          className={clsx(
+            "h-fit w-full px-2 pb-3",
+            hideSeeAllButton && "hidden"
+          )}
+        >
           <button
+            onClick={onSeeMore}
             className={clsx(
               "flex w-full cursor-pointer justify-center px-2 py-1",
               "rounded-md border border-gray-300",

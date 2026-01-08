@@ -1,4 +1,8 @@
-import { loginSchema, registerSchema } from "../schemas/auth.schemas.ts";
+import {
+  loginSchema,
+  registerSchema,
+  updatePasswordSchema,
+} from "../schemas/auth.schemas.ts";
 import { z } from "zod";
 
 /**
@@ -14,7 +18,4 @@ export type RegisterInputs = z.infer<typeof registerSchema>;
 /**
  * Type de données attendues lors d'une modification de mot de passe
  */
-export type updatePasswordData = {
-  currentPassword: string;
-  newPassword: string;
-};
+export type UpdatePasswordData = z.infer<typeof updatePasswordSchema>;

@@ -1,6 +1,9 @@
 import { clsx } from "clsx";
 import { getAcronymeFromName } from "../../utils/stringUtils";
 import { cn } from "@/lib/utils";
+import { stringToColor } from "../../utils/stringUtils";
+import { colors } from "@/lib/constants/color";
+import { useMemo } from "react";
 
 /**
  * Propriétés du TeamNameAcronym
@@ -10,6 +13,7 @@ import { cn } from "@/lib/utils";
  *  - onClick : fonction appelée lors d'un click sur le TeamNameAcronym
  */
 type TeamNameAcronymProps = {
+  id: string;
   name: string;
   textClassName?: string;
   className?: string;
@@ -22,19 +26,24 @@ type TeamNameAcronymProps = {
  * @param {TeamNameAcronymProps} param0 - Propriétés du TeamNameAcronym
  */
 export default function TeamNameAcronym({
+  id,
   name,
   onClick,
   className,
   textClassName,
 }: TeamNameAcronymProps) {
+  const bgColor = useMemo(() => {
+    return stringToColor(id, colors);
+  }, [id]);
   return (
     <div
       className={cn(
-        "flex items-center justify-center rounded-md bg-sky-600",
+        "flex items-center justify-center rounded-md",
         "h-16 w-fit",
         className
       )}
       onClick={onClick}
+      style={{ backgroundColor: bgColor }}
     >
       <span className={clsx("text-lg font-medium text-white", textClassName)}>
         {getAcronymeFromName(name)}

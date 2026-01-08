@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeamTasks } from "../../../services/team.service";
+import { getTeamTasks } from "../../../api/team.api";
 import { SearchTasksFilter } from "@/types/Task";
 import { TaskWithRelations } from "@/types/Task";
 

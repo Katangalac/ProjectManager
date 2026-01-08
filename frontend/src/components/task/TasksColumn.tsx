@@ -13,7 +13,7 @@ import { useState } from "react";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
 import { EllipsisHorizontalIcon, PlusIcon } from "@heroicons/react/24/outline";
 import TaskForm from "./TaskForm";
-import { Inbox } from "lucide-react";
+import NoItems from "../commons/NoItems";
 
 /**
  * Propriétés du TasksColumns
@@ -45,7 +45,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
     <>
       <div
         className={clsx(
-          "flex h-full w-60 flex-col justify-start overflow-hidden",
+          "flex h-[90%] max-h-[600px] min-h-[600px] w-60 min-w-56 flex-col justify-start overflow-hidden",
           "rounded-lg border bg-gray-50",
           "dark:border-gray-400 dark:bg-gray-600",
           borderColor
@@ -102,13 +102,12 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             )}
           </div>
         ) : (
-          <div
-            className={clsx(
-              "flex w-full flex-1 flex-col items-center justify-center gap-2 text-gray-500"
-            )}
-          >
-            <Inbox className={clsx("size-10 stroke-1")} />
-            <span>No tasks</span>
+          <div className={clsx("flex flex-1 items-center justify-center")}>
+            <NoItems
+              message="No tasks in this status yet"
+              iconSize="size-8 stroke-1"
+              textStyle="text-sm text-gray-400"
+            />
           </div>
         )}
       </div>

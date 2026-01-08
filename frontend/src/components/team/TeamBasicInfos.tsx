@@ -17,6 +17,7 @@ export default function TeamBasicInfos({
   return (
     <div className={cn("flex h-fit w-fit items-center gap-2")}>
       <TeamNameAcronym
+        id={team.id}
         name={team.name}
         className={cn("h-fit w-fit px-2 py-2", teamAcronymStyle)}
         textClassName={cn(

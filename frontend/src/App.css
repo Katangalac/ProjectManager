@@ -7,7 +7,55 @@
 }
 
 /* CSS du File Uploader d'Uploadcare*/
-uc-file-uploader-regular,
+.uc-content {
+  padding: 20px;
+}
+.uc-secondary-btn {
+  background-color: #efefef;
+  width: 100%;
+  height: fit-content;
+  border-radius: 5px;
+  border: #d5d5d5 solid;
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 10px;
+}
+
+.uc-done-btn {
+  background-color: #efefef;
+  width: 100%;
+  height: fit-content;
+  border-radius: 5px;
+  border: #d5d5d5 solid;
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 10px;
+}
+
+uc-upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+.uc-secondary-btn:hover,
+.uc-done-btn:hover {
+  background-color: #e3e3e3;
+}
+
+uc-source-btn {
+  padding: 4px;
+  border-radius: 5px;
+}
+
+uc-source-btn:hover {
+  background-color: #e7f0ff;
+}
+
+uc-source-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* uc-file-uploader-regular,
 uc-file-uploader-regular * {
   --uc-simple-btn-light: rgb(230, 230, 230) !important;
   --uc-simple-btn-dark: #101828 !important;
@@ -19,28 +67,28 @@ uc-file-uploader-regular * {
   --uc-border-dark: rgb(205, 207, 207) !important;
   --uc-simple-btn-font-size: 14px !important;
   --uc-simple-btn-padding: 3px 3px !important;
-}
+} */
 
 /* Définition de l'arrondissement des bords du bouton de chargement*/
-uc-file-uploader-regular uc-simple-btn {
+/* uc-file-uploader-regular uc-simple-btn {
   --uc-radius: 25px !important;
-  background-color: rgb(240, 240, 240);
+  background-color: rgb(255, 255, 255);
   border-radius: 25px;
-  border: solid rgb(230, 230, 230);
+  border: solid rgb(255, 255, 255);
   padding: 4px;
-}
+} */
 
-uc-file-uploader-regular uc-simple-btn:hover {
-  background-color: rgb(185, 221, 252);
-  border: solid rgb(185, 221, 252);
-}
+/* uc-file-uploader-regular uc-simple-btn:hover {
+  background-color: rgb(226, 226, 226);
+  border: solid rgb(255, 255, 255);
+} */
 
 /* Cacher le texte par défaut du bouton de chargement */
-uc-file-uploader-regular uc-simple-btn button > span,
+/* uc-file-uploader-regular uc-simple-btn button > span,
 uc-file-uploader-regular uc-simple-btn button .uploadcare--button__text,
 uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
   display: none !important;
-}
+} */
 /* Fin CSS du File Uploader d'Uploadcare*/
 
 .logo {
@@ -318,4 +366,49 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
   background-color: dodgerblue;
   color: white;
   transform: rotateY(180deg);
+}
+
+.bg-circle {
+  position: relative; /* indispensable pour que les cercles se positionnent correctement */
+  overflow: hidden; /* optionnel mais recommandé pour éviter que les cercles débordent */
+}
+
+.bg-circle::before,
+.bg-circle::after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(0, 150, 255, 0.15);
+}
+
+.bg-circle::before {
+  top: -50px;
+  left: -50px;
+}
+
+.bg-circle::after {
+  bottom: -50px;
+  right: -50px;
+}
+
+.b-custom {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+
+  background-size: 40px 40px;
 }

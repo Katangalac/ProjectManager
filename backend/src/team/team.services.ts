@@ -17,6 +17,7 @@ import { SearchUsersFilter } from "../user/User";
 import { ProjectsCollection, SearchProjectsFilter } from "../project/Project";
 import { SearchTasksFilter } from "../task/Task";
 import { SearchConversationsFilter } from "../conversation/Conversation";
+
 import {
   buildTeamWhereInput,
   buildUserWhereInput,
@@ -313,7 +314,7 @@ export const getTeamProjects = async (
     where: {
       AND: [teamProjectCondition, projectFilter],
     },
-    orderBy: { deadline: "desc" },
+    orderBy: { deadline: "asc" },
   };
 
   if (!all) {
@@ -360,7 +361,16 @@ export const getTeamTasks = async (
     where: {
       AND: [{ teamId }, taskFilter],
     },
-    orderBy: { deadline: "desc" },
+    include: {
+      assignedTo: {
+        include: {
+          user: true,
+        },
+      },
+      project: true,
+      team: true,
+    },
+    orderBy: { deadline: "asc" },
   };
 
   if (!all) {

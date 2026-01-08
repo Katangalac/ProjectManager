@@ -1,3 +1,4 @@
+import { Pagination } from "./Pagination";
 import { User } from "./User";
 
 /**
@@ -23,6 +24,16 @@ export type TeamWithRelations = Team & {
     userRole: string;
     user: User;
   }[];
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des équipes
+ */
+export type TeamsApiResponse = {
+  data: TeamWithRelations[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

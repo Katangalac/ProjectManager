@@ -75,6 +75,29 @@ export const getProjectById = async (projectId: string) => {
 };
 
 /**
+ * Calcul le cout total d'un projet
+ * En cas d'erreur, lance une exception avec un message d'erreur
+ *
+ * @param {string} projectId : identifiant du projet
+ * @returns le cout total du projet ayant l'identifiant passé en paramètre
+ * @throws - Une erreur si la requête échoue
+ */
+export const getProjectTotalCost = async (projectId: string) => {
+  try {
+    const axiosResponse = await axiosClient.get(
+      `/projects/${projectId}/totalCost`
+    );
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur lors du calcul du cout total du projet");
+  }
+};
+
+/**
  * Récupère les projets de l'utilisateur courant correspondant aux paramètres de recherche
  * En cas d'erreur, lance une exception avec un message d'erreur
  *

@@ -1,5 +1,5 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { deleteTask } from "../../../services/task.services";
+import { deleteTask } from "../../../api/task.api";
 
 /**
  * Propriété du hook de la mutation de suppression d'une tâche
@@ -8,6 +8,7 @@ import { deleteTask } from "../../../services/task.services";
  */
 type DeleteTaskMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -29,7 +30,7 @@ export const useDeleteTask = (params: DeleteTaskMutationParams = {}) => {
 
     onError: (error) => {
       console.error("Erreur suppression tâche :", error);
-      alert("Erreur lors de la suppression de la tache");
+      params.onError?.();
     },
   });
 

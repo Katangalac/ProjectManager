@@ -1,4 +1,5 @@
 import { MessageWithRelation } from "./Message";
+import { Pagination } from "./Pagination";
 import { User } from "./User";
 
 /**
@@ -15,6 +16,16 @@ export type Conversation = {
 export type ConversationWithRelation = Conversation & {
   participants?: { user: User }[];
   messages?: MessageWithRelation[];
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des conversations
+ */
+export type ConversationsApiResponse = {
+  data: ConversationWithRelation[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

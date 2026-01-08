@@ -51,7 +51,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm font-medium text-sky-600")}>
                       Lastname
                     </span>
                     <span className={clsx("text-sm")}>
@@ -63,7 +63,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm font-medium text-sky-600")}>
                       Username
                     </span>
                     <span className={clsx("text-sm")}>
@@ -75,7 +75,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm font-medium text-sky-600")}>
                       Email
                     </span>
                     <span className={clsx("text-sm")}>{team.user.email}</span>
@@ -86,7 +86,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm font-medium text-sky-600")}>
                       Profession
                     </span>
                     <span className={clsx("text-sm")}>
@@ -99,7 +99,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm font-medium text-sky-600")}>
                       Last login
                     </span>
                     <span className={clsx("text-sm")}>

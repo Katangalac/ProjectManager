@@ -1,14 +1,16 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateProject } from "@/services/project.services";
+import { updateProject } from "@/api/project.api";
 import { UpdateProjectData } from "@/types/Project";
 
 /**
  * Propriété du hook de la mutation de modfication d'un projet
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type UpdateProjectMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -36,7 +38,7 @@ export const useUpdateProject = (params: UpdateProjectMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la mise à jour du projet");
+      params.onError?.();
     },
   });
   return {

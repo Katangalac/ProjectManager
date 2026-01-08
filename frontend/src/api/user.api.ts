@@ -48,6 +48,28 @@ export const getUsers = async (params: SearchUsersFilter) => {
 };
 
 /**
+ * Récupère la liste des coéquipiers d'un utilisateur
+ *
+ * @returns - La liste des coéquipiers d'un utilisateur
+ * @throws - Une erreur si la requête échoue
+ */
+export const getUserPeers = async () => {
+  try {
+    const axiosResponse = await axiosClient.get(`/users/me/peers`);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message =
+        error.response?.data?.message ||
+        "Erreur lors de la récupération des coequipiers";
+      throw new Error(message);
+    }
+
+    throw new Error("Erreur inconnue lors de la récupération des coequipiers");
+  }
+};
+
+/**
  * Met à jour les informations de l'utilisateur connecté
  *
  * @param {UpdateUserData}  updateUserInput - Les nouvelles données de l'utilisateur

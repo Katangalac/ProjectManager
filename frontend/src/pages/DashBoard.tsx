@@ -4,13 +4,15 @@ import { useTasks } from "../hooks/queries/task/useTasks";
 import { useTeams } from "../hooks/queries/team/useTeams";
 import { useProjects } from "../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { ArrowUpRightIcon } from "@phosphor-icons/react";
 import { Project } from "@/types/Project";
 import { Task, TaskWithRelations } from "@/types/Task";
 import TaskDashboardCard from "@/components/task/TaskDashBoardCard";
 import { Chart } from "primereact/chart";
 import { getTaskStats, getProjectStats } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
+import NoItems from "@/components/commons/NoItems";
+import UserErrorMessage from "@/components/commons/UserErrorMessage";
 
 /**
  * Tableau de bord de l'application
@@ -99,18 +101,8 @@ export default function DashBoard() {
   };
 
   return (
-    <div
-      className={clsx(
-        "flex min-h-screen min-w-full items-center justify-center",
-        "bg-white",
-        "dark:bg-gray-900"
-      )}
-    >
-      {tasksError && <div>An error occur while loading user tasks</div>}
-
-      {teamsError && <div>An error occur while loading user teams</div>}
-
-      {projectsError && <div>An error occur while loading user projects</div>}
+    <div className={clsx("flex flex-1 items-center justify-center")}>
+      {tasksError || projectsError || (teamsError && <UserErrorMessage />)}
 
       {tasksLoading || projectsLoading || teamsLoading ? (
         <div>
@@ -135,151 +127,46 @@ export default function DashBoard() {
               "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6"
             )}
           >
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>
-                  Total projects
-                </span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userProjects")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {projects?.length}
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  projects
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Total projects"
+              value={projects?.length || 0}
+              description="Projects"
+              onSeeMore={() => navigate("/userProjects")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>
-                  Active projects
-                </span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userProjects")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    projects?.filter(
-                      (project: Project) => project.status === "ACTIVE"
-                    ).length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  On going projects
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Active projects"
+              value={
+                projects?.filter(
+                  (project: Project) => project.status === "ACTIVE"
+                ).length || 0
+              }
+              description="On going projects"
+              onSeeMore={() => navigate("/userProjects")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>
-                  Ended projects
-                </span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userProjects")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    projects?.filter(
-                      (project: Project) => project.status === "COMPLETED"
-                    ).length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  completed projects
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Ended projects"
+              value={
+                projects?.filter(
+                  (project: Project) => project.status === "COMPLETED"
+                ).length || 0
+              }
+              description="Completed projects"
+              onSeeMore={() => navigate("/userProjects")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>
-                  Pending projects
-                </span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userProjects")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    projects?.filter(
-                      (project: Project) =>
-                        project.status === "PLANNING" ||
-                        project.status === "PAUSED"
-                    ).length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  projects on discuss
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Pending projects"
+              value={
+                projects?.filter(
+                  (project: Project) =>
+                    project.status === "PLANNING" || project.status === "PAUSED"
+                ).length || 0
+              }
+              description="Projects in discuss"
+              onSeeMore={() => navigate("/userProjects")}
+            />
           </div>
 
           {/**Tasks snapshots */}
@@ -288,142 +175,43 @@ export default function DashBoard() {
               "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-6"
             )}
           >
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>Total tasks</span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userTasks")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {tasks?.data.length}
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  tasks
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Total tasks"
+              value={tasks?.data.length || 0}
+              description="Tasks"
+              onSeeMore={() => navigate("/userTasks")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>In progress</span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userTasks")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    tasks?.data.filter(
-                      (task: Task) => task.status === "IN_PROGRESS"
-                    ).length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  On going tasks
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="In progress"
+              value={
+                tasks?.data.filter(
+                  (task: Task) => task.status === "IN_PROGRESS"
+                ).length || 0
+              }
+              description="On going tasks"
+              onSeeMore={() => navigate("/userTasks")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>Ended tasks</span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userTasks")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    tasks?.data.filter(
-                      (task: Task) => task.status === "COMPLETED"
-                    ).length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  completed tasks
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Ended tasks"
+              value={
+                tasks?.data.filter((task: Task) => task.status === "COMPLETED")
+                  .length || 0
+              }
+              description="Completed tasks"
+              onSeeMore={() => navigate("/userTasks")}
+            />
 
-            <div
-              className={clsx(
-                "flex h-24 w-full flex-col justify-between gap-2",
-                "rounded-md border border-gray-300 bg-white p-3"
-              )}
-            >
-              <div className={clsx("flex items-center justify-between")}>
-                <span className={clsx("text-sm text-black")}>
-                  Pending tasks
-                </span>
-                <button
-                  title="See more"
-                  className={clsx(
-                    "flex cursor-pointer items-center justify-center rounded-full bg-white p-1",
-                    "border border-gray-500"
-                  )}
-                  onClick={() => navigate("/userTasks")}
-                >
-                  <ArrowUpRightIcon className="text-gray-500" />
-                </button>
-              </div>
-              <div className={clsx("flex items-baseline justify-start gap-2")}>
-                <span
-                  className={clsx("text-left text-2xl font-bold text-black")}
-                >
-                  {
-                    tasks?.data.filter((task: Task) => task.status === "TODO")
-                      .length
-                  }
-                </span>
-                <span className={clsx("text-left text-xs text-gray-500")}>
-                  tasks to do
-                </span>
-              </div>
-            </div>
+            <DashboardStatsCard
+              title="Pending tasks"
+              value={
+                tasks?.data.filter((task: Task) => task.status === "TODO")
+                  .length || 0
+              }
+              description="Tasks to do"
+              onSeeMore={() => navigate("/userTasks")}
+            />
           </div>
 
           <div
@@ -442,10 +230,10 @@ export default function DashBoard() {
               </span>
               <div
                 className={clsx(
-                  "grid w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+                  "grid h-full w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
                 )}
               >
-                {tasks?.data.length > 0 ? (
+                {tasks && tasks.data.length > 0 ? (
                   <>
                     {tasks?.data.slice(0, 2).map((task: TaskWithRelations) => (
                       <TaskDashboardCard
@@ -455,7 +243,7 @@ export default function DashBoard() {
                     ))}
                   </>
                 ) : (
-                  <div>No tasks</div>
+                  <NoItems message="No tasks available" />
                 )}
               </div>
             </div>
@@ -470,12 +258,16 @@ export default function DashBoard() {
                 Tasks stats
               </span>
               <div className={clsx("flex justify-center")}>
-                <Chart
-                  type="doughnut"
-                  data={data}
-                  options={options}
-                  className="w-64"
-                />
+                {tasks && tasks.data.length > 0 ? (
+                  <Chart
+                    type="doughnut"
+                    data={data}
+                    options={options}
+                    className="w-64"
+                  />
+                ) : (
+                  <NoItems message="No tasks available" />
+                )}
               </div>
             </div>
           </div>

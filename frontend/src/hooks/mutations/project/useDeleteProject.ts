@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { deleteProject } from "@/services/project.services";
+import { deleteProject } from "@/api/project.api";
 
 /**
  * Propriété du hook de la mutation de suppression d'un projet
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type DeleteProjectMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -30,7 +32,7 @@ export const useDeleteProject = (params: DeleteProjectMutationParams = {}) => {
 
     onError: (error) => {
       console.error("Erreur suppression du projet :", error);
-      alert("Erreur lors de la suppression du projet");
+      params.onError?.();
     },
   });
 

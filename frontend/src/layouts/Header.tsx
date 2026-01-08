@@ -1,9 +1,16 @@
 import { clsx } from "clsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/userStore";
 import UserProfilePhoto from "../components/profile/UserProfilePhoto";
-import { getPageNavigationMeta } from "../utils/pageNavigationMeta";
+
 import { InputText } from "@/components/ui/InputText";
+import { Search, Bell } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "../components/ui/tooltip";
+import { usePageMetaContext } from "@/hooks/utils/usePageMetaContext";
 
 /**
  * Propriétés du Header
@@ -16,38 +23,26 @@ type HeaderProps = {
 
 export default function Header({ className = "" }: HeaderProps) {
   const { user } = useUserStore();
-  const pagesMeta = getPageNavigationMeta();
-  const location = useLocation();
-  let currentPath = "/" + location.pathname.split("/")[1];
-  if (location.pathname.split("/").length > 2) currentPath += "+";
-  const currentPageMeta = pagesMeta[currentPath] || "Page";
+  const { meta } = usePageMetaContext();
+
   const navigate = useNavigate();
 
   return (
     <header
       className={clsx(
-        "border-b border-sky-600 bg-sky-600 px-4 py-2 text-white",
+        "border-b border-gray-300 bg-white px-4 py-2 text-black",
         className
       )}
     >
       <div className={clsx("flex justify-between")}>
         <div className={clsx("flex flex-col justify-center gap-1")}>
-          <h1 className={clsx("text-left text-lg font-bold")}>
-            {currentPageMeta.title}
-          </h1>
-          <div className={clsx("flex items-center justify-start")}>
-            {currentPageMeta.icone && (
-              <span className={clsx("mr-0.5", currentPageMeta.iconeColor)}>
-                <currentPageMeta.icone
-                  size={14}
-                  weight="fill"
-                  className="stroke-black stroke-3"
-                />
-              </span>
-            )}
-
-            <span className={clsx("text-xs")}>{currentPageMeta.message}</span>
+          <div className={clsx("flex items-center justify-start gap-2")}>
+            {meta.icon && <span>{meta.icon}</span>}
+            <h1 className={clsx("text-left text-lg font-bold text-sky-500")}>
+              {meta.title}
+            </h1>
           </div>
+          <span className={clsx("text-xs")}>{meta.message}</span>
         </div>
 
         <div className={"flex items-center gap-2"}>
@@ -58,30 +53,58 @@ export default function Header({ className = "" }: HeaderProps) {
               placeholder="search..."
             />
           </div> */}
-          <button
-            className={clsx(
-              "cursor-pointer rounded-md border border-gray-300 px-3 py-2 hover:bg-sky-700"
-            )}
-            title="Notifications"
-          >
-            <i className={clsx("pi pi-bell size-4")} />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className={clsx(
+                  "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
+                )}
+              >
+                {/* <i className={clsx("pi pi-search size-4")} /> */}
+                <Search className={clsx("size-5 stroke-2 text-gray-500")} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Search</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className={clsx(
+                  "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
+                )}
+              >
+                {/* <i className={clsx("pi pi-bell size-5")} /> */}
+                <Bell className={clsx("size-5 stroke-2 text-gray-500")} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Notifications</TooltipContent>
+          </Tooltip>
+
           <div
             className={
-              "flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 px-2 py-1 hover:bg-sky-700"
+              "flex cursor-pointer items-center gap-1 rounded-full border border-gray-300 hover:bg-gray-100"
             }
             onClick={() => navigate("/profile")}
           >
             {user ? (
               <>
                 <UserProfilePhoto
+                  userId={user.id}
                   imageUrl={user.imageUrl || null}
                   email={user.email}
                   username={user.userName}
-                  size="size-8"
+                  size="size-12"
                   isOnline={user !== null}
+                  showOnlineStatus={true}
+                  imagefallback={
+                    user.firstName && user.lastName
+                      ? `${user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()}`
+                      : undefined
+                  }
+                  imageClassName="text-sm cursor-pointer"
                 />
-                <div className={clsx("flex flex-col items-start")}>
+                {/* <div className={clsx("flex flex-col items-start")}>
                   {user.firstName && user.lastName ? (
                     <>
                       <span className={clsx("text-xs font-medium")}>
@@ -95,14 +118,14 @@ export default function Header({ className = "" }: HeaderProps) {
                       </span>
                     </>
                   )}
-                  <span className={clsx("text-xs text-gray-300")}>
+                  <span className={clsx("text-xs text-gray-700")}>
                     {user.email}
                   </span>
-                </div>
+                </div> */}
               </>
             ) : (
               <>
-                <span className={clsx("text-xs font-medium text-gray-600")}>
+                <span className={clsx("text-xs font-medium text-gray-700")}>
                   Déconnecté
                 </span>
               </>

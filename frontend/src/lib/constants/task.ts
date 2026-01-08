@@ -54,8 +54,8 @@ export const TASK_STATUS_META: Record<TaskStatus, StatusMeta> = {
   },
   IN_PROGRESS: {
     label: "In progress",
-    textColor: "text-sky-600",
-    bgColor: "bg-sky-200",
+    textColor: "text-sky-500",
+    bgColor: "bg-sky-100",
     borderColor: "border-gray-300",
     icon: CircleHalfIcon,
     hexColor: "#BFDBFE",

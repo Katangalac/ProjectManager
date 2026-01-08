@@ -25,7 +25,7 @@ export default function TeamMembersTable({
   showLeaderOnly,
 }: TeamMembersTableProps) {
   return (
-    <div className={clsx("flex flex-col items-start")}>
+    <div className={clsx("flex max-h-[600px] w-full")}>
       {team.teamUsers && (
         <DataTable
           value={
@@ -37,6 +37,7 @@ export default function TeamMembersTable({
           }
           emptyMessage="No members."
           scrollable
+          scrollHeight="500px"
           className={clsx(
             "w-full rounded-sm border border-gray-200 text-black",
             "dark:text-gray-200",
@@ -63,9 +64,17 @@ export default function TeamMembersTable({
                 )}
               >
                 <UserProfilePhoto
+                  userId={teamUser.user.id}
                   imageUrl={teamUser.user.imageUrl}
                   email={teamUser.user.email}
                   username={teamUser.user.userName}
+                  showOnlineStatus={true}
+                  imagefallback={
+                    teamUser.user.firstName && teamUser.user.lastName
+                      ? `${teamUser.user.firstName[0].toUpperCase() + teamUser.user.lastName[0].toUpperCase()}`
+                      : undefined
+                  }
+                  imageClassName="text-sm"
                 />
                 <span>{teamUser.user.userName}</span>
               </div>

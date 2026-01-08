@@ -68,6 +68,7 @@ export default function MessageCard({
         >
           {!isCurrentUserMessage && (
             <UserProfilePhoto
+              userId={message.sender!.id}
               email={message.sender!.email}
               username={message.sender!.userName}
               imageUrl={message.sender!.imageUrl}
@@ -87,10 +88,16 @@ export default function MessageCard({
           </div>
           {isCurrentUserMessage && (
             <UserProfilePhoto
+              userId={message.sender!.id}
               email={message.sender!.email}
               username={message.sender!.userName}
               imageUrl={message.sender!.imageUrl}
-              imageClassName="min-h-8 min-w-8"
+              imageClassName="min-h-8 min-w-8 text-sm"
+              imagefallback={
+                message.sender!.firstName && message.sender!.lastName
+                  ? `${message.sender!.firstName[0].toUpperCase() + message.sender!.lastName[0].toUpperCase()}`
+                  : undefined
+              }
             />
           )}
         </div>

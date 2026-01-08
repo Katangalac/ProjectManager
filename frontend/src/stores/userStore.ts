@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { User } from "../types/User";
 import { persist } from "zustand/middleware";
-import { logoutRequest } from "../services/auth.services";
+import { logoutRequest } from "../api/auth.api";
 
 /**
  * UserStore représente l’état global lié à l’utilisateur dans l'application

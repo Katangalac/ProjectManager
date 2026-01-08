@@ -85,7 +85,7 @@ uc-modal dialog {
 }
 
 .p-dialog .p-dialog-header {
-  @apply border-t border-sky-600 bg-sky-600 p-2 px-5 text-white dark:text-gray-200;
+  @apply border-t border-sky-600 bg-sky-500 p-2 px-5 text-white dark:text-gray-200;
 }
 
 .p-dialog .p-dialog-content {
@@ -172,7 +172,7 @@ uc-modal dialog {
 }
 
 .p-submenu-header {
-  @apply rounded-t-md bg-sky-600 text-white;
+  @apply rounded-t-md bg-sky-500 text-white;
 }
 
 button.p-confirm-dialog-accept.p-button.p-component {

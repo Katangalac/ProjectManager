@@ -4,20 +4,20 @@ import NavItem from "./NavItem";
 import { useUserStore } from "../../stores/userStore";
 import { useNavigate } from "react-router-dom";
 import {
-  ChatDotsIcon,
   SignOutIcon,
   CalendarDotsIcon,
   HouseIcon,
-  ProjectorScreenChartIcon,
   CaretCircleRightIcon,
   CaretCircleLeftIcon,
   FlaskIcon,
-} from "@phosphor-icons/react";
-import {
+  ClipboardTextIcon,
+  UsersThreeIcon,
   UserCircleIcon,
-  UserGroupIcon,
-  ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
+  FolderIcon,
+  ChatTextIcon,
+} from "@phosphor-icons/react";
+import { socket } from "@/lib/socket/socketClient";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 /**
  * Propriétés du SideBar
@@ -35,7 +35,7 @@ type SideBarProps = {
  * Permet de naviguer entre les pages de l'application
  */
 export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
-  const { logout } = useUserStore();
+  const { logout, user } = useUserStore();
   const navigate = useNavigate();
 
   /**
@@ -43,6 +43,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
    */
   const handleLogout = async () => {
     await logout();
+    socket.emit("logout", user?.id);
     navigate("/login");
   };
 
@@ -58,26 +59,32 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           isCollapsed ? "w-16" : "w-50"
         )}
       >
-        <button
-          className={clsx(
-            "absolute top-2 -right-2 h-fit w-fit",
-            "rounded-full bg-white",
-            "text-gray-400",
-            "dark:bg-gray-900"
-          )}
-          title={isCollapsed ? "Ouvrir le menu" : "Fermer le menu"}
-          onClick={onToogle}
-        >
-          {!isCollapsed ? (
-            <span>
-              <CaretCircleLeftIcon size={18} weight="regular" />
-            </span>
-          ) : (
-            <span>
-              <CaretCircleRightIcon size={18} weight="regular" />
-            </span>
-          )}
-        </button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              className={clsx(
+                "absolute top-2 -right-2 h-fit w-fit",
+                "rounded-full bg-white",
+                "text-gray-400",
+                "dark:bg-gray-900"
+              )}
+              onClick={onToogle}
+            >
+              {!isCollapsed ? (
+                <span>
+                  <CaretCircleLeftIcon size={18} weight="regular" />
+                </span>
+              ) : (
+                <span>
+                  <CaretCircleRightIcon size={18} weight="regular" />
+                </span>
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {isCollapsed ? "Open sidebar" : "Close sidebar"}
+          </TooltipContent>
+        </Tooltip>
 
         <div
           className={clsx(
@@ -110,65 +117,44 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           )}
         >
           <NavItem
-            icon={<HouseIcon size={!isCollapsed ? 18 : 22} weight="bold" />}
+            icon={HouseIcon}
             label="Dashboard"
             to="/dashboard"
             showText={!isCollapsed}
           />
           <NavItem
-            icon={
-              <ProjectorScreenChartIcon
-                size={!isCollapsed ? 18 : 22}
-                weight="bold"
-              />
-            }
+            icon={FolderIcon}
             label="Projects"
             to="/userProjects"
             showText={!isCollapsed}
           />
           <NavItem
-            icon={
-              <ClipboardDocumentListIcon
-                className={clsx(
-                  !isCollapsed ? "size-4.5" : "size-5.5",
-                  "stroke-2"
-                )}
-              />
-            }
+            icon={ClipboardTextIcon}
             label="Tasks"
             to="/userTasks"
             showText={!isCollapsed}
           />
           <NavItem
-            icon={
-              <CalendarDotsIcon size={!isCollapsed ? 18 : 22} weight="bold" />
-            }
+            icon={CalendarDotsIcon}
             label="Calendar"
             to="/calendar"
             showText={!isCollapsed}
           />
           <NavItem
-            icon={
-              <UserGroupIcon
-                className={clsx(
-                  !isCollapsed ? "size-4.5" : "size-5.5",
-                  "stroke-2"
-                )}
-              />
-            }
+            icon={UsersThreeIcon}
             label="Teams"
             to="/userTeams"
             showText={!isCollapsed}
           />
           <NavItem
-            icon={<ChatDotsIcon size={!isCollapsed ? 18 : 22} weight="bold" />}
+            icon={ChatTextIcon}
             label="Messages"
             to="/messages"
             showText={!isCollapsed}
           />
 
           <NavItem
-            icon={<FlaskIcon size={!isCollapsed ? 18 : 22} weight="bold" />}
+            icon={FlaskIcon}
             label="Test"
             to="/test"
             showText={!isCollapsed}
@@ -195,20 +181,13 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
 
         <nav
           className={clsx(
-            "flex h-fit flex-col space-y-1",
+            "flex h-fit flex-1 flex-col justify-between space-y-1",
             "transition-all duration-300",
             !isCollapsed ? "py-4" : "py-1"
           )}
         >
           <NavItem
-            icon={
-              <UserCircleIcon
-                className={clsx(
-                  !isCollapsed ? "size-4.5" : "size-5.5",
-                  "stroke-2"
-                )}
-              />
-            }
+            icon={UserCircleIcon}
             label="Profile"
             to="/profile"
             showText={!isCollapsed}
@@ -227,7 +206,10 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
             onClick={handleLogout}
           >
             <span>
-              <SignOutIcon size={!isCollapsed ? 18 : 22} weight="bold" />
+              <SignOutIcon
+                weight="bold"
+                className={clsx(isCollapsed ? "size-5" : "size-4.5")}
+              />
             </span>
             {!isCollapsed && <span>Logout</span>}
           </button>

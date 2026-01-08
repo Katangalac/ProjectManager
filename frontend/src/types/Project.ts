@@ -1,3 +1,6 @@
+import { Pagination } from "./Pagination";
+import { User } from "./User";
+
 /**
  * Type représentant les status d'un projet
  */
@@ -27,6 +30,10 @@ export type Project = {
   createdAt: Date;
 };
 
+export type ProjectWithRelation = Project & {
+  user?: User;
+};
+
 /**
  * Type des données attendues lors de la création d'un projet
  */
@@ -39,6 +46,25 @@ export type CreateProjectData = {
   deadline: Date;
   budgetPlanned: number;
   progress: number;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des projets
+ */
+export type ProjectsApiResponse = {
+  data: Project[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
+};
+
+/**
+ * Type représentant la structure des responses API pour la requete de calcul du cout total d'un projet
+ */
+export type ProjectTotalCostApiResponse = {
+  data: number;
+  success: boolean;
+  message?: string;
 };
 
 /**

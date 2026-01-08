@@ -3,6 +3,7 @@ import { clsx } from "clsx";
 import TasksBoard from "./TasksBoard";
 import TasksTable from "./TasksTable";
 import TasksKanban from "./TasksKanban";
+import ProjectTaskCheckList from "../project/ProjectTaskCheckList";
 import { useTasks } from "../../hooks/queries/task/useTasks";
 import { useProjectTasks } from "@/hooks/queries/project/useProjectTasks";
 import { InlineSelector } from "../commons/InlineSelector";
@@ -26,9 +27,9 @@ type TasksViewProps = {
  * Page d'affichage des tâches de l'utilisateur courant
  */
 export default function TasksView({ projectId }: TasksViewProps) {
-  const [viewMode, setViewMode] = useState<"kanban" | "board" | "table">(
-    "board"
-  );
+  const [viewMode, setViewMode] = useState<
+    "kanban" | "board" | "table" | "checklist"
+  >("board");
   const [showDialog, setShowDialog] = useState(false);
   const viewModeOptions = [
     {
@@ -44,6 +45,11 @@ export default function TasksView({ projectId }: TasksViewProps) {
     {
       label: "List",
       value: "table",
+      icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
+    },
+    {
+      label: "Check-List",
+      value: "checklist",
       icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
     },
   ];
@@ -88,6 +94,9 @@ export default function TasksView({ projectId }: TasksViewProps) {
       {viewMode === "board" && <TasksBoard tasks={data || []} />}
       {viewMode === "kanban" && <TasksKanban tasks={data || []} />}
       {viewMode === "table" && <TasksTable tasks={data || []} />}
+      {viewMode === "checklist" && (
+        <ProjectTaskCheckList tasks={data || []} hideSeeAllButton={true} />
+      )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent

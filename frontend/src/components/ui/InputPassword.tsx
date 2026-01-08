@@ -1,6 +1,6 @@
-import { clsx } from "clsx";
 import { InputText } from "./InputText";
 import { useState, forwardRef } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 
 interface InputPasswordProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
@@ -20,12 +20,11 @@ export const InputPassword = forwardRef<HTMLInputElement, InputPasswordProps>(
         type={showPassword ? "text" : "password"}
         onIconClick={() => setShowPassword(!showPassword)}
         icon={
-          <i
-            className={clsx(
-              "size-4",
-              showPassword ? "pi pi-eye-slash" : "pi pi-eye"
-            )}
-          />
+          showPassword ? (
+            <Eye className="size-6 stroke-[1.25px]" />
+          ) : (
+            <EyeClosed className="size-6 stroke-[1.25px]" />
+          )
         }
         {...props}
       />

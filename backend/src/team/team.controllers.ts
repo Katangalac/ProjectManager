@@ -1,4 +1,5 @@
 import * as teamService from "./team.services";
+import { getInvitations } from "../invitation/invitation.services";
 import { Request, Response } from "express";
 import * as teamSchemas from "./team.schemas";
 import * as teamError from "./errors";
@@ -10,6 +11,7 @@ import { searchProjectsFilterSchema } from "../project/project.schemas";
 import { searchConversationsFilterSchema } from "../conversation/conversation.schemas";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 import { addNotificationToQueue } from "../notification/notification.queue";
+import { searchInvitationsFilterSchema } from "../invitation/invitation.schemas";
 
 /**
  * Crée une nouvelle équipe
@@ -506,6 +508,48 @@ export const getTeamConversationsController = async (
         errorResponse(
           "INTERNAL_SERVER_ERROR",
           "Erreur lors de la récupération des conversations de l'équipe"
+        )
+      );
+  }
+};
+
+/**
+ * Récupère les invitations d'une équipe
+ * @async
+ * @param {Request} req - requete Express contenant l'id de l'équipe
+ * @param {Response} res - reponse Express en JSON
+ */
+export const getTeamInvitationsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = idParamSchema.parse({ id: req.params.id });
+    const filter = searchInvitationsFilterSchema.parse(req.query);
+    const teamInvitations = await getInvitations({ ...filter, teamId: id });
+    res
+      .status(200)
+      .json(
+        successResponse(
+          teamInvitations.invitations,
+          "Invitations de l'équipe récupérées",
+          teamInvitations.pagination
+        )
+      );
+  } catch (err) {
+    console.error(
+      "Erreur lors de la récupération des invitations de l'équipe : ",
+      err
+    );
+    if (err instanceof z.ZodError) {
+      res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
+    }
+    res
+      .status(500)
+      .json(
+        errorResponse(
+          "INTERNAL_SERVER_ERROR",
+          "Erreur lors de la récupération des invitations de l'équipe"
         )
       );
   }

@@ -31,8 +31,8 @@ router.post("/logout", logout);
 router.get("/verify", verifyAuth);
 
 /**
- * @route PATCH /api/auth/password
+ * @route PATCH /api/auth/me/password
  */
-router.patch("/password", isAuthenticated, updatePasswordController);
+router.patch("/me/password", isAuthenticated, updatePasswordController);
 
 export default router;

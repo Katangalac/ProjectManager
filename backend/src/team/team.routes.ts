@@ -73,4 +73,9 @@ router.get("/:id/tasks", teamController.getTeamTasksController);
  */
 router.get("/:id/conversations", teamController.getTeamConversationsController);
 
+/**
+ * @route GET /api/teams/:id/invitations
+ */
+router.get("/:id/invitations", teamController.getTeamInvitationsController);
+
 export default router;

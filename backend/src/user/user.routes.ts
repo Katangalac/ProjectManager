@@ -20,9 +20,19 @@ router.get("/", userController.getUsersController);
 router.get("/me", userController.getUserByIdController);
 
 /**
+ * @route GET /api/users/me/status
+ */
+router.get("/me", userController.getUserStatusController);
+
+/**
  * @route GET /api/users/:id
  */
 router.get("/:id", userController.getUserByIdController);
+
+/**
+ * @route GET /api/users/:id/status
+ */
+router.get("/:id/status", userController.getUserStatusController);
 
 /**
  * @route PATCH /api/users/me
@@ -38,6 +48,11 @@ router.delete("/me", userController.deleteUserController);
  * @route GET /api/users/me/teams
  */
 router.get("/me/teams", userController.getUserTeamsController);
+
+/**
+ * @route GET /api/users/me/peers
+ */
+router.get("/me/peers", userController.getUserPeersController);
 
 //TODO
 router.get("/me/teams/:id", teamController.getTeamByIdController);

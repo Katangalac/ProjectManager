@@ -1,15 +1,17 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CreateMessageData } from "@/types/Message";
-import { sendMessage } from "@/services/conversation.services";
+import { sendMessage } from "@/api/conversation.api";
 import { socket } from "@/lib/socket/socketClient";
 
 /**
  * Propriété du hook de la mutation de création d'un message
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type CreateMessageMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -30,7 +32,7 @@ export const useCreateMessage = (params: CreateMessageMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la création du message");
+      params.onError?.();
     },
   });
   return {

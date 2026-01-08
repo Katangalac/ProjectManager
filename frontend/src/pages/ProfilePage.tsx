@@ -1,6 +1,6 @@
 import { User } from "../types/User";
 import { useUserStore } from "../stores/userStore";
-import { getUserById } from "../services/user.services";
+import { getUserById } from "../api/user.api";
 import { useState, useEffect } from "react";
 import { clsx } from "clsx";
 import PublicProfile from "../components/profile/PublicProfile";

@@ -13,6 +13,7 @@ import taskRoutes from "./task/task.routes";
 import notificationRoutes from "./notification/notification.routes";
 import conversationRoutes from "./conversation/conversation.routes";
 import messageRoutes from "./message/message.routes";
+import invitationsRoutes from "./invitation/invitation.routes";
 import emailRoutes from "./email/email.routes";
 import { isAuthenticated } from "./auth/auth.middleware";
 import { setupSocket } from "./chat/chat.socket";
@@ -61,6 +62,7 @@ app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/messages", messageRoutes);
+app.use("/api/v1/invitations", invitationsRoutes);
 //app.use("/api/v1/email", emailRoutes); test d'envoie d'email
 
 //TODO:Interaction entre service X

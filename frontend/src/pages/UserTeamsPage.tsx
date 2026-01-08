@@ -12,49 +12,64 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import NoItems from "@/components/commons/NoItems";
+import UserErrorMessage from "@/components/commons/UserErrorMessage";
 
 /**
  * Affiche la liste des équipes d'un utilisateur
  */
 export default function UserTeamsPage() {
-  const {
-    data: teams = [],
-    isLoading: teamsLoading,
-    isError: teamsError,
-  } = useTeams({ all: true });
+  const { data = [], isLoading, isError, refetch } = useTeams({ all: true });
   const [showDialog, setShowDialog] = useState(false);
   return (
-    <div className="p-4">
-      <div
-        className={clsx(
-          "flex min-w-full flex-col items-center justify-start",
-          "bg-white",
-          "dark:bg-gray-900"
-        )}
-      >
-        <div className="mb-4 flex w-full items-center justify-start">
-          <button
-            title="New team"
-            onClick={() => setShowDialog(true)}
+    <div
+      className={clsx(
+        "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
+      )}
+    >
+      {isLoading && <ProgressSpinner />}
+      {!isLoading && (
+        <div className={clsx("flex h-full w-full flex-col gap-4")}>
+          <div className="flex h-fit w-fit items-center gap-4">
+            <button
+              onClick={() => setShowDialog(true)}
+              className={clsx(
+                "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-2",
+                "focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                "rounded-md bg-sky-500 hover:bg-sky-600",
+                "text-xs font-medium text-white"
+              )}
+            >
+              <PlusIcon className={clsx("size-3 stroke-3")} />
+              Add New
+            </button>
+          </div>
+          <div
             className={clsx(
-              "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-3",
-              "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-              "rounded-md bg-sky-600 hover:bg-sky-700",
-              "text-xs font-medium text-white"
+              "flex flex-1 flex-col justify-between gap-4",
+              !(data && data.length > 0) && "items-center justify-center",
+              isError && "justify-start gap-10"
             )}
           >
-            <PlusIcon className={clsx("size-3 stroke-3")} />
-            Add New
-          </button>
-        </div>
-        {teamsError && <div>An error occur while loading user teams</div>}
-        {teamsLoading && (
-          <div>
-            <ProgressSpinner />
+            {isError && (
+              <UserErrorMessage onRetryButtonClick={() => refetch()} />
+            )}
+            {data && data.length > 0 ? (
+              <>
+                <TeamsBoard teams={data} />
+              </>
+            ) : (
+              <NoItems
+                message="No teams available!"
+                iconSize="size-15 stroke-1"
+                textStyle="text-lg text-gray-400 font-medium"
+                className="h-80 w-80 rounded-full bg-sky-50"
+              />
+            )}
           </div>
-        )}
-      </div>
-      {!teamsLoading && <TeamsBoard teams={teams} />}
+        </div>
+      )}
+
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
           className={clsx(
@@ -63,7 +78,7 @@ export default function UserTeamsPage() {
             "[&>button]:hover:text-white"
           )}
         >
-          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
+          <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
             <DialogTitle className="text-lg text-white">New team</DialogTitle>
           </DialogHeader>
           <div

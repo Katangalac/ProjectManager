@@ -48,8 +48,8 @@ export const PROJECT_STATUS_META: Record<ProjectStatus, StatusMeta> = {
   },
   ACTIVE: {
     label: "In progress",
-    textColor: "text-blue-600",
-    bgColor: "bg-blue-200",
+    textColor: "text-sky-500",
+    bgColor: "bg-sky-100",
     borderColor: "border-gray-300",
     hexColor: "#BFDBFE",
   },

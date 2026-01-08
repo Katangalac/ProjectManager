@@ -48,7 +48,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           {icon && isLeft && (
             <div
               className={clsx(
-                "absolute top-1/2 left-3 -translate-y-1/2 text-gray-400",
+                "absolute top-1/2 left-3 -translate-y-1/2 text-gray-500",
                 onIconClick
                   ? "cursor-pointer hover:text-gray-600"
                   : "pointer-events-none"
@@ -81,7 +81,7 @@ export const InputText = forwardRef<HTMLInputElement, InputTextProps>(
           {icon && isRight && (
             <div
               className={clsx(
-                "absolute top-1/2 right-3 -translate-y-1/2 text-gray-400",
+                "absolute top-1/2 right-3 -translate-y-1/2 text-gray-500",
                 onIconClick
                   ? "cursor-pointer hover:text-gray-600"
                   : "pointer-events-none"

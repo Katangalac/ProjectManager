@@ -27,7 +27,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Project :
@@ -41,7 +41,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Team :
@@ -55,21 +55,29 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Assigned to :
         </span>
         <span className={clsx("overflow-x-auto", "[&::-webkit-scrollbar]:w-0")}>
           {task.assignedTo && task.assignedTo.length > 0 ? (
-            <div className={clsx("flex gap-0.5")}>
+            <div className={clsx("flex -space-x-2")}>
               {task.assignedTo.map((a) => (
                 <UserProfilePhoto
                   key={a.user.id}
+                  userId={a.user.id}
                   imageUrl={a.user.imageUrl}
                   username={a.user.userName}
                   email={a.user.email}
-                  size="h-9 w-9 size-4"
+                  size="h-9 w-9"
+                  className="ring-2 ring-white"
+                  imagefallback={
+                    a.user.firstName && a.user.lastName
+                      ? `${a.user.firstName[0].toUpperCase() + a.user.lastName[0].toUpperCase()}`
+                      : undefined
+                  }
+                  imageClassName="text-lg"
                 />
               ))}
             </div>
@@ -81,7 +89,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           status :
@@ -98,7 +106,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Priority :
@@ -115,7 +123,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Progress :
@@ -129,7 +137,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Cost :
@@ -143,7 +151,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Started on :
@@ -157,7 +165,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Deadline :
@@ -176,7 +184,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       <div className={clsx("flex items-center justify-start gap-2")}>
         <span
           className={clsx(
-            "text-sm font-medium text-gray-500 dark:text-gray-400"
+            "w-25 text-sm font-medium text-gray-500 dark:text-gray-400"
           )}
         >
           Completed At :

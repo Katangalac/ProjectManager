@@ -9,7 +9,7 @@ import AppLogo from "../commons/AppLogo";
  */
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className={clsx("flex min-h-screen bg-gray-50")}>
+    <div className={clsx("flex min-h-screen bg-white")}>
       <div
         className={clsx(
           "relative flex flex-1 flex-col items-center justify-center",
@@ -24,40 +24,39 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </div>
       <div
         className={clsx(
-          "relative hidden flex-1 items-center p-8 lg:flex",
-          "bg-[url('/images/im5.jpg')] bg-cover bg-center"
+          "b-custom relative flex-1 items-center justify-center overflow-hidden bg-sky-500 lg:flex",
+          "m-5 rounded-xl rounded-bl-[20%]"
         )}
       >
-        {/**Overlay pour gérer l'apparence de l'image de fond */}
-        <div className={clsx("absolute inset-0 bg-black/20")}></div>
-
+        {/* *Overlay pour gérer l'apparence de l'image de fond
+        <div className={clsx("absolute inset-0 bg-black/20")}></div> */}
         <div
           className={clsx(
-            "relative flex h-full w-full flex-col justify-end py-4 text-left"
+            "flex h-full w-full flex-col justify-center gap-4 px-8 py-16 text-left text-white text-shadow-lg"
           )}
         >
-          <h2
-            className={clsx(
-              "mt-6 text-3xl font-bold text-gray-200 text-shadow-black text-shadow-lg"
-            )}
-          >
-            Manage your projects efficiently!
-          </h2>
-          <p
-            className={clsx(
-              "mt-2 text-lg font-medium text-gray-200 text-shadow-black text-shadow-lg"
-            )}
-          >
-            Login to access your workspace.
-          </p>
-          <p
-            className={clsx(
-              "mt-2 text-lg font-medium text-gray-200 text-shadow-black text-shadow-lg"
-            )}
-          >
-            Create teams, manage tasks, and collaborate with your peers, all in
-            one plateform.
-          </p>
+          <div className={clsx("flex w-full flex-col items-center gap-10")}>
+            <AppLogo
+              showText={true}
+              className={clsx("text-3xl font-bold text-white")}
+              iconSize={35}
+              iconColor="text-white"
+              iconWeight="bold"
+            />
+            <img src="/icons/loginSvg.svg" alt="Not found" className="h-60" />
+          </div>
+          <div className={clsx("flex w-full flex-col gap-1")}>
+            <h2 className={clsx("mb-4 text-center text-2xl font-bold")}>
+              Manage your projects efficiently!
+            </h2>
+            <p className={clsx("text-lg font-medium")}>
+              Login to access your workspace.
+            </p>
+            <p className={clsx("text-lg font-medium")}>
+              Create teams, manage tasks, and collaborate with your peers, all
+              in one plateform.
+            </p>
+          </div>
         </div>
       </div>
     </div>

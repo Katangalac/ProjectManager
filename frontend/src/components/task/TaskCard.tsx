@@ -5,8 +5,8 @@ import {
   UserCircleIcon,
   UserGroupIcon,
   CheckCircleIcon,
+  FolderIcon,
 } from "@heroicons/react/24/outline";
-import { ProjectorScreenChartIcon } from "@phosphor-icons/react";
 import TaskPriority from "./TaskPriority";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import { useState } from "react";
@@ -32,7 +32,11 @@ export default function TaskCard({ task, className }: TaskCardProps) {
   const isOverDue =
     task.status !== "COMPLETED" && new Date(task.deadline) < new Date();
   return (
-    <div className={clsx("h-44 w-full bg-transparent perspective-[1000px]")}>
+    <div
+      className={clsx(
+        "h-44 w-full max-w-60 bg-transparent perspective-[1000px]"
+      )}
+    >
       <div
         className={clsx(
           "relative h-44 w-full transition-transform duration-800 transform-3d",
@@ -63,7 +67,7 @@ export default function TaskCard({ task, className }: TaskCardProps) {
               <div
                 className={clsx("flex w-full items-center justify-start gap-2")}
               >
-                <ProjectorScreenChartIcon
+                <FolderIcon
                   className={clsx("size-4 text-gray-500", "dark:text-white")}
                 />
                 <span
@@ -112,10 +116,17 @@ export default function TaskCard({ task, className }: TaskCardProps) {
                       {task.assignedTo.map((a) => (
                         <UserProfilePhoto
                           key={a.user.id}
+                          userId={a.user.id}
                           imageUrl={a.user.imageUrl}
                           username={a.user.userName}
                           email={a.user.email}
                           className="ring-1 ring-white"
+                          imagefallback={
+                            a.user.firstName && a.user.lastName
+                              ? `${a.user.firstName[0].toUpperCase() + a.user.lastName[0].toUpperCase()}`
+                              : undefined
+                          }
+                          imageClassName="text-[10px]"
                         />
                       ))}
                     </div>
@@ -129,7 +140,11 @@ export default function TaskCard({ task, className }: TaskCardProps) {
                 className={clsx("flex w-full items-center justify-start gap-2")}
               >
                 <CalendarDateRangeIcon
-                  className={clsx("size-4 text-gray-500", "dark:text-white")}
+                  className={clsx(
+                    "size-4",
+                    "dark:text-white",
+                    isOverDue ? "text-red-500" : "text-gray-500"
+                  )}
                 />
                 <span
                   className={clsx(

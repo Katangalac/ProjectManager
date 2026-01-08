@@ -1,14 +1,16 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateTeam } from "../../../services/team.service";
+import { updateTeam } from "../../../api/team.api";
 import { UpdateTeamData } from "../../../types/Team";
 
 /**
  * Propriété du hook de la mutation de mdofication d'une équipe
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type UpdateTeamMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -34,7 +36,7 @@ export const useUpdateTeam = (params: UpdateTeamMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la mise à jour de l'équipe");
+      params.onError?.();
     },
   });
   return {

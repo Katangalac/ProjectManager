@@ -1,7 +1,7 @@
 import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
 import { clsx } from "clsx";
 
-import { FlagPennantIcon } from "@phosphor-icons/react";
+import { FlagIcon } from "@phosphor-icons/react";
 
 /**
  * Propriétés du TaskPriorityProps
@@ -26,7 +26,7 @@ export default function TaskPriority({ priorityLevel }: TaskPriorityProps) {
         "rounded-sm"
       )}
     >
-      <FlagPennantIcon
+      <FlagIcon
         weight="fill"
         className={clsx("size-4", priorityLevelMeta.textStyle)}
       />

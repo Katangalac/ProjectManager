@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserTeams } from "../../../services/team.service";
+import { getUserTeams } from "../../../api/team.api";
 import { SearchTeamsFilter } from "../../../types/Team";
 
 /**

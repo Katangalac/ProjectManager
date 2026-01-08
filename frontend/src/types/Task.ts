@@ -1,3 +1,4 @@
+import { Pagination } from "./Pagination";
 import { Project } from "./Project";
 import { Team } from "./Team";
 import { User } from "./User";
@@ -32,6 +33,16 @@ export type TaskWithRelations = Task & {
   assignedTo?: {
     user: User;
   }[];
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des tâches
+ */
+export type TasksApiResponse = {
+  data: TaskWithRelations[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

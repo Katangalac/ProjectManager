@@ -1,3 +1,5 @@
+import { Pagination } from "./Pagination";
+
 /**
  * Type représentant un utilisateur
  */
@@ -16,6 +18,16 @@ export type User = {
   lastLoginAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des utilisateurs
+ */
+export type UsersApiResponse = {
+  data: User[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { unassignTask } from "../../../services/task.services";
+import { unassignTask } from "../../../api/task.api";
 
 /**
  * Propriété du hook de la mutation de desassignation d'une tâche
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type UnassignTaskMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -36,7 +38,7 @@ export const useUnassignTaskTask = (
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la desassignation de la tâche");
+      params.onError?.();
     },
   });
   return {

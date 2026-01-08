@@ -2,13 +2,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../schemas/auth.schemas.ts";
 import { LoginInputs } from "../../types/Auth.ts";
-import { loginRequest } from "../../services/auth.services.ts";
+import { loginRequest } from "../../api/auth.api.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
 import { useUserStore } from "../../stores/userStore.ts";
 import { InputText } from "../ui/InputText.tsx";
 import { InputPassword } from "../ui/InputPassword.tsx";
+import { toast } from "sonner";
+import { toastStyle } from "@/utils/toastStyle.ts";
+import { User } from "lucide-react";
+import { AppError } from "@/errors/AppError.ts";
 
 /**
  * Formulaire de connexion
@@ -25,6 +29,7 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
@@ -43,7 +48,31 @@ export default function LoginForm() {
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la connexion : erreur interne du serveur");
+      if (err instanceof AppError) {
+        switch (err.code) {
+          case "INVALID_PASSWORD":
+            setError("password", {
+              type: "server",
+              message: err.message,
+            });
+            break;
+          case "USER_NOT_FOUND":
+            setError("identifier", {
+              type: "server",
+              message: err.message,
+            });
+            break;
+          default:
+            setError("root", {
+              type: "server",
+              message: err.message,
+            });
+        }
+      }
+      toast.error("Oops, something went wrong while processing your request.", {
+        style: toastStyle["soft-error"],
+        position: "top-center",
+      });
     }
   };
 
@@ -75,11 +104,12 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
         <div>
           <InputText
-            icon={<i className="pi pi-user size-4" />}
+            icon={<User className="size-6 stroke-[1.25px]" />}
             placeholder="Username or Email"
             iconPosition="right"
             error={errors.identifier?.message}
             {...register("identifier")}
+            className="border-gray-400"
           />
         </div>
 
@@ -89,11 +119,12 @@ export default function LoginForm() {
             iconPosition="right"
             error={errors.password?.message}
             {...register("password")}
+            className="border-gray-400"
           />
 
           <p className={clsx("mt-2 text-right text-sm")}>
             <a
-              className={clsx("font-medium text-blue-500 hover:underline")}
+              className={clsx("font-medium text-sky-600 hover:underline")}
               href="/"
             >
               Forget password?
@@ -105,7 +136,7 @@ export default function LoginForm() {
           type="submit"
           className={clsx(
             "w-full py-2 font-semibold text-white",
-            "rounded-sm bg-sky-600 hover:bg-sky-700"
+            "rounded-sm bg-sky-500 hover:bg-sky-600"
           )}
         >
           Login
@@ -145,7 +176,7 @@ export default function LoginForm() {
           Don't have an account ?{" "}
         </span>
         <a
-          className={clsx("font-medium text-blue-500 hover:underline")}
+          className={clsx("font-medium text-sky-600 hover:underline")}
           href="/register"
         >
           Sign up

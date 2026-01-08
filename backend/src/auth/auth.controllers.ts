@@ -10,11 +10,18 @@ import { verify } from "argon2";
 import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { successResponse, errorResponse } from "../utils/apiResponse";
-import { UserNotFoundError } from "../user/errors";
+import {
+  UserNotFoundError,
+  UsernameAlreadyUsedError,
+  EmailAlreadyUsedError,
+  UserAlreadyExistError,
+  PhoneNumberAlreadyUsedError,
+} from "../user/errors";
 import { addEmailToQueue } from "../email/email.queue";
 import { addNotificationToQueue } from "../notification/notification.queue";
 import { getWelcomeMessageHtml } from "../utils/utils";
 import { verifyToken } from "./utils/jwt";
+import { AppError } from "../errors/AppError";
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
@@ -42,6 +49,21 @@ export const register = async (req: Request, res: Response) => {
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
     }
+    if (err instanceof UserAlreadyExistError) {
+      return res
+        .status(err.status || 409)
+        .json(errorResponse(err.code || "USER_CONFLICT", err.message));
+    }
+    if (err instanceof UsernameAlreadyUsedError) {
+      return res
+        .status(err.status || 409)
+        .json(errorResponse(err.code || "USERNAME_CONFLICT", err.message));
+    }
+    if (err instanceof EmailAlreadyUsedError) {
+      return res
+        .status(err.status || 409)
+        .json(errorResponse(err.code || "EMAIL_CONFLICT", err.message));
+    }
     res
       .status(500)
       .json(
@@ -68,18 +90,27 @@ export const login = async (req: Request, res: Response) => {
       },
     });
     if (!user)
-      return res.status(401).json({
-        error: "Identifiants invalides. Cet utilisateur n'existe pas",
-      });
+      return res
+        .status(401)
+        .json(
+          errorResponse("USER_NOT_FOUND", "Invalid identifier. User not found")
+        );
     if (user.provider === UserProvider.LOCAL) {
       const { password, ...safeUser } = user;
       if (!password)
         return res
           .status(500)
-          .json({ error: "Utilisateur local sans mot de passe!" });
+          .json(
+            errorResponse(
+              "LOCAL_USER_WITHOUT_PASSWORD",
+              "This local user doesn't have a password"
+            )
+          );
       const isValidPassword = await verify(password, loginData.password);
       if (!isValidPassword)
-        return res.status(401).json({ error: "Mot de passe invalide" });
+        return res
+          .status(401)
+          .json(errorResponse("INVALID_PASSWORD", "Invalid password"));
       const { token, cookieOptions } = generateAuthResponse(safeUser);
       res.cookie("projectFlowToken", token, cookieOptions);
       const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
@@ -90,7 +121,7 @@ export const login = async (req: Request, res: Response) => {
         .json(
           errorResponse(
             "NOT_A_LOCAL_USER",
-            `Cet utilisateur s'est inscrit avec ${user.provider} et ne peut pas se connecter via le login local`
+            `This user is from ${user.provider} and must log the ${user.provider} way`
           )
         );
     }
@@ -102,7 +133,7 @@ export const login = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la connexion")
+        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while login")
       );
   }
 };
@@ -127,7 +158,7 @@ export const logout = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de la déconnexion")
+        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while logout")
       );
   }
 };
@@ -162,12 +193,20 @@ export const updatePasswordController = async (req: Request, res: Response) => {
         );
     }
 
+    if (err instanceof AppError) {
+      return res
+        .status(err.status)
+        .json(
+          errorResponse(err.code ? err.code : "UNKNOWN_ERROR", err.message)
+        );
+    }
+
     res
       .status(500)
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la modification du mot de passe"
+          "An error occur while handling your request"
         )
       );
   }

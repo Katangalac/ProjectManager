@@ -46,7 +46,7 @@ export function InlineSelector({
   return (
     <div
       className={cn(
-        "flex gap-3 px-2 py-1",
+        "flex gap-3 px-1 py-1",
         "rounded-md border border-sky-100 bg-sky-50",
         className
       )}
@@ -60,11 +60,11 @@ export function InlineSelector({
             type="button"
             onClick={() => onChange(opt.value)}
             className={clsx(
-              "flex cursor-pointer items-center gap-0.5 px-2 py-2 transition",
-              "rounded-md",
+              "flex cursor-pointer items-center gap-0.5 px-1 py-1 transition",
+              "rounded-sm",
               "text-xs font-medium",
               selected
-                ? "border border-sky-300 bg-sky-100 text-sky-600 shadow-lg"
+                ? "border border-sky-300 bg-sky-100 text-sky-500 shadow-lg"
                 : "border-gray-300 text-gray-600 hover:bg-sky-100"
             )}
           >

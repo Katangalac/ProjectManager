@@ -1,5 +1,7 @@
 import { useLocation } from "react-router-dom";
-import { ReactNode } from "react";
+import { ReactNode, ComponentType } from "react";
+
+type IconWeightProps = "fill" | "regular" | "bold" | "duotone" | "light";
 
 /**
  * Type des propriétés d'un NavLink
@@ -11,6 +13,7 @@ type NaLinkProps = {
   to: string;
   className?: (props: { isActive: boolean }) => string;
   children?: ReactNode;
+  icon?: ComponentType<{ size?: number; weight?: IconWeightProps }>;
 };
 
 /**

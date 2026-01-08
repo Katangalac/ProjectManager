@@ -8,6 +8,7 @@ import {
 import { SearchConversationsFilter } from "@/types/Conversation";
 import { SearchTasksFilter } from "@/types/Task";
 import { SearchProjectsFilter } from "@/types/Project";
+import { SearchInvitationFilter } from "@/types/Invitation";
 
 /**
  * Récupère les équipes de l'utilisateur courant correspondant aux paramètres de recherche
@@ -287,5 +288,37 @@ export const removeMemberFromTeam = async (
       throw new Error(message);
     }
     throw new Error("Erreur lors du retrait du membre de l'équipe");
+  }
+};
+
+/**
+ * Récupère les invitations d'une équipe
+ * En cas d'erreur, lance une exception avec un message d'erreur
+ *
+ * @param {string} teamId - identifiant de l'équipe
+ * @param {SearchInvitationFilter} params - paramètres de recherche des invitations
+ * @returns la liste des invitations d'une équipe repondant aux critères de recherche
+ * @throws - Une erreur si la requête échoue
+ */
+export const getTeamInvitations = async (
+  teamId: string,
+  params: SearchInvitationFilter
+) => {
+  try {
+    const axiosResponse = await axiosClient.get(
+      `/teams/${teamId}/invitations`,
+      {
+        params,
+      }
+    );
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error(
+      "Erreur lors de la récupération des invitations de l'équipe"
+    );
   }
 };

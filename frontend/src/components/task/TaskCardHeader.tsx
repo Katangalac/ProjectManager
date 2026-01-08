@@ -2,6 +2,7 @@ import { clsx } from "clsx";
 import TaskActionMenu from "./TaskActionMenu";
 import { TaskWithRelations } from "../../types/Task";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 /**
  *
@@ -37,18 +38,27 @@ export default function TaskCardHeader({
           {task.title}
         </span>
         <div className={clsx("flex w-fit gap-1")}>
-          <button
-            title={!flipped ? "Show description" : "Show main infos"}
-            onClick={(event) => {
-              event.stopPropagation();
-              onArrowButtonClick();
-            }}
-            className={clsx("cursor-pointer")}
-          >
-            <ArrowsRightLeftIcon
-              className={clsx("size-3 stroke-1 text-gray-800 hover:stroke-2")}
-            />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onArrowButtonClick();
+                }}
+                className={clsx("cursor-pointer")}
+              >
+                <ArrowsRightLeftIcon
+                  className={clsx(
+                    "size-3 stroke-1 text-gray-800 hover:stroke-2"
+                  )}
+                />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {!flipped ? "Show description" : "Show main infos"}s
+            </TooltipContent>
+          </Tooltip>
+
           <TaskActionMenu task={task} />
         </div>
       </div>

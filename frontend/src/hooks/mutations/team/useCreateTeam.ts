@@ -1,14 +1,16 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { createTeam } from "../../../services/team.service";
+import { createTeam } from "../../../api/team.api";
 import { CreateTeamData } from "../../../types/Team";
 
 /**
  * Propriété du hook de la mutation de création d'une équipe
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type CreateTeamMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -27,7 +29,7 @@ export const useCreateTeam = (params: CreateTeamMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la création de l'équipe");
+      params.onError?.();
     },
   });
   return {

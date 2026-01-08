@@ -1,5 +1,7 @@
 import { axiosClient } from "../lib/axios/axiosClient";
 import axios from "axios";
+import { AppError } from "@/errors/AppError";
+import { UpdatePasswordData } from "@/types/Auth";
 
 /**
  * Envoie une requête de connexion
@@ -19,11 +21,13 @@ export async function loginRequest(identifier: string, password: string) {
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message || "Erreur lors de la connexion";
-      throw new Error(message);
+        error.response?.data?.error?.message ||
+        "An error occur while logging in";
+      const code = error.response?.data?.error?.code || "UNKNOWN_ERROR";
+      throw new AppError(message, code);
     }
 
-    throw new Error("Erreur inconnue lors de la connexion");
+    throw new AppError("An error occur while logging in");
   }
 }
 
@@ -36,14 +40,17 @@ export async function loginRequest(identifier: string, password: string) {
 export const logoutRequest = async () => {
   try {
     const axiosResponse = await axiosClient.post("/auth/logout");
+    console.log(axiosResponse.data);
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message || "Erreur lors de la déconnexion";
-      throw new Error(message);
+        error.response?.data?.error?.message ||
+        "An error occur while logging out";
+      const code = error.response?.data?.error?.code || "UNKNOWN_ERROR";
+      throw new AppError(message, code);
     }
-    throw new Error("Erreur inconnue lors de la déconnexion");
+    throw new AppError("An error occur while logging out");
   }
 };
 
@@ -67,15 +74,34 @@ export const registerRequest = async (
       email,
       password,
     });
+
     return response.data;
   } catch (err: unknown) {
     if (axios.isAxiosError?.(err)) {
       const message =
-        err.response?.data?.message || "Erreur lors de l'inscription";
-      throw new Error(message);
+        err.response?.data?.error?.message || "An error occur while signing up";
+      const code = err.response?.data?.error?.code || "UNKNOWN_ERROR";
+      throw new AppError(message, code);
     }
 
-    throw new Error("Erreur inconnue lors de l'inscription");
+    throw new AppError("An error occur while signing up");
+  }
+};
+
+export const updatePassword = async (input: UpdatePasswordData) => {
+  try {
+    const axiosResponse = await axiosClient.patch("/auth/me/password", input);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message =
+        error.response?.data?.error?.message ||
+        "An error occur while updating the password";
+      const code = error.response?.data?.error?.code || "UNKNOWN_ERROR";
+      throw new AppError(message, code);
+    }
+
+    throw new AppError("An error occur while updating the password");
   }
 };
 
@@ -119,5 +145,30 @@ export const deleteMe = async () => {
     }
 
     throw new Error("Erreur inconnue lors de la suppression de l'utilisateur");
+  }
+};
+
+/**
+ * Récupère le status de connexion d'un utilisateur par son ID
+ *
+ * @param {string} userId - L'ID de l'utilisateur
+ * @returns - Le status de connexion de l'utilisateur
+ * @throws - Une erreur si la requête échoue
+ */
+export const getUserStatus = async (userId: string) => {
+  try {
+    const axiosResponse = await axiosClient.get(`/users/${userId}/status`);
+    return axiosResponse.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message =
+        error.response?.data?.message ||
+        "Erreur lors de la récupération du status de l'utilisateur";
+      throw new Error(message);
+    }
+
+    throw new Error(
+      "Erreur inconnue lors de la récupération du status de l'utilisateur"
+    );
   }
 };

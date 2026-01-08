@@ -21,10 +21,18 @@ export default function UserBasicInfo({
     <div className={cn("flex h-fit w-fit items-center gap-2")}>
       <div className={clsx("h-fit w-fit")}>
         <UserProfilePhoto
+          userId={user.id}
           username={user.userName}
           email={user.email}
           imageUrl={user.imageUrl}
           size={avatarImageSize}
+          showOnlineStatus={true}
+          imagefallback={
+            user.firstName && user.lastName
+              ? `${user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()}`
+              : undefined
+          }
+          imageClassName="text-sm"
         />
       </div>
       <div className={clsx("flex h-fit w-fit flex-col")}>

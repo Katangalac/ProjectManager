@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getConversationMessages } from "@/services/conversation.services";
+import { getConversationMessages } from "@/api/conversation.api";
 import { SearchMessagesFilter } from "@/types/Message";
 import { MessageWithRelation } from "@/types/Message";
 

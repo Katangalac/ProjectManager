@@ -83,3 +83,8 @@ export const searchProjectsFilterSchema = z.object({
     })
     .optional(),
 });
+
+export const ProjectTeamSchema = z.object({
+  projectId: z.uuid("Invalid ID"),
+  teamId: z.uuid("Invalid ID"),
+});

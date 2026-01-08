@@ -1,14 +1,16 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateTask } from "../../../services/task.services";
+import { updateTask } from "../../../api/task.api";
 import { UpdateTaskData } from "../../../types/Task";
 
 /**
  * Propriété du hook de la mutation de mdofication d'une tâche
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type UpdateTaskMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -31,11 +33,12 @@ export const useUpdateTask = (params: UpdateTaskMutationParams = {}) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUserTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["projectTasks"] });
       params.onSuccess?.();
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la mise à jour de la tâche");
+      params.onError?.();
     },
   });
   return {

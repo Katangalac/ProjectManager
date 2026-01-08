@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { deleteTeam } from "../../../services/team.service";
+import { deleteTeam } from "../../../api/team.api";
 
 /**
  * Propriété du hook de la mutation de suppression d'une équipe
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type DeleteTeamMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -29,7 +31,7 @@ export const useDeleteTeam = (params: DeleteTeamMutationParams = {}) => {
 
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la suppression de l'équipe");
+      params.onError?.();
     },
   });
 

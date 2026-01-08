@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { assignTask } from "../../../services/task.services";
+import { assignTask } from "../../../api/task.api";
 
 /**
  * Propriété du hook de la mutation d'assignation d'une tâche
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type AssignTaskMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -34,7 +36,7 @@ export const useAssignTaskTask = (params: AssignTaskMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de l'assignation de la tâche");
+      params.onError?.();
     },
   });
   return {

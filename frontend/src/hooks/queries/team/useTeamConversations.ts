@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTeamConversations } from "../../../services/team.service";
+import { getTeamConversations } from "../../../api/team.api";
 import { SearchConversationsFilter } from "@/types/Conversation";
 import { ConversationWithRelation } from "@/types/Conversation";
 

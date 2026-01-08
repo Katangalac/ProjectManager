@@ -1,6 +1,9 @@
-import { ReactNode } from "react";
+import { ComponentType } from "react";
 import { clsx } from "clsx";
 import { NavLink } from "react-router-dom";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+
+type IconWeightProps = "fill" | "regular" | "bold" | "duotone" | "light";
 
 /**
  * Type des propriétés d'un NavItem
@@ -9,7 +12,11 @@ import { NavLink } from "react-router-dom";
  * - label : titre ou nom du NavItem
  */
 type NavItemProps = {
-  icon: ReactNode;
+  icon: ComponentType<{
+    size?: number;
+    weight?: IconWeightProps;
+    className?: string;
+  }>;
   label: string;
   to: string;
   showText: boolean;
@@ -19,7 +26,12 @@ type NavItemProps = {
  * Composant représentant une option d'un menu de navigation
  * @param {NavItemProps} param0 - les propriétés du NavItem
  */
-export default function NavItem({ icon, label, to, showText }: NavItemProps) {
+export default function NavItem({
+  icon: NavIcon,
+  label,
+  to,
+  showText,
+}: NavItemProps) {
   return (
     <NavLink
       to={to}
@@ -31,19 +43,30 @@ export default function NavItem({ icon, label, to, showText }: NavItemProps) {
           "transition-colors",
           "dark:text-white",
           isActive
-            ? "border border-sky-300 bg-sky-100 text-sky-600 dark:bg-gray-900"
-            : "hover:bg-sky-100 dark:hover:bg-gray-800"
+            ? "border border-sky-300 bg-sky-50 text-sky-500 dark:bg-gray-900"
+            : "hover:bg-sky-50 dark:hover:bg-gray-800",
+          showText ? "justify-start" : "justify-center"
         )
       }
     >
       {({ isActive }) => (
         <>
-          <span
-            className={clsx(isActive ? "text-sky-600" : "")}
-            title={showText ? "" : label}
-          >
-            {icon}
-          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className={clsx(isActive ? "text-sky-500" : "stroke-1")}>
+                <NavIcon
+                  weight={isActive ? "fill" : "bold"}
+                  className={clsx(
+                    "stroke-1",
+                    isActive ? "text-sky-500" : "",
+                    showText ? "size-4.5" : "size-5"
+                  )}
+                />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>{showText ? "" : label}</TooltipContent>
+          </Tooltip>
+
           {showText && <span>{label}</span>}
         </>
       )}

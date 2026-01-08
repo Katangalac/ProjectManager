@@ -18,7 +18,7 @@ import MessagePage from "./pages/MessagePage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getMe } from "./services/auth.services.ts";
+import { getMe } from "./api/auth.api.ts";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { clsx } from "clsx";
 import { Toaster } from "@/components/ui/sonner";

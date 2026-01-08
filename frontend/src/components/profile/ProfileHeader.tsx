@@ -1,13 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx } from "clsx";
-import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon";
 import { User } from "../../types/User";
-import { FileUploaderRegular, defineLocale } from "@uploadcare/react-uploader";
-import { useState, useEffect } from "react";
+import {
+  FileUploaderRegular,
+  UploadCtxProvider,
+} from "@uploadcare/react-uploader";
+import { useState, ReactNode } from "react";
 import { useUserStore } from "../../stores/userStore";
-import { updateUser } from "../../services/user.services";
+import { updateUser } from "../../api/user.api";
 import "@uploadcare/react-uploader/core.css";
-import fr from "@uploadcare/file-uploader/locales/file-uploader/fr.js";
-import PencilSquareIcon from "@heroicons/react/24/solid/PencilSquareIcon";
+import { CameraIcon } from "@heroicons/react/24/solid";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import UpdatePasswordForm from "../auth/UpdatePasswordForm";
+import { Menu } from "primereact/menu";
+import { MenuItem } from "primereact/menuitem";
+import {
+  DownloadSimpleIcon,
+  TrashIcon,
+  NotePencilIcon,
+} from "@phosphor-icons/react";
+import { useRef } from "react";
+import { deleteUploadcareFile } from "@/utils/uploadcare";
+import UserProfilePhoto from "./UserProfilePhoto";
 
 /**
  * Propriétés du ProfileHeader
@@ -34,13 +54,13 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const { setUser } = useUserStore();
   const uploadcarePubKey = import.meta.env.VITE_UPLOAD_CARE_PUBLIC_KEY;
-
-  /**
-   * Configuration de la locale française pour l'uploadeur de fichiers
-   */
-  useEffect(() => {
-    defineLocale("fr", fr);
-  }, []);
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogStyle, setDialogStyle] = useState<string | null>(null);
+  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
+    null
+  );
 
   const [imageUrl, setImageUrl] = useState<string | null>(
     user.imageUrl ?? null
@@ -55,11 +75,14 @@ export default function ProfileHeader({
    *
    * @param {string} url - URL de la nouvelle image de profil
    */
-  const handleImageChange = async (url: string) => {
+  const handleImageChange = async (url: string | null) => {
     if (url === undefined) return;
-    setImageUrl(url);
-    setSaving(true);
     try {
+      if (imageUrl) {
+        await deleteUploadcareFile(imageUrl);
+      }
+      setImageUrl(url);
+      setSaving(true);
       const saved = await updateUser({ imageUrl: url });
       setUser(saved.data);
     } catch (error) {
@@ -72,6 +95,48 @@ export default function ProfileHeader({
       setSaving(false);
     }
   };
+  const uploaderRef = useRef<UploadCtxProvider>(null);
+  const menu = useRef<Menu>(null);
+  const menuItems: MenuItem[] = [
+    {
+      label: "Edit",
+      className: "px-2 py-2 font-medium",
+      items: [
+        {
+          label: "Upload new image",
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          icon: (
+            <DownloadSimpleIcon
+              weight="regular"
+              size={16}
+              className={clsx("stroke-1.5 mr-1")}
+            />
+          ),
+          command: () => {
+            uploaderRef.current?.api.setCurrentActivity("start-from");
+            uploaderRef.current?.api.setModalState(true);
+          },
+        },
+
+        {
+          label: "Remove image",
+          icon: (
+            <TrashIcon
+              size={16}
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 rounded-b-md hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          command: () => {
+            handleImageChange(null);
+          },
+        },
+      ],
+    },
+  ];
 
   return (
     <div
@@ -82,6 +147,18 @@ export default function ProfileHeader({
       )}
     >
       <div className={clsx("flex items-center gap-4")}>
+        <Menu
+          model={menuItems}
+          popup
+          ref={menu}
+          popupAlignment="left"
+          className={clsx(
+            "min-w-35 rounded-md border border-gray-300 bg-white shadow-lg",
+            "dark:border-gray-600 dark:bg-gray-900",
+            "text-xs text-gray-700",
+            "dark:text-gray-300"
+          )}
+        />
         <div
           className={clsx(
             "relative flex h-fit max-h-fit w-fit max-w-fit items-center justify-center",
@@ -91,7 +168,20 @@ export default function ProfileHeader({
           )}
         >
           {/**Image de profil de l'utilisateur */}
-          {imageUrl ? (
+          <UserProfilePhoto
+            userId={user.id}
+            username={user.userName}
+            email={user.email}
+            imageUrl={imageUrl}
+            size="size-20"
+            imagefallback={
+              user.firstName && user.lastName
+                ? `${user.firstName[0].toUpperCase() + user.lastName[0].toUpperCase()}`
+                : undefined
+            }
+            imageClassName="text-3xl"
+          />
+          {/* {imageUrl ? (
             <img
               src={imageUrl}
               alt={user.userName}
@@ -102,32 +192,44 @@ export default function ProfileHeader({
             />
           ) : (
             <UserCircleIcon className={clsx("size-20")} />
-          )}
+          )} */}
 
           {/**Uploader de fichier pour changer l'image de profil */}
           {isEditable && (
-            <div title="Upload a photo">
-              <FileUploaderRegular
-                sourceList="local, camera, facebook, gdrive"
-                cameraModes="photo"
-                pubkey={uploadcarePubKey}
-                multiple={false}
-                iconHrefResolver={(iconName) => {
-                  if (iconName === "upload") return "/icons/camera.svg";
-                  if (iconName === "facebook") return "/icons/facebook.svg";
-                  if (iconName === "gdrive") return "/icons/google-drive.svg";
-                  if (iconName === "camera") return "/icons/camera-light.svg";
-                  if (iconName === "local") return "/icons/folder.svg";
-                  if (iconName === "default") return "/icons/arrow-down.svg";
-                  return "";
-                }}
-                onFileUploadSuccess={(file) => {
-                  const url = file?.cdnUrl;
-                  handleImageChange(url);
-                }}
-                className="absolute -right-1 bottom-2"
-              />
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <button
+                    className={clsx(
+                      "flex h-fit w-fit justify-center p-1",
+                      "rounded-full bg-white hover:bg-gray-200",
+                      "text-black",
+                      "absolute -right-1 bottom-2"
+                    )}
+                    onClick={(event) => {
+                      menu.current?.toggle(event);
+                    }}
+                  >
+                    <CameraIcon className={clsx("size-3.5")} />
+                  </button>
+                  <FileUploaderRegular
+                    apiRef={uploaderRef}
+                    sourceList="local, camera, facebook, gdrive"
+                    cameraModes="photo"
+                    pubkey={uploadcarePubKey}
+                    multiple={false}
+                    onFileUploadSuccess={(file) => {
+                      const url = file?.cdnUrl;
+                      handleImageChange(url);
+                    }}
+                    className="invisible absolute -right-1 bottom-2"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="bg-sky-500">
+                Upload a photo
+              </TooltipContent>
+            </Tooltip>
           )}
         </div>
 
@@ -183,22 +285,63 @@ export default function ProfileHeader({
           </div>
         </div>
       </div>
-      <div className={clsx("flex h-16 items-start")}>
-        {isEditable && (
+      {isEditable && !user.oauthId && (
+        <div className={clsx("flex h-16 items-start")}>
           <button
             className={clsx(
               "flex items-center justify-between gap-3 px-2 py-1",
-              "rounded-sm bg-sky-600 hover:bg-sky-700",
+              "rounded-sm bg-sky-500 hover:bg-sky-600",
               "text-sm font-medium text-white",
               "dark:bg-sky-800 dark:hover:bg-sky-700",
               "dark:text-white"
             )}
+            onClick={() => {
+              setDialogHeaderStyle(null);
+              setDialogStyle(null);
+              setDialogTitle("Change password");
+              setDialogContent(
+                <UpdatePasswordForm onSuccess={() => setShowDialog(false)} />
+              );
+              setShowDialog(true);
+            }}
           >
             <span>Change password</span>
-            <PencilSquareIcon className={clsx("size-3.5")} />
+            <NotePencilIcon weight="bold" className={clsx("size-4")} />
           </button>
-        )}
-      </div>
+        </div>
+      )}
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white",
+            dialogStyle
+          )}
+        >
+          <DialogHeader
+            className={clsx(
+              "rounded-t-md bg-sky-500 px-4 py-4",
+              dialogHeaderStyle
+            )}
+          >
+            <DialogTitle className="text-lg text-white">
+              {dialogTitle}
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md pb-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            {dialogContent}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

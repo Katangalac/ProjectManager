@@ -22,11 +22,12 @@ type TasksTableProps = {
  */
 export default function TasksTable({ tasks }: TasksTableProps) {
   return (
-    <div className={clsx("h-full")}>
+    <div className={clsx("flex max-h-[600px] w-full")}>
       <DataTable
         value={tasks}
-        emptyMessage="No tasks."
+        emptyMessage="No tasks"
         scrollable
+        scrollHeight="500px"
         className={clsx(
           "w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
@@ -45,12 +46,12 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         }
         tableStyle={{
           minWidth: "500px",
-          height: "600px",
+          maxHeight: "500px",
         }}
         header={
           <div
             className={clsx(
-              "rounded-t-sm bg-sky-600 p-2",
+              "rounded-t-sm bg-sky-500 p-2",
               "text-left text-sm font-semibold text-white",
               "dark:border-gray-500"
             )}
@@ -75,7 +76,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="project.title"
           header="Project"
-          body={(task) => task.project?.title ?? "—"}
+          body={(task) => task.project?.title ?? '"None"'}
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -88,7 +89,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="team.name"
           header="Team"
-          body={(task) => task.team?.name ?? "—"}
+          body={(task) => task.team?.name ?? '"None"'}
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -111,15 +112,22 @@ export default function TasksTable({ tasks }: TasksTableProps) {
                 {task.assignedTo.map((a) => (
                   <UserProfilePhoto
                     key={a.user.id}
+                    userId={a.user.id}
                     imageUrl={a.user.imageUrl}
                     username={a.user.userName}
                     email={a.user.email}
                     className="ring-1 ring-white"
+                    imagefallback={
+                      a.user.firstName && a.user.lastName
+                        ? `${a.user.firstName[0].toUpperCase() + a.user.lastName[0].toUpperCase()}`
+                        : undefined
+                    }
+                    imageClassName="text-[10px]"
                   />
                 ))}
               </div>
             ) : (
-              "-"
+              '"None"'
             )
           }
           className={clsx("w-fit p-2 text-left text-xs")}
@@ -196,7 +204,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           sortable
         ></Column>
         <Column
-          header=""
+          header="Actions"
           body={(task) => <TaskActionMenu task={task} />}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(

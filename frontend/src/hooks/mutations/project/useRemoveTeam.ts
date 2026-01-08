@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { removeTeamFromProject } from "@/services/project.services";
+import { removeTeamFromProject } from "@/api/project.api";
 
 /**
  * Propriété du hook de la mutation de retrait d'une équipe d'un projet
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type removeTeamMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -27,7 +29,7 @@ export const useRemoveTeam = (params: removeTeamMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors du retrait de l'équipe du projet");
+      params.onError?.();
     },
   });
   return {

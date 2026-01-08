@@ -209,6 +209,7 @@ export default function TaskForm({
                   onValueChange={(val) =>
                     field.onChange(val === NULL_VALUE ? null : val)
                   }
+                  disabled={defaultValues?.projectId ? true : false}
                 >
                   <SelectTrigger
                     className={clsx(
@@ -268,6 +269,7 @@ export default function TaskForm({
                   onValueChange={(val) =>
                     field.onChange(val === NULL_VALUE ? null : val)
                   }
+                  disabled={defaultValues?.teamId ? true : false}
                 >
                   <SelectTrigger
                     className={clsx(
@@ -624,7 +626,7 @@ export default function TaskForm({
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
-                  placeholder="Tap here..."
+                  placeholder="Write..."
                 />
               )}
             />
@@ -638,7 +640,7 @@ export default function TaskForm({
             type="submit"
             className={clsx(
               "mt-2 w-full p-2 text-center font-semibold text-white",
-              "rounded-sm bg-sky-600 hover:bg-sky-700"
+              "rounded-sm bg-sky-500 hover:bg-sky-600"
             )}
           >
             Confirm

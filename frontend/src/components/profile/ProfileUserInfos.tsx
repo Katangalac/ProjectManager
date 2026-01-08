@@ -1,13 +1,13 @@
 import { clsx } from "clsx";
 import { UpdateUserData, User } from "../../types/User";
 import { updateUserDataSchema } from "../../schemas/user.schemas";
-import PencilSquareIcon from "@heroicons/react/24/solid/PencilSquareIcon";
 import { useState, useEffect, useCallback } from "react";
-import { updateUser } from "../../services/user.services";
+import { updateUser } from "../../api/user.api";
 import { useUserStore } from "../../stores/userStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { timeAgo, dateToLongString } from "@/utils/dateUtils";
+import { NotePencilIcon } from "@phosphor-icons/react";
 
 /**
  * Propriétés du ProfileUserInfos
@@ -129,7 +129,7 @@ export default function ProfileUserInfo({
         <div className={clsx("flex w-full items-center justify-between")}>
           <h3
             className={clsx(
-              "text-sm font-medium text-sky-700",
+              "text-sm font-bold text-sky-500",
               "dark:text-white"
             )}
           >
@@ -141,7 +141,7 @@ export default function ProfileUserInfo({
             <button
               className={clsx(
                 "flex items-center justify-between gap-3 px-2 py-1",
-                "rounded-sm bg-sky-600 hover:bg-sky-700",
+                "rounded-sm bg-sky-500 hover:bg-sky-600",
                 "text-sm font-medium text-white",
                 "dark:bg-sky-800 dark:hover:bg-sky-700",
                 "dark:text-white"
@@ -149,7 +149,7 @@ export default function ProfileUserInfo({
               onClick={toogleEditingMode}
             >
               <span>{editing ? "Cancel" : "Edit"}</span>
-              <PencilSquareIcon className={clsx("size-3.5")} />
+              <NotePencilIcon weight="bold" className={clsx("size-3.5")} />
             </button>
           )}
         </div>
@@ -190,8 +190,12 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.firstName ? "border-red-500" : ""
+
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.firstName && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -224,8 +228,11 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.lastName ? "border-red-500" : ""
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.lastName && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -258,8 +265,11 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.userName ? "border-red-500" : ""
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.userName && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -292,8 +302,11 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.email ? "border-red-500" : ""
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.email && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -326,8 +339,11 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.phoneNumber ? "border-red-500" : ""
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.phoneNumber && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -360,8 +376,11 @@ export default function ProfileUserInfo({
                 "flex justify-start",
                 "text-sm font-medium text-black",
                 "dark:text-white",
-                editing ? "rounded-sm border border-gray-300 p-2" : "",
-                errors.profession ? "border-red-500" : ""
+                editing &&
+                  "rounded-sm border border-gray-300 p-2 " +
+                    "focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 focus:outline-none " +
+                    "hover:border-sky-400",
+                errors.profession && "border-red-500"
               )}
               type="text"
               placeholder="Unkown"
@@ -392,7 +411,9 @@ export default function ProfileUserInfo({
               placeholder="Unkown"
               disabled={true}
               value={
-                user.lastLoginAt ? timeAgo(new Date(user.lastLoginAt)) : ""
+                user.lastLoginAt
+                  ? timeAgo(new Date(user.lastLoginAt), true)
+                  : ""
               }
             />
           </div>
@@ -432,7 +453,7 @@ export default function ProfileUserInfo({
               type="submit"
               className={clsx(
                 "px-5 py-1 font-semibold text-white",
-                "rounded-sm bg-sky-600 hover:bg-sky-700"
+                "rounded-sm bg-sky-500 hover:bg-sky-600"
               )}
             >
               Save

@@ -50,7 +50,10 @@ export const createProject = async (
  * @throws {ProjectNotFoundError} - lorsqu'aucun projet avec l'identifiant donné n'a été trouvé
  */
 export const getProjectById = async (id: string): Promise<Project> => {
-  const project = await db.project.findUnique({ where: { id } });
+  const project = await db.project.findUnique({
+    where: { id },
+    include: { user: true },
+  });
   if (!project) throw new ProjectNotFoundError(id);
   return project;
 };
@@ -92,6 +95,20 @@ export const getProjects = async (
     projects,
     pagination,
   };
+};
+
+/**
+ * Calcul le cout total d'un projet
+ * @param {string} id - identifiant du projet
+ * @returns le cout total du projet
+ */
+export const getProjectTotalCost = async (id: string): Promise<number> => {
+  const result = await db.task.aggregate({
+    where: { projectId: id },
+    _sum: { cost: true },
+  });
+
+  return result._sum.cost ?? 0;
 };
 
 /**
@@ -216,6 +233,14 @@ export const getProjectTeams = async (
     where: {
       AND: [projectTeamCondition, teamFilter],
     },
+    include: {
+      teamUsers: {
+        include: {
+          user: true,
+        },
+      },
+      user: true,
+    },
     orderBy: { updatedAt: "desc" },
   };
 
@@ -328,7 +353,7 @@ export const getProjectTasks = async (
       user: true,
       assignedTo: { include: { user: true } },
     },
-    orderBy: { deadline: "desc" },
+    orderBy: { deadline: "asc" },
   };
 
   if (!all) {

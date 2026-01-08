@@ -5,6 +5,7 @@ import { getUserProjects } from "../user/user.services";
 import { getUserTasks } from "../user/user.services";
 import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
+import { setUserOnline, setUserOffline } from "../auth/onlineUser";
 
 //Instance du serveur Socket.io
 let io: Server;
@@ -32,14 +33,15 @@ export const setupSocket = (server: http.Server) => {
     console.log("🟢 Client connecté:", socket.id);
 
     /**
-     * Déclenché lorsque l'utilisateur est inscrit dans le système
-     * Cela permet ensuite d'envoyer des messages/notifications en temps réel à cet utilisateur
+     * Déclenché lorsque l'utilisateur se connecte
+     * Ajoute le socket à la "room" de l'utilisateur et l'ajoute à la liste des utilisateurs en ligne
      */
     socket.on("login", async (userId: string) => {
       console.log(
         `Utilisateur ${userId} enregistré sur le socket ${socket.id}`
       );
       socket.join(userId); // Permet de cibler l'utilisateur dans io.to(userId)
+      setUserOnline(userId);
 
       //Écoute les évenements des équipes de l'utilisateur
       // const teams = await getUserTeams(userId, { all: true, page: 1, pageSize: 20 });
@@ -63,6 +65,16 @@ export const setupSocket = (server: http.Server) => {
         socket.join(conversation.id)
       );
       io.to(userId).emit("welcome-back", "Welcome back!");
+    });
+
+    /**
+     * Déclenché lorsque l'utilisateur se déconnecte du système
+     * Le socket quitte la "room" de l'utilisateur et le supprime de la liste des utilisateurs en ligne
+     */
+    socket.on("logout", (userId: string) => {
+      console.log(`Utilisateur ${userId} déconnecté du socket ${socket.id}`);
+      setUserOffline(userId);
+      socket.leave(userId);
     });
 
     /**

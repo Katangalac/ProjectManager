@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL") //env("PROD_DATABASE_URL")
+  url      = env("DATABASE_URL")
   //directUrl = env("PROD_DATABASE_DIRECT_URL")
 }
 
@@ -43,6 +43,13 @@ enum ProjectStatus {
   COMPLETED
 }
 
+// État d'une invitation
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 // Modèle représentant un utilisateur de l'application
 model User {
   id                String             @id @default(uuid())
@@ -65,6 +72,8 @@ model User {
   createdTasks      Task[]
   assignedTasks     UserTask[]
   userNotifications Notification[]
+  sentInvitations Invitation[] @relation("SentInvitations")
+  receivedInvitations Invitation[] @relation("ReceivedInvitations")
   lastLoginAt       DateTime?          @map("last_login_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
   createdAt         DateTime           @default(now()) @map("created_at")
@@ -83,6 +92,7 @@ model Team {
   teamUsers         UserTeam[]
   teamProjects      ProjectTeam[]
   teamConversations Conversation[]
+  invitations Invitation[]
   updatedAt         DateTime       @updatedAt @map("updated_at")
   createdAt         DateTime       @default(now()) @map("created_at")
 
@@ -134,6 +144,23 @@ model Task {
   createdAt     DateTime   @default(now()) @map("created_at")
 
   @@map("tasks")
+}
+//Modèle représentant une invitation
+model Invitation {
+  id            String   @id @default(uuid())
+  senderId      String @map("sender_id")
+  receiverId    String @map("receiver_id")
+  teamId        String @map("team_id")   
+  message       String @map("message")
+  status        InvitationStatus @default(PENDING) @map("status")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  sender        User     @relation("SentInvitations", fields: [senderId], references: [id])
+  receiver      User     @relation("ReceivedInvitations", fields: [receiverId], references: [id])
+  team          Team    @relation(fields: [teamId], references: [id])
+  
+  @@map("invitations")
 }
 
 // Modèle représentant une notification

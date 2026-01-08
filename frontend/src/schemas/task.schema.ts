@@ -216,3 +216,8 @@ export const searchTasksFilterSchema = z.object({
     })
     .optional(),
 });
+
+export const userTaskSchema = z.object({
+  userId: z.uuid("Invalid ID"),
+  taskId: z.uuid("Invalid ID"),
+});

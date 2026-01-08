@@ -104,6 +104,39 @@ export const getProjectByIdController = async (req: Request, res: Response) => {
 };
 
 /**
+ * Calcul le cout total d'un projet
+ * @async
+ * @param {Request} req - requete Express contenant l'identifiant du projet
+ * @param {Response} res - reponse Express en JSON
+ */
+export const getProjectTotalCostController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = idParamSchema.parse({ id: req.params.id });
+    const totalCost = await projectService.getProjectTotalCost(id);
+    res
+      .status(200)
+      .json(successResponse(totalCost, "Cout total du projet récupéré"));
+  } catch (err) {
+    console.error("Erreur lors du calcul du cout total du projet : ", err);
+    if (err instanceof z.ZodError) {
+      res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
+    }
+
+    res
+      .status(500)
+      .json(
+        errorResponse(
+          "INTERNAL_SERVER_ERROR",
+          "Erreur lors du calcul du cout total du projet"
+        )
+      );
+  }
+};
+
+/**
  * Met à jour les informations d'un projet
  * @async
  * @param {Request} req - requete Express contenant l'identifiant du projet

@@ -1,3 +1,5 @@
+import { User } from "@/types/User";
+
 export const getAcronymeFromName = (name: string) => {
   if (!name) return "";
 
@@ -33,4 +35,25 @@ export const getOrdinalSuffix = (n: number): string => {
     default:
       return "th";
   }
+};
+
+export const stringToColorIndex = (str: string, colors: string[]): number => {
+  let hash = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0; // petit hash rapide
+  }
+
+  return hash % colors.length;
+};
+
+export const stringToColor = (str: string, colors: string[]): string => {
+  const index = stringToColorIndex(str, colors);
+  return colors[index];
+};
+
+export const getUserLabel = (user: User): string => {
+  return user.firstName && user.lastName
+    ? user.firstName + " " + user.lastName
+    : user.userName;
 };

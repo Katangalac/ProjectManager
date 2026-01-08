@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { addTeamToProject } from "@/services/project.services";
+import { addTeamToProject } from "@/api/project.api";
 
 /**
  * Propriété du hook de la mutation d'ajout d'une équipe dans un projet
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type AddTeamMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -27,7 +29,7 @@ export const useAddTeam = (params: AddTeamMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de l'ajout de l'équipe dans le projet");
+      params.onError?.();
     },
   });
   return {

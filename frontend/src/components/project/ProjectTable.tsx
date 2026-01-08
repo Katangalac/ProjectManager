@@ -21,11 +21,12 @@ type ProjectsTableProps = {
  */
 export default function ProjectsTable({ projects }: ProjectsTableProps) {
   return (
-    <div className={clsx("min-h-screen")}>
+    <div className={clsx("flex max-h-[600px] w-full")}>
       <DataTable
         value={projects}
         emptyMessage="No projects."
         scrollable
+        scrollHeight="500px"
         className={clsx(
           "min-w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
@@ -46,7 +47,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         header={
           <div
             className={clsx(
-              "rounded-t-sm bg-sky-600 p-2",
+              "rounded-t-sm bg-sky-500 p-2",
               "text-left text-sm font-semibold text-white",
               "dark:border-gray-500"
             )}
@@ -149,7 +150,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
           sortable
         ></Column>
         <Column
-          header=""
+          header="Actions"
           body={(project) => <ProjectActionMenu project={project} />}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(

@@ -25,7 +25,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div
       className={clsx(
-        "h-fit w-72 px-2",
+        "h-fit w-full max-w-76 px-2",
         "rounded-md border border-gray-300 shadow-lg"
       )}
     >
@@ -119,7 +119,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               >
                 <CalendarXIcon
                   weight="regular"
-                  className="size-4.5 text-red-600"
+                  className={clsx(
+                    "size-4.5",
+                    isOverdue ? "text-red-600" : "text-gray-600"
+                  )}
                 />{" "}
                 {dateToLongString(new Date(project.deadline))}
               </span>

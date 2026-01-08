@@ -7,6 +7,7 @@ import { SearchUsersFilter } from "../user/User";
 import { SearchProjectsFilter } from "../project/Project";
 import { SearchMessagesFilter } from "../message/Message";
 import { SearchConversationsFilter } from "../conversation/Conversation";
+import { SearchInvitationFilter } from "../invitation/Invitation";
 import { Pagination } from "../types/Pagination";
 
 //Format des numéros de téléphone
@@ -45,17 +46,23 @@ export const buildUserWhereInput = (
   filter: SearchUsersFilter
 ): Prisma.UserWhereInput => {
   const where: Prisma.UserWhereInput = {};
+  const OR: Prisma.UserWhereInput[] = [];
+
   if (filter.email)
-    where.email = { contains: filter.email, mode: "insensitive" };
+    OR.push({ email: { contains: filter.email, mode: "insensitive" } });
   if (filter.userName)
-    where.userName = { contains: filter.userName, mode: "insensitive" };
+    OR.push({ userName: { contains: filter.userName, mode: "insensitive" } });
   if (filter.firstName)
-    where.firstName = { contains: filter.firstName, mode: "insensitive" };
+    OR.push({ firstName: { contains: filter.firstName, mode: "insensitive" } });
   if (filter.lastName)
-    where.lastName = { contains: filter.lastName, mode: "insensitive" };
+    OR.push({ lastName: { contains: filter.lastName, mode: "insensitive" } });
   if (filter.profession)
-    where.profession = { contains: filter.profession, mode: "insensitive" };
-  return where;
+    OR.push({
+      profession: { contains: filter.profession, mode: "insensitive" },
+    });
+
+  if (OR.length === 0) return {};
+  return { OR };
 };
 
 /**
@@ -68,6 +75,22 @@ export const buildTeamWhereInput = (
 ): Prisma.TeamWhereInput => {
   const where: Prisma.TeamWhereInput = {};
   if (filter.name) where.name = { contains: filter.name, mode: "insensitive" };
+  return where;
+};
+
+/**
+ * Construit dynamiquement le filtre Prisma à partir d'un SearchInvitationsFilter
+ * @param {SearchInvitationsFilter} filter - l'objet contenant les éléments de filtre à utiliser
+ * @return {Prisma.InvitationWhereInput } - le filtre construit
+ */
+export const buildInvitationWhereInput = (
+  filter: SearchInvitationFilter
+): Prisma.InvitationWhereInput => {
+  const where: Prisma.InvitationWhereInput = {};
+  if (filter.senderId) where.senderId = filter.senderId;
+  if (filter.receiverId) where.receiverId = filter.receiverId;
+  if (filter.teamId) where.teamId = filter.teamId;
+  if (filter.status) where.status = filter.status;
   return where;
 };
 

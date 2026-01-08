@@ -79,16 +79,20 @@ export const createUser = async (
       err instanceof Prisma.PrismaClientKnownRequestError &&
       err.code === "P2002"
     ) {
+      const errorTarget = err.meta?.target as Array<string>;
+      console.log("PRISMA-CLIENT-ERROR!!!!!!!!!");
       if (
         Array.isArray(err.meta?.target) &&
-        err.meta.target.includes("userName")
+        err.meta.target.includes("username")
       )
         throw new UsernameAlreadyUsedError();
-      if (Array.isArray(err.meta?.target) && err.meta.target.includes("email"))
+      if (errorTarget.includes("email_address")) {
+        console.log("EMAIL-ERROR*****");
         throw new EmailAlreadyUsedError();
+      }
       if (
         Array.isArray(err.meta?.target) &&
-        err.meta.target.includes("googleId")
+        err.meta.target.includes("auth_id")
       )
         throw new UserAlreadyExistError();
     }
@@ -275,6 +279,14 @@ export const getUserTeams = async (
     where: {
       AND: [userTeamCondition, teamFilter],
     },
+    include: {
+      user: true,
+      teamUsers: {
+        include: {
+          user: true,
+        },
+      },
+    },
     orderBy: { updatedAt: "desc" },
   };
 
@@ -293,6 +305,26 @@ export const getUserTeams = async (
     teams: userTeams,
     pagination,
   };
+};
+
+export const getUserPeers = async (userId: string): Promise<SafeUser[]> => {
+  const teammates = await db.userTeam.findMany({
+    where: {
+      team: {
+        teamUsers: {
+          some: { userId },
+        },
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+  const uniqueUsers = Array.from(
+    new Map(teammates.map((tm) => [tm.user.id, tm.user])).values()
+  );
+  const safeUsers = uniqueUsers.map(toSafeUser);
+  return safeUsers;
 };
 
 /**
@@ -340,7 +372,7 @@ export const getUserProjects = async (
     where: {
       AND: [userProjectCondition, projectFilter],
     },
-    orderBy: { deadline: "desc" },
+    orderBy: { deadline: "asc" },
   };
 
   if (!all) {

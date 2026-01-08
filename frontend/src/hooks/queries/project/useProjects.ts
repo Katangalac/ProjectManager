@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserProjects } from "../../../services/project.services";
+import { getUserProjects } from "../../../api/project.api";
 import { SearchProjectsFilter } from "../../../types/Project";
 import { Project } from "../../../types/Project";
 

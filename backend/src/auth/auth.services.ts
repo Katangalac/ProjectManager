@@ -5,6 +5,7 @@ import { updatePasswordData } from "./Auth";
 import { db } from "../db";
 import { hash, verify } from "argon2";
 import { UserNotFoundError } from "../user/errors";
+import { AppError } from "../errors/AppError";
 
 /**
  * Génère le token d'authentification signé ainsi que les options de cookie dans lequel il sera stocké
@@ -39,10 +40,10 @@ export const updatePassword = async (
   const { currentPassword, newPassword } = updatePasswordData;
   const user = await db.user.findUnique({ where: { id: userId } });
   if (!user) throw new UserNotFoundError(userId);
-  if (!user.password)
-    throw new Error("L'utilisateur ne possède pas de mot de passe");
+  if (!user.password) throw new Error("This user doesn't have a password");
   const isValidPassword = await verify(user.password, currentPassword);
-  if (!isValidPassword) throw new Error("Mot de passe invalide");
+  if (!isValidPassword)
+    throw new AppError("Invalid password", 400, "INVALID_PASSWORD");
   const hashedPassword = await hash(newPassword);
   await db.user.update({
     where: { id: userId },

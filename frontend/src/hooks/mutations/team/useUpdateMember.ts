@@ -1,13 +1,15 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { updateTeamMemberRole } from "../../../services/team.service";
+import { updateTeamMemberRole } from "../../../api/team.api";
 
 /**
  * Propriété du hook de la mutation de modification du role d'un membre dans une équipe
  *
  * - onSuccess: fonction à appeler en cas de succès de la mutation. Peut ne pas être défini
+ * - onError: fonction à appeller en cas d'erreur
  */
 type updateMemberMutationParams = {
   onSuccess?: () => void;
+  onError?: () => void;
 };
 
 /**
@@ -31,7 +33,7 @@ export const useUpdateMember = (params: updateMemberMutationParams = {}) => {
     },
     onError: (error) => {
       console.error(error);
-      alert("Erreur lors de la modification du membre dans l'équipe");
+      params.onError?.();
     },
   });
   return {

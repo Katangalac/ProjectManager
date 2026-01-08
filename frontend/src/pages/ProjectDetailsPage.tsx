@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "../components/ui/progress";
 import { PROJECT_STATUS_META } from "@/lib/constants/project";
 import {
-  ArrowCircleLeftIcon,
+  ArrowLeftIcon,
   CircleIcon,
   GridFourIcon,
   ClockCounterClockwiseIcon,
@@ -20,17 +20,27 @@ import {
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "@/utils/dateUtils";
 import ProjectOverview from "@/components/project/ProjectOverview";
-import TasksView from "@/components/task/TasksView";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import ProjectTasksView from "@/components/project/ProjectTasksView";
+import ProjectTeamsView from "@/components/project/ProjectTeamsView";
+import ProjectCollaboratorsTable from "@/components/project/ProjectCollaboratorsTable";
+import { useState } from "react";
+import ProjectAbout from "@/components/project/ProjectAbout";
 
 /**
  * Affiche les informations détaillées d'un projet
  */
 export default function ProjectDetailsPage() {
+  const [tab, setTab] = useState("overview");
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useProjectById(projectId!);
   return (
-    <div className={clsx("h-screen w-full")}>
+    <div className={clsx("h-full w-full")}>
       {isLoading ? (
         <ProgressSpinner />
       ) : (
@@ -46,11 +56,27 @@ export default function ProjectDetailsPage() {
                     <div
                       className={clsx("flex h-fit w-fit items-center gap-1")}
                     >
-                      <ArrowCircleLeftIcon
-                        weight="regular"
-                        className={clsx("size-5 cursor-pointer text-gray-600")}
-                        onClick={() => navigate("/userProjects")}
-                      />
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className={clsx(
+                              "flex cursor-pointer items-center justify-center rounded-full bg-white p-0.5",
+                              "hover:bg-gray-100",
+                              "border border-gray-400"
+                            )}
+                            onClick={() => navigate("/userProjects")}
+                          >
+                            <ArrowLeftIcon
+                              weight="bold"
+                              className={clsx(
+                                "size-2.5 cursor-pointer text-gray-500 hover:text-gray-700"
+                              )}
+                            />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Projects</TooltipContent>
+                      </Tooltip>
+
                       <span className="text-sm font-medium text-black">
                         {data.title}
                       </span>
@@ -103,12 +129,12 @@ export default function ProjectDetailsPage() {
                   </div>
                 </div>
               </div>
-              <Tabs defaultValue="overview" className="h-full w-full gap-0">
+              <Tabs value={tab} onValueChange={setTab} className="gap-0">
                 <TabsList className="h-fit w-full justify-start gap-5 rounded-none border-b border-gray-300 px-3 py-0">
                   <TabsTrigger
                     className={clsx(
                       "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
                       "data-[state=active]:text-black",
                       "hover:text-black",
                       "cursor-pointer",
@@ -127,7 +153,7 @@ export default function ProjectDetailsPage() {
                   <TabsTrigger
                     className={clsx(
                       "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
                       "data-[state=active]:text-black",
                       "hover:text-black",
                       "cursor-pointer",
@@ -142,7 +168,7 @@ export default function ProjectDetailsPage() {
                   <TabsTrigger
                     className={clsx(
                       "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
                       "data-[state=active]:text-black",
                       "hover:text-black",
                       "cursor-pointer",
@@ -158,7 +184,7 @@ export default function ProjectDetailsPage() {
                   <TabsTrigger
                     className={clsx(
                       "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
                       "data-[state=active]:text-black",
                       "hover:text-black",
                       "cursor-pointer",
@@ -173,7 +199,7 @@ export default function ProjectDetailsPage() {
                   <TabsTrigger
                     className={clsx(
                       "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-600",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
                       "data-[state=active]:text-black",
                       "hover:text-black",
                       "cursor-pointer",
@@ -189,20 +215,30 @@ export default function ProjectDetailsPage() {
                 </TabsList>
                 <div>
                   <TabsContent value="overview" className={clsx("h-full px-5")}>
-                    <ProjectOverview project={data} />
+                    <ProjectOverview
+                      project={data}
+                      onCollaboratorsSeeMoreClick={() =>
+                        setTab("collaborators")
+                      }
+                      onTasksSeeMoreClick={() => setTab("tasks")}
+                      onTeamsSeeMoreClick={() => setTab("teams")}
+                    />
                   </TabsContent>
-                  <TabsContent value="teams" className={clsx("px-5")}>
-                    Will be add soon. Keep in touch!
+
+                  <TabsContent value="teams" className={clsx("h-full px-5")}>
+                    <ProjectTeamsView projectId={projectId!} />
                   </TabsContent>
+
                   <TabsContent value="tasks" className={clsx("px-5")}>
-                    <TasksView projectId={data.id} />
+                    <ProjectTasksView projectId={projectId!} />
                   </TabsContent>
 
                   <TabsContent value="collaborators" className={clsx("px-5")}>
-                    Will be add soon. Keep in touch!
+                    <ProjectCollaboratorsTable projectId={projectId!} />
                   </TabsContent>
+
                   <TabsContent value="about" className={clsx("px-5")}>
-                    Will be add soon. Keep in touch!
+                    <ProjectAbout project={data} />
                   </TabsContent>
                 </div>
               </Tabs>

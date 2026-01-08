@@ -1,3 +1,5 @@
+import { Pagination } from "./Pagination";
+
 /**
  * Type représentant une notification
  */
@@ -9,6 +11,16 @@ export type Notification = {
   read: boolean;
   updatedAt: Date;
   createdAt: Date;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des notifications
+ */
+export type NotificationsApiResponse = {
+  data: Notification[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
 };
 
 /**

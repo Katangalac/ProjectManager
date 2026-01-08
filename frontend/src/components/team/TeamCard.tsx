@@ -31,6 +31,7 @@ export default function TeamCard({ team }: TeamCardProps) {
     >
       <div className={clsx("flex w-full justify-center")}>
         <TeamNameAcronym
+          id={team.id}
           name={team.name}
           onClick={() => navigate(`/userTeams/${team.id}`)}
           className="min-w-16 px-3 py-5"

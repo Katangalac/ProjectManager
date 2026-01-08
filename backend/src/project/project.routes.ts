@@ -23,6 +23,11 @@ router.get("/", projectController.getProjectsController);
 router.get("/:id", projectController.getProjectByIdController);
 
 /**
+ * @route GET /api/projects/:id/totalCost
+ */
+router.get("/:id/totalCost", projectController.getProjectTotalCostController);
+
+/**
  * @route PATCH /api/projects/:id
  */
 router.patch("/:id", projectController.updateProjectController);
