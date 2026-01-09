@@ -54,17 +54,19 @@ export default function UserTeamsPage() {
             {isError && (
               <UserErrorMessage onRetryButtonClick={() => refetch()} />
             )}
-            {data && data.length > 0 ? (
+            {data && (
               <>
-                <TeamsBoard teams={data} />
+                {data.length > 0 ? (
+                  <TeamsBoard teams={data} />
+                ) : (
+                  <NoItems
+                    message="No teams available!"
+                    iconSize="size-15 stroke-1"
+                    textStyle="text-lg text-gray-400 font-medium"
+                    className="h-80 w-80 rounded-full bg-sky-50"
+                  />
+                )}
               </>
-            ) : (
-              <NoItems
-                message="No teams available!"
-                iconSize="size-15 stroke-1"
-                textStyle="text-lg text-gray-400 font-medium"
-                className="h-80 w-80 rounded-full bg-sky-50"
-              />
             )}
           </div>
         </div>

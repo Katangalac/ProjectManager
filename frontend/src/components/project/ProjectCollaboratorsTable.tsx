@@ -32,15 +32,19 @@ export default function ProjectCollaboratorsTable({
       {isLoading && <ProgressSpinner />}
 
       {isError && <UserErrorMessage />}
-      {data && data.length > 0 ? (
-        <UsersTable users={data || []} title="Collaborators" />
-      ) : (
-        <NoItems
-          message="No collaborators yet"
-          iconSize="size-15 stroke-1"
-          textStyle="text-lg text-gray-400 font-medium"
-          className="h-80 w-80 rounded-full bg-sky-50"
-        />
+      {data && (
+        <>
+          {data.length > 0 ? (
+            <UsersTable users={data || []} title="Collaborators" />
+          ) : (
+            <NoItems
+              message="No collaborators yet"
+              iconSize="size-15 stroke-1"
+              textStyle="text-lg text-gray-400 font-medium"
+              className="h-80 w-80 rounded-full bg-sky-50"
+            />
+          )}
+        </>
       )}
     </div>
   );

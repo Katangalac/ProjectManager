@@ -5,6 +5,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { stringToColor } from "@/utils/stringUtils";
 import { colors } from "@/lib/constants/color";
 import { useMemo } from "react";
+import clsx from "clsx";
 
 /**
  *
@@ -84,15 +85,14 @@ export default function UserProfilePhoto({
             </div>
           )}
           {showOnlineStatus && (
-            // <CircleIcon
-            //   weight="fill"
-            //   size={8}
-            //   className={cn(
-            //     "absolute right-0 bottom-1",
-            //     isOnline ? "text-green-500" : "text-gray-400"
-            //   )}
-            // />
-            <></>
+            <div
+              className={clsx(
+                "absolute right-0 bottom-1 ring-2 ring-white",
+                "size-2 rounded-full",
+                isOnline?.valueOf() && "bg-green-500",
+                !isOnline?.valueOf() && "bg-gray-400"
+              )}
+            ></div>
           )}
         </div>
       </TooltipTrigger>

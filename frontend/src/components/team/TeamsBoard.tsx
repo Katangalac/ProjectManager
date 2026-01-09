@@ -18,12 +18,14 @@ export default function TeamsBoard({ teams }: TeamsBoardProps) {
   return (
     <div
       className={clsx(
-        "grid min-h-screen min-w-full grid-cols-1 gap-x-2 gap-y-5 lg:grid-cols-4"
+        teams.length > 3
+          ? "grid h-fit w-full grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-x-3 gap-y-3"
+          : "flex w-full gap-4"
       )}
     >
       {(!teams || teams.length === 0) && <div>No teams</div>}
-      {teams.map((team) => (
-        <TeamCard key={team.id} team={team} />
+      {teams.map((team, index) => (
+        <TeamCard key={index} team={team} />
       ))}
     </div>
   );

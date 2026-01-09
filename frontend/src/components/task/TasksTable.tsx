@@ -7,6 +7,7 @@ import { priorityLevelHelper } from "../../utils/priorityLevelHelper";
 import { CircleIcon } from "@phosphor-icons/react";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import TaskActionMenu from "./TaskActionMenu";
+import { formatShortDateWithOptionalYear } from "@/utils/dateUtils";
 
 /**
  * Propriétés du TasksTable
@@ -73,6 +74,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           )}
           sortable
         ></Column>
+
         <Column
           field="project.title"
           header="Project"
@@ -192,8 +194,10 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="deadline"
           header="Deadline"
-          body={(rowData) =>
-            new Date(rowData.deadline).toISOString().split("T")[0]
+          body={
+            (rowData) =>
+              formatShortDateWithOptionalYear(new Date(rowData.deadline))
+            // new Date(rowData.deadline).toISOString().split("T")[0]
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -206,9 +210,9 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           header="Actions"
           body={(task) => <TaskActionMenu task={task} />}
-          className={clsx("w-fit p-2 text-left text-xs")}
+          className={clsx("flex justify-center p-2 text-center text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
+            "flex justify-center border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}

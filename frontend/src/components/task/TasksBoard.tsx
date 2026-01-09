@@ -20,8 +20,9 @@ export default function TasksBoard({ tasks }: TasksBoardProps) {
       <div className={clsx("flex-1")}>
         <div
           className={clsx(
-            "grid h-fit gap-3 gap-x-3 gap-y-3 pb-4",
-            "grid-cols-[repeat(auto-fit,minmax(13rem,1fr))]"
+            tasks.length > 3
+              ? "grid h-fit grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-3 gap-x-3 gap-y-3 pb-4"
+              : "flex w-full gap-4"
           )}
         >
           {(!tasks || tasks.length === 0) && <div>No tasks</div>}

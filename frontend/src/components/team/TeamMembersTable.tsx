@@ -59,7 +59,7 @@ export default function TeamMembersTable({
             body={(teamUser) => (
               <div
                 className={clsx(
-                  "flex w-fit items-center gap-1 rounded-sm border border-gray-200 p-0.5",
+                  "flex w-fit items-center gap-1 rounded-sm p-0.5",
                   "dark:border-gray-500"
                 )}
               >
@@ -75,6 +75,7 @@ export default function TeamMembersTable({
                       : undefined
                   }
                   imageClassName="text-sm"
+                  size="size-12"
                 />
                 <span>{teamUser.user.userName}</span>
               </div>

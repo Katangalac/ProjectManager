@@ -46,3 +46,30 @@ export const timeAgo = (date: Date, short: boolean = false): string => {
     ? `${date.toISOString().split("T")[0]}`
     : `Since ${dateToLongString(date)}`;
 };
+
+export const formatShortDateWithOptionalYear = (date: Date): string => {
+  const now = new Date();
+  const isCurrentYear = date.getFullYear() === now.getFullYear();
+
+  // Format de base : "Jan 14"
+  const base = date
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    })
+    .replace(/^\w/, (c) => c.toUpperCase()); // met la 1ère lettre en majuscule
+
+  if (isCurrentYear) {
+    return base; // ex: "Jan 14"
+  }
+
+  return `${base}, ${date.getFullYear()}`; // ex: "Jan 14, 2025"
+};
+
+export const formatTime = (date: Date, amPm: boolean): string => {
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: amPm,
+  });
+};

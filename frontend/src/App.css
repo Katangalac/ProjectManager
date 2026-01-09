@@ -20,6 +20,11 @@
   margin-bottom: 10px;
 }
 
+.uc-edit-btn,
+.uc-remove-btn {
+  display: none;
+}
+
 .uc-done-btn {
   background-color: #efefef;
   width: 100%;
@@ -227,14 +232,12 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 
 .p-datatable-wrapper::-webkit-scrollbar-track {
-  background: #b5e2fd;
-  border-radius: 0.5rem;
+  background: hsl(205, 100%, 93%);
   margin: 0px 5px;
 }
 
 .p-datatable-wrapper::-webkit-scrollbar-thumb {
   background: #64b1e8;
-  border-radius: 0.25rem;
 }
 
 .p-datatable .p-datatable-wrapper {

@@ -9,7 +9,7 @@ import {
   CalendarCheckIcon,
 } from "@phosphor-icons/react";
 import { dateToLongString } from "@/utils/dateUtils";
-
+import { useNavigate } from "react-router-dom";
 /**
  * Propriétés du ProjectCard
  *
@@ -20,15 +20,21 @@ type ProjectCardProps = {
 };
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const navigate = useNavigate();
   const isOverdue =
     project.status !== "COMPLETED" && new Date(project.deadline) < new Date();
   return (
     <div
       className={clsx(
-        "h-fit w-full max-w-76 px-2",
+        "relative h-fit w-full max-w-76 cursor-pointer px-2",
         "rounded-md border border-gray-300 shadow-lg"
       )}
     >
+      <div
+        className="absolute inset-0 bg-transparent"
+        onClick={() => navigate(`${project.id}`)}
+      />
+
       <div className={clsx("flex w-full flex-col gap-2")}>
         <div
           className={clsx(
@@ -59,8 +65,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               </span>
             )}
           </div>
-
-          <ProjectActionMenu project={project} />
+          <div className="relative z-10">
+            <ProjectActionMenu project={project} />
+          </div>
         </div>
         <div className={clsx("flex flex-col items-start gap-2")}>
           <span

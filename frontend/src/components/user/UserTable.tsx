@@ -3,7 +3,6 @@ import { Column } from "primereact/column";
 import { User } from "@/types/User";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import { clsx } from "clsx";
-import { timeAgo } from "@/utils/dateUtils";
 
 /**
  * Propriétés du UsersTable
@@ -80,6 +79,7 @@ export default function UsersTable({
                 }
                 imageClassName="text-[10px]"
                 size="size-12"
+                showOnlineStatus={true}
               />
               <span>{user.userName}</span>
             </div>
@@ -159,18 +159,6 @@ export default function UsersTable({
           sortable
         ></Column>
 
-        <Column
-          field="lastLoginAt"
-          header="Last login"
-          body={(rowData) => timeAgo(new Date(rowData.lastLoginAt))}
-          className={clsx("w-fit p-2 text-left text-xs")}
-          headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
-            "dark:text-gray-400",
-            "dark:border-gray-500"
-          )}
-          sortable
-        ></Column>
         {/* <Column
           header="Actions"
           body={(task) => <TaskActionMenu task={task} />}

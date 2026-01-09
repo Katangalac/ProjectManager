@@ -32,7 +32,7 @@ export default function TeamMembersView({ team }: TeamMembersViewProps) {
       <div className={clsx("flex w-full items-center justify-between")}>
         <span
           className={clsx(
-            "flex cursor-pointer items-center gap-1 text-sm font-medium text-sky-600 hover:text-sky-700",
+            "flex cursor-pointer items-center gap-1 text-sm font-medium text-sky-500 hover:text-sky-600",
             "hover:underline"
           )}
         >

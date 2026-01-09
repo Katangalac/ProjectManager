@@ -61,7 +61,6 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
           onChange={setViewMode}
         />
         <button
-          title="New task"
           onClick={() => setShowDialog(true)}
           className={clsx(
             "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
@@ -78,20 +77,24 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
       {isLoading && <ProgressSpinner />}
 
       {isError && <UserErrorMessage />}
-      {data && data.length > 0 ? (
+      {data && (
         <>
-          {viewMode === "table" && <TasksTable tasks={data} />}
-          {viewMode === "checklist" && (
-            <ProjectTaskCheckList tasks={data} hideSeeAllButton={true} />
+          {data.length > 0 ? (
+            <>
+              {viewMode === "table" && <TasksTable tasks={data} />}
+              {viewMode === "checklist" && (
+                <ProjectTaskCheckList tasks={data} hideSeeAllButton={true} />
+              )}
+            </>
+          ) : (
+            <NoItems
+              message="No tasks available"
+              iconSize="size-15 stroke-1"
+              textStyle="text-lg text-gray-400 font-medium"
+              className="h-80 w-80 rounded-full bg-sky-50"
+            />
           )}
         </>
-      ) : (
-        <NoItems
-          message="No tasks available"
-          iconSize="size-15 stroke-1"
-          textStyle="text-lg text-gray-400 font-medium"
-          className="h-80 w-80 rounded-full bg-sky-50"
-        />
       )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

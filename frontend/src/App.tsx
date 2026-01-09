@@ -22,10 +22,10 @@ import { getMe } from "./api/auth.api.ts";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { clsx } from "clsx";
 import { Toaster } from "@/components/ui/sonner";
-import { socket } from "./lib/socket/socketClient.ts";
 import { useSocket } from "./hooks/socket/useSocket.ts";
 import { toast } from "sonner";
 import { Message } from "./types/Message.ts";
+import { Notification } from "./types/Notification.ts";
 
 /**
  * Point d'entrée de l'application
@@ -57,16 +57,19 @@ function App() {
     }
   }, [isSuccess, isError, data, logout, setUser]);
 
-  /**
-   *
-   */
-  useEffect(() => {
-    if (data) {
-      socket.emit("login", data.data.id);
-    }
-  }, [data]);
+  // /**
+  //  *
+  //  */
+  // useEffect(() => {
+  //   if (data) {
+  //     socket.emit("login", data.data.id);
+  //   }
+  // }, [data]);
 
   useSocket<Message>("new_message", (data) => toast.info(data.content));
+  useSocket<Notification>("new_notification", (data) =>
+    toast.info(data.message)
+  );
 
   return (
     <>

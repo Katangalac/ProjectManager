@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import UserProfilePhoto from "../profile/UserProfilePhoto";
 
 /**
  * Propriétés du TeamAbout
@@ -34,12 +35,27 @@ export default function TeamAbout({ team }: TeamAboutProps) {
             <div className={clsx("grid grid-cols-2 gap-x-3 gap-y-5")}>
               {team.user ? (
                 <>
+                  <UserProfilePhoto
+                    userId={team.user.id}
+                    imageUrl={team.user.imageUrl}
+                    email={team.user.email}
+                    username={team.user.userName}
+                    showOnlineStatus={true}
+                    imagefallback={
+                      team.user.firstName && team.user.lastName
+                        ? `${team.user.firstName[0].toUpperCase() + team.user.lastName[0].toUpperCase()}`
+                        : undefined
+                    }
+                    imageClassName="text-sm"
+                    size="size-12"
+                  />
+                  <div></div>
                   <div
                     className={clsx(
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-700")}>
+                    <span className={clsx("text-sm text-gray-500")}>
                       Firstname
                     </span>
                     <span className={clsx("text-sm")}>
@@ -51,7 +67,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-600")}>
+                    <span className={clsx("text-sm text-gray-500")}>
                       Lastname
                     </span>
                     <span className={clsx("text-sm")}>
@@ -63,21 +79,18 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-600")}>
+                    <span className={clsx("text-sm text-gray-500")}>
                       Username
                     </span>
-                    <span className={clsx("text-sm")}>
-                      {team.user.userName}
-                    </span>
+
+                    <span>{team.user.userName}</span>
                   </div>
                   <div
                     className={clsx(
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-600")}>
-                      Email
-                    </span>
+                    <span className={clsx("text-sm text-gray-500")}>Email</span>
                     <span className={clsx("text-sm")}>{team.user.email}</span>
                   </div>
 
@@ -86,7 +99,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-600")}>
+                    <span className={clsx("text-sm text-gray-500")}>
                       Profession
                     </span>
                     <span className={clsx("text-sm")}>
@@ -99,7 +112,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                       "flex flex-col items-start justify-start gap-1"
                     )}
                   >
-                    <span className={clsx("text-sm font-medium text-sky-600")}>
+                    <span className={clsx("text-sm text-gray-500")}>
                       Last login
                     </span>
                     <span className={clsx("text-sm")}>

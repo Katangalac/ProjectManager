@@ -130,9 +130,9 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
         <Column
           header="Actions"
           body={(team) => <TeamActionMenu team={team} />}
-          className={clsx("w-fit p-2 text-left text-xs")}
+          className={clsx("flex justify-center p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
+            "flex justify-center border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}

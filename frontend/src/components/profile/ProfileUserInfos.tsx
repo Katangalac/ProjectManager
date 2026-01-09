@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { timeAgo, dateToLongString } from "@/utils/dateUtils";
 import { NotePencilIcon } from "@phosphor-icons/react";
+import { useUserStatus } from "@/hooks/queries/user/useUserStatus";
 
 /**
  * Propriétés du ProfileUserInfos
@@ -34,6 +35,12 @@ export default function ProfileUserInfo({
   const { setUser } = useUserStore();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { isOnline } = useUserStatus(user.id);
+  const lastLogin = isOnline?.valueOf()
+    ? "Now"
+    : user.lastLoginAt
+      ? timeAgo(new Date(user.lastLoginAt), true)
+      : "";
 
   if (saving) console.log("Saving user info...");
 
@@ -410,11 +417,7 @@ export default function ProfileUserInfo({
               type="text"
               placeholder="Unkown"
               disabled={true}
-              value={
-                user.lastLoginAt
-                  ? timeAgo(new Date(user.lastLoginAt), true)
-                  : ""
-              }
+              value={lastLogin}
             />
           </div>
 

@@ -39,15 +39,19 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
       {isLoading && <ProgressSpinner />}
 
       {isError && <UserErrorMessage />}
-      {data && data.length > 0 ? (
-        <TeamsTable teams={data || []} />
-      ) : (
-        <NoItems
-          message="No Teams available"
-          iconSize="size-15 stroke-1"
-          textStyle="text-lg text-gray-400 font-medium"
-          className="h-80 w-80 rounded-full bg-sky-50"
-        />
+      {data && (
+        <>
+          {data.length > 0 ? (
+            <TeamsTable teams={data} />
+          ) : (
+            <NoItems
+              message="No Teams available"
+              iconSize="size-15 stroke-1"
+              textStyle="text-lg text-gray-400 font-medium"
+              className="h-80 w-80 rounded-full bg-sky-50"
+            />
+          )}
+        </>
       )}
 
       {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>

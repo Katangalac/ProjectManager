@@ -1,15 +1,26 @@
 import { clsx } from "clsx";
 import { useNavigate } from "react-router-dom";
+import { ReactNode, useState } from "react";
 import { useUserStore } from "../stores/userStore";
 import UserProfilePhoto from "../components/profile/UserProfilePhoto";
-
-import { InputText } from "@/components/ui/InputText";
 import { Search, Bell } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
 } from "../components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import { usePageMetaContext } from "@/hooks/utils/usePageMetaContext";
 
 /**
@@ -24,7 +35,13 @@ type HeaderProps = {
 export default function Header({ className = "" }: HeaderProps) {
   const { user } = useUserStore();
   const { meta } = usePageMetaContext();
-
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogStyle, setDialogStyle] = useState<string | null>(null);
+  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
+    null
+  );
   const navigate = useNavigate();
 
   return (
@@ -46,19 +63,19 @@ export default function Header({ className = "" }: HeaderProps) {
         </div>
 
         <div className={"flex items-center gap-2"}>
-          {/* <div>
-            <InputText
-              icon={<i className={clsx("pi pi-search")} />}
-              iconPosition="left"
-              placeholder="search..."
-            />
-          </div> */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 className={clsx(
                   "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
                 )}
+                onClick={() => {
+                  setDialogContent(<div>Search...</div>);
+                  setDialogStyle(null);
+                  setDialogHeaderStyle("bg-white text-black");
+                  setDialogTitle("");
+                  setShowDialog(true);
+                }}
               >
                 {/* <i className={clsx("pi pi-search size-4")} /> */}
                 <Search className={clsx("size-5 stroke-2 text-gray-500")} />
@@ -67,8 +84,8 @@ export default function Header({ className = "" }: HeaderProps) {
             <TooltipContent>Search</TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
               <button
                 className={clsx(
                   "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
@@ -77,9 +94,11 @@ export default function Header({ className = "" }: HeaderProps) {
                 {/* <i className={clsx("pi pi-bell size-5")} /> */}
                 <Bell className={clsx("size-5 stroke-2 text-gray-500")} />
               </button>
-            </TooltipTrigger>
-            <TooltipContent>Notifications</TooltipContent>
-          </Tooltip>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className={clsx("text-black")}>Notifications.</div>
+            </PopoverContent>
+          </Popover>
 
           <div
             className={
@@ -104,24 +123,6 @@ export default function Header({ className = "" }: HeaderProps) {
                   }
                   imageClassName="text-sm cursor-pointer"
                 />
-                {/* <div className={clsx("flex flex-col items-start")}>
-                  {user.firstName && user.lastName ? (
-                    <>
-                      <span className={clsx("text-xs font-medium")}>
-                        {user.firstName} {user.lastName}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span className={clsx("text-xs font-medium")}>
-                        {user.userName}
-                      </span>
-                    </>
-                  )}
-                  <span className={clsx("text-xs text-gray-700")}>
-                    {user.email}
-                  </span>
-                </div> */}
               </>
             ) : (
               <>
@@ -133,6 +134,37 @@ export default function Header({ className = "" }: HeaderProps) {
           </div>
         </div>
       </div>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-gray-400",
+            "[&>button]:hover:text-black",
+            dialogStyle
+          )}
+        >
+          <DialogHeader
+            className={clsx(
+              "rounded-t-md bg-sky-500 px-4 py-4",
+              dialogHeaderStyle
+            )}
+          >
+            <DialogTitle className="text-lg text-black">
+              {dialogTitle}
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md pb-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            {dialogContent}
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }

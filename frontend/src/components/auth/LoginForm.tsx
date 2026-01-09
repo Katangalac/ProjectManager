@@ -51,15 +51,15 @@ export default function LoginForm() {
       if (err instanceof AppError) {
         switch (err.code) {
           case "INVALID_PASSWORD":
-            setError("password", {
+            setError("root", {
               type: "server",
-              message: err.message,
+              message: "Invalid credentials",
             });
             break;
           case "USER_NOT_FOUND":
-            setError("identifier", {
+            setError("root", {
               type: "server",
-              message: err.message,
+              message: "Invalid credentials",
             });
             break;
           default:
@@ -102,6 +102,7 @@ export default function LoginForm() {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("space-y-5")}>
+        {errors.root && <p className="text-red-500">{errors.root.message}</p>}
         <div>
           <InputText
             icon={<User className="size-6 stroke-[1.25px]" />}

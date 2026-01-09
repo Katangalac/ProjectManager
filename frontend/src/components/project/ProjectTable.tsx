@@ -4,7 +4,7 @@ import { Project } from "@/types/Project";
 import { clsx } from "clsx";
 import { PROJECT_STATUS_META } from "@/lib/constants/project";
 import { CircleIcon } from "@phosphor-icons/react";
-import { dateToLongString } from "@/utils/dateUtils";
+import { formatShortDateWithOptionalYear } from "@/utils/dateUtils";
 import ProjectActionMenu from "./ProjectActionMenu";
 
 /**
@@ -43,7 +43,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
             "[&>tr]:rounded-br-md"
           )
         }
-        tableStyle={{ minWidth: "1000px" }}
+        tableStyle={{ minWidth: "500px", maxHeight: "500px" }}
         header={
           <div
             className={clsx(
@@ -112,7 +112,9 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="startedAt"
           header="Started on"
-          body={(rowData) => dateToLongString(new Date(rowData.startedAt))}
+          body={(rowData) =>
+            formatShortDateWithOptionalYear(new Date(rowData.startedAt))
+          }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
@@ -124,7 +126,9 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="deadline"
           header="Deadline"
-          body={(rowData) => dateToLongString(new Date(rowData.deadline))}
+          body={(rowData) =>
+            formatShortDateWithOptionalYear(new Date(rowData.deadline))
+          }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
@@ -138,7 +142,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
           header="Completed at"
           body={(rowData) =>
             rowData.completedAt
-              ? dateToLongString(new Date(rowData.completedAt))
+              ? formatShortDateWithOptionalYear(new Date(rowData.completedAt))
               : "Not completed yet"
           }
           className={clsx("w-fit p-2 text-left text-xs")}
@@ -152,9 +156,9 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           header="Actions"
           body={(project) => <ProjectActionMenu project={project} />}
-          className={clsx("w-fit p-2 text-left text-xs")}
+          className={clsx("flex justify-center p-2 text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
+            "flex justify-center border-b border-gray-200 text-center  text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}

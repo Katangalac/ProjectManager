@@ -34,7 +34,7 @@ export default function TaskCard({ task, className }: TaskCardProps) {
   return (
     <div
       className={clsx(
-        "h-44 w-full max-w-60 bg-transparent perspective-[1000px]"
+        "relative h-44 w-full max-w-60 bg-transparent perspective-[1000px]"
       )}
     >
       <div

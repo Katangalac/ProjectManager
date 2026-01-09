@@ -1,7 +1,6 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { CreateMessageData } from "@/types/Message";
 import { sendMessage } from "@/api/conversation.api";
-import { socket } from "@/lib/socket/socketClient";
 
 /**
  * Propriété du hook de la mutation de création d'un message
@@ -22,9 +21,7 @@ export const useCreateMessage = (params: CreateMessageMutationParams = {}) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: CreateMessageData) => {
-      const message = await sendMessage(data);
-      socket.emit("send_message", message);
-      console.log("MESSAGE-SEND", message);
+      await sendMessage(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["conversationMessages"] });

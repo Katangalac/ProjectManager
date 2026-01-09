@@ -112,107 +112,111 @@ export default function UserTasksPage() {
             {isError && (
               <UserErrorMessage onRetryButtonClick={() => refetch()} />
             )}
-            {data && data.data.length > 0 ? (
+            {data && (
               <>
-                {viewMode === "board" && (
-                  <TasksBoard tasks={data?.data || []} />
-                )}
-                {viewMode === "kanban" && (
-                  <TasksKanban tasks={data?.data || []} />
-                )}
-                {viewMode === "table" && (
-                  <TasksTable tasks={data?.data || []} />
-                )}
-                <div className={clsx("flex h-fit w-full justify-center pb-4")}>
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          aria-label="Go to first page"
-                          size="icon"
-                          className="rounded-sm hover:bg-sky-100"
-                          onClick={() => setPage(1)}
-                        >
-                          <ChevronFirstIcon className="size-4" />
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          aria-label="Go to previous page"
-                          size="icon"
-                          className="rounded-sm hover:bg-sky-100"
-                          onClick={() =>
-                            setPage((prev) => Math.max(1, prev - 1))
-                          }
-                        >
-                          <ChevronLeftIcon className="size-4" />
-                        </PaginationLink>
-                      </PaginationItem>
+                {data.data.length > 0 ? (
+                  <>
+                    {viewMode === "board" && <TasksBoard tasks={data.data} />}
+                    {viewMode === "kanban" && <TasksKanban tasks={data.data} />}
+                    {viewMode === "table" && <TasksTable tasks={data.data} />}
+                    <div
+                      className={clsx("flex h-fit w-full justify-center pb-4")}
+                    >
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#"
+                              aria-label="Go to first page"
+                              size="icon"
+                              className="rounded-sm hover:bg-sky-100"
+                              onClick={() => setPage(1)}
+                            >
+                              <ChevronFirstIcon className="size-4" />
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#"
+                              aria-label="Go to previous page"
+                              size="icon"
+                              className="rounded-sm hover:bg-sky-100"
+                              onClick={() =>
+                                setPage((prev) => Math.max(1, prev - 1))
+                              }
+                            >
+                              <ChevronLeftIcon className="size-4" />
+                            </PaginationLink>
+                          </PaginationItem>
 
-                      <PaginationItem>
-                        <Select
-                          value={String(page)}
-                          onValueChange={(value) => setPage(parseInt(value))}
-                          aria-label="Select page"
-                        >
-                          <SelectTrigger
-                            id="select-page"
-                            className="w-fit whitespace-nowrap focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
-                            aria-label="Select page"
-                          >
-                            <SelectValue placeholder="Select page" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white">
-                            {pages.map((page) => (
-                              <SelectItem
-                                key={page}
-                                value={String(page)}
-                                className="transition-colors focus:bg-sky-100"
+                          <PaginationItem>
+                            <Select
+                              value={String(page)}
+                              onValueChange={(value) =>
+                                setPage(parseInt(value))
+                              }
+                              aria-label="Select page"
+                            >
+                              <SelectTrigger
+                                id="select-page"
+                                className="w-fit whitespace-nowrap focus:border-2 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                aria-label="Select page"
                               >
-                                Page {page}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </PaginationItem>
+                                <SelectValue placeholder="Select page" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-white">
+                                {pages.map((page) => (
+                                  <SelectItem
+                                    key={page}
+                                    value={String(page)}
+                                    className="transition-colors focus:bg-sky-100"
+                                  >
+                                    Page {page}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </PaginationItem>
 
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          aria-label="Go to next page"
-                          size="icon"
-                          className="rounded-sm hover:bg-sky-100"
-                          onClick={() =>
-                            setPage((prev) => Math.min(totalPages, prev + 1))
-                          }
-                        >
-                          <ChevronRightIcon className="size-4" />
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#"
-                          aria-label="Go to last page"
-                          size="icon"
-                          className="rounded-sm hover:bg-sky-100"
-                          onClick={() => setPage(totalPages)}
-                        >
-                          <ChevronLastIcon className="size-4" />
-                        </PaginationLink>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#"
+                              aria-label="Go to next page"
+                              size="icon"
+                              className="rounded-sm hover:bg-sky-100"
+                              onClick={() =>
+                                setPage((prev) =>
+                                  Math.min(totalPages, prev + 1)
+                                )
+                              }
+                            >
+                              <ChevronRightIcon className="size-4" />
+                            </PaginationLink>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <PaginationLink
+                              href="#"
+                              aria-label="Go to last page"
+                              size="icon"
+                              className="rounded-sm hover:bg-sky-100"
+                              onClick={() => setPage(totalPages)}
+                            >
+                              <ChevronLastIcon className="size-4" />
+                            </PaginationLink>
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  </>
+                ) : (
+                  <NoItems
+                    message="No tasks available!"
+                    iconSize="size-15 stroke-1"
+                    textStyle="text-lg text-gray-400 font-medium"
+                    className="h-80 w-80 rounded-full bg-sky-50"
+                  />
+                )}
               </>
-            ) : (
-              <NoItems
-                message="No tasks available!"
-                iconSize="size-15 stroke-1"
-                textStyle="text-lg text-gray-400 font-medium"
-                className="h-80 w-80 rounded-full bg-sky-50"
-              />
             )}
           </div>
 

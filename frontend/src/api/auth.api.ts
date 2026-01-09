@@ -1,5 +1,6 @@
 import { axiosClient } from "../lib/axios/axiosClient";
 import axios from "axios";
+import { socket } from "@/lib/socket/socketClient";
 import { AppError } from "@/errors/AppError";
 import { UpdatePasswordData } from "@/types/Auth";
 
@@ -17,6 +18,7 @@ export async function loginRequest(identifier: string, password: string) {
       identifier,
       password,
     });
+    socket.connect();
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
@@ -40,6 +42,7 @@ export async function loginRequest(identifier: string, password: string) {
 export const logoutRequest = async () => {
   try {
     const axiosResponse = await axiosClient.post("/auth/logout");
+    socket.disconnect();
     console.log(axiosResponse.data);
     return axiosResponse.data;
   } catch (error: unknown) {

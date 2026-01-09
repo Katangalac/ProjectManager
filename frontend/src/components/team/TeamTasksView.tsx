@@ -40,7 +40,6 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
       {/* Sélecteur de mode */}
       <div className="flex w-full items-center justify-start gap-3">
         <button
-          title="New task"
           onClick={() => setShowDialog(true)}
           className={clsx(
             "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
@@ -56,15 +55,19 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
       {isLoading && <ProgressSpinner />}
 
       {isError && <UserErrorMessage />}
-      {data && data.length > 0 ? (
-        <TasksTable tasks={data} />
-      ) : (
-        <NoItems
-          message="No tasks available"
-          iconSize="size-15 stroke-1"
-          textStyle="text-lg text-gray-400 font-medium"
-          className="h-80 w-80 rounded-full bg-sky-50"
-        />
+      {data && (
+        <>
+          {data.length > 0 ? (
+            <TasksTable tasks={data} />
+          ) : (
+            <NoItems
+              message="No tasks available"
+              iconSize="size-15 stroke-1"
+              textStyle="text-lg text-gray-400 font-medium"
+              className="h-80 w-80 rounded-full bg-sky-50"
+            />
+          )}
+        </>
       )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>

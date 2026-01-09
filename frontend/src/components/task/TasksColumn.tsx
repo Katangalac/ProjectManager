@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
-import { EllipsisHorizontalIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import TaskForm from "./TaskForm";
 import NoItems from "../commons/NoItems";
 
@@ -69,11 +69,6 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
             </span>
           </div>
           <div className={clsx("flex w-fit items-center justify-start gap-2")}>
-            <button title="Options">
-              <EllipsisHorizontalIcon
-                className={clsx("size-4 cursor-pointer text-gray-700")}
-              />
-            </button>
             <button title="New task" onClick={() => setShowDialog(true)}>
               <PlusIcon
                 className={clsx(

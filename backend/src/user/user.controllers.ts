@@ -18,6 +18,7 @@ import { searchConversationsFilterSchema } from "../conversation/conversation.sc
 import { getUserIdFromRequest } from "../utils/utils";
 import { successResponse, errorResponse } from "../utils/apiResponse";
 import { isUserOnline } from "../auth/onlineUser";
+import { redis } from "../types/Redis";
 
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)
@@ -484,10 +485,13 @@ export const getUserMessagesController = async (
 export const getUserStatusController = async (req: Request, res: Response) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
-    const online = isUserOnline(id);
+    const key = `user:${id}:connections`;
+    const count = await redis.scard(key);
+    const online = count > 0;
+    console.log("🟢 Client Status " + `UserId-${id} : ` + count);
     res
       .status(200)
-      .json(successResponse({ online }, "Statut de l'utilisateur récupéré"));
+      .json(successResponse(online, "Statut de l'utilisateur récupéré"));
   } catch (err) {
     console.error(
       "Erreur lors de la récupération du status de l'utilisateur : ",

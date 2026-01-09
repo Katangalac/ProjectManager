@@ -31,7 +31,6 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
         </span>
         <div className={clsx("flex gap-2")}>
           <button
-            title="Previous"
             disabled={currentIndex === 0}
             onClick={() => setCurrentIndex(currentIndex - 1)}
             className={clsx(
@@ -43,7 +42,6 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
             <ChevronLeftIcon className={clsx("size-3 stroke-1 text-black")} />
           </button>
           <button
-            title="Next"
             disabled={currentIndex >= tasks.length - 1}
             onClick={() => setCurrentIndex(currentIndex + 1)}
             className={clsx(

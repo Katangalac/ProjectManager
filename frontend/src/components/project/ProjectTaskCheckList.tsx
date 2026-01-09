@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import NoItems from "../commons/NoItems";
 import { useUpdateTask } from "@/hooks/mutations/task/useUpdateTask";
 import TaskActionMenu from "../task/TaskActionMenu";
+import { formatShortDateWithOptionalYear } from "@/utils/dateUtils";
 
 type ProjectTaskCheckListProps = {
   tasks: TaskWithRelations[];
@@ -21,6 +22,9 @@ export default function ProjectTaskCheckList({
     const newStatus = task.status === "COMPLETED" ? "TODO" : "COMPLETED";
     updateTask({ taskId: task.id, data: { status: newStatus } });
   };
+  // tasks.sort(
+  //   (a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
+  // );
   return (
     <div
       className={clsx(
@@ -54,9 +58,9 @@ export default function ProjectTaskCheckList({
                 "[&::-webkit-scrollbar]:w-0"
               )}
             >
-              {tasks.map((task) => (
+              {tasks.map((task, index) => (
                 <div
-                  key={task.id}
+                  key={index}
                   className={clsx(
                     "flex h-fit w-full items-center gap-1 py-2",
                     "border-b border-dotted border-gray-400 last:border-b-0"
@@ -88,10 +92,12 @@ export default function ProjectTaskCheckList({
                       onClick={() => toggleTaskStatus(task)}
                     />
                   )}
-                  <div className={clsx("flex flex-1 justify-between")}>
+                  <div
+                    className={clsx("flex flex-1 items-center justify-between")}
+                  >
                     <span
                       className={clsx(
-                        "line-clamp-2 text-left text-sm text-wrap text-black",
+                        "line-clamp-2 text-left text-[13px] text-wrap text-gray-800",
                         task.status === "COMPLETED"
                           ? "text-gray-500 line-through"
                           : ""
@@ -103,12 +109,17 @@ export default function ProjectTaskCheckList({
                     <div className={clsx("flex gap-4")}>
                       <span
                         className={clsx(
-                          "w-fit text-left text-[10px] text-wrap text-gray-600"
+                          "flex w-20 justify-end text-left text-[10px] text-wrap text-gray-600"
                         )}
                       >
-                        {new Date(task.deadline).toISOString().split("T")[0]}
+                        {formatShortDateWithOptionalYear(
+                          new Date(task.deadline)
+                        )}
+                        {/* {new Date(task.deadline).toISOString().split("T")[0]} */}
                       </span>
-                      <TaskActionMenu task={task} />
+                      <span className={clsx("rotate-90 transform")}>
+                        <TaskActionMenu task={task} />
+                      </span>
                     </div>
                   </div>
                 </div>
