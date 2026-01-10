@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { CircleIcon } from "@phosphor-icons/react";
 import { useUserStatus } from "@/hooks/queries/user/useUserStatus";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { stringToColor } from "@/utils/stringUtils";

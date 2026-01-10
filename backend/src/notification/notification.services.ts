@@ -27,8 +27,14 @@ export const sendNotification = async (
       read: false,
     },
   });
-  const io = getIO();
-  io.to(newNotification.userId).emit("new_notification", newNotification);
+
+  try {
+    const io = getIO();
+    io.to(newNotification.userId).emit("new_notification", newNotification);
+  } catch (wsError) {
+    console.error("❌ WebSocket emit failed:", wsError);
+  }
+
   return newNotification;
 };
 

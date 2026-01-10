@@ -1,9 +1,8 @@
 import { Queue } from "bullmq";
 import { redisConnection } from "../types/Redis";
 
-
 /**
- * File de notifications. Enfile les notifications à envoyer 
+ * File de notifications. Enfile les notifications à envoyer
  * Les notifications de la file seront ensuite envoyés par un worker
  */
 export const notificationQueue = new Queue("notificationQueue", {

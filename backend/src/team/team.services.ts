@@ -30,6 +30,7 @@ import { TeamsCollection } from "./Team";
 import { UsersCollection } from "../user/User";
 import { TasksCollection } from "../task/Task";
 import { ConversationsCollection } from "../conversation/Conversation";
+import { addNotificationToQueue } from "../notification/notification.queue";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -175,6 +176,17 @@ export const addUserToTeam = async (
         userRole,
       },
     });
+
+    try {
+      addNotificationToQueue(
+        userTeamPair.userId,
+        `NEW_TEAM-${userTeamPair.teamId}`,
+        "You have been added in a team"
+      );
+    } catch (err: any) {
+      console.log("Erreur lors de l'ajoue de la notification", err);
+    }
+
     return userTeamPair;
   } catch (err: any) {
     if (err.code === "P2002") throw new UserAlreadyInTeamError(userId, teamId);
@@ -195,6 +207,16 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
         pk_user_team: { userId, teamId },
       },
     });
+
+    try {
+      await addNotificationToQueue(
+        userId,
+        `REMOVE_FROM_TEAM-${teamId}`,
+        "You have been removed from a team"
+      );
+    } catch (err: any) {
+      console.log("Erreur lors de l'ajoue de la notification", err);
+    }
   } catch (err: any) {
     if (err.code === "P2025") throw new UserNotInTeamError(userId, teamId);
     throw err;
@@ -221,6 +243,17 @@ export const updateUserRoleInTeam = async (
       },
       data: { userRole: userRole },
     });
+
+    try {
+      await addNotificationToQueue(
+        userId,
+        `NEW_TEAM_ROLE-${teamId}`,
+        "You have a new role in a team"
+      );
+    } catch (err: any) {
+      console.log("Erreur lors de l'ajoue de la notification", err);
+    }
+
     return updatedUserTeamPair;
   } catch (err: any) {
     if (err.code === "P2025") throw new UserNotInTeamError(userId, teamId);

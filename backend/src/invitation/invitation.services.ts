@@ -6,13 +6,13 @@ import {
   SearchInvitationFilter,
 } from "./Invitation";
 import { InvitationAlreadySentError, InvitationNotFoundError } from "./errors";
-import { sendNotification } from "../notification/notification.services";
 import {
   buildInvitationWhereInput,
   buildPaginationInfos,
 } from "../utils/utils";
 import { db } from "../db";
 import { Prisma } from "@prisma/client";
+import { addNotificationToQueue } from "../notification/notification.queue";
 
 /**
  * Crée et envoie une nouvelle invitation
@@ -55,11 +55,15 @@ export const sendInvitation = async (
     },
   });
 
-  sendNotification({
-    userId: invitation.receiverId,
-    title: `NEW_INVITATION-${invitation.id}`,
-    message: invitation.message,
-  });
+  try {
+    await addNotificationToQueue(
+      invitation.receiverId,
+      `NEW_INVITATION-${invitation.id}`,
+      invitation.message
+    );
+  } catch (err: any) {
+    console.log("Erreur lors de l'ajoue de la notification", err);
+  }
 
   return invitation;
 };
@@ -147,11 +151,15 @@ export const updateInvitationStatus = async (
     data: { ...updateData, updatedAt: new Date() },
   });
 
-  sendNotification({
-    userId: invitation.receiverId,
-    title: `INVITATION_UPDATED-${invitation.id}`,
-    message: "Le status de votre invitation a été mise à jour",
-  });
+  try {
+    await addNotificationToQueue(
+      invitation.senderId,
+      `INVITATION_UPDATED-${invitation.id}`,
+      "You have a reply for your invitation"
+    );
+  } catch (err: any) {
+    console.log("Erreur lors de l'ajoue de la notification", err);
+  }
 
   return updatedInvitation;
 };

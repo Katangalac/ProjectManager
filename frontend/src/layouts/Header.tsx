@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
+import NotificationsShortList from "@/components/notification/NotificationsShortList";
 import { usePageMetaContext } from "@/hooks/utils/usePageMetaContext";
 
 /**
@@ -96,7 +96,14 @@ export default function Header({ className = "" }: HeaderProps) {
               </button>
             </PopoverTrigger>
             <PopoverContent>
-              <div className={clsx("text-black")}>Notifications.</div>
+              <div className={clsx("flex flex-col gap-2")}>
+                <span
+                  className={clsx("text-left text-sm font-medium text-black")}
+                >
+                  Notifications
+                </span>
+                <NotificationsShortList />
+              </div>
             </PopoverContent>
           </Popover>
 

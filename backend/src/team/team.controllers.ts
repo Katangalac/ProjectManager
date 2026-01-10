@@ -10,7 +10,6 @@ import { searchUsersFilterSchema } from "../user/user.schemas";
 import { searchProjectsFilterSchema } from "../project/project.schemas";
 import { searchConversationsFilterSchema } from "../conversation/conversation.schemas";
 import { successResponse, errorResponse } from "../utils/apiResponse";
-import { addNotificationToQueue } from "../notification/notification.queue";
 import { searchInvitationsFilterSchema } from "../invitation/invitation.schemas";
 
 /**
@@ -202,11 +201,6 @@ export const addUserToTeamController = async (req: Request, res: Response) => {
     res
       .status(200)
       .json(successResponse(userTeamPair, "Utilisateur ajouté à l'équipe"));
-    addNotificationToQueue(
-      inputData.userId,
-      "Nouvelle équipe de travail",
-      "Vous avez été ajouté à une équipe"
-    );
   } catch (err) {
     console.error("Erreur lors de l'ajout de l'utilisateur à l'équipe : ", err);
     if (err instanceof z.ZodError) {
@@ -248,11 +242,6 @@ export const removeUserFromTeamController = async (
     const { id: userId } = idParamSchema.parse({ id: req.params.userId });
     await teamService.removeUserFromTeam(userId, teamId);
     res.status(204).send();
-    addNotificationToQueue(
-      userId,
-      "Retrait d'un équipe",
-      "Vous avez été rétiré d'une équipe"
-    );
   } catch (err) {
     console.error(
       "Erreur lors du retrait de l'utilisateur de l'équipe : ",
@@ -303,11 +292,6 @@ export const updateUserRoleInTeamController = async (
       .json(
         successResponse(updatedUserTeamPair, "Rôle de l'utilisateur mis à jour")
       );
-    addNotificationToQueue(
-      userId,
-      "Nouveau rôle",
-      "Un nouveau rôle vous a été assigné"
-    );
   } catch (err) {
     console.error(
       "Erreur lors de la modification du rôle de l'utilisateur dans l'équipe",

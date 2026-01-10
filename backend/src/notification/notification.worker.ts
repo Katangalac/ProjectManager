@@ -10,12 +10,24 @@ import { getIO } from "../chat/chat.socket";
 export const notificationWorker = new Worker(
   "notificationQueue",
   async (job) => {
+    try {
       const { userId, title, message } = job.data;
-      const io = getIO();
+
       const notification = await sendNotification({ userId, title, message });
-      io.to(userId).emit("new_notification", notification);
-    console.log(`📧 Notification envoyée à l’utilisateur ${userId}`);
+
+      try {
+        const io = getIO();
+        io.to(userId).emit("new_notification", notification);
+      } catch (wsError) {
+        console.error("❌ WebSocket emit failed:", wsError);
+      }
+
+      console.log(`📧 Notification envoyée à l’utilisateur ${userId}`);
+      return notification;
+    } catch (err) {
+      console.error("❌ Worker failed to process notification job:", err);
+      throw err;
+    }
   },
   { connection: redisConnection }
 );
-
