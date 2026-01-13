@@ -6,19 +6,24 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  //directUrl = env("PROD_DATABASE_DIRECT_URL")
 }
 
 // Rôle d'un utilisateur de l'application. Détermine les permissions et actions de l'utilisateur
 enum UserRole {
   ADMIN
-  MEMBER
-  VIEWER
+  USER
+}
+
+// Indique la méthode d'inscription utilisée par un utilisateur lors de son enregistrement
+enum UserProvider {
+  LOCAL
+  GOOGLE
 }
 
 // État d'une tâche
@@ -26,15 +31,244 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   BLOCKED
-  DONE
-  CANCELLED
+  COMPLETED
 }
 
 // État d'un projet
 enum ProjectStatus {
   PLANNING
   ACTIVE
-  ON_HOLD
+  PAUSED
+  BLOCKED
   COMPLETED
-  CANCELLED
+}
+
+// État d'une invitation
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// Modèle représentant un utilisateur de l'application
+model User {
+  id                String             @id @default(uuid())
+  userName          String             @unique @map("username")
+  firstName         String?            @map("first_name")
+  lastName          String?            @map("last_name")
+  phoneNumber       String?            @unique @map("phone_number")
+  email             String             @unique @map("email_address")
+  password          String?            @map("password")
+  profession        String?            @map("profession")
+  imageUrl          String?            @map("image_url")
+  role              UserRole           @map("role")
+  provider          UserProvider       @map("provider")
+  oauthId           String?            @unique @map("oauth_id")
+  leadTeams         Team[]
+  userTeams         UserTeam[]
+  userConversations UserConversation[]
+  userMessages      Message[]
+  createdProjects   Project[]
+  createdTasks      Task[]
+  assignedTasks     UserTask[]
+  userNotifications Notification[]
+  sentInvitations Invitation[] @relation("SentInvitations")
+  receivedInvitations Invitation[] @relation("ReceivedInvitations")
+  lastLoginAt       DateTime?          @map("last_login_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+// Modèle représentant une équipe de travail
+model Team {
+  id                String         @id @default(uuid())
+  leaderId          String?        @map("leader_id")
+  name              String         @map("name")
+  description       String         @map("description")
+  user              User?          @relation(fields: [leaderId], references: [id], onDelete: SetNull)
+  teamTasks         Task[]
+  teamUsers         UserTeam[]
+  teamProjects      ProjectTeam[]
+  teamConversations Conversation[]
+  invitations Invitation[]
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  createdAt         DateTime       @default(now()) @map("created_at")
+
+  @@map("teams")
+}
+
+// Modèle représentant un projet à gérer avec l'application
+model Project {
+  id            String        @id @default(uuid())
+  creatorId     String?       @map("creator_id")
+  title         String        @map("title")
+  description   String        @map("description")
+  status        ProjectStatus @default(PLANNING) @map("status")
+  budgetPlanned Float         @default(0.00) @map("budget_planned")
+  actualCost    Float         @default(0.00) @map("actual_cost")
+  progress      Int           @default(0) @map("progress")
+  startedAt     DateTime      @map("started_at")
+  deadline      DateTime      @map("deadline")
+  completedAt   DateTime?     @map("completed_at")
+  user          User?         @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  projectTasks  Task[]
+  projectTeams  ProjectTeam[]
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+
+  @@map("projects")
+}
+
+// Modèle représentant une tâche d'un projet
+model Task {
+  id            String     @id @default(uuid())
+  creatorId     String?    @map("creator_id")
+  projectId     String?    @map("project_id")
+  teamId        String?    @map("team_id")
+  title         String     @map("title")
+  description   String     @map("description")
+  priorityLevel Int        @map("priority_level")
+  status        TaskStatus @default(TODO) @map("status")
+  cost          Float      @default(0.00) @map("cost")
+  progress      Int        @default(0) @map("progress")
+  startedAt     DateTime   @map("started_at")
+  deadline      DateTime   @map("deadline")
+  completedAt   DateTime?  @map("completed_at")
+  user          User?      @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  project       Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  team          Team?      @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  assignedTo    UserTask[]
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  @@map("tasks")
+}
+//Modèle représentant une invitation
+model Invitation {
+  id            String   @id @default(uuid())
+  senderId      String @map("sender_id")
+  receiverId    String @map("receiver_id")
+  teamId        String @map("team_id")   
+  message       String @map("message")
+  status        InvitationStatus @default(PENDING) @map("status")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  sender        User     @relation("SentInvitations", fields: [senderId], references: [id])
+  receiver      User     @relation("ReceivedInvitations", fields: [receiverId], references: [id])
+  team          Team    @relation(fields: [teamId], references: [id])
+  
+  @@map("invitations")
+}
+
+// Modèle représentant une notification
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  title     String   @default("Untitled") @map("title")
+  message   String   @map("message")
+  read      Boolean  @default(false) @map("read")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("notifications")
+}
+
+// Modèle représentant une conversation
+model Conversation {
+  id           String             @id @default(uuid())
+  isGroup      Boolean            @default(false) @map("is_group")
+  teamId       String?            @map("team_id")
+  team         Team?              @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  participants UserConversation[]
+  messages     Message[]
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@map("conversations")
+}
+
+// Modèle représentant un message d'une conversation
+model Message {
+  id             String       @id @default(uuid())
+  senderId       String?      @map("sender_id")
+  conversationId String       @map("conversation_id")
+  content        String?      @map("content")
+  read           Boolean      @default(false) @map("read")
+  sender         User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  attachments    Attachment[]
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@map("messages")
+}
+
+// Modèle représentant une pièce jointe (à un message) 
+model Attachment {
+  id        String   @id @default(uuid())
+  messageId String   @map("message_id")
+  url       String   @map("url")
+  type      String   @map("type")
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("attachments")
+}
+
+//  Modèle d'association des utilisateurs à des conversations
+model UserConversation {
+  userId         String       @map("user_id")
+  conversationId String       @map("conversation_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  @@id([userId, conversationId], name: "pk_user_conversation")
+  @@map("user_conversations")
+}
+
+// Modèle d'association des utilisateurs à des équipes
+model UserTeam {
+  userId    String   @map("user_id")
+  teamId    String   @map("team_id")
+  userRole  String   @map("user_role")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, teamId], name: "pk_user_team")
+  @@map("user_teams")
+}
+
+// Modèle d'association des projets à des équipes
+model ProjectTeam {
+  projectId String   @map("project_id")
+  teamId    String   @map("team_id")
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([projectId, teamId], name: "pk_project_team")
+  @@map("project_teams")
+}
+
+// Modèle d'association des utilisateurs à leurs tâches
+model UserTask {
+  userId    String   @map("user_id")
+  taskId    String   @map("task_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([userId, taskId], name: "pk_user_task")
+  @@map("user_tasks")
 }
