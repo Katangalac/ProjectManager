@@ -20,7 +20,7 @@ createRoot(document.getElementById("root")!).render(
         <StrictMode>
           <App />
         </StrictMode>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </PrimeReactProvider>
   </TooltipProvider>
