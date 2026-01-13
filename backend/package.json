@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/server.js",
+    "email-worker": "node dist/email/email.worker.js",
+    "notification-worker": "node dist/notification.worker.js",
     "dev:api": "tsx watch src/server.ts",
     "dev:email-worker": "tsx watch src/email/email.worker.ts",
     "dev:notification-worker": "tsx watch src/notification/notification.worker.ts",
@@ -15,7 +17,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "@types/express": "^5.0.3",
