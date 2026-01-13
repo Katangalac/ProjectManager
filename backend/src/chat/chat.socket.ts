@@ -1,10 +1,12 @@
 import { Server } from "socket.io";
 import http from "http";
 import { Message } from "../message/Message";
-import { getUserProjects } from "../user/user.services";
-import { getUserTasks } from "../user/user.services";
 import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
+import { verifyToken } from "../auth/utils/jwt";
+import { tokenPayloadSchema } from "../auth/auth.schemas";
+import cookie from "cookie";
+import { redis } from "../types/Redis";
 
 //Instance du serveur Socket.io
 let io: Server;
@@ -21,89 +23,153 @@ let io: Server;
  */
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
-    cors: { origin: "*" },
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+      credentials: true,
+    },
   });
 
-  io.on("connection", (socket) => {
-    console.log("🟢 Client connecté:", socket.id);
+  io.on("connection", async (socket) => {
+    try {
+      console.log("🟢 Client connecté:", socket.id);
+      const cookies = cookie.parse(socket.request.headers.cookie || "");
+      const token = cookies["projectFlowToken"];
 
-    /**
-     * Déclenché lorsque l'utilisateur est inscrit dans le système
-     * Cela permet ensuite d'envoyer des messages/notifications en temps réel à cet utilisateur
-     */
-    socket.on("login", async(userId: string) => {
-      console.log(`Utilisateur ${userId} enregistré sur le socket ${socket.id}`);
-      socket.join(userId); // Permet de cibler l'utilisateur dans io.to(userId)
+      if (!token) {
+        socket.disconnect();
+        return;
+      }
 
-      //Écoute les évenements des équipes de l'utilisateur
-      const teams = await getUserTeams(userId, { all: true, page: 1, pageSize: 20 });
-      teams.teams.forEach(team => socket.join(team.id));
+      const payLoad = tokenPayloadSchema.parse(verifyToken(token));
+      socket.userId = payLoad.sub;
+      console.log(`🔌 User connected: ${socket.userId} (socket: ${socket.id})`);
 
-      //Écoute les évenements des tâches de l'utilisateur
-      const tasks = await getUserTasks(userId, { all: true, page: 1, pageSize: 20 });
-      tasks.tasks.forEach(task => socket.join(task.id));
+      const key = `user:${socket.userId}:connections`;
+      await redis.sadd(key, socket.id);
 
-      //Écoute les évenements des projets de l'utilisateur
-      const projects = await getUserProjects(userId, { all: true, page: 1, pageSize: 20 });
-      projects.projects.forEach(project => socket.join(project.id));
+      // Optionnel : éviter les connexions zombies
+      //await redis.expire(key, 60 * 60);
 
-      //Écoute sur les évenements des conversations de l'utilisateur
-      const conversations = await getUserConversations(userId, { all: true, page: 1, pageSize: 20 });
-      conversations.conversations.forEach(conversation => socket.join(conversation.id));
-    });
+      const count = await redis.scard(key);
+      if (count === 1) {
+        console.log(`🟢 User ${socket.userId} is now ONLINE`);
+        io.emit("user:online", socket.userId);
+      }
 
-    /**
-     * Le client rejoint une conversation spécifique.
-     * Chaque conversation est représentée par une "room" Socket.IO
-     * permettant d’envoyer des messages uniquement aux participants.
-     */
-    socket.on("join_conversation", (conversationId:string) => {
-      socket.join(conversationId);
-      console.log("Le client a joint la conversation : ", conversationId);
-    });
+      const conversations = await getUserConversations(socket.userId, {
+        all: true,
+        page: 1,
+        pageSize: 20,
+      });
+      conversations.conversations.forEach((conversation) => {
+        socket.join(conversation.id);
+        console.log(`🟢 User ${socket.userId} join one of his conversation`);
+      });
 
-    /**
-     * Réception d’un message envoyé par un client.
-     * Le serveur diffuse ensuite ce message à tous les utilisateurs
-     * connectés à la même conversation.
-     */
-    socket.on("send_message", (message:Message) => {
-      io.to(message.conversationId).emit("new_message", message);
-      console.log("Nouveau message : ", message);
-    });
+      const teams = await getUserTeams(socket.userId, {
+        all: true,
+        page: 1,
+        pageSize: 20,
+      });
 
-    /**
-     * Lorsqu’un message est modifié par un utilisateur,
-     * le serveur notifie tous les membres de la conversation.
-     */
-    socket.on("edit_message", (message:Message) => {
-      io.to(message.conversationId).emit("message_edited", message);
-      console.log("Message modifié : ", message)
-    });
+      teams.teams.forEach((team) => {
+        socket.join(team.id);
+        console.log(`🟢 User ${socket.userId} join one of his team`);
+      });
 
-    /**
-     * Lorsqu’un message est marqué comme lu, une notification est émise
-     * à tous les utilisateurs de la conversation.
-     */
-    socket.on("message_read", ({ conversationId, messageId, userId }) => {
-      io.to(conversationId).emit("message_read", { messageId, userId });
-      console.log("Message lu", messageId);
-    });
+      /**
+       * Le client rejoint une conversation spécifique.
+       * Chaque conversation est représentée par une "room" Socket.IO
+       * permettant d’envoyer des messages uniquement aux participants.
+       */
+      socket.on("join_conversation", (conversationId: string) => {
+        socket.join(conversationId);
+        console.log(
+          `🟢 User ${socket.userId} join the conversation ${conversationId}`
+        );
+      });
 
-    /**
-     * Lorsqu’un message est supprimé, l’événement est diffusé à tous les clients.
-     */
-    socket.on("delete_message", (messageId) => {
-      io.emit("message_deleted", messageId);
-      console.log("Message supprimé", messageId);
-    });
+      /**
+       * Le client rejoint une equipe spécifique.
+       * Chaque team est représentée par une "room" Socket.IO
+       * permettant d’envoyer des messages uniquement aux membres.
+       */
+      socket.on("join_team", (teamId: string) => {
+        socket.join(teamId);
+        console.log(`🟢 User ${socket.userId} join the team ${teamId}`);
+      });
 
-    /**
-     * Gestion de la déconnexion d’un client.
-     */
-    socket.on("disconnect", () => {
-      console.log("🔴 Client déconnecté:", socket.id);
-    });
+      /**
+       * Le client quitte une equipe spécifique.
+       * Chaque team est représentée par une "room" Socket.IO
+       * permettant d’envoyer des messages uniquement aux membres.
+       */
+      socket.on("remove_team", (teamId: string) => {
+        socket.leave(teamId);
+        console.log(`🟢 User ${socket.userId} join the team ${teamId}`);
+      });
+
+      /**
+       * Réception d’un message envoyé par un client.
+       * Le serveur diffuse ensuite ce message à tous les utilisateurs
+       * connectés à la même conversation.
+       */
+      socket.on("send_message", (message: Message) => {
+        io.to(message.conversationId).emit("new_message", message);
+        console.log("Nouveau message : ", message);
+      });
+
+      /**
+       * Lorsqu’un message est modifié par un utilisateur,
+       * le serveur notifie tous les membres de la conversation.
+       */
+      socket.on("edit_message", (message: Message) => {
+        io.to(message.conversationId).emit("message_edited", message);
+        console.log("Message modifié : ", message);
+      });
+
+      /**
+       * Lorsqu’un message est marqué comme lu, une notification est émise
+       * à tous les utilisateurs de la conversation.
+       */
+      socket.on("message_read", ({ conversationId, messageId, userId }) => {
+        io.to(conversationId).emit("message_read", { messageId, userId });
+        console.log("Message lu", messageId);
+      });
+
+      /**
+       * Lorsqu’un message est supprimé, l’événement est diffusé à tous les clients.
+       */
+      socket.on("delete_message", (messageId) => {
+        io.emit("message_deleted", messageId);
+        console.log("Message supprimé", messageId);
+      });
+
+      /**
+       * Gestion de la déconnexion d’un client.
+       */
+      socket.on("disconnect", async () => {
+        console.log(
+          `❌ User disconnected: ${socket.userId} (socket: ${socket.id})`
+        );
+
+        // Retirer cette socket
+        await redis.srem(key, socket.id);
+
+        // Vérifier s’il reste des connexions
+        const remaining = await redis.scard(key);
+
+        if (remaining === 0) {
+          await redis.del(key);
+          console.log(`🔴 User ${socket.userId} is now OFFLINE`);
+          io.emit("user:offline", socket.userId);
+        }
+      });
+    } catch (err) {
+      console.log("Socket error", err);
+      socket.disconnect();
+    }
   });
 
   return io;

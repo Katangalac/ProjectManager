@@ -11,13 +11,12 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  //directUrl = env("PROD_DATABASE_DIRECT_URL")
 }
 
 // Rôle d'un utilisateur de l'application. Détermine les permissions et actions de l'utilisateur
 enum UserRole {
   ADMIN
-  MEMBER
-  VIEWER
   USER
 }
 
@@ -32,17 +31,23 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   BLOCKED
-  DONE
-  CANCELLED
+  COMPLETED
 }
 
 // État d'un projet
 enum ProjectStatus {
   PLANNING
   ACTIVE
-  ON_HOLD
+  PAUSED
+  BLOCKED
   COMPLETED
-  CANCELLED
+}
+
+// État d'une invitation
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 // Modèle représentant un utilisateur de l'application
@@ -67,6 +72,8 @@ model User {
   createdTasks      Task[]
   assignedTasks     UserTask[]
   userNotifications Notification[]
+  sentInvitations Invitation[] @relation("SentInvitations")
+  receivedInvitations Invitation[] @relation("ReceivedInvitations")
   lastLoginAt       DateTime?          @map("last_login_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
   createdAt         DateTime           @default(now()) @map("created_at")
@@ -85,6 +92,7 @@ model Team {
   teamUsers         UserTeam[]
   teamProjects      ProjectTeam[]
   teamConversations Conversation[]
+  invitations Invitation[]
   updatedAt         DateTime       @updatedAt @map("updated_at")
   createdAt         DateTime       @default(now()) @map("created_at")
 
@@ -100,6 +108,7 @@ model Project {
   status        ProjectStatus @default(PLANNING) @map("status")
   budgetPlanned Float         @default(0.00) @map("budget_planned")
   actualCost    Float         @default(0.00) @map("actual_cost")
+  progress      Int           @default(0) @map("progress")
   startedAt     DateTime      @map("started_at")
   deadline      DateTime      @map("deadline")
   completedAt   DateTime?     @map("completed_at")
@@ -123,6 +132,7 @@ model Task {
   priorityLevel Int        @map("priority_level")
   status        TaskStatus @default(TODO) @map("status")
   cost          Float      @default(0.00) @map("cost")
+  progress      Int        @default(0) @map("progress")
   startedAt     DateTime   @map("started_at")
   deadline      DateTime   @map("deadline")
   completedAt   DateTime?  @map("completed_at")
@@ -134,6 +144,23 @@ model Task {
   createdAt     DateTime   @default(now()) @map("created_at")
 
   @@map("tasks")
+}
+//Modèle représentant une invitation
+model Invitation {
+  id            String   @id @default(uuid())
+  senderId      String @map("sender_id")
+  receiverId    String @map("receiver_id")
+  teamId        String @map("team_id")   
+  message       String @map("message")
+  status        InvitationStatus @default(PENDING) @map("status")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  
+  sender        User     @relation("SentInvitations", fields: [senderId], references: [id])
+  receiver      User     @relation("ReceivedInvitations", fields: [receiverId], references: [id])
+  team          Team    @relation(fields: [teamId], references: [id])
+  
+  @@map("invitations")
 }
 
 // Modèle représentant une notification

@@ -1,9 +1,100 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0;
+  padding: 0;
+  width: 100%;
   text-align: center;
 }
+
+/* CSS du File Uploader d'Uploadcare*/
+.uc-content {
+  padding: 20px;
+}
+.uc-secondary-btn {
+  background-color: #efefef;
+  width: 100%;
+  height: fit-content;
+  border-radius: 5px;
+  border: #d5d5d5 solid;
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 10px;
+}
+
+.uc-edit-btn,
+.uc-remove-btn {
+  display: none;
+}
+
+.uc-done-btn {
+  background-color: #efefef;
+  width: 100%;
+  height: fit-content;
+  border-radius: 5px;
+  border: #d5d5d5 solid;
+  padding: 6px 0px 6px 0px;
+  margin-bottom: 10px;
+}
+
+uc-upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+.uc-secondary-btn:hover,
+.uc-done-btn:hover {
+  background-color: #e3e3e3;
+}
+
+uc-source-btn {
+  padding: 4px;
+  border-radius: 5px;
+}
+
+uc-source-btn:hover {
+  background-color: #e7f0ff;
+}
+
+uc-source-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* uc-file-uploader-regular,
+uc-file-uploader-regular * {
+  --uc-simple-btn-light: rgb(230, 230, 230) !important;
+  --uc-simple-btn-dark: #101828 !important;
+  --uc-simple-btn-hover-light: rgb(200, 200, 200) !important;
+  --uc-simple-btn-hover-dark: rgb(118, 118, 118) !important;
+  --uc-button-size: 24px !important;
+
+  --uc-border-light: rgb(205, 207, 207) !important;
+  --uc-border-dark: rgb(205, 207, 207) !important;
+  --uc-simple-btn-font-size: 14px !important;
+  --uc-simple-btn-padding: 3px 3px !important;
+} */
+
+/* Définition de l'arrondissement des bords du bouton de chargement*/
+/* uc-file-uploader-regular uc-simple-btn {
+  --uc-radius: 25px !important;
+  background-color: rgb(255, 255, 255);
+  border-radius: 25px;
+  border: solid rgb(255, 255, 255);
+  padding: 4px;
+} */
+
+/* uc-file-uploader-regular uc-simple-btn:hover {
+  background-color: rgb(226, 226, 226);
+  border: solid rgb(255, 255, 255);
+} */
+
+/* Cacher le texte par défaut du bouton de chargement */
+/* uc-file-uploader-regular uc-simple-btn button > span,
+uc-file-uploader-regular uc-simple-btn button .uploadcare--button__text,
+uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
+  display: none !important;
+} */
+/* Fin CSS du File Uploader d'Uploadcare*/
 
 .logo {
   height: 6em;
@@ -16,6 +107,28 @@
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.data-\[selected-single\=true\]\:bg-primary {
+  &[data-selected-single="true"] {
+    background-color: rgb(40, 140, 228);
+  }
+}
+
+.group-data-\[focused\=true\]\/day\:ring-\[3px\]:focus {
+  outline: 3px solid #0ea5e9; /* sky-500 */
+  outline-offset: 0px;
+}
+
+.group-data-\[focused\=true\]\/day\:ring-ring\/50:focus {
+  outline: 3px solid #7dd1f9; /* sky-500 */
+  outline-offset: 0px;
+}
+
+.group-data-\[focused\=true\]\/day\:border-ring:focus {
+  border: #7dd1f9;
+  outline: 3px solid #7dd1f9; /* sky-500 */
+  outline-offset: 0px;
 }
 
 @keyframes logo-spin {
@@ -39,4 +152,263 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Style personnalisé pour ton scrollbar */
+.my-scrollbar {
+  scrollbar-width: 5px; /* Firefox */
+}
+
+/* Chrome / Edge / Safari */
+.my-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.my-scrollbar::-webkit-scrollbar-track {
+  background-color: green !important;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb {
+  background-color: red !important;
+}
+
+.my-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: pink !important;
+}
+
+.p-sortable-column-icon {
+  font-size: 8px !important; /* 20px */
+  margin-left: 3px !important; /* 8px */
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.myMenu .p-menuitem-content {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:hover {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:focus {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-content:active {
+  background-color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-link {
+  color: inherit !important;
+}
+
+.myMenu .p-menuitem-text {
+  color: inherit !important;
+}
+
+.p-dialog .p-dialog-content {
+  background-color: inherit !important;
+  scrollbar-width: thin;
+}
+.p-datatable-wrapper {
+  margin-bottom: 0.5rem;
+}
+.p-datatable-wrapper::-webkit-scrollbar {
+  height: 0.25rem; /* Hauteur du scrollbar horizontal */
+  width: 0.25rem;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-track {
+  background: hsl(205, 100%, 93%);
+  margin: 0px 5px;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-thumb {
+  background: #64b1e8;
+}
+
+.p-datatable .p-datatable-wrapper {
+  border-radius: 0.375rem;
+}
+.p-datatable .p-datatable-tbody {
+  border-radius: 0.375rem;
+}
+
+.p-datatable .p-datatable-table {
+  border-radius: 0.375rem;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border-radius: 0.375rem;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border-radius: 0.375rem;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border-radius: 0.375rem;
+}
+
+.resource-project.mbsc-material.mbsc-timeline-resource {
+  background: #fff;
+  color: #0376da !important;
+  font-weight: 200 !important;
+}
+
+.resource-task.mbsc-material.mbsc-timeline-resource {
+  background: #fff;
+  color: #6a6a6a !important;
+  font-weight: 200 !important;
+}
+
+.mbsc-material.mbsc-timeline-header-active {
+  color: #fff;
+}
+
+.mbsc-material.mbsc-timeline-header-active:after {
+  background-color: #0376da !important;
+  border-radius: 8px;
+}
+
+.mbsc-calendar-button-next:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-button-prev:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-button-today:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-material.mbsc-calendar-button.mbsc-button:hover {
+  background-color: #efefef !important;
+}
+
+.mbsc-calendar-text.mbsc-ltr {
+  text-align: center !important;
+}
+
+.p-accordion-header-link {
+  font-weight: inherit !important;
+  background-color: white !important;
+}
+
+.p-accordion-toggle-icon {
+  height: 14px !important;
+  width: 14px !important;
+  stroke-width: 0.5px !important;
+  -webkit-text-stroke-width: 0.5px !important;
+  margin-right: 5px;
+}
+
+.memberPage {
+  max-width: 800px !important;
+}
+
+/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-card {
+  background-color: transparent;
+  width: 300px;
+  height: 200px;
+  border: 1px solid #f1f1f1;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+/* .flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+} */
+
+/* Position the front and back side */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.bg-circle {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-circle::before,
+.bg-circle::after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(0, 150, 255, 0.15);
+}
+
+.bg-circle::before {
+  top: -50px;
+  left: -50px;
+}
+
+.bg-circle::after {
+  bottom: -50px;
+  right: -50px;
+}
+
+.b-custom {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.1) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+
+  background-size: 40px 40px;
 }

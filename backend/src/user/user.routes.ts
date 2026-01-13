@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as userController from "./user.controllers";
 import { isAuthenticated } from "../auth/auth.middleware";
 import { isAdmin } from "../middlewares/admin.middleware";
+import * as teamController from "../team/team.controllers";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
 router.use(isAuthenticated);
 
 /**
- * @route GET /api/users 
+ * @route GET /api/users
  */
 router.get("/", userController.getUsersController);
 
@@ -19,9 +20,19 @@ router.get("/", userController.getUsersController);
 router.get("/me", userController.getUserByIdController);
 
 /**
+ * @route GET /api/users/me/status
+ */
+router.get("/me", userController.getUserStatusController);
+
+/**
  * @route GET /api/users/:id
  */
 router.get("/:id", userController.getUserByIdController);
+
+/**
+ * @route GET /api/users/:id/status
+ */
+router.get("/:id/status", userController.getUserStatusController);
 
 /**
  * @route PATCH /api/users/me
@@ -30,13 +41,21 @@ router.patch("/me", userController.updateUserController);
 
 /**
  * @route DELETE /api/users/me
- */ 
+ */
 router.delete("/me", userController.deleteUserController);
 
 /**
  * @route GET /api/users/me/teams
  */
 router.get("/me/teams", userController.getUserTeamsController);
+
+/**
+ * @route GET /api/users/me/peers
+ */
+router.get("/me/peers", userController.getUserPeersController);
+
+//TODO
+router.get("/me/teams/:id", teamController.getTeamByIdController);
 
 /**
  * @route GET /api/users/me/projects
@@ -63,9 +82,7 @@ router.get("/me/conversations", userController.getUserConversationsController);
  */
 router.get("/me/messages", userController.getUserMessagesController);
 
-
-
-//Toutes les routes suivant nécessitent connecté et admin 
+//Toutes les routes suivant nécessitent connecté et admin
 router.use(isAdmin);
 
 /**
@@ -75,7 +92,7 @@ router.patch("/:id", userController.updateUserController);
 
 /**
  * @route DELETE /api/users/:id
- */ 
+ */
 router.delete("/:id", userController.deleteUserController);
 
 /**

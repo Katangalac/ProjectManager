@@ -23,6 +23,11 @@ router.get("/", projectController.getProjectsController);
 router.get("/:id", projectController.getProjectByIdController);
 
 /**
+ * @route GET /api/projects/:id/totalCost
+ */
+router.get("/:id/totalCost", projectController.getProjectTotalCostController);
+
+/**
  * @route PATCH /api/projects/:id
  */
 router.patch("/:id", projectController.updateProjectController);
@@ -50,12 +55,18 @@ router.post("/:id/teams/:teamId", projectController.addTeamToProjectController);
 /**
  * @route DELETE /api/projects/:id/teams/:teamId
  */
-router.delete("/:id/teams/:teamId", projectController.removeTeamFromProjectController);
+router.delete(
+  "/:id/teams/:teamId",
+  projectController.removeTeamFromProjectController
+);
 
 /**
  * @route GET /api/projects/:id/members
  */
-router.get("/:id/members", projectController.getProjectMembersController);
+router.get(
+  "/:id/collaborators",
+  projectController.getProjectCollaboratorsController
+);
 
 /**
  * @route GET /api/projects/:id/tasks

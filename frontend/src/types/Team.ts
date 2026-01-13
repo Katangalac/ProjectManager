@@ -1,0 +1,94 @@
+import { Pagination } from "./Pagination";
+import { User } from "./User";
+
+/**
+ * Type représentant une équipe
+ */
+export type Team = {
+  id: string;
+  leaderId: string | null;
+  name: string;
+  description: string;
+  updatedAt: Date;
+  createdAt: Date;
+};
+
+/**
+ * Type représentant une équipe avec ses relations
+ */
+export type TeamWithRelations = Team & {
+  user?: User | null;
+  teamUsers?: {
+    teamId: string;
+    userId: string;
+    userRole: string;
+    user: User;
+  }[];
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération des équipes
+ */
+export type TeamsApiResponse = {
+  data: TeamWithRelations[];
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération d'une equipe
+ */
+export type TeamApiResponse = {
+  data: TeamWithRelations;
+  success: boolean;
+  message?: string;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération du role dans une equipe
+ */
+export type TeamRoleApiResponse = {
+  data: string;
+  success: boolean;
+  message?: string;
+};
+
+/**
+ * Type des données attendues lors de la création d'une équipe
+ */
+export type CreateTeamData = {
+  leaderId: string | null;
+  name: string;
+  description: string;
+};
+
+/**
+ * Type des données attendues lors de la modification d'une équipe
+ */
+export type UpdateTeamData = {
+  leaderId?: string | null | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+};
+
+/**
+ * Type des données attendues comme paramètre de recherche des équipes
+ */
+export type SearchTeamsFilter = {
+  page?: number | undefined;
+  pageSize?: number | undefined;
+  name?: string | undefined;
+  all?: boolean | undefined;
+};
+
+/**
+ * Type représentant le lien entre un utilisateur et une équipe
+ */
+export type UserTeam = {
+  userId: string;
+  teamId: string;
+  userRole: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
