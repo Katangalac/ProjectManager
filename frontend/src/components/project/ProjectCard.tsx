@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import { dateToLongString } from "@/utils/dateUtils";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 /**
  * Propriétés du ProjectCard
  *
@@ -17,22 +18,24 @@ import { useNavigate } from "react-router-dom";
  */
 type ProjectCardProps = {
   project: Project;
+  className?: string;
 };
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({ project, className }: ProjectCardProps) {
   const navigate = useNavigate();
   const isOverdue =
     project.status !== "COMPLETED" && new Date(project.deadline) < new Date();
   return (
     <div
-      className={clsx(
+      className={cn(
         "relative h-fit w-full max-w-76 cursor-pointer px-2",
-        "rounded-md border border-gray-300 shadow-lg"
+        "rounded-md border border-gray-300 shadow-lg",
+        className
       )}
     >
       <div
         className="absolute inset-0 bg-transparent"
-        onClick={() => navigate(`${project.id}`)}
+        onClick={() => navigate(`/userProjects/${project.id}`)}
       />
 
       <div className={clsx("flex w-full flex-col gap-2")}>

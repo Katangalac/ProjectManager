@@ -18,7 +18,27 @@ export const registerSchema = z.object({
   password: z.string().min(8, "Mot de passe trop court (min 8)"),
 });
 
+/**
+ * Schéma de validation pour la modification du mot de passe
+ */
 export const updatePasswordSchema = z.object({
   currentPassword: z.string(),
   newPassword: z.string().min(8, "Password should have at least 8 characters"),
+});
+
+/**
+ * Schéma de validation d'un email
+ */
+export const emailSchema = z.object({
+  email: z.email(),
+});
+
+/**
+ * Schéma de validation pour le reset d'un mot de passe
+ */
+export const resetPasswordSchema = z.object({
+  newPassword: z.string().min(8, "Password should have at least 8 characters"),
+  confirmPassword: z
+    .string()
+    .min(8, "Password should have at least 8 characters"),
 });

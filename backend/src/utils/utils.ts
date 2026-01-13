@@ -243,6 +243,19 @@ export const buildPaginationInfos = (
  * Retourne le message de bienvenue dans un html
  */
 export const getWelcomeMessageHtml = (userName: string): string => {
-  const html = `<h2>Bienvenue ${userName} 👋</h2><p>Merci de rejoindre ProjectManager 🚀</p>`;
+  const html = `<h2>Welcome ${userName} 👋</h2><p>Thanks for joining ProjectFlow 🚀</p>`;
+  return html;
+};
+
+/** Retourne le message de reset de mot de passe */
+export const getForgetPasswordMessageHtml = (resetUrl: string): string => {
+  const html = `
+    <h2>Reset your password 🔐</h2>
+    <p>You requested to reset your password for your ProjectManager account.</p>
+    <p>Click the link below to choose a new password:</p>
+    <p><a href="${resetUrl}" style="color:#3b82f6;">Reset Password</a></p>
+    <p>This link is valid for 15 minutes.</p>
+    <p>If you didn’t request this, you can safely ignore this email.</p>
+  `;
   return html;
 };

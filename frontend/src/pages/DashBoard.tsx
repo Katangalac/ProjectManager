@@ -1,7 +1,6 @@
 import { clsx } from "clsx";
 import { useUserStore } from "../stores/userStore";
 import { useTasks } from "../hooks/queries/task/useTasks";
-import { useTeams } from "../hooks/queries/team/useTeams";
 import { useProjects } from "../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Project } from "@/types/Project";
@@ -13,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardStatsCard from "@/components/dashboard/DashboardStatsCard";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
+import ProjectCard from "@/components/project/ProjectCard";
 
 /**
  * Tableau de bord de l'application
@@ -32,16 +32,17 @@ export default function DashBoard() {
     isLoading: projectsLoading,
     isError: projectsError,
   } = useProjects({ all: true });
-  const {
-    data: teams,
-    isLoading: teamsLoading,
-    isError: teamsError,
-  } = useTeams({ all: true });
+
+  const filteredProjects =
+    projects?.data.filter((project) => project.status !== "COMPLETED") ?? [];
+  const filteredTasks =
+    tasks?.data.filter((task) => task.status !== "COMPLETED") ?? [];
 
   const taskStats = getTaskStats(tasks?.data ?? []);
   const projectStats = getProjectStats(projects?.data ?? []);
 
-  const data = {
+  //Données pour le chart de taches
+  const taskData = {
     labels: ["Completed", "Blocked", "Todo", "In Progress"],
     datasets: [
       {
@@ -52,16 +53,22 @@ export default function DashBoard() {
           taskStats.inProgress,
         ],
         backgroundColor: [
-          "#22c55e", // green
-          "#ef4444", // red
-          "#facc15", // yellow
-          "#3399ff", // blue
+          "#22C55E", // completed
+          "#EF4444", // blocked
+          "#FACC15", // to do
+          "#3B82F6", // in progress
         ],
-        hoverBackgroundColor: ["#16a34a", "#dc2626", "#eab308", "#1A82FF"],
+        hoverBackgroundColor: [
+          "#16A34A", // completed
+          "#DC2626", // blocked
+          "#EAB308", // to do
+          "#2563EB", // in progress
+        ],
       },
     ],
   };
 
+  //Données pour le chart des projets
   const projectData = {
     labels: ["Planning", "Active", "Paused", "Blocked", "Completed"],
     datasets: [
@@ -74,18 +81,18 @@ export default function DashBoard() {
           projectStats.completed,
         ],
         backgroundColor: [
-          "#E0F2FE",
-          "#BAE6FD",
-          "#7DD3FC",
-          "#38BDF8",
-          "#0EA5E9",
+          "#94A3B8", // planning
+          "#60A5FA", // active
+          "#FACC15", // paused
+          "#F87171", // blocked
+          "#4ADE80", // completed
         ],
         hoverBackgroundColor: [
-          "#BAE6FD",
-          "#7DD3FC",
-          "#38BDF8",
-          "#0EA5E9",
-          "#0284C7",
+          "#64748B", // planning
+          "#3B82F6", // active
+          "#EAB308", // paused
+          "#EF4444", // blocked
+          "#22C55E", // completed
         ],
       },
     ],
@@ -102,9 +109,9 @@ export default function DashBoard() {
 
   return (
     <div className={clsx("flex flex-1 items-center justify-center")}>
-      {tasksError || projectsError || (teamsError && <UserErrorMessage />)}
+      {(tasksError || projectsError) && <UserErrorMessage />}
 
-      {tasksLoading || projectsLoading || teamsLoading ? (
+      {tasksLoading || projectsLoading ? (
         <div>
           <ProgressSpinner />
         </div>
@@ -226,6 +233,65 @@ export default function DashBoard() {
               )}
             >
               <span className={clsx("mb-2 text-left text-sm text-gray-600")}>
+                Near-due projects
+              </span>
+              <div
+                className={clsx(
+                  "grid h-full w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
+                )}
+              >
+                {filteredProjects.length > 0 ? (
+                  <>
+                    {filteredProjects.slice(0, 2).map((project, index) => (
+                      <ProjectCard
+                        key={index}
+                        project={project}
+                        className="w-full max-w-full shadow-none"
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <NoItems message="No projects available" />
+                )}
+              </div>
+            </div>
+
+            <div
+              className={clsx(
+                "flex min-h-60 min-w-52 flex-col justify-start gap-2",
+                "rounded-md border border-gray-300 p-3"
+              )}
+            >
+              <span className={clsx("text-left text-sm text-gray-600")}>
+                Project stats
+              </span>
+              <div className={clsx("flex h-full items-center justify-center")}>
+                {projects && projects.data.length > 0 ? (
+                  <Chart
+                    type="doughnut"
+                    data={projectData}
+                    options={options}
+                    className="w-64"
+                  />
+                ) : (
+                  <NoItems message="No projects available" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={clsx(
+              "flex w-full items-stretch gap-6 sm:flex-col lg:flex-row"
+            )}
+          >
+            <div
+              className={clsx(
+                "flex flex-1 flex-col justify-start gap-2",
+                "rounded-md border border-gray-300 p-3"
+              )}
+            >
+              <span className={clsx("mb-2 text-left text-sm text-gray-600")}>
                 Near-due tasks
               </span>
               <div
@@ -237,11 +303,11 @@ export default function DashBoard() {
                 tasks.data.filter((task) => task.status !== "COMPLETED")
                   .length > 0 ? (
                   <>
-                    {tasks.data
-                      .filter((task) => task.status !== "COMPLETED")
+                    {filteredTasks
                       .slice(0, 2)
-                      .map((task: TaskWithRelations) => (
+                      .map((task: TaskWithRelations, index) => (
                         <TaskDashboardCard
+                          key={index}
                           task={task}
                           onclick={() => navigate("/userTasks")}
                         />
@@ -255,40 +321,30 @@ export default function DashBoard() {
 
             <div
               className={clsx(
-                "flex flex-col justify-start gap-2",
+                "flex min-h-60 min-w-52 flex-col justify-start gap-2",
                 "rounded-md border border-gray-300 p-3"
               )}
             >
               <span className={clsx("text-left text-sm text-gray-600")}>
                 Tasks stats
               </span>
-              <div className={clsx("flex justify-center")}>
+              <div className={clsx("flex h-full items-center justify-center")}>
                 {tasks && tasks.data.length > 0 ? (
                   <Chart
                     type="doughnut"
-                    data={data}
+                    data={taskData}
                     options={options}
                     className="w-64"
                   />
                 ) : (
-                  <NoItems message="No tasks available" />
+                  <NoItems
+                    message="No tasks available"
+                    className="h-fit w-fit"
+                  />
                 )}
               </div>
             </div>
           </div>
-          {/* <div
-            className={clsx(
-              "flex w-75 flex-col justify-start gap-2",
-              "rounded-md border border-gray-300 p-3"
-            )}
-          >
-            <Chart
-              type="doughnut"
-              data={projectData}
-              options={options}
-              className="w-64"
-            />
-          </div> */}
         </div>
       )}
     </div>

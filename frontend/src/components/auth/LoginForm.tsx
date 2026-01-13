@@ -13,6 +13,14 @@ import { toast } from "sonner";
 import { toastStyle } from "@/utils/toastStyle.ts";
 import { User } from "lucide-react";
 import { AppError } from "@/errors/AppError.ts";
+import { useState } from "react";
+import ForgotPasswordForm from "./ForgetPasswordForm.tsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog.tsx";
 
 /**
  * Formulaire de connexion
@@ -22,7 +30,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_API_URL;
   const setUser = useUserStore((state) => state.setUser);
-
+  const [showDialog, setShowDialog] = useState(false);
   /**
    * Configuration de react-hook-form avec validation Zod
    */
@@ -124,12 +132,14 @@ export default function LoginForm() {
           />
 
           <p className={clsx("mt-2 text-right text-sm")}>
-            <a
-              className={clsx("font-medium text-sky-600 hover:underline")}
-              href="/"
+            <span
+              className={clsx(
+                "cursor-pointer font-medium text-sky-600 hover:underline"
+              )}
+              onClick={() => setShowDialog(true)}
             >
               Forget password?
-            </a>
+            </span>
           </p>
         </div>
 
@@ -183,6 +193,31 @@ export default function LoginForm() {
           Sign up
         </a>
       </p>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white"
+          )}
+        >
+          <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4")}>
+            <DialogTitle className="text-lg text-white">
+              Forget password
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            <ForgotPasswordForm onSuccess={() => setShowDialog(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

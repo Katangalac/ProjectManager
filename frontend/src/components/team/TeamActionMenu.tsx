@@ -336,7 +336,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
           </DialogHeader>
           <div
             className={clsx(
-              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "max-h-[80vh] overflow-y-auto rounded-b-md pb-4 pl-4",
               "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:rounded-md",
               "[&::-webkit-scrollbar-thumb]:rounded-md"

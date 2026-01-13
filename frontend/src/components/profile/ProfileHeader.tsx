@@ -181,18 +181,6 @@ export default function ProfileHeader({
             }
             imageClassName="text-3xl"
           />
-          {/* {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={user.userName}
-              onError={() => setImageUrl(null)}
-              className={clsx(
-                "h-20 w-20 rounded-full border border-gray-300 bg-gray-200 object-cover object-center"
-              )}
-            />
-          ) : (
-            <UserCircleIcon className={clsx("size-20")} />
-          )} */}
 
           {/**Uploader de fichier pour changer l'image de profil */}
           {isEditable && (

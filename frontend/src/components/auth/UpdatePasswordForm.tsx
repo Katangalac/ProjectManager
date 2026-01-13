@@ -6,6 +6,14 @@ import { updatePassword } from "../../api/auth.api.ts";
 import { clsx } from "clsx";
 import { InputPassword } from "../ui/InputPassword.tsx";
 import { AppError } from "@/errors/AppError.ts";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog.tsx";
+import ForgotPasswordForm from "./ForgetPasswordForm.tsx";
+import { useState } from "react";
 
 type UpdatePassordFormProps = {
   onSuccess: () => void;
@@ -18,7 +26,7 @@ type UpdatePassordFormProps = {
 export default function UpdatePasswordForm({
   onSuccess,
 }: UpdatePassordFormProps) {
-  //const backendUrl = import.meta.env.VITE_API_URL;
+  const [showDialog, setShowDialog] = useState(false);
 
   /**
    * Configuration de react-hook-form avec validation Zod
@@ -95,12 +103,14 @@ export default function UpdatePasswordForm({
           />
 
           <p className={clsx("mt-2 text-right text-sm")}>
-            <a
-              className={clsx("font-medium text-sky-600 hover:underline")}
-              href="/"
+            <span
+              className={clsx(
+                "cursor-pointer font-medium text-sky-600 hover:underline"
+              )}
+              onClick={() => setShowDialog(true)}
             >
               Forget password?
-            </a>
+            </span>
           </p>
         </div>
 
@@ -124,6 +134,31 @@ export default function UpdatePasswordForm({
           Confirm
         </button>
       </form>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white"
+          )}
+        >
+          <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4")}>
+            <DialogTitle className="text-lg text-white">
+              Forget password
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            <ForgotPasswordForm onSuccess={() => setShowDialog(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

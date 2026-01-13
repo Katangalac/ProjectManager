@@ -82,7 +82,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
             </button>
           </TooltipTrigger>
           <TooltipContent>
-            {isCollapsed ? "Open sidebar" : "Close sidebar"}
+            {isCollapsed ? "Expand sidebar" : "Close sidebar"}
           </TooltipContent>
         </Tooltip>
 

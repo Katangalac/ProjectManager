@@ -122,12 +122,12 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
             "[&>button]:hover:text-white"
           )}
         >
-          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
+          <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
             <DialogTitle className="text-lg text-white">New task</DialogTitle>
           </DialogHeader>
           <div
             className={clsx(
-              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
+              "max-h-[80vh] overflow-y-auto rounded-b-md pb-4 pl-4",
               "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:rounded-md",
               "[&::-webkit-scrollbar-thumb]:rounded-md"

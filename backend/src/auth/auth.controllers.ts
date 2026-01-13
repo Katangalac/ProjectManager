@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 import { generateAuthResponse, updatePassword } from "./auth.services";
 import { updateUserLastLoginDateToNow } from "../user/user.services";
 import { db } from "../db";
-import { verify } from "argon2";
+import { verify, hash } from "argon2";
 import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { successResponse, errorResponse } from "../utils/apiResponse";
@@ -19,8 +19,15 @@ import {
 } from "../user/errors";
 import { addEmailToQueue } from "../email/email.queue";
 import { addNotificationToQueue } from "../notification/notification.queue";
-import { getWelcomeMessageHtml } from "../utils/utils";
-import { verifyToken } from "./utils/jwt";
+import {
+  getForgetPasswordMessageHtml,
+  getWelcomeMessageHtml,
+} from "../utils/utils";
+import {
+  signResetPasswordToken,
+  verifyResetPasswordToken,
+  verifyToken,
+} from "./utils/jwt";
 import { AppError } from "../errors/AppError";
 
 /**
@@ -101,10 +108,8 @@ export const login = async (req: Request, res: Response) => {
     });
     if (!user)
       return res
-        .status(401)
-        .json(
-          errorResponse("USER_NOT_FOUND", "Invalid identifier. User not found")
-        );
+        .status(200)
+        .json(errorResponse("INVALID_CREDENTIALS", "Invalid credentials"));
     if (user.provider === UserProvider.LOCAL) {
       const { password, ...safeUser } = user;
       if (!password)
@@ -236,5 +241,72 @@ export const verifyAuth = async (req: Request, res: Response) => {
     res.json({ authenticated: true });
   } catch (err) {
     res.json({ authenticated: false });
+  }
+};
+
+/**
+ *Declenche le processus de reinitialisation du mot de passe
+ */
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  const user = await db.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    return res.json(
+      successResponse(null, "If this email exists, a reset link has been sent.")
+    );
+  }
+  const token = signResetPasswordToken(user.id);
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+  const html = getForgetPasswordMessageHtml(resetUrl);
+  await addEmailToQueue(user.email, "Reset Password", html);
+
+  return res.json(
+    successResponse(null, "If this email exists, a reset link has been sent.")
+  );
+};
+
+/**Valide le token de reinitialisation de mot de passe */
+export const validateResetToken = (req: Request, res: Response) => {
+  const { token } = req.body;
+  try {
+    const payload = verifyResetPasswordToken(token);
+    return res.json(
+      successResponse({
+        valid: true,
+        userId: payload.userId,
+      })
+    );
+  } catch (err) {
+    return res.status(400).json({
+      valid: false,
+      message: "Invalid or expired token",
+    });
+  }
+};
+
+/**Reinitialise le mot de passe de l'utilisateur */
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    const payload = verifyResetPasswordToken(token);
+    const userId = payload.userId;
+    const hashedPassword = await hash(newPassword);
+
+    await db.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    return res.json(successResponse(null, "Password updated successfully."));
+  } catch (err) {
+    return res
+      .status(400)
+      .json(errorResponse("INVALID_TOKEN", "Invalid or expired token."));
   }
 };
