@@ -1,4 +1,4 @@
-import { axiosClient } from "../lib/axios/axiosClient";
+import { axiosClient } from "@/lib/axios/axiosClient";
 import axios from "axios";
 import { SearchProjectsFilter } from "../types/Project";
 import { SearchTasksFilter } from "@/types/Task";
@@ -15,10 +15,12 @@ import { CreateProjectData, UpdateProjectData } from "../types/Project";
 export const createProject = async (data: CreateProjectData) => {
   try {
     const axiosResponse = await axiosClient.post("/projects", data);
+    console.log("PROJ:", axiosResponse);
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
+      console.log("PROJ-ERR:", message);
       throw new Error(message);
     }
     throw new Error("Erreur lors de la création du projet");
