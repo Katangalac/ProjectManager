@@ -24,7 +24,7 @@ let io: Server;
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: "https://projectmanager-wb93.onrender.com",
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -33,7 +33,12 @@ export const setupSocket = (server: http.Server) => {
   io.on("connection", async (socket) => {
     try {
       console.log("🟢 Client connecté:", socket.id);
-      const cookies = cookie.parse(socket.request.headers.cookie || "");
+      const rawcookies = socket.request.headers?.cookie;
+      if (!rawcookies) {
+        console.log("No cookie found in socket handshake");
+        return;
+      }
+      const cookies = cookie.parse(rawcookies || "");
       const token = cookies["projectFlowToken"];
 
       if (!token) {
