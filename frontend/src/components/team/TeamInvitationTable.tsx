@@ -2,7 +2,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InvitationWithRelations } from "@/types/Invitation";
 import { clsx } from "clsx";
-import { dateToLongString } from "@/utils/dateUtils";
+import { formatShortDateWithOptionalYear } from "@/utils/dateUtils";
 import UserBasicInfo from "../profile/UserBasicInfo";
 
 /**
@@ -28,7 +28,7 @@ export default function TeamInvitationsTable({
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "min-w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -43,7 +43,10 @@ export default function TeamInvitationsTable({
             "[&>tr]:rounded-br-md"
           )
         }
-        tableStyle={{ minWidth: "1000px" }}
+        tableStyle={{
+          minWidth: "500px",
+          maxHeight: "500px",
+        }}
         header={
           <div
             className={clsx(
@@ -57,26 +60,24 @@ export default function TeamInvitationsTable({
         }
       >
         <Column
+          field="senderId"
           header="Sender"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
           body={(rowData: InvitationWithRelations) =>
             rowData.sender ? <UserBasicInfo user={rowData.sender} /> : '"None"'
           }
+          className={clsx(
+            "flex items-center justify-start truncate p-2 text-xs font-medium"
+          )}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
-          sortable
         ></Column>
 
         <Column
+          field="receiverId"
           header="Receiver"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
           body={(rowData: InvitationWithRelations) =>
             rowData.receiver ? (
               <UserBasicInfo user={rowData.receiver} />
@@ -84,19 +85,17 @@ export default function TeamInvitationsTable({
               '"None"'
             )
           }
+          className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
-          sortable
         ></Column>
 
         <Column
+          field="status"
           header="Status"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
           body={(rowData: InvitationWithRelations) =>
             rowData.status === "ACCEPTED"
               ? "Accepted"
@@ -104,18 +103,35 @@ export default function TeamInvitationsTable({
                 ? "Rejected"
                 : "Pending"
           }
+          className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
-            "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
+            "border-b border-gray-200 bg-sky-50 text-left text-xs p-2 font-bold text-gray-500",
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
           sortable
         ></Column>
-
         <Column
-          header="Created at"
+          field="createdAt"
+          header="Send at"
           body={(rowData: InvitationWithRelations) =>
-            dateToLongString(new Date(rowData.createdAt))
+            formatShortDateWithOptionalYear(new Date(rowData.createdAt))
+          }
+          className={clsx("w-fit p-2 text-left text-xs")}
+          headerClassName={clsx(
+            "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
+            "dark:text-gray-400",
+            "dark:border-gray-500"
+          )}
+          sortable
+        ></Column>
+        <Column
+          field="updatedAt"
+          header="Replied at"
+          body={(rowData: InvitationWithRelations) =>
+            rowData.status !== "PENDING"
+              ? formatShortDateWithOptionalYear(new Date(rowData.updatedAt))
+              : "Not replied yet"
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(

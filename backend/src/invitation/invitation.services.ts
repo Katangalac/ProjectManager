@@ -13,6 +13,7 @@ import {
 import { db } from "../db";
 import { Prisma } from "@prisma/client";
 import { addNotificationToQueue } from "../notification/notification.queue";
+import { addUserToTeam } from "../team/team.services";
 
 /**
  * Crée et envoie une nouvelle invitation
@@ -59,10 +60,10 @@ export const sendInvitation = async (
     await addNotificationToQueue(
       invitation.receiverId,
       `NEW_INVITATION-${invitation.id}`,
-      invitation.message
+      "You’ve been invited to join a team. Check it out."
     );
   } catch (err: any) {
-    console.log("Erreur lors de l'ajoue de la notification", err);
+    console.error("Erreur lors de l'ajout de la notification", err);
   }
 
   return invitation;
@@ -80,6 +81,7 @@ export const getInvitationById = async (id: string): Promise<Invitation> => {
     include: {
       sender: true,
       receiver: true,
+      team: true,
     },
   });
   if (!invitation) throw new InvitationNotFoundError(id);
@@ -145,6 +147,11 @@ export const updateInvitationStatus = async (
     where: { id: invitationId },
   });
   if (!invitation) throw new InvitationNotFoundError(invitationId);
+
+  if (updateData.status === "ACCEPTED") {
+    await addUserToTeam(invitation.receiverId, invitation.teamId, "Member");
+  }
+
   const updatedInvitation = await db.invitation.update({
     where: { id: invitationId },
 
@@ -155,10 +162,10 @@ export const updateInvitationStatus = async (
     await addNotificationToQueue(
       invitation.senderId,
       `INVITATION_UPDATED-${invitation.id}`,
-      "You have a reply for your invitation"
+      "Your team invitation has been updated. See what changed."
     );
   } catch (err: any) {
-    console.log("Erreur lors de l'ajoue de la notification", err);
+    console.error("Erreur lors de l'ajout de la notification", err);
   }
 
   return updatedInvitation;

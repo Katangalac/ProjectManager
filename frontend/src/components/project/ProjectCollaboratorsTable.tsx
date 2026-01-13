@@ -4,6 +4,8 @@ import { clsx } from "clsx";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
+import PaginationWrapper from "../commons/Pagination";
+import { useState } from "react";
 
 type ProjectCollaboratorsTableProps = {
   projectId: string;
@@ -15,15 +17,21 @@ type ProjectCollaboratorsTableProps = {
 export default function ProjectCollaboratorsTable({
   projectId,
 }: ProjectCollaboratorsTableProps) {
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useProjectCollaborators(projectId, {
-    all: true,
+    page,
+    pageSize,
   });
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4 overflow-y-auto",
-        (isLoading || !(data && data.length > 0)) &&
+        (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center pt-5",
         isError && "items-center"
       )}
@@ -34,8 +42,16 @@ export default function ProjectCollaboratorsTable({
       {isError && <UserErrorMessage />}
       {data && (
         <>
-          {data.length > 0 ? (
-            <UsersTable users={data || []} title="Collaborators" />
+          {data.data.length > 0 ? (
+            <>
+              <UsersTable users={data.data || []} title="Collaborators" />
+              <PaginationWrapper
+                page={page}
+                setPage={setPage}
+                totalItems={totalItems}
+                totalPages={totalPages}
+              />
+            </>
           ) : (
             <NoItems
               message="No collaborators yet"

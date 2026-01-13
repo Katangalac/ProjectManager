@@ -1,32 +1,31 @@
-// import { useState } from "react";
 import { clsx } from "clsx";
 import TeamInvitationsTable from "./TeamInvitationTable";
 import { useTeamInvitations } from "@/hooks/queries/team/useTeamInvitations";
-
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-// } from "@/components/ui/dialog";
-// import { PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
+import { useState } from "react";
+import PaginationWrapper from "../commons/Pagination";
 
 type TeamInvitationViewProps = {
   teamId: string;
 };
 
 /**
- * Page d'affichage des équipes
+ * Affiche les invitations d'une équipe
  */
 export default function TeamInvitationsView({
   teamId,
 }: TeamInvitationViewProps) {
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useTeamInvitations(teamId, {
-    all: true,
+    page,
+    pageSize,
   });
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
@@ -44,7 +43,15 @@ export default function TeamInvitationsView({
       {data && (
         <>
           {data.data.length > 0 ? (
-            <TeamInvitationsTable invitations={data.data} />
+            <>
+              <TeamInvitationsTable invitations={data.data} />
+              <PaginationWrapper
+                page={page}
+                setPage={setPage}
+                totalItems={totalItems}
+                totalPages={totalPages}
+              />
+            </>
           ) : (
             <NoItems
               message="No invitations available"
@@ -55,35 +62,6 @@ export default function TeamInvitationsView({
           )}
         </>
       )}
-
-      {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent
-          className={clsx(
-            "max-w-[500px] p-0",
-            "[&>button]:text-white",
-            "[&>button]:hover:text-white"
-          )}
-        >
-          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
-            <DialogTitle className="text-lg text-white">New task</DialogTitle>
-          </DialogHeader>
-          <div
-            className={clsx(
-              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
-              "[&::-webkit-scrollbar]:w-0",
-              "[&::-webkit-scrollbar-track]:rounded-md",
-              "[&::-webkit-scrollbar-thumb]:rounded-md"
-            )}
-          >
-            <TaskForm
-              isUpdateForm={false}
-              disableStatusInput={false}
-              defaultValues={TASKFORM_DEFAULT_VALUES}
-              onSuccess={() => setShowDialog(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog> */}
     </div>
   );
 }

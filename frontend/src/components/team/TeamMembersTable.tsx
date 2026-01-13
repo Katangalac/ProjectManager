@@ -3,6 +3,7 @@ import { TeamWithRelations } from "../../types/Team";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
+import TeamMemberTableActionMenu from "./TeamMemberTableActionMenu";
 
 /**
  * Propriétés du TeamMembersTable
@@ -31,7 +32,9 @@ export default function TeamMembersTable({
           value={
             showLeaderOnly
               ? team.teamUsers.filter(
-                  (teamUser) => teamUser.user.id === team.leaderId
+                  (teamUser) =>
+                    teamUser.user.id === team.leaderId ||
+                    teamUser.userRole === "Leader"
                 )
               : team.teamUsers
           }
@@ -139,6 +142,30 @@ export default function TeamMembersTable({
             )}
             sortable
           ></Column>
+          {!showLeaderOnly && (
+            <Column
+              header=""
+              body={(teamUser) => (
+                <div>
+                  <TeamMemberTableActionMenu
+                    member={teamUser.user}
+                    team={team}
+                    memberRole={
+                      teamUser.userRole && teamUser.userRole.trim() !== ""
+                        ? teamUser.userRole
+                        : "Member"
+                    }
+                  />
+                </div>
+              )}
+              className={clsx("w-fit p-2 text-left text-xs")}
+              headerClassName={clsx(
+                "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
+                "dark:text-gray-400",
+                "dark:border-gray-500"
+              )}
+            ></Column>
+          )}
         </DataTable>
       )}
     </div>

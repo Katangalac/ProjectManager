@@ -1,6 +1,9 @@
 import { TabMenuThroughMethodOptions } from "primereact/tabmenu";
 import { classNames } from "primereact/utils";
 
+/**
+ * Configuration tailwind pour primereact
+ */
 export const tailwindPreset = {
   tabmenu: {
     root: { className: "w-full" },

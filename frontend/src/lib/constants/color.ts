@@ -1,3 +1,4 @@
+//La liste des couleurs utilisées pour les avatars par defaut et pour les équipes
 export const colors: string[] = [
   "#48AEEB",
   "#56A0EB",

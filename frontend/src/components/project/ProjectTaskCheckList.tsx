@@ -12,6 +12,7 @@ type ProjectTaskCheckListProps = {
   onSeeMore?: () => void;
 };
 
+/**Affiche les taches d'un projet dans un checklist */
 export default function ProjectTaskCheckList({
   tasks,
   hideSeeAllButton = false,
@@ -66,13 +67,6 @@ export default function ProjectTaskCheckList({
                     "border-b border-dotted border-gray-400 last:border-b-0"
                   )}
                 >
-                  {/* <span
-                    className={clsx(
-                      "text-left text-sm font-light text-wrap text-black"
-                    )}
-                  >
-                    {index + 1}.
-                  </span> */}
                   {task.status === "COMPLETED" ? (
                     <CheckCircleIcon
                       weight="fill"

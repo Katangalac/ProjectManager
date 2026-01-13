@@ -17,14 +17,20 @@ import { NumberedListIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import ProjectCard from "@/components/project/ProjectCard";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
+import PaginationWrapper from "@/components/commons/Pagination";
 
 /**
  * Affiche les projets de l'utilisateur
  */
 export default function ProjectsPage() {
-  const { data = [], isError, isLoading, refetch } = useProjects({ all: true });
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
+  const { data, isError, isLoading, refetch } = useProjects({ page, pageSize });
   const [showDialog, setShowDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
   const viewModeOptions = [
     {
       label: "Overview",
@@ -69,27 +75,33 @@ export default function ProjectsPage() {
           <div
             className={clsx(
               "flex flex-1 flex-col justify-between gap-4",
-              !(data && data.length > 0) && "items-center justify-center",
+              !(data && data.data.length > 0) && "items-center justify-center",
               isError && "justify-start gap-10"
             )}
           >
             {isError && (
               <UserErrorMessage onRetryButtonClick={() => refetch()} />
             )}
-            {data?.length > 0 ? (
+            {data && data.data.length > 0 ? (
               <>
-                {viewMode === "list" && <ProjectsTable projects={data} />}
+                {viewMode === "list" && <ProjectsTable projects={data.data} />}
                 {viewMode === "card" && (
                   <div
                     className={clsx(
                       "grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"
                     )}
                   >
-                    {data.map((project, index) => (
+                    {data.data.map((project, index) => (
                       <ProjectCard key={index} project={project} />
                     ))}
                   </div>
                 )}
+                <PaginationWrapper
+                  page={page}
+                  setPage={setPage}
+                  totalItems={totalItems}
+                  totalPages={totalPages}
+                />
               </>
             ) : (
               <NoItems

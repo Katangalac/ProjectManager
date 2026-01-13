@@ -1,6 +1,9 @@
 import { HandWavingIcon } from "@phosphor-icons/react";
 import { PageMeta } from "@/types/PageMeta";
 
+/**
+ * Meta-données des pages de l'application
+ */
 export const pageMetaRecord: Record<string, PageMeta> = {
   dashboard: {
     title: "Dashboard",
@@ -29,6 +32,12 @@ export const pageMetaRecord: Record<string, PageMeta> = {
     title: "Teams",
     message: "Collaborate with your teams",
   },
+
+  notifications: {
+    title: "Notifications",
+    message: "Your notifications",
+  },
+
   profile: {
     title: "Profile",
     message: "Manage your personal settings",

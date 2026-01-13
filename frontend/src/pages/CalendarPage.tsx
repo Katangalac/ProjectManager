@@ -23,7 +23,7 @@ export default function CalendarPage() {
     refetch: refetchTasks,
   } = useTasks({ all: true });
   const {
-    data: projects = [],
+    data: projects,
     isLoading: projectsLoading,
     isError: projectsError,
     refetch: refetchProjects,
@@ -77,10 +77,16 @@ export default function CalendarPage() {
               />
             )}
             {viewMode === "calendar" && !projectsLoading && !tasksLoading && (
-              <Calendar tasks={tasks?.data || []} projects={projects} />
+              <Calendar
+                tasks={tasks?.data ?? []}
+                projects={projects?.data ?? []}
+              />
             )}
             {viewMode === "scheduler" && !projectsLoading && !tasksLoading && (
-              <Scheduler tasks={tasks?.data || []} projects={projects} />
+              <Scheduler
+                tasks={tasks?.data ?? []}
+                projects={projects?.data ?? []}
+              />
             )}
           </div>
         </div>

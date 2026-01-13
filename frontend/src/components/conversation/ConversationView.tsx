@@ -13,6 +13,7 @@ import { useUserStore } from "@/stores/userStore";
 type ConversationCardProps = {
   conversation: ConversationWithRelation;
   className?: string;
+  onClick?: () => void;
 };
 
 /**
@@ -23,14 +24,16 @@ type ConversationCardProps = {
 export default function ConversationCard({
   conversation,
   className,
+  onClick,
 }: ConversationCardProps) {
   const { user } = useUserStore();
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-center rounded-sm bg-sky-100 p-2 text-xs",
+        "flex w-full items-center justify-center rounded-sm p-2 text-xs",
         className
       )}
+      onClick={onClick}
     >
       {conversation.messages && (
         <div className="flex w-full flex-col gap-3">
@@ -49,9 +52,10 @@ export default function ConversationCard({
                       ? `${conversation.messages[0].sender.firstName[0].toUpperCase() + conversation.messages[0].sender.lastName[0].toUpperCase()}`
                       : undefined
                   }
+                  showOnlineStatus={true}
                 />
                 {user?.id === conversation.messages[0].sender.id ? (
-                  <span className={clsx("font-bold text-sky-600")}>You</span>
+                  <span className={clsx("font-bold text-sky-500")}>You</span>
                 ) : (
                   <div
                     className={clsx("flex flex-col items-start justify-start")}
@@ -88,12 +92,16 @@ export default function ConversationCard({
             </span>
           )}
           {!conversation.messages[0] && (
-            <span className={clsx("text-gray-600")}>Untitled</span>
+            <span className={clsx("text-gray-600")}>
+              No messages yet for this conversations!
+            </span>
           )}
         </div>
       )}
       {!conversation.messages && (
-        <span className={clsx("text-gray-600")}>Untitled</span>
+        <span className={clsx("text-gray-600")}>
+          No messages yet for this conversations!
+        </span>
       )}
     </div>
   );

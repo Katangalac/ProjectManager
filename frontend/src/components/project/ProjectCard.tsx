@@ -1,6 +1,6 @@
 import { Project } from "@/types/Project";
 import { clsx } from "clsx";
-import { Progress } from "../ui/progress";
+// import { Progress } from "../ui/progress";
 import { PROJECT_STATUS_META } from "@/lib/constants/project";
 import ProjectActionMenu from "./ProjectActionMenu";
 import {

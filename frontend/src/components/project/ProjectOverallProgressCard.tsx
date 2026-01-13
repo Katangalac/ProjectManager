@@ -9,6 +9,9 @@ type ProjectOverallProgressCardProps = {
   project: Project;
 };
 
+/**
+ * Affiche la progression d'un projet et son cout
+ */
 export default function ProjectOverallProgressCard({
   project,
 }: ProjectOverallProgressCardProps) {

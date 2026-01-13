@@ -40,17 +40,13 @@ export default function TeamDetailsPage() {
   if (isError) return <div>An error occur while loading team</div>;
 
   return (
-    <div
-      className={clsx(
-        "flex h-full min-h-screen items-start justify-start gap-5"
-      )}
-    >
+    <div className={clsx("flex h-full items-start justify-start gap-5")}>
       {isLoading ? (
         <ProgressSpinner />
       ) : (
         <>
           {data && (
-            <Tabs defaultValue="projects" className="h-fit w-full gap-0">
+            <Tabs defaultValue="projects" className="h-full w-full gap-0">
               <TabsList className="h-fit w-full justify-start gap-5 rounded-none border-b border-gray-300 px-3 py-0">
                 <div className={clsx("mr-4 flex w-fit items-center gap-2")}>
                   <Tooltip>
@@ -75,13 +71,13 @@ export default function TeamDetailsPage() {
                   </Tooltip>
 
                   <TeamNameAcronym
-                    id={data.id}
-                    name={data.name}
+                    id={data.data.id}
+                    name={data.data.name}
                     className="h-fit w-fit px-2 py-2"
                     textClassName="text-red-500 text-xs font-medium"
                   />
                   <span className="text-sm font-medium text-black">
-                    {data.name}
+                    {data.data.name}
                   </span>
                 </div>
                 <TabsTrigger
@@ -165,24 +161,24 @@ export default function TeamDetailsPage() {
                   </span>
                 </TabsTrigger>
               </TabsList>
-              <div>
+              <div className={clsx("h-full w-full")}>
                 <TabsContent value="projects" className={clsx("px-5")}>
                   <TeamProjectsView teamId={teamId!} />
                 </TabsContent>
                 <TabsContent value="tasks" className={clsx("px-5")}>
                   <TeamTasksView teamId={teamId!} />
                 </TabsContent>
-                <TabsContent value="publications" className="m-0">
+                <TabsContent value="publications" className="m-0 h-full w-full">
                   <TeamConversationsView teamId={teamId!} />
                 </TabsContent>
                 <TabsContent value="members" className={clsx("px-5")}>
-                  <TeamMembersView team={data} />
+                  <TeamMembersView team={data.data} />
                 </TabsContent>
                 <TabsContent value="invitations" className={clsx("px-5")}>
                   <TeamInvitationsView teamId={teamId!} />
                 </TabsContent>
                 <TabsContent value="about" className={clsx("px-5")}>
-                  <TeamAbout team={data} />
+                  <TeamAbout team={data.data} />
                 </TabsContent>
               </div>
             </Tabs>

@@ -23,7 +23,7 @@ export const useCreateMessage = (params: CreateMessageMutationParams = {}) => {
   const mutation = useMutation({
     mutationFn: async (data: CreateMessageData) => {
       const message = await sendMessage(data);
-      socket.emit("send_message", message);
+      socket.emit("send_message", message.data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["conversationMessages"] });

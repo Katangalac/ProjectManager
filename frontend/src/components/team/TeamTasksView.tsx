@@ -14,25 +14,32 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
+import PaginationWrapper from "../commons/Pagination";
 
 type TeamTasksViewProps = {
   teamId: string;
 };
 
 /**
- * Page d'affichage des tâches de l'utilisateur courant
+ * Affiche les taches d'une équipe
  */
 export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
   const [showDialog, setShowDialog] = useState(false);
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useTeamTasks(teamId, {
-    all: true,
+    page,
+    pageSize,
   });
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4 overflow-y-auto",
-        (isLoading || !(data && data.length > 0)) &&
+        (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center",
         isError && "items-center"
       )}
@@ -57,8 +64,16 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
       {isError && <UserErrorMessage />}
       {data && (
         <>
-          {data.length > 0 ? (
-            <TasksTable tasks={data} />
+          {data.data.length > 0 ? (
+            <>
+              <TasksTable tasks={data.data} />
+              <PaginationWrapper
+                page={page}
+                setPage={setPage}
+                totalItems={totalItems}
+                totalPages={totalPages}
+              />
+            </>
           ) : (
             <NoItems
               message="No tasks available"

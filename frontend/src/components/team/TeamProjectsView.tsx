@@ -1,36 +1,35 @@
-// import { useState } from "react";
 import { clsx } from "clsx";
 import ProjectsTable from "../project/ProjectTable";
 import { useTeamProjects } from "@/hooks/queries/team/useTeamProjects";
-
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-// } from "@/components/ui/dialog";
-// import { PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
+import { useState } from "react";
+import PaginationWrapper from "../commons/Pagination";
 
 type TeamProjectsViewProps = {
   teamId: string;
 };
 
 /**
- * Page d'affichage des équipes
+ * Affiche les projets d'une équipe
  */
 export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useTeamProjects(teamId, {
-    all: true,
+    page,
+    pageSize,
   });
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4 overflow-y-auto",
-        (isLoading || !(data && data.length > 0)) &&
+        (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center",
         isError && "items-center"
       )}
@@ -41,8 +40,16 @@ export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
       {isError && <UserErrorMessage />}
       {data && (
         <>
-          {data.length > 0 ? (
-            <ProjectsTable projects={data} />
+          {data.data.length > 0 ? (
+            <>
+              <ProjectsTable projects={data.data} />
+              <PaginationWrapper
+                page={page}
+                setPage={setPage}
+                totalItems={totalItems}
+                totalPages={totalPages}
+              />
+            </>
           ) : (
             <NoItems
               message="No projects available"
@@ -53,35 +60,6 @@ export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
           )}
         </>
       )}
-
-      {/* <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent
-          className={clsx(
-            "max-w-[500px] p-0",
-            "[&>button]:text-white",
-            "[&>button]:hover:text-white"
-          )}
-        >
-          <DialogHeader className="rounded-t-md bg-sky-600 px-4 py-4">
-            <DialogTitle className="text-lg text-white">New task</DialogTitle>
-          </DialogHeader>
-          <div
-            className={clsx(
-              "max-h-[80vh] overflow-y-auto rounded-b-md py-4 pl-4",
-              "[&::-webkit-scrollbar]:w-0",
-              "[&::-webkit-scrollbar-track]:rounded-md",
-              "[&::-webkit-scrollbar-thumb]:rounded-md"
-            )}
-          >
-            <TaskForm
-              isUpdateForm={false}
-              disableStatusInput={false}
-              defaultValues={TASKFORM_DEFAULT_VALUES}
-              onSuccess={() => setShowDialog(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog> */}
     </div>
   );
 }

@@ -3,12 +3,22 @@ import { clsx } from "clsx";
 import { Team } from "@/types/Team";
 import { cn } from "@/lib/utils";
 
+/**
+ * Propriétés du TeamBasicInfos
+ *  - team : l'équipe dont on veut afficher le nom et acronyme
+ *  - teamAcronymStyle: style de l'acronyme
+ *  - teamAcronymTextStyle?: style du texte de l'acronyme
+ */
 type TeamBasicInfosProps = {
   team: Team;
   teamAcronymStyle?: string;
   teamAcronymTextStyle?: string;
 };
 
+/**
+ * Affiche le nom et l'acronyme de l'équipe
+ * @param {TeamBasicInfosProps} param0 - propriétés du component
+ */
 export default function TeamBasicInfos({
   team,
   teamAcronymStyle,

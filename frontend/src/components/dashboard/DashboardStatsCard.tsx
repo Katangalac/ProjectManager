@@ -9,6 +9,9 @@ type DashboardStatsCardProps = {
   onSeeMore?: () => void;
 };
 
+/**
+ * Affiche les nombre de tache et projet par status
+ */
 export default function DashboardStatsCard({
   title,
   description,

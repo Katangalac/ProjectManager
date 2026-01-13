@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProjectTasks } from "@/api/project.api";
 import { SearchTasksFilter } from "@/types/Task";
-import { TaskWithRelations } from "@/types/Task";
+import { TasksApiResponse } from "@/types/Task";
 
 /**
  * Récupère les tâches d'un projet
@@ -13,7 +13,7 @@ export const useProjectTasks = (
   projectId: string,
   params: SearchTasksFilter
 ) => {
-  const { data, isLoading, isError, refetch } = useQuery<TaskWithRelations[]>({
+  const { data, isLoading, isError, refetch } = useQuery<TasksApiResponse>({
     queryKey: ["projectTasks", projectId, params],
     queryFn: () => getProjectTasks(projectId, params),
     refetchOnWindowFocus: true,

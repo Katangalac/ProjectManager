@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * Propriétés du ProjectForm
@@ -61,6 +62,44 @@ export default function ProjectForm({
   });
 
   const status = form.watch("status");
+  const progress = form.watch("progress");
+  const completedAt = form.watch("completedAt");
+
+  useEffect(() => {
+    if (status === "COMPLETED") {
+      if (progress !== 100) {
+        form.setValue("progress", 100, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      if (!completedAt) {
+        form.setValue("completedAt", new Date(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (progress === 100) {
+      if (status !== "COMPLETED") {
+        form.setValue("status", "COMPLETED", {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      if (!completedAt) {
+        form.setValue("completedAt", new Date(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    }
+  }, [progress]);
 
   useEffect(() => {
     if (status !== "COMPLETED") {
@@ -69,10 +108,22 @@ export default function ProjectForm({
         shouldValidate: true,
       });
     }
-  }, [status, form]);
+  }, [status]);
 
-  const { createProject } = useCreateProject({ onSuccess });
-  const { updateProject } = useUpdateProject({ onSuccess });
+  const { createProject } = useCreateProject({
+    onSuccess: () => {
+      showSuccess("Project created successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
+  const { updateProject } = useUpdateProject({
+    onSuccess: () => {
+      showSuccess("Project edited successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
 
   const statusOptions = Object.entries(PROJECT_STATUS_META).map(
     ([status, meta]) => ({
@@ -81,12 +132,12 @@ export default function ProjectForm({
     })
   );
 
-  const onSubmit = (data: unknown) => {
+  const onSubmit = async (data: unknown) => {
     if (!isUpdateForm) {
-      createProject(createProjectSchema.parse(data));
+      await createProject(createProjectSchema.parse(data));
     } else {
       if (defaultValues?.id) {
-        updateProject({
+        await updateProject({
           projectId: defaultValues.id,
           data: updateProjectDataSchema.parse(data),
         });

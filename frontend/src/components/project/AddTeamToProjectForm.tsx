@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * * Propriétés du AddTeamToProjectForm
@@ -38,22 +39,27 @@ export default function AddTeamToProjectForm({
   onSuccess,
 }: AddTeamToProjectFormProps) {
   const {
-    data: teams = [],
+    data: teams,
     isLoading: teamLoading,
     isError: teamError,
   } = useTeams({ all: true });
 
   const {
-    data: projectTeams = [],
+    data: projectTeams,
     isLoading: projectTeamsLoading,
     isError: projectTeamsError,
   } = useProjectTeams(project.id, { all: true });
 
-  const { addTeamToProject } = useAddTeam();
-  const projectTeamIds = projectTeams.map((team) => team.id);
-  const filteredTeams = teams.filter(
-    (team: Team) => !projectTeamIds.includes(team.id)
-  );
+  const { addTeamToProject } = useAddTeam({
+    onSuccess: () => {
+      showSuccess("Team added to project successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
+  const projectTeamIds = projectTeams?.data.map((team) => team.id) ?? [];
+  const filteredTeams =
+    teams?.data.filter((team: Team) => !projectTeamIds.includes(team.id)) ?? [];
   const teamOptions = [
     ...filteredTeams.map((t: Team) => ({
       label: t.name,
@@ -70,7 +76,6 @@ export default function AddTeamToProjectForm({
     try {
       console.log(form.formState.errors);
       await addTeamToProject(ProjectTeamSchema.parse(data));
-      onSuccess();
     } catch (error: unknown) {
       console.log("An error occur while adding team to project", error);
     }
@@ -88,7 +93,7 @@ export default function AddTeamToProjectForm({
           onSubmit={form.handleSubmit(onSubmit, onError)}
           className={clsx(
             "flex flex-col gap-3.5",
-            !(teams.length > 0) && "items-center"
+            !(filteredTeams.length > 0) && "items-center"
           )}
         >
           <p
@@ -100,7 +105,7 @@ export default function AddTeamToProjectForm({
             Add a team to the project "<strong>{project.title}</strong>"
           </p>
           {(projectTeamsError || teamError) && <UserErrorMessage />}
-          {teams.length > 0 ? (
+          {filteredTeams.length > 0 ? (
             <>
               {" "}
               <div className={clsx("flex w-full flex-col gap-1")}>

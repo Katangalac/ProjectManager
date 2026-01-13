@@ -8,6 +8,7 @@ type ProjectTeamsProps = {
   onSeeMore?: () => void;
 };
 
+/**Affiche sommairement les équipes d'un projet */
 export default function ProjectTeams({ teams, onSeeMore }: ProjectTeamsProps) {
   return (
     <div

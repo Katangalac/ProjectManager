@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProjectById } from "@/api/project.api";
-import { ProjectWithRelation } from "@/types/Project";
+import { ProjectApiResponse } from "@/types/Project";
 
 /**
  * Récupère le projet ayant l'id passé en paramètre
@@ -8,7 +8,7 @@ import { ProjectWithRelation } from "@/types/Project";
  * @returns le projet ayant l'id passé en paramètre
  */
 export const useProjectById = (projectId: string) => {
-  const { data, isLoading, isError, refetch } = useQuery<ProjectWithRelation>({
+  const { data, isLoading, isError, refetch } = useQuery<ProjectApiResponse>({
     queryKey: ["currentUserProject", projectId],
     queryFn: () => getProjectById(projectId),
     refetchOnWindowFocus: true,

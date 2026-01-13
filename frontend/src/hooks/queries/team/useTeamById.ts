@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserTeamById } from "../../../api/team.api";
-import { TeamWithRelations } from "../../../types/Team";
+import { TeamApiResponse } from "../../../types/Team";
 
 /**
  * Récupère l'équipe de l'utilisaeur courant ayant l'identifiant passé en paramètre
@@ -8,7 +8,7 @@ import { TeamWithRelations } from "../../../types/Team";
  * @returns l'équipe ayant l'identifiant passé en paramètre
  */
 export const useTeamById = (id: string) => {
-  const { data, isLoading, isError, refetch } = useQuery<TeamWithRelations>({
+  const { data, isLoading, isError, refetch } = useQuery<TeamApiResponse>({
     queryKey: ["currentUserTeam", id],
     queryFn: () => getUserTeamById(id),
     refetchOnWindowFocus: false,

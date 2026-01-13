@@ -18,6 +18,7 @@ import { toSafeUser } from "../user/user.transforms";
 import { buildTaskWhereInput } from "../utils/utils";
 import { buildUserWhereInput } from "../utils/utils";
 import { addNotificationToQueue } from "../notification/notification.queue";
+import { includes } from "zod";
 
 /**
  * Crée une nouvelle tâche
@@ -40,7 +41,19 @@ export const createTask = async (taskData: CreateTaskData): Promise<Task> => {
  * @throws {TaskNotFoundError} - lorsqu'aucune tache avec l'identifiant donné n'a été trouvée
  */
 export const getTaskById = async (id: string): Promise<Task> => {
-  const task = await db.task.findUnique({ where: { id } });
+  const task = await db.task.findUnique({
+    where: { id },
+    include: {
+      project: true,
+      team: true,
+      user: true,
+      assignedTo: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
   if (!task) throw new TaskNotFoundError(id);
   return task;
 };
@@ -126,10 +139,10 @@ export const assignTaskToUser = async (
       await addNotificationToQueue(
         userId,
         `NEW_TASK-${taskId}`,
-        "You have been assigned to a new task"
+        "You’ve got a new task waiting for you."
       );
     } catch (err: any) {
-      console.log("Erreur lors de l'ajoue de la notification", err);
+      console.error("Erreur lors de l'ajout de la notification", err);
     }
 
     return userTaskPair;
@@ -159,10 +172,10 @@ export const unassignUserFromTask = async (userId: string, taskId: string) => {
       await addNotificationToQueue(
         userId,
         `UNASSIGN_TASK-${taskId}`,
-        "You have been unassigned from a task"
+        "You’ve been unassigned from a task."
       );
     } catch (err: any) {
-      console.log("Erreur lors de l'ajoue de la notification", err);
+      console.error("Erreur lors de l'ajout de la notification", err);
     }
   } catch (err: any) {
     if (err.code === "P2025")

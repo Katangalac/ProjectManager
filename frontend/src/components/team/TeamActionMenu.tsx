@@ -7,6 +7,7 @@ import {
   UserCirclePlusIcon,
   PencilSimpleLineIcon,
   TrashIcon,
+  SignOutIcon,
 } from "@phosphor-icons/react";
 import { TeamWithRelations } from "../../types/Team";
 import { MenuItem } from "primereact/menuitem";
@@ -22,6 +23,11 @@ import {
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { useDeleteTeam } from "@/hooks/mutations/team/useDeleteTeam";
+import InviteUser from "../user/InviteUsers";
+import { useUserTeamRole } from "@/hooks/queries/team/useUserTeamRole";
+import { useRemoveMember } from "@/hooks/mutations/team/useRemoveMember";
+import { showSuccess, showError } from "@/utils/toastService";
+
 /**
  * Propriétés du menu d'une équipe
  *
@@ -38,15 +44,24 @@ type TeamActionMenuProps = {
  */
 export default function TeamActionMenu({ team }: TeamActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
+  const { user } = useUserStore();
+  const { data: userRole } = useUserTeamRole(team.id, user!.id);
+  const { deleteTeam } = useDeleteTeam({
+    onSuccess: () => showSuccess("Team deleted successfully!"),
+    onError: () => showError("An error occur while deleting the team!"),
+  });
+  const { removeMemberToTeam } = useRemoveMember({
+    onSuccess: () => showSuccess("Memeber removed successfully!"),
+    onError: () => showError("An error occur while romoving th member!"),
+  });
+  const menu = useRef<Menu>(null);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
     null
   );
-  const { user } = useUserStore();
-  const { deleteTeam } = useDeleteTeam();
-  const menu = useRef<Menu>(null);
+  const roles = ["Leader", "Manager"];
 
   const menuItems: MenuItem[] = [
     {
@@ -65,8 +80,8 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
           className:
             "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
-            if (user && team.leaderId && user.id === team.leaderId) {
-              setDialogTitle("Edit team");
+            if (user && userRole && roles.includes(userRole.data)) {
+              setDialogTitle(`Edit team "${team.name}"`);
               setDialogContent(
                 <TeamForm
                   isUpdateForm={true}
@@ -76,8 +91,13 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
               );
               setShowDialog(true);
             } else {
-              setDialogTitle("Alert");
-              setDialogContent(<div>You can not edit this team</div>);
+              setDialogTitle("Alert!");
+              setDialogContent(
+                <div>
+                  You don’t have the required role to perform this action.
+                </div>
+              );
+              setDialogHeaderStyle("bg-red-500");
               setShowDialog(true);
             }
           },
@@ -93,27 +113,32 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
           className:
             "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
-            // Action pour ajouter un membre
+            if (user && userRole && roles.includes(userRole.data)) {
+              setDialogTitle(`Add member to "${team.name}"`);
+              setDialogContent(
+                <InviteUser
+                  senderId={user!.id}
+                  teamId={team.id}
+                  onSuccess={() => setShowDialog(false)}
+                />
+              );
+              setShowDialog(true);
+            } else {
+              setDialogTitle("Alert!");
+              setDialogContent(
+                <div>
+                  You don’t have the required role to perform this action.
+                </div>
+              );
+              setDialogHeaderStyle("bg-red-500");
+              setShowDialog(true);
+            }
           },
         },
         {
           label: "Leave this team",
           icon: (
             <UserCircleMinusIcon
-              weight="regular"
-              className={clsx("stroke-1.5 mr-1 size-4")}
-            />
-          ),
-          className:
-            "px-2 py-1.5 hover:bg-red-100 dark:hover:bg-gray-700 myMenu",
-          command: () => {
-            // Action pour quitter l'équipe
-          },
-        },
-        {
-          label: "Delete this team",
-          icon: (
-            <TrashIcon
               weight="regular"
               className={clsx("stroke-1.5 mr-1 size-4")}
             />
@@ -131,17 +156,17 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
                 )}
               >
                 <span className={clsx("mb-4 rounded-md bg-red-200 p-2")}>
-                  <TrashIcon
+                  <SignOutIcon
                     size={30}
                     weight="regular"
                     className={clsx("text-red-700")}
                   />
                 </span>
                 <span className={clsx("text-lg font-medium text-black")}>
-                  Delete team?
+                  Leave this team?
                 </span>
                 <span className={clsx("text-sm font-medium text-gray-500")}>
-                  Are you sure you want to delete this team?
+                  Are you sure you want to leave this team?
                 </span>
                 <div
                   className={clsx(
@@ -161,15 +186,96 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
                     className={
                       "rounded-md border border-red-700 bg-red-700 px-5 py-2 text-sm font-medium text-white hover:bg-red-800"
                     }
-                    onClick={() => deleteTeam(team.id)}
+                    onClick={async () => {
+                      await removeMemberToTeam({
+                        teamId: team.id,
+                        memberId: user!.id,
+                      });
+                      setShowDialog(false);
+                    }}
                   >
                     Yes, i'm sure
                   </button>
                 </div>
               </div>
             );
-
             setShowDialog(true);
+          },
+        },
+        {
+          label: "Delete this team",
+          icon: (
+            <TrashIcon
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1 size-4")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 hover:bg-red-100 dark:hover:bg-gray-700 myMenu",
+          command: () => {
+            if (user && userRole && roles.includes(userRole.data)) {
+              setDialogHeaderStyle("bg-transparent px-0 py-0");
+              setDialogStyle("w-fit px-5");
+              setDialogTitle("");
+              setDialogContent(
+                <div
+                  className={clsx(
+                    "flex w-full flex-col items-center justify-start"
+                  )}
+                >
+                  <span className={clsx("mb-4 rounded-md bg-red-200 p-2")}>
+                    <TrashIcon
+                      size={30}
+                      weight="regular"
+                      className={clsx("text-red-700")}
+                    />
+                  </span>
+                  <span className={clsx("text-lg font-medium text-black")}>
+                    Delete team?
+                  </span>
+                  <span className={clsx("text-sm font-medium text-gray-500")}>
+                    Are you sure you want to delete this team?
+                  </span>
+                  <div
+                    className={clsx(
+                      "flex w-full items-center justify-center gap-5 p-5"
+                    )}
+                  >
+                    <DialogClose>
+                      <button
+                        className={clsx(
+                          "rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                        )}
+                      >
+                        No,cancel
+                      </button>
+                    </DialogClose>
+                    <button
+                      className={
+                        "rounded-md border border-red-700 bg-red-700 px-5 py-2 text-sm font-medium text-white hover:bg-red-800"
+                      }
+                      onClick={async () => {
+                        await deleteTeam(team.id);
+                        setShowDialog(false);
+                      }}
+                    >
+                      Yes, i'm sure
+                    </button>
+                  </div>
+                </div>
+              );
+
+              setShowDialog(true);
+            } else {
+              setDialogTitle("Alert!");
+              setDialogContent(
+                <div>
+                  You don’t have the required role to perform this action.
+                </div>
+              );
+              setDialogHeaderStyle("bg-red-500");
+              setShowDialog(true);
+            }
           },
         },
       ],

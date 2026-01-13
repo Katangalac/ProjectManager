@@ -59,6 +59,16 @@ export type ProjectsApiResponse = {
 };
 
 /**
+ * Type représentant la structure des responses API pour une requte de recupération d'un projet
+ */
+export type ProjectApiResponse = {
+  data: ProjectWithRelation;
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
+};
+
+/**
  * Type représentant la structure des responses API pour la requete de calcul du cout total d'un projet
  */
 export type ProjectTotalCostApiResponse = {

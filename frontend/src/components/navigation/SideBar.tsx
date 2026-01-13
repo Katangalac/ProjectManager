@@ -146,19 +146,20 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
             to="/userTeams"
             showText={!isCollapsed}
           />
-          <NavItem
+          {/* <NavItem
             icon={ChatTextIcon}
             label="Messages"
             to="/messages"
             showText={!isCollapsed}
-          />
+            
+          /> */}
 
-          <NavItem
+          {/* <NavItem
             icon={FlaskIcon}
             label="Test"
             to="/test"
             showText={!isCollapsed}
-          />
+          /> */}
         </nav>
 
         <div

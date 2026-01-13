@@ -8,6 +8,9 @@ type UserBasicInfoProps = {
   avatarImageSize?: string;
 };
 
+/**
+ * Affiche l'avatar et le nom de l'utilisateur
+ */
 export default function UserBasicInfo({
   user,
   avatarImageSize = "h-8 w-8",

@@ -45,6 +45,12 @@ export type TasksApiResponse = {
   message?: string;
 };
 
+export type TaskApiResponse = {
+  data: TaskWithRelations;
+  success: boolean;
+  message?: string;
+};
+
 /**
  * Type représentant les status d'une tache
  */

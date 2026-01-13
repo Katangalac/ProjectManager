@@ -2,7 +2,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { TeamWithRelations } from "@/types/Team";
 import { clsx } from "clsx";
-import TeamActionMenu from "./TeamActionMenu";
+// import TeamActionMenu from "./TeamActionMenu";
 import UserBasicInfo from "../profile/UserBasicInfo";
 
 /**
@@ -127,7 +127,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
           )}
           sortable
         ></Column>
-        <Column
+        {/* <Column
           header="Actions"
           body={(team) => <TeamActionMenu team={team} />}
           className={clsx("flex justify-center p-2 text-left text-xs")}
@@ -136,7 +136,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
             "dark:text-gray-400",
             "dark:border-gray-500"
           )}
-        ></Column>
+        ></Column> */}
       </DataTable>
     </div>
   );

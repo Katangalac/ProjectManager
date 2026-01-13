@@ -12,7 +12,7 @@ export const useUserNotifications = (params: SearchNotificationsFilter) => {
     useQuery<NotificationsApiResponse>({
       queryKey: ["userNotifications", params],
       queryFn: () => getUserNotifications(params),
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     });
   return {
     data: data,

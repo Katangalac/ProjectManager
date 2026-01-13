@@ -34,15 +34,12 @@ export default function ProfileUserInfo({
 }: ProfileUserInfoProps) {
   const { setUser } = useUserStore();
   const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
   const { isOnline } = useUserStatus(user.id);
   const lastLogin = isOnline?.valueOf()
     ? "Now"
     : user.lastLoginAt
       ? timeAgo(new Date(user.lastLoginAt), true)
       : "";
-
-  if (saving) console.log("Saving user info...");
 
   /**
    * Configuration de react-hook-form avec validation Zod
@@ -105,7 +102,6 @@ export default function ProfileUserInfo({
    * @param {UpdateUserData} data - données du formulaire de modification
    */
   const onSubmit = async (data: UpdateUserData) => {
-    setSaving(true);
     try {
       const saved = await updateUser(data);
       if (saved?.data) {
@@ -115,12 +111,10 @@ export default function ProfileUserInfo({
         setUser({ ...user, ...data });
         reset({ ...user, ...data });
       }
-      setSaving(false);
+
       setEditing(false);
     } catch (error) {
       console.error("Erreur lors de la sauvegarde des informations :", error);
-    } finally {
-      setSaving(false);
     }
   };
 

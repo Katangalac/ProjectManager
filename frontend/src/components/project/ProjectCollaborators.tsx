@@ -8,6 +8,7 @@ type ProjectCollaboratorsProps = {
   onSeeMore?: () => void;
 };
 
+/**Affiche sommairement les collaborateurs d'un projet */
 export default function ProjectCollaborators({
   collaborators,
   onSeeMore,

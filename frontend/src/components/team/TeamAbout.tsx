@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { TeamWithRelations } from "@/types/Team";
-import { dateToLongString, timeAgo } from "@/utils/dateUtils";
+import { dateToLongString } from "@/utils/dateUtils";
 import {
   Accordion,
   AccordionContent,
@@ -104,21 +104,6 @@ export default function TeamAbout({ team }: TeamAboutProps) {
                     </span>
                     <span className={clsx("text-sm")}>
                       {team.user.profession || "Unknown"}
-                    </span>
-                  </div>
-
-                  <div
-                    className={clsx(
-                      "flex flex-col items-start justify-start gap-1"
-                    )}
-                  >
-                    <span className={clsx("text-sm text-gray-500")}>
-                      Last login
-                    </span>
-                    <span className={clsx("text-sm")}>
-                      {team.user.lastLoginAt
-                        ? timeAgo(new Date(team.user.lastLoginAt))
-                        : "Unknown"}
                     </span>
                   </div>
                 </>

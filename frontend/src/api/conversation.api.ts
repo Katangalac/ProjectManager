@@ -2,6 +2,26 @@ import { axiosClient } from "../lib/axios/axiosClient";
 import axios from "axios";
 import { SearchMessagesFilter } from "@/types/Message";
 import { CreateMessageData } from "@/types/Message";
+import { CreateConversationData } from "@/types/Conversation";
+
+/**
+ * Crée une nouvelle conversation
+ * @param {CreateConversationData} data - données de la conversation
+ * @returns - la conversation créée
+ * @throws - Une erreur si la requête échoue
+ */
+export const createConversation = async (data: CreateConversationData) => {
+  try {
+    const axiosResponse = await axiosClient.post(`/conversations`, data);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur inconnue lors de la création de la conversation");
+  }
+};
 
 /**
  * Crée et envoie un nouveau message
@@ -14,7 +34,7 @@ import { CreateMessageData } from "@/types/Message";
 export const sendMessage = async (messageData: CreateMessageData) => {
   try {
     const axiosResponse = await axiosClient.post(`/messages`, messageData);
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message = error.response?.data?.message;
@@ -43,7 +63,7 @@ export const getConversationMessages = async (
         params,
       }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message = error.response?.data?.message;

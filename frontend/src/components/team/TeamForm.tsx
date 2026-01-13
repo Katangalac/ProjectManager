@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useForm, Controller } from "react-hook-form";
 
@@ -11,6 +11,7 @@ import { useUpdateTeam } from "../../hooks/mutations/team/useUpdateTeam";
 import { createTeamSchema } from "../../schemas/team.schemas";
 import { updateTeamSchema } from "../../schemas/team.schemas";
 import { Textarea } from "../ui/textarea";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * Propriétés du formulaire de création/modification d'une équipe
@@ -37,27 +38,50 @@ export default function TeamForm({
   onSuccess,
 }: TeamFormProps) {
   const schema = isUpdateForm ? updateTeamSchema : createTeamSchema;
+  const message = isUpdateForm
+    ? "Team updated successfully!"
+    : "Team create successfully!";
+
+  const handleSuccess = useCallback(() => {
+    showSuccess(message);
+    onSuccess();
+  }, []);
+
+  const handleError = useCallback(() => {
+    showError("An error occur while processing your request!");
+  }, []);
 
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: defaultValues,
   });
 
-  const { createTeam } = useCreateTeam({ onSuccess });
-  const { updateTeam } = useUpdateTeam({ onSuccess });
+  const { createTeam } = useCreateTeam({
+    onSuccess: handleSuccess,
+    onError: handleError,
+  });
+  const { updateTeam } = useUpdateTeam({
+    onSuccess: handleSuccess,
+    onError: handleError,
+  });
 
-  const onSubmit = (data: unknown) => {
-    if (!isUpdateForm) {
-      createTeam(createTeamSchema.parse(data));
-    } else {
-      if (defaultValues?.id) {
-        updateTeam({
-          teamId: defaultValues.id,
-          data: updateTeamSchema.parse(data),
-        });
+  const onSubmit = async (data: unknown) => {
+    try {
+      if (!isUpdateForm) {
+        await createTeam(createTeamSchema.parse(data));
       } else {
-        console.error("id de l'équipe pas transmis");
+        if (defaultValues?.id) {
+          await updateTeam({
+            teamId: defaultValues.id,
+            data: updateTeamSchema.parse(data),
+          });
+        } else {
+          console.error("id de l'équipe pas transmis");
+          showError("An error occur while processing your request!");
+        }
       }
+    } catch (err) {
+      console.error(err);
     }
   };
 

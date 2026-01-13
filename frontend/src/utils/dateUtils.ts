@@ -1,6 +1,13 @@
 import { getOrdinalSuffix } from "./stringUtils";
 import { MONTHS } from "@/lib/constants/date";
 
+/**
+ * Trasnforme une date en texte
+ * Exemple : new Date(12-01-2026) => January the 12th, 2026
+ *
+ * @param {Date} date - l'objet date à transformer en chaine de caracteres
+ * @returns la date sous la forme d'une chaine de caractere
+ */
 export const dateToLongString = (date: Date): string => {
   const dateNumber = date.getDate();
   const monthIndex = date.getMonth();
@@ -9,6 +16,16 @@ export const dateToLongString = (date: Date): string => {
   return dateString;
 };
 
+/**
+ * Retourne le temps depuis la date passée en paramètre
+ * Prend l'unité de temps le plus proche (seconde, minute, heure,...)
+ * Si le delai est d'un mois ou plus, retourne la date soit en format long (voir @function dateToLongString}),
+ * soit en format ISO (sans heure).
+ *
+ * @param {Date} date - la date-heure à partir duquel on veut calculer le temps ecouler
+ * @param {boolean} short - Détermine si on retourne la version longue ou courte de la réponse
+ * @returns - le temps écoulé depuis la date passée en paramètre ou la date elle-même si le délai >= 1mois
+ */
 export const timeAgo = (date: Date, short: boolean = false): string => {
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -41,31 +58,44 @@ export const timeAgo = (date: Date, short: boolean = false): string => {
     return short ? `${weeks}w ago` : `${weeks} week(s) ago`;
   }
 
-  // ≥ 1 month → return the date
   return short
     ? `${date.toISOString().split("T")[0]}`
-    : `Since ${dateToLongString(date)}`;
+    : `${dateToLongString(date)}`;
 };
 
+/**
+ * Trasnforme une date en texte (version courte)
+ * Ne retourne pas l'année si elle est en cours
+ * Exemple : new Date(12-01-2026) => Jan 12, 2026 || Jan 12 si on est en 2026
+ *
+ * @param {Date} date - l'objet date à transformer en chaine de caracteres
+ * @returns la date sous la forme d'une chaine de caractere
+ */
 export const formatShortDateWithOptionalYear = (date: Date): string => {
   const now = new Date();
   const isCurrentYear = date.getFullYear() === now.getFullYear();
-
-  // Format de base : "Jan 14"
   const base = date
     .toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     })
-    .replace(/^\w/, (c) => c.toUpperCase()); // met la 1ère lettre en majuscule
+    .replace(/^\w/, (c) => c.toUpperCase());
 
   if (isCurrentYear) {
-    return base; // ex: "Jan 14"
+    return base;
   }
 
-  return `${base}, ${date.getFullYear()}`; // ex: "Jan 14, 2025"
+  return `${base}, ${date.getFullYear()}`;
 };
 
+/**
+ * Trasnforme une date-heure en heure au format HH:MM avec une option pour le système AM-PM
+ * Exemple : 12-01-2026T09:30:00:00.000 => 09:30
+ *
+ * @param {Date} date - l'objet date à transformer en heure
+ * @param {boolean} amPM - détermine si l'heure doit avoir le format AM-PM
+ * @returns l'heure correspondant à celle contenue dans la date au format HH:MM (AM/PM)
+ */
 export const formatTime = (date: Date, amPm: boolean): string => {
   return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -73,3 +103,19 @@ export const formatTime = (date: Date, amPm: boolean): string => {
     hour12: amPm,
   });
 };
+
+/**
+ * Vérifie si une date correspond à la date d'ajourd'hui
+ *
+ * @param {Date} input - la date qu'on veut vérifier
+ * @returns true si oui sinon false
+ */
+export function isToday(input: Date): boolean {
+  const today = new Date();
+
+  return (
+    input.getFullYear() === today.getFullYear() &&
+    input.getMonth() === today.getMonth() &&
+    input.getDate() === today.getDate()
+  );
+}

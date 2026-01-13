@@ -43,6 +43,14 @@ router.get("/:id/members", teamController.getTeamMembersController);
 router.post("/:id/members", teamController.addUserToTeamController);
 
 /**
+ * @route GET /api/teams/:id/members/:userId/role
+ */
+router.get(
+  "/:id/members/:userId/role",
+  teamController.getUserTeamRoleController
+);
+
+/**
  * @route PATCH /api/teams/:id/members/:userId
  */
 router.patch(

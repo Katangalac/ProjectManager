@@ -6,6 +6,7 @@ import { z } from "zod";
 import { idParamSchema } from "../schemas/idparam.schema";
 import { searchUsersFilterSchema } from "../user/user.schemas";
 import { TaskStatus } from "@prisma/client";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle tache
@@ -62,7 +63,7 @@ export const getTaskByIdController = async (req: Request, res: Response) => {
   try {
     const { id } = idParamSchema.parse({ id: req.params.id });
     const task = await taskService.getTaskById(id);
-    res.status(200).json(task);
+    res.status(200).json(successResponse(task, "Tache recupérée"));
   } catch (err) {
     console.error("Erreur lors de la récupération de la tâche : ", err);
     if (err instanceof z.ZodError) {
@@ -89,12 +90,10 @@ export const updateTaskController = async (req: Request, res: Response) => {
     const { id } = idParamSchema.parse({ id: req.params.id });
     const taskData = taskSchemas.updateTaskDataSchema.parse(req.body);
     const updatedTask = await taskService.updateTask(id, taskData);
-    res
-      .status(200)
-      .json({
-        message: "Tâche mise à jour avec succès",
-        updatedTask: updatedTask,
-      });
+    res.status(200).json({
+      message: "Tâche mise à jour avec succès",
+      updatedTask: updatedTask,
+    });
   } catch (err) {
     console.error("Erreur lors de la mise à jour de la tâche : ", err);
     if (err instanceof z.ZodError) {
@@ -124,12 +123,10 @@ export const updateTaskStatusController = async (
     const { id } = idParamSchema.parse({ id: req.params.id });
     const newStatus = z.enum(TaskStatus).parse(req.body);
     const updatedTask = await taskService.updateTask(id, { status: newStatus });
-    res
-      .status(200)
-      .json({
-        message: "Tâche mise à jour avec succès",
-        updatedTask: updatedTask,
-      });
+    res.status(200).json({
+      message: "Tâche mise à jour avec succès",
+      updatedTask: updatedTask,
+    });
   } catch (err) {
     console.error("Erreur lors de la mise à jour de la tâche : ", err);
     if (err instanceof z.ZodError) {
@@ -187,12 +184,10 @@ export const assignTaskToUserController = async (
     const { id: taskId } = idParamSchema.parse({ id: req.params.id });
     const { id: userId } = idParamSchema.parse({ id: req.params.userId });
     const userTaskPair = await taskService.assignTaskToUser(taskId, userId);
-    res
-      .status(200)
-      .json({
-        message: "La tâche a été assignée à l'utilisateur",
-        userTaskPair: userTaskPair,
-      });
+    res.status(200).json({
+      message: "La tâche a été assignée à l'utilisateur",
+      userTaskPair: userTaskPair,
+    });
   } catch (err) {
     console.error(
       "Erreur lors de l'assignation de la tâche à l'utilisateur : ",
@@ -206,11 +201,9 @@ export const assignTaskToUserController = async (
         .status(409)
         .json({ error: "Cette tâche a déjà été assignée à cet utilisateur" });
     }
-    res
-      .status(500)
-      .json({
-        error: "Erreur lors de l'assignation de la tâche à l'utilisateur",
-      });
+    res.status(500).json({
+      error: "Erreur lors de l'assignation de la tâche à l'utilisateur",
+    });
   }
 };
 
@@ -242,11 +235,9 @@ export const unassignUserFromTaskController = async (
         .status(409)
         .json({ error: "Cette tâche n'était pas assignée à l'utilisateur" });
     }
-    res
-      .status(500)
-      .json({
-        error: "Erreur lors de la désassignation de l'utilisateur de la tâche",
-      });
+    res.status(500).json({
+      error: "Erreur lors de la désassignation de l'utilisateur de la tâche",
+    });
   }
 };
 

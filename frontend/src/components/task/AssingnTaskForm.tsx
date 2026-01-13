@@ -17,6 +17,7 @@ import {
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import UserBasicInfo from "../profile/UserBasicInfo";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * * Propriétés du AssignTaskForm
@@ -48,7 +49,13 @@ export default function AssignTaskForm({
   //     isLoading: projectCollaboratorsLoading,
   //     isError: projectCollaboratorsError,
   //   } = useProjectCollaborators(project.id, { all: true });
-  const { assignTask } = useAssignTaskTask();
+  const { assignTask } = useAssignTaskTask({
+    onSuccess: () => {
+      showSuccess("Task assigned successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
 
   //   const projectTeamIds = projectCollaborators.map((team) => team.id);
   //   const filteredTeams = peers.filter(
@@ -74,7 +81,6 @@ export default function AssignTaskForm({
     try {
       console.log(form.formState.errors);
       await assignTask(userTaskSchema.parse(data));
-      onSuccess();
     } catch (error: unknown) {
       console.log("An error occur while assigning task to user", error);
     }

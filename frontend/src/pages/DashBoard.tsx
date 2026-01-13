@@ -38,8 +38,8 @@ export default function DashBoard() {
     isError: teamsError,
   } = useTeams({ all: true });
 
-  const taskStats = getTaskStats(tasks?.data || []);
-  const projectStats = getProjectStats(projects || []);
+  const taskStats = getTaskStats(tasks?.data ?? []);
+  const projectStats = getProjectStats(projects?.data ?? []);
 
   const data = {
     labels: ["Completed", "Blocked", "Todo", "In Progress"],
@@ -129,7 +129,7 @@ export default function DashBoard() {
           >
             <DashboardStatsCard
               title="Total projects"
-              value={projects?.length || 0}
+              value={projects?.data.length ?? 0}
               description="Projects"
               onSeeMore={() => navigate("/userProjects")}
             />
@@ -137,9 +137,9 @@ export default function DashBoard() {
             <DashboardStatsCard
               title="Active projects"
               value={
-                projects?.filter(
+                projects?.data.filter(
                   (project: Project) => project.status === "ACTIVE"
-                ).length || 0
+                ).length ?? 0
               }
               description="On going projects"
               onSeeMore={() => navigate("/userProjects")}
@@ -148,9 +148,9 @@ export default function DashBoard() {
             <DashboardStatsCard
               title="Ended projects"
               value={
-                projects?.filter(
+                projects?.data.filter(
                   (project: Project) => project.status === "COMPLETED"
-                ).length || 0
+                ).length ?? 0
               }
               description="Completed projects"
               onSeeMore={() => navigate("/userProjects")}
@@ -159,10 +159,10 @@ export default function DashBoard() {
             <DashboardStatsCard
               title="Pending projects"
               value={
-                projects?.filter(
+                projects?.data.filter(
                   (project: Project) =>
                     project.status === "PLANNING" || project.status === "PAUSED"
-                ).length || 0
+                ).length ?? 0
               }
               description="Projects in discuss"
               onSeeMore={() => navigate("/userProjects")}
@@ -177,7 +177,7 @@ export default function DashBoard() {
           >
             <DashboardStatsCard
               title="Total tasks"
-              value={tasks?.data.length || 0}
+              value={tasks?.data.length ?? 0}
               description="Tasks"
               onSeeMore={() => navigate("/userTasks")}
             />
@@ -187,7 +187,7 @@ export default function DashBoard() {
               value={
                 tasks?.data.filter(
                   (task: Task) => task.status === "IN_PROGRESS"
-                ).length || 0
+                ).length ?? 0
               }
               description="On going tasks"
               onSeeMore={() => navigate("/userTasks")}
@@ -197,7 +197,7 @@ export default function DashBoard() {
               title="Ended tasks"
               value={
                 tasks?.data.filter((task: Task) => task.status === "COMPLETED")
-                  .length || 0
+                  .length ?? 0
               }
               description="Completed tasks"
               onSeeMore={() => navigate("/userTasks")}
@@ -207,7 +207,7 @@ export default function DashBoard() {
               title="Pending tasks"
               value={
                 tasks?.data.filter((task: Task) => task.status === "TODO")
-                  .length || 0
+                  .length ?? 0
               }
               description="Tasks to do"
               onSeeMore={() => navigate("/userTasks")}
@@ -233,14 +233,19 @@ export default function DashBoard() {
                   "grid h-full w-full grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4"
                 )}
               >
-                {tasks && tasks.data.length > 0 ? (
+                {tasks &&
+                tasks.data.filter((task) => task.status !== "COMPLETED")
+                  .length > 0 ? (
                   <>
-                    {tasks?.data.slice(0, 2).map((task: TaskWithRelations) => (
-                      <TaskDashboardCard
-                        task={task}
-                        onclick={() => navigate("/userTasks")}
-                      />
-                    ))}
+                    {tasks.data
+                      .filter((task) => task.status !== "COMPLETED")
+                      .slice(0, 2)
+                      .map((task: TaskWithRelations) => (
+                        <TaskDashboardCard
+                          task={task}
+                          onclick={() => navigate("/userTasks")}
+                        />
+                      ))}
                   </>
                 ) : (
                   <NoItems message="No tasks available" />

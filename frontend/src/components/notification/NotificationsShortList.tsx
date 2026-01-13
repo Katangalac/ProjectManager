@@ -3,7 +3,12 @@ import { clsx } from "clsx";
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import { ProgressSpinner } from "primereact/progressspinner";
+import NotificationCard from "./NotificationCard";
 
+/**
+ * Affiche les invitations dans une liste courte
+ * Utilisé dans le header
+ */
 export default function NotificationsShortList() {
   const { data, isLoading, isError, refetch } = useUserNotifications({
     all: true,
@@ -11,8 +16,10 @@ export default function NotificationsShortList() {
   return (
     <div
       className={clsx(
-        "flex max-h-[300px] min-h-60 w-full flex-col gap-2 overflow-y-auto",
-        "[&::-webkit-scrollbar]:w-0"
+        "flex max-h-[300px] min-h-60 flex-col gap-2 overflow-y-auto sm:w-full md:w-[350px]",
+        "[&::-webkit-scrollbar]:w-0",
+        (isLoading || !(data && data.data.length > 0)) &&
+          "items-center justify-center"
       )}
     >
       {isLoading && <ProgressSpinner />}
@@ -24,28 +31,7 @@ export default function NotificationsShortList() {
               {data.data.length > 0 ? (
                 <>
                   {data.data.map((notif) => (
-                    <div
-                      className={clsx(
-                        "flex cursor-pointer flex-col gap-2 p-2",
-                        "hover:bg-gray-100",
-                        "rounded-sm border border-gray-300"
-                      )}
-                    >
-                      <span
-                        className={clsx(
-                          "line-clamp-1 text-left text-xs font-medium text-gray-800"
-                        )}
-                      >
-                        {notif.title}
-                      </span>
-                      <span
-                        className={clsx(
-                          "line-clamp-3 text-left text-xs text-gray-700"
-                        )}
-                      >
-                        {notif.message}
-                      </span>
-                    </div>
+                    <NotificationCard notification={notif} />
                   ))}
                 </>
               ) : (

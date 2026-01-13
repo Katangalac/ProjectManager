@@ -8,6 +8,9 @@ type TaskDashboardCardProps = {
   onclick?: () => void;
 };
 
+/**
+ * Affiche une tache dans une carte
+ */
 export default function TaskDashboardCard({
   task,
   onclick,

@@ -9,6 +9,7 @@ import { SearchConversationsFilter } from "@/types/Conversation";
 import { SearchTasksFilter } from "@/types/Task";
 import { SearchProjectsFilter } from "@/types/Project";
 import { SearchInvitationFilter } from "@/types/Invitation";
+import { SearchUsersFilter } from "@/types/User";
 
 /**
  * Récupère les équipes de l'utilisateur courant correspondant aux paramètres de recherche
@@ -21,7 +22,7 @@ import { SearchInvitationFilter } from "@/types/Invitation";
 export const getUserTeams = async (params: SearchTeamsFilter) => {
   try {
     const axiosResponse = await axiosClient.get("/users/me/teams", { params });
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -44,7 +45,7 @@ export const getUserTeams = async (params: SearchTeamsFilter) => {
 export const getUserTeamById = async (id: string) => {
   try {
     const axiosResponse = await axiosClient.get(`/users/me/teams/${id}`);
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -137,7 +138,7 @@ export const getTeamConversations = async (
       `/teams/${teamId}/conversations`,
       { params }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message = error.response?.data?.message;
@@ -166,7 +167,7 @@ export const getTeamTasks = async (
     const axiosResponse = await axiosClient.get(`/teams/${teamId}/tasks`, {
       params,
     });
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -193,7 +194,7 @@ export const getTeamProjects = async (
     const axiosResponse = await axiosClient.get(`/teams/${teamId}/projects`, {
       params,
     });
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -222,7 +223,7 @@ export const addMemberToTeam = async (
       userId: memberId,
       userRole: memberRole,
     });
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -253,7 +254,7 @@ export const updateTeamMemberRole = async (
         userRole: memberRole,
       }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -261,6 +262,31 @@ export const updateTeamMemberRole = async (
     }
     throw new Error(
       "Erreur lors de la mise à jour du role de l'utilisateur dans l'équipe"
+    );
+  }
+};
+
+/**
+ * Recupere le role d'un utilisateur dans une équipe
+ * En cas d'erreur, lance une exception avec un message d'erreur
+ *
+ * @param {string} teamId - identifiant de l'équipe
+ * @param {string} memberId - identifiant du membre
+ * @throws - Une erreur si la requête échoue
+ */
+export const getUserTeamRole = async (teamId: string, memberId: string) => {
+  try {
+    const axiosResponse = await axiosClient.get(
+      `/teams/${teamId}/members/${memberId}/role`
+    );
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error(
+      "Erreur lors de la recuperation du role du membre dans l'équipe"
     );
   }
 };
@@ -281,7 +307,7 @@ export const removeMemberFromTeam = async (
     const axiosResponse = await axiosClient.delete(
       `/teams/${teamId}/members/${memberId}`
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -320,5 +346,32 @@ export const getTeamInvitations = async (
     throw new Error(
       "Erreur lors de la récupération des invitations de l'équipe"
     );
+  }
+};
+
+/**
+ * Récupère les membres d'une équipe
+ * En cas d'erreur, lance une exception avec un message d'erreur
+ *
+ * @param {string} teamId - identifiant de l'équipe
+ * @param {SearchUsersFilter} params - paramètres de recherche des utilisateurs
+ * @returns la liste des collaborateurs du projet repondant aux critères de recherche
+ * @throws - Une erreur si la requête échoue
+ */
+export const getTeamMembers = async (
+  teamId: string,
+  params: SearchUsersFilter
+) => {
+  try {
+    const axiosResponse = await axiosClient.get(`/teams/${teamId}/members`, {
+      params,
+    });
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur lors de la récupération des membres d'une équipe");
   }
 };

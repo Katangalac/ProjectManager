@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * * Propriétés du RemoveTeamFromProjectForm
@@ -37,7 +38,7 @@ export default function RemoveTeamFromProjectForm({
   onSuccess,
 }: RemoveTeamFromProjectFormProps) {
   const {
-    data: projectTeams = [],
+    data: projectTeams,
     isLoading: projectTeamsLoading,
     isError: projectTeamsError,
   } = useProjectTeams(project.id, { all: true });
@@ -47,20 +48,24 @@ export default function RemoveTeamFromProjectForm({
     defaultValues: { projectId: project.id },
   });
 
-  const { removeTeamFromProject } = useRemoveTeam();
+  const { removeTeamFromProject } = useRemoveTeam({
+    onSuccess: () => {
+      showSuccess("Team removed from project successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
 
-  const teamOptions = [
-    ...projectTeams.map((t: Team) => ({
+  const teamOptions =
+    projectTeams?.data.map((t: Team) => ({
       label: t.name,
       value: t.id,
-    })),
-  ];
+    })) ?? [];
 
   const onSubmit = async (data: unknown) => {
     try {
       console.log(form.formState.errors);
       await removeTeamFromProject(ProjectTeamSchema.parse(data));
-      onSuccess();
     } catch (error: unknown) {
       console.log("An error occur while adding team to project", error);
     }
@@ -78,7 +83,7 @@ export default function RemoveTeamFromProjectForm({
           onSubmit={form.handleSubmit(onSubmit, onError)}
           className={clsx(
             "flex flex-col gap-3.5",
-            !(projectTeams.length > 0) && "items-center"
+            !(projectTeams && projectTeams.data.length > 0) && "items-center"
           )}
         >
           <p
@@ -90,7 +95,7 @@ export default function RemoveTeamFromProjectForm({
             Remove a team from the project "<strong>{project.title}</strong>"
           </p>
           {projectTeamsError && <UserErrorMessage />}
-          {projectTeams.length > 0 ? (
+          {projectTeams && projectTeams.data.length > 0 ? (
             <>
               {" "}
               <div className={clsx("flex w-full flex-col gap-1")}>

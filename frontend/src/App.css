@@ -252,16 +252,13 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 
 .p-datatable .p-datatable-tbody > tr > td {
-  border-radius: 0.375rem; /* rounded-md */
-  /* Ajouter un peu d'espace entre les cellules */
+  border-radius: 0.375rem;
 }
 
 .p-datatable .p-datatable-tbody > tr > td {
-  border-radius: 0.375rem; /* rounded-md */
-  /* Ajouter un peu d'espace entre les cellules */
+  border-radius: 0.375rem;
 }
 
-/* Optionnel: ajouter un border visible */
 .p-datatable .p-datatable-tbody > tr > td {
   border-radius: 0.375rem;
 }
@@ -372,8 +369,8 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 
 .bg-circle {
-  position: relative; /* indispensable pour que les cercles se positionnent correctement */
-  overflow: hidden; /* optionnel mais recommandé pour éviter que les cercles débordent */
+  position: relative;
+  overflow: hidden;
 }
 
 .bg-circle::before,

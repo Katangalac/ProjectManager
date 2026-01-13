@@ -17,17 +17,24 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
+import PaginationWrapper from "../commons/Pagination";
 
 type ProjectTasksViewProps = {
   projectId: string;
 };
 
 /**
- * Page d'affichage des tâches de l'utilisateur courant
+ * Affiches toutes les taches d'un projet
  */
 export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<"table" | "checklist">("table");
   const [showDialog, setShowDialog] = useState(false);
+  const { data, isLoading, isError } = useProjectTasks(projectId, {
+    page,
+    pageSize,
+  });
   const viewModeOptions = [
     {
       label: "List",
@@ -40,15 +47,16 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
       icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
     },
   ];
-  const { data, isLoading, isError } = useProjectTasks(projectId, {
-    all: true,
-  });
+
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4 overflow-y-auto pb-4",
-        (isLoading || !(data && data.length > 0)) &&
+        (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center",
         isError && "items-center"
       )}
@@ -79,12 +87,21 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
       {isError && <UserErrorMessage />}
       {data && (
         <>
-          {data.length > 0 ? (
+          {data.data.length > 0 ? (
             <>
-              {viewMode === "table" && <TasksTable tasks={data} />}
+              {viewMode === "table" && <TasksTable tasks={data.data} />}
               {viewMode === "checklist" && (
-                <ProjectTaskCheckList tasks={data} hideSeeAllButton={true} />
+                <ProjectTaskCheckList
+                  tasks={data.data}
+                  hideSeeAllButton={true}
+                />
               )}
+              <PaginationWrapper
+                page={page}
+                setPage={setPage}
+                totalItems={totalItems}
+                totalPages={totalPages}
+              />
             </>
           ) : (
             <NoItems

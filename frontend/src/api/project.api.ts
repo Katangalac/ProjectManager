@@ -15,7 +15,7 @@ import { CreateProjectData, UpdateProjectData } from "../types/Project";
 export const createProject = async (data: CreateProjectData) => {
   try {
     const axiosResponse = await axiosClient.post("/projects", data);
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -43,7 +43,7 @@ export const updateProject = async (
       `/projects/${projectId}`,
       data
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -64,7 +64,7 @@ export const updateProject = async (
 export const getProjectById = async (projectId: string) => {
   try {
     const axiosResponse = await axiosClient.get(`/projects/${projectId}`);
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -110,7 +110,7 @@ export const getUserProjects = async (params: SearchProjectsFilter) => {
     const axiosResponse = await axiosClient.get("/users/me/projects", {
       params,
     });
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -142,7 +142,7 @@ export const getProjectTasks = async (
         params,
       }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -172,7 +172,7 @@ export const getProjectTeams = async (
         params,
       }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -202,7 +202,7 @@ export const getProjectCollaborators = async (
         params,
       }
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -247,7 +247,7 @@ export const addTeamToProject = async (projectId: string, teamId: string) => {
     const axiosResponse = await axiosClient.post(
       `/projects/${projectId}/teams/${teamId}`
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;
@@ -272,7 +272,7 @@ export const removeTeamFromProject = async (
     const axiosResponse = await axiosClient.delete(
       `/projects/${projectId}/teams/${teamId}`
     );
-    return axiosResponse.data.data;
+    return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message;

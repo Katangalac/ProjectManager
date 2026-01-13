@@ -78,7 +78,7 @@ export default function ProjectDetailsPage() {
                       </Tooltip>
 
                       <span className="text-sm font-medium text-black">
-                        {data.title}
+                        {data.data.title}
                       </span>
                     </div>
 
@@ -92,21 +92,21 @@ export default function ProjectDetailsPage() {
                         size={8}
                         weight="fill"
                         className={clsx(
-                          PROJECT_STATUS_META[data.status].textColor
+                          PROJECT_STATUS_META[data.data.status].textColor
                         )}
                       />
-                      <span>{PROJECT_STATUS_META[data.status].label}</span>
+                      <span>{PROJECT_STATUS_META[data.data.status].label}</span>
                     </div>
                   </div>
                   <div className={clsx("flex w-fit items-center gap-1.5")}>
                     <div className={clsx("w-30")}>
                       <Progress
-                        value={data.progress}
+                        value={data.data.progress}
                         className={clsx("h-1.5 w-full [&>div]:bg-sky-500")}
                       />
                     </div>
                     <span className={clsx("text-xs font-medium text-gray-600")}>
-                      {data.progress}% completed
+                      {data.data.progress}% completed
                     </span>
                   </div>
                   <div
@@ -124,7 +124,8 @@ export default function ProjectDetailsPage() {
                         size={12}
                         className={clsx("stroke-1")}
                       />
-                      Last update: {timeAgo(new Date(data.updatedAt), true)}
+                      Last update:{" "}
+                      {timeAgo(new Date(data.data.updatedAt), true)}
                     </span>
                   </div>
                 </div>
@@ -216,7 +217,7 @@ export default function ProjectDetailsPage() {
                 <div>
                   <TabsContent value="overview" className={clsx("h-full px-5")}>
                     <ProjectOverview
-                      project={data}
+                      project={data.data}
                       onCollaboratorsSeeMoreClick={() =>
                         setTab("collaborators")
                       }
@@ -238,7 +239,7 @@ export default function ProjectDetailsPage() {
                   </TabsContent>
 
                   <TabsContent value="about" className={clsx("px-5")}>
-                    <ProjectAbout project={data} />
+                    <ProjectAbout project={data.data} />
                   </TabsContent>
                 </div>
               </Tabs>

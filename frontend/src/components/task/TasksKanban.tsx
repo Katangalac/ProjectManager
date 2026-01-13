@@ -11,6 +11,10 @@ export type TasksKanbanProps = {
   tasks: TaskWithRelations[];
 };
 
+/**
+ * Affiche les taches dans un kanban par status
+ * @param {TasksKanbanProps} param0 - la liste des taches
+ */
 export default function TasksKanban({ tasks }: TasksKanbanProps) {
   return (
     <div

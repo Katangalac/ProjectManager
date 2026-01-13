@@ -67,7 +67,7 @@ export default function Header({ className = "" }: HeaderProps) {
             <TooltipTrigger asChild>
               <button
                 className={clsx(
-                  "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
+                  "hidden cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
                 )}
                 onClick={() => {
                   setDialogContent(<div>Search...</div>);
@@ -95,7 +95,12 @@ export default function Header({ className = "" }: HeaderProps) {
                 <Bell className={clsx("size-5 stroke-2 text-gray-500")} />
               </button>
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent
+              sideOffset={8}
+              avoidCollisions={true}
+              collisionPadding={16}
+              className="w-fit"
+            >
               <div className={clsx("flex flex-col gap-2")}>
                 <span
                   className={clsx("text-left text-sm font-medium text-black")}

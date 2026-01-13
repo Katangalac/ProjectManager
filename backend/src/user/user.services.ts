@@ -576,9 +576,20 @@ export const getUserConversations = async (
 ): Promise<ConversationsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const userConversationCondition: Prisma.ConversationWhereInput = {
-    participants: {
-      some: { userId },
-    },
+    OR: [
+      {
+        participants: {
+          some: { userId },
+        },
+      },
+      {
+        team: {
+          teamUsers: {
+            some: { userId },
+          },
+        },
+      },
+    ],
   };
 
   //Construction du WHERE à partir des filtres

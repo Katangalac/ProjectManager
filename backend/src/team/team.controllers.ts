@@ -25,7 +25,8 @@ export const createTeamController = async (req: Request, res: Response) => {
       teamData.leaderId = req.user?.sub;
     }
     const newTeam = await teamService.createTeam(teamData);
-    if (req.user) await teamService.addUserToTeam(req.user.sub, newTeam.id, "");
+    if (req.user)
+      await teamService.addUserToTeam(req.user.sub, newTeam.id, "Leader");
     res.status(201).json(successResponse(newTeam, "Équipe créée"));
   } catch (err) {
     console.error("Erreur lors de la création de l'équipe : ", err);
@@ -107,6 +108,49 @@ export const getTeamByIdController = async (req: Request, res: Response) => {
         errorResponse(
           "INTERNAL_SERVER_ERROR",
           "Erreur lors de la récupération de l'équipe"
+        )
+      );
+  }
+};
+
+/**
+ * Récupère le role de l'utilisateur dans l'équipe
+ * @async
+ * @param {Request} req - requete Express contenant l'identifiant de l'équipe
+ * @param {Response} res - reponse Express en JSON
+ */
+export const getUserTeamRoleController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id: teamId } = idParamSchema.parse({ id: req.params.id });
+    const { id: userId } = idParamSchema.parse({ id: req.params.userId });
+    const role = await teamService.getUserTeamRole(teamId, userId);
+    res
+      .status(200)
+      .json(successResponse(role, "Role de l'utilisateur récupérée"));
+  } catch (err) {
+    console.error(
+      "Erreur lors de la récupération du role de l'utilisateur : ",
+      err
+    );
+    if (err instanceof z.ZodError) {
+      res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
+    }
+    if (err instanceof teamError.UserNotInTeamError) {
+      res
+        .status(404)
+        .json(
+          errorResponse(err.code ? err.code : "USER_NOT_IN_TEAM", err.message)
+        );
+    }
+    res
+      .status(500)
+      .json(
+        errorResponse(
+          "INTERNAL_SERVER_ERROR",
+          "Erreur lors de la récupération du role de l'utilisateur"
         )
       );
   }

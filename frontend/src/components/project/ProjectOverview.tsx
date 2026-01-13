@@ -17,6 +17,9 @@ type ProjectOverviewProps = {
   onTeamsSeeMoreClick?: () => void;
 };
 
+/**
+ * Aperçu global du projet : taches,équipes, collaborateurs, progression et description
+ */
 export default function ProjectOverview({
   project,
   onCollaboratorsSeeMoreClick,
@@ -24,7 +27,7 @@ export default function ProjectOverview({
   onTeamsSeeMoreClick,
 }: ProjectOverviewProps) {
   const {
-    data: projectTasks = [],
+    data: projectTasks,
     isLoading: projectTasksLoading,
     isError: projectTasksError,
   } = useProjectTasks(project.id, { page: 1, pageSize: 10 });
@@ -65,7 +68,7 @@ export default function ProjectOverview({
               >
                 {/**Project collaborators summary */}
                 <ProjectCollaborators
-                  collaborators={projectCollaborators || []}
+                  collaborators={projectCollaborators?.data ?? []}
                   onSeeMore={onCollaboratorsSeeMoreClick}
                 />
 
@@ -74,20 +77,20 @@ export default function ProjectOverview({
 
                 {/**Project teams summary */}
                 <ProjectTeams
-                  teams={projectTeams || []}
+                  teams={projectTeams?.data ?? []}
                   onSeeMore={onTeamsSeeMoreClick}
                 />
 
                 {/**Project near-due task */}
                 <ProjectTasks
-                  tasks={projectTasks || []}
+                  tasks={projectTasks?.data ?? []}
                   onSeeMore={onTasksSeeMoreClick}
                 />
               </div>
             </div>
             <div className={clsx("flex flex-1")}>
               <ProjectTaskCheckList
-                tasks={projectTasks}
+                tasks={projectTasks?.data ?? []}
                 onSeeMore={onTasksSeeMoreClick}
               />
             </div>

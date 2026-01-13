@@ -1,101 +1,178 @@
 import { clsx } from "clsx";
 import { useTeamConversations } from "@/hooks/queries/team/useTeamConversations";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ConversationCard from "../conversation/ConversationView";
 import ConversationMessages from "../conversation/ConversationMessagesView";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import NoItems from "../commons/NoItems";
+import UserErrorMessage from "../commons/UserErrorMessage";
+import { useState } from "react";
+import { ConversationWithRelation } from "@/types/Conversation";
+import ConversationForm from "../conversation/ConversationForm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type TeamConversationsViewProps = {
   teamId: string;
 };
 
+/**
+ * Affiche les conversations d'une équipe
+ *
+ * @param {TeamConversationsViewProps} param0 - propriétés du component
+ */
 export default function TeamConversationsView({
   teamId,
 }: TeamConversationsViewProps) {
   const {
-    data: teamConversations = [],
-    isLoading: teamConversationsIsLoading,
-    isError: teamConversationsIsError,
+    data: conversations,
+    isLoading,
+    isError,
+    refetch,
   } = useTeamConversations(teamId!, { all: true });
-
-  if (teamConversationsIsError)
-    return <div>An error occur while loading team conversations</div>;
-
-  console.log(teamConversations);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedConversation, setSelectedConversation] =
+    useState<ConversationWithRelation | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   return (
-    <div className={clsx("w-full")}>
-      {teamConversationsIsLoading ? (
-        <ProgressSpinner />
-      ) : (
-        <div className="p-0">
-          <Tabs
-            defaultValue={teamConversations[0]?.id || "no-conversations"}
-            className="flex w-full"
-          >
-            <TabsList className="flex h-screen max-w-80 min-w-70 flex-col items-start justify-start rounded-none border-r border-gray-300 bg-gray-100 px-0">
-              <div className="mb-2 flex w-full items-center justify-between px-3 pt-2">
-                <span className="font-medium text-black">Conversations</span>
+    <div className={clsx("flex h-full")}>
+      <div
+        className={clsx(
+          "flex h-full max-w-72 min-w-72 flex-col gap-4",
+          "border-r border-gray-300"
+        )}
+      >
+        {isLoading && <ProgressSpinner />}
+        {!isLoading && (
+          <>
+            <div
+              className={clsx(
+                "flex max-h-[calc(100%-10px)] flex-col justify-start",
+                "overflow-y-auto [&::-webkit-scrollbar]:w-0",
+                "[&::-webkit-scrollbar-track]:bg-neutral-300",
+                "[&::-webkit-scrollbar-thumb]:bg-neutral-400",
+                (!conversations ||
+                  conversations.data.length === 0 ||
+                  isLoading) &&
+                  "items-center justify-center"
+              )}
+            >
+              <div
+                className={clsx(
+                  "flex w-full items-center justify-between p-2",
+                  "border-b border-gray-300"
+                )}
+              >
+                <span className={clsx("text-left text-sm font-medium")}>
+                  Conversations
+                </span>
                 <button
                   className={clsx(
-                    "flex cursor-pointer items-center justify-center gap-1 p-2",
-                    "rounded-sm bg-sky-200 hover:bg-sky-300",
-                    "focus:ring-2 focus:ring-sky-400 focus:outline-0",
+                    "flex cursor-pointer items-center justify-center p-1",
+                    "rounded-sm border border-gray-300 hover:bg-gray-100",
                     "text-xs font-medium text-black"
                   )}
+                  onClick={() => setShowDialog(true)}
                 >
-                  <PlusIcon className={clsx("size-3 stroke-3")} />
-                  New
+                  <PlusIcon className="size-2.5 stroke-3" /> New
                 </button>
               </div>
-              {teamConversations.map((conv, index) => (
-                <TabsTrigger
-                  key={conv.id}
-                  value={conv.id}
-                  className={clsx(
-                    "max-h-30 min-h-30 max-w-full min-w-full cursor-pointer py-2",
-                    "rounded-none hover:bg-sky-100 data-[state=active]:bg-sky-100",
-                    "border-t border-gray-300 data-[state=active]:shadow-none",
-                    index === teamConversations.length - 1 ? "border-b" : ""
+              {conversations && (
+                <>
+                  {conversations.data.length > 0 ? (
+                    <>
+                      {conversations.data.map((conv, index) => (
+                        <ConversationCard
+                          key={index}
+                          conversation={conv}
+                          className={clsx(
+                            "rounded-none border-0 border-b",
+                            selectedIndex === index && "bg-sky-50"
+                          )}
+                          onClick={() => {
+                            setSelectedConversation(conv);
+                            setSelectedIndex(index);
+                          }}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <NoItems message="No conversations available" />
                   )}
-                >
-                  <div className="flex h-full w-full max-w-full flex-col">
-                    <ConversationCard
-                      conversation={conv}
-                      className="min-h-full min-w-full items-start justify-start bg-transparent p-0 text-sm"
-                    />
-                  </div>
-                </TabsTrigger>
-              ))}
-              {teamConversations.length === 0 && (
-                <TabsTrigger
-                  value="no-conversations"
-                  className={clsx(
-                    "max-h-30 min-h-30 max-w-full min-w-full cursor-pointer py-2",
-                    "rounded-none hover:bg-sky-100 data-[state=active]:bg-sky-100",
-                    "border-t border-b border-gray-300 data-[state=active]:shadow-none"
-                  )}
-                >
-                  <span>No conversations</span>
-                </TabsTrigger>
+                </>
               )}
-            </TabsList>
+            </div>
+          </>
+        )}
+      </div>
 
-            {teamConversations.map((conv) => (
-              <TabsContent key={conv.id} value={conv.id} className="w-full p-5">
-                <ConversationMessages conversationId={conv.id} />
-              </TabsContent>
-            ))}
-
-            {teamConversations.length === 0 && (
-              <TabsContent value="no-conversations" className="w-full p-5">
-                <span>No conversations</span>
-              </TabsContent>
+      <div
+        className={clsx(
+          "flex flex-1 flex-col",
+          (!selectedConversation ||
+            isError ||
+            !conversations ||
+            conversations.data.length === 0) &&
+            "items-center justify-center"
+        )}
+      >
+        {isError ? (
+          <UserErrorMessage onRetryButtonClick={refetch} />
+        ) : (
+          <>
+            {!isLoading &&
+            (!conversations || conversations.data.length === 0) ? (
+              <NoItems message="No conversations available" />
+            ) : (
+              <>
+                {selectedConversation ? (
+                  <>
+                    <ConversationMessages
+                      conversationId={selectedConversation.id}
+                    />
+                  </>
+                ) : (
+                  <NoItems message="No conversation selected" />
+                )}
+              </>
             )}
-          </Tabs>
-        </div>
-      )}
+          </>
+        )}
+      </div>
+
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent
+          className={clsx(
+            "max-w-[500px] p-0",
+            "[&>button]:text-white",
+            "[&>button]:hover:text-white"
+          )}
+        >
+          <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4")}>
+            <DialogTitle className="text-lg text-white">
+              New conversation
+            </DialogTitle>
+          </DialogHeader>
+          <div
+            className={clsx(
+              "max-h-[80vh] overflow-y-auto rounded-b-md pb-4 pl-4",
+              "[&::-webkit-scrollbar]:w-0",
+              "[&::-webkit-scrollbar-track]:rounded-md",
+              "[&::-webkit-scrollbar-thumb]:rounded-md"
+            )}
+          >
+            <ConversationForm
+              onSuccess={() => setShowDialog(false)}
+              teamId={teamId}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

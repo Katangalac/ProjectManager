@@ -52,6 +52,27 @@ export const getCurrentUserTasks = async (params: SearchTasksFilter) => {
 };
 
 /**
+ * Récupère la tache ayant l'identifiant passé en paramètre
+ * En cas d'erreur, lance une exception avec le message d'erreur
+ *
+ * @param {string} id - identifiant de la tache à trouver
+ * @returns - La tache ayant l'identifiant passé en paramètre
+ * @throws - Une erreur si la requête échoue
+ */
+export const getTaskById = async (id: string) => {
+  try {
+    const axiosResponse = await axiosClient.get(`/tasks/${id}`);
+    return axiosResponse.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message;
+      throw new Error(message);
+    }
+    throw new Error("Erreur lors de la récupération de la tache");
+  }
+};
+
+/**
  * Met à jour une tâche
  *
  * @param {string} taskId - identifiant de la tâche

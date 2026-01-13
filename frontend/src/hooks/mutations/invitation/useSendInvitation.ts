@@ -18,7 +18,7 @@ type SendMessageParams = {
  * @param {CreateInvitationData} data - données de l'invitation
  * @returns la fontion de mutation ainsi que le status de la requête
  */
-export const useSendMessage = (params: SendMessageParams = {}) => {
+export const useSendInvitation = (params: SendMessageParams = {}) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: CreateInvitationData) => {

@@ -51,7 +51,7 @@ export const updateProjectDataSchema = z.object({
  * Schéma pour valider les données attendues comme filtre de recherche des projets
  */
 export const searchProjectsFilterSchema = z.object({
-  title: z.string().max(100, "Titre trop long").optional(),
+  title: z.string().optional(),
   status: z.enum(ProjectStatus).optional(),
   progressEq: z.coerce.number().int().min(0).max(100).optional(),
   progressLt: z.coerce.number().int().min(0).max(100).optional(),

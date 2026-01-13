@@ -10,7 +10,7 @@ export const invitationSchema = z.object({
   receiverId: z.uuid("ID invalide"),
   teamId: z.uuid("ID invalide"),
   message: z.string(),
-  status: z.enum(InvitationStatus),
+  status: z.enum(InvitationStatus).default("PENDING"),
   updatedAt: z.date(),
   createdAt: z.date(),
 });

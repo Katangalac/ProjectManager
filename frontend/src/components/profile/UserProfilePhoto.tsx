@@ -7,6 +7,18 @@ import { useMemo } from "react";
 import clsx from "clsx";
 
 /**
+ * Propriétés du UserProfilePhoto
+ *
+ *  - userId: id de l'utilisateur;
+ *  - imageUrl: url de l'image de l'utilisateur;
+ *  - username: username de l'utilisateur;
+ *  - email: email de l'utilisateur;
+ *  - size: taille du composant;
+ *  - imageClassName: style de l'image;
+ *  - className: style du composant;
+ *  - isOnline: specifie si le user est en ligne;
+ *  - showOnlineStatus: afficher ou non le status de l'utilisateur;
+ *  - imagefallback: afficher lorsque l'image est null;
  *
  */
 type UserProfilePhotoProps = {
@@ -23,9 +35,8 @@ type UserProfilePhotoProps = {
 };
 
 /**
- *
- * @param param0
- * @returns
+ *Affiche l'avatar d'un utilisateur
+ * @param {UserProfilePhotoProps}param0 - Propriétés du UserProfilePhoto
  */
 export default function UserProfilePhoto({
   userId,

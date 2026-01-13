@@ -31,6 +31,7 @@ import { UsersCollection } from "../user/User";
 import { TasksCollection } from "../task/Task";
 import { ConversationsCollection } from "../conversation/Conversation";
 import { addNotificationToQueue } from "../notification/notification.queue";
+import { getIO } from "../chat/chat.socket";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -117,6 +118,26 @@ export const getTeamById = async (id: string): Promise<Team> => {
 };
 
 /**
+ * Récupère le role d'un utilisateur dans une equipe
+ * @async
+ * @param {string} teamId - identifiant de l'équipe
+ * @param {string} userId - identifiant de lutilisateur
+ * @returns {string} - le role de l'utilisateur
+ * @throws {UserNotInTeamError} - si l'utilisateur ne fait pas partie de l'équipe
+ */
+export const getUserTeamRole = async (
+  teamId: string,
+  userId: string
+): Promise<string> => {
+  const userTeam = await db.userTeam.findUnique({
+    where: { pk_user_team: { userId, teamId } },
+  });
+
+  if (!userTeam) throw new UserNotInTeamError(userId, teamId);
+  return userTeam.userRole;
+};
+
+/**
  * Met à jour les informations de Léquipe ayant l'ideneitifiant passé en paramètre
  * @async
  * @param {string} id - identfiant de l'équipe à modifier
@@ -181,10 +202,17 @@ export const addUserToTeam = async (
       addNotificationToQueue(
         userTeamPair.userId,
         `NEW_TEAM-${userTeamPair.teamId}`,
-        "You have been added in a team"
+        "you’ve been added to a team."
       );
     } catch (err: any) {
-      console.log("Erreur lors de l'ajoue de la notification", err);
+      console.error("Erreur lors de l'ajout de la notification", err);
+    }
+
+    try {
+      const io = getIO();
+      io.to(userId).emit("new_team", teamId);
+    } catch (err: any) {
+      console.error("Erreur de socket-io", err);
     }
 
     return userTeamPair;
@@ -212,10 +240,17 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
       await addNotificationToQueue(
         userId,
         `REMOVE_FROM_TEAM-${teamId}`,
-        "You have been removed from a team"
+        "You've been removed from a team"
       );
     } catch (err: any) {
-      console.log("Erreur lors de l'ajoue de la notification", err);
+      console.error("Erreur lors de l'ajout de la notification", err);
+    }
+
+    try {
+      const io = getIO();
+      io.to(userId).emit("leave_team", teamId);
+    } catch (err: any) {
+      console.error("Erreur de socket-io", err);
     }
   } catch (err: any) {
     if (err.code === "P2025") throw new UserNotInTeamError(userId, teamId);
@@ -248,7 +283,7 @@ export const updateUserRoleInTeam = async (
       await addNotificationToQueue(
         userId,
         `NEW_TEAM_ROLE-${teamId}`,
-        "You have a new role in a team"
+        "Your team role has been changed."
       );
     } catch (err: any) {
       console.log("Erreur lors de l'ajoue de la notification", err);

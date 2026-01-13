@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserTeams } from "../../../api/team.api";
-import { SearchTeamsFilter } from "../../../types/Team";
+import { SearchTeamsFilter, TeamsApiResponse } from "../../../types/Team";
 
 /**
  * Récupère les équipes de l'utilisaeur courant
@@ -8,7 +8,7 @@ import { SearchTeamsFilter } from "../../../types/Team";
  * @returns la liste des équipes repondant aux critères de recherche
  */
 export const useTeams = (params: SearchTeamsFilter) => {
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery<TeamsApiResponse>({
     queryKey: ["currentUserTeams", params],
     queryFn: () => getUserTeams(params),
     refetchOnWindowFocus: false,

@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
+import { showSuccess, showError } from "@/utils/toastService";
+
 /**
  * * Propriétés du TaskForm
  *
@@ -60,13 +62,13 @@ export default function TaskForm({
 }: TaskFormProps) {
   const NULL_VALUE = "__null__";
   const {
-    data: projects = [],
+    data: projects,
     isLoading: projectLoading,
     isError: projectError,
   } = useProjects({ all: true });
 
   const {
-    data: teams = [],
+    data: teams,
     isLoading: teamLoading,
     isError: teamError,
   } = useTeams({ all: true });
@@ -80,6 +82,46 @@ export default function TaskForm({
   });
 
   const status = form.watch("status");
+  const progress = form.watch("progress");
+  const completedAt = form.watch("completedAt");
+
+  useEffect(() => {
+    if (status === "COMPLETED") {
+      // Forcer progress à 100
+      if (progress !== 100) {
+        form.setValue("progress", 100, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      // Définir completedAt si vide
+      if (!completedAt) {
+        form.setValue("completedAt", new Date(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (progress === 100) {
+      if (status !== "COMPLETED") {
+        form.setValue("status", "COMPLETED", {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      if (!completedAt) {
+        form.setValue("completedAt", new Date(), {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+    }
+  }, [progress]);
 
   useEffect(() => {
     if (status !== "COMPLETED") {
@@ -88,10 +130,22 @@ export default function TaskForm({
         shouldValidate: true,
       });
     }
-  }, [status, form]);
+  }, [status]);
 
-  const { createTask } = useCreateTask({ onSuccess });
-  const { updateTask } = useUpdateTask({ onSuccess });
+  const { createTask } = useCreateTask({
+    onSuccess: () => {
+      showSuccess("Task created successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
+  const { updateTask } = useUpdateTask({
+    onSuccess: () => {
+      showSuccess("Task edited successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
 
   if (projectLoading || teamLoading) {
     <div>
@@ -107,20 +161,17 @@ export default function TaskForm({
       return <div>An error occur while loading user teams</div>;
     }
   }
-  const projectOptions = [
-    // <-- Pour gérer null
-    ...projects.map((p: Project) => ({
+  const projectOptions =
+    projects?.data.map((p: Project) => ({
       label: p.title,
       value: p.id,
-    })),
-  ];
+    })) ?? [];
 
-  const teamOptions = [
-    ...teams.map((t: Team) => ({
+  const teamOptions =
+    teams?.data.map((t: Team) => ({
       label: t.name,
       value: t.id,
-    })),
-  ];
+    })) ?? [];
 
   const statusOptions = Object.entries(TASK_STATUS_META).map(
     ([status, meta]) => ({
@@ -136,13 +187,13 @@ export default function TaskForm({
     })
   );
 
-  const onSubmit = (data: unknown) => {
+  const onSubmit = async (data: unknown) => {
     console.log(form.formState.errors);
     if (!isUpdateForm) {
-      createTask(createTaskSchema.parse(data));
+      await createTask(createTaskSchema.parse(data));
     } else {
       if (defaultValues?.id) {
-        updateTask({
+        await updateTask({
           taskId: defaultValues.id,
           data: updateTaskDataSchema.parse(data),
         });
@@ -209,7 +260,9 @@ export default function TaskForm({
                   onValueChange={(val) =>
                     field.onChange(val === NULL_VALUE ? null : val)
                   }
-                  disabled={defaultValues?.projectId ? true : false}
+                  disabled={
+                    !isUpdateForm && defaultValues?.projectId ? true : false
+                  }
                 >
                   <SelectTrigger
                     className={clsx(
@@ -269,7 +322,9 @@ export default function TaskForm({
                   onValueChange={(val) =>
                     field.onChange(val === NULL_VALUE ? null : val)
                   }
-                  disabled={defaultValues?.teamId ? true : false}
+                  disabled={
+                    !isUpdateForm && defaultValues?.teamId ? true : false
+                  }
                 >
                   <SelectTrigger
                     className={clsx(

@@ -1,6 +1,17 @@
 import { cn } from "@/lib/utils";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
 
+/**
+ * Propriétés du UserErrorMessage
+ *
+ *  - message: message à afficher
+ *  - iconSize: taille de l'icone
+ *  - iconWeight: type de l'icone
+ *  - textStyle: style de texte
+ *  - hidIcon: afficher ou masquer l'icone
+ *  - className: style du composant
+ *  - onRetryButtonClick: fonction à appeller en cas de click sur le bouton retry
+ */
 type UserErrorMessageProps = {
   message?: string;
   iconSize?: string;
@@ -11,6 +22,10 @@ type UserErrorMessageProps = {
   onRetryButtonClick?: () => void;
 };
 
+/**
+ * Affiche un message d'erreur
+ * @param {UserErrorMessageProps} param0 - propriétés du composant
+ */
 export default function UserErrorMessage({
   message = "Oops! Something went wrong",
   iconSize = "size-15 stroke-1",

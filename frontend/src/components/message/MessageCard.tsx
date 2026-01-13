@@ -2,6 +2,11 @@ import { MessageWithRelation } from "@/types/Message";
 import { cn } from "@/lib/utils";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import { clsx } from "clsx";
+import {
+  formatShortDateWithOptionalYear,
+  formatTime,
+  isToday,
+} from "@/utils/dateUtils";
 
 /**
  * Propriéts du MessageCard
@@ -28,6 +33,10 @@ export default function MessageCard({
   currentUserMessagesStyle,
   isCurrentUserMessage,
 }: MessageCardProps) {
+  const date = isToday(new Date(message.createdAt))
+    ? "Today"
+    : formatShortDateWithOptionalYear(new Date(message.createdAt));
+  const time = formatTime(new Date(message.createdAt), true);
   return (
     <div className={cn("flex items-center justify-start gap-1", className)}>
       {/**Message Infos */}
@@ -39,7 +48,7 @@ export default function MessageCard({
           )}
         >
           {isCurrentUserMessage ? (
-            <span className={clsx("font-medium text-sky-600")}>You</span>
+            <></>
           ) : (
             <>
               {message.sender!.firstName && message.sender!.lastName ? (
@@ -47,15 +56,14 @@ export default function MessageCard({
                   {message.sender!.firstName} {message.sender!.firstName}
                 </span>
               ) : (
-                <span className={clsx("font-medium text-gray-600")}>
+                <span className={clsx("font-medium text-black")}>
                   {message.sender!.userName}
                 </span>
               )}
             </>
           )}
-          <span className={clsx("font-medium text-gray-600")}>
-            {new Date(message.createdAt).toISOString().split("T")[0]}{" "}
-            {new Date(message.createdAt).toISOString().split("T")[1]}
+          <span className={clsx("text-gray-600")}>
+            {date} {time}
           </span>
         </div>
 
@@ -73,14 +81,20 @@ export default function MessageCard({
               username={message.sender!.userName}
               imageUrl={message.sender!.imageUrl}
               imageClassName="min-h-8 min-w-8"
+              imagefallback={
+                message.sender!.firstName && message.sender!.lastName
+                  ? `${message.sender!.firstName[0].toUpperCase() + message.sender!.lastName[0].toUpperCase()}`
+                  : undefined
+              }
+              showOnlineStatus={true}
             />
           )}
           <div
             className={cn(
-              "max-w-70 rounded-md p-2 text-left text-wrap shadow-md",
+              "max-w-70 rounded-md p-2 text-left text-wrap shadow-xl",
               isCurrentUserMessage
-                ? "rounded-br-none bg-sky-200"
-                : "rounded-bl-none bg-gray-100",
+                ? "rounded-br-none bg-sky-500 text-white shadow-xl"
+                : "rounded-bl-none border border-gray-300 bg-gray-100",
               currentUserMessagesStyle
             )}
           >
@@ -98,6 +112,7 @@ export default function MessageCard({
                   ? `${message.sender!.firstName[0].toUpperCase() + message.sender!.lastName[0].toUpperCase()}`
                   : undefined
               }
+              showOnlineStatus={true}
             />
           )}
         </div>

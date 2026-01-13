@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserProjects } from "../../../api/project.api";
 import { SearchProjectsFilter } from "../../../types/Project";
-import { Project } from "../../../types/Project";
+import { ProjectsApiResponse } from "../../../types/Project";
 
 /**
  * Récupère les projets de l'utilisaeur courant
@@ -9,7 +9,7 @@ import { Project } from "../../../types/Project";
  * @returns la liste des projets repondant aux critères de recherche
  */
 export const useProjects = (params: SearchProjectsFilter) => {
-  const { data, isLoading, isError, refetch } = useQuery<Project[]>({
+  const { data, isLoading, isError, refetch } = useQuery<ProjectsApiResponse>({
     queryKey: ["currentUserProjects", params],
     queryFn: () => getUserProjects(params),
     refetchOnWindowFocus: false,

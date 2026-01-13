@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProjectTeams } from "@/api/project.api";
 import { SearchTeamsFilter } from "@/types/Team";
-import { TeamWithRelations } from "@/types/Team";
+import { TeamsApiResponse } from "@/types/Team";
 
 /**
  * Récupère les équipes d'un projet
@@ -13,7 +13,7 @@ export const useProjectTeams = (
   projectId: string,
   params: SearchTeamsFilter
 ) => {
-  const { data, isLoading, isError, refetch } = useQuery<TeamWithRelations[]>({
+  const { data, isLoading, isError, refetch } = useQuery<TeamsApiResponse>({
     queryKey: ["projectTeams", projectId, params],
     queryFn: () => getProjectTeams(projectId, params),
     refetchOnWindowFocus: true,

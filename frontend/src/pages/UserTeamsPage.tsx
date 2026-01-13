@@ -14,13 +14,20 @@ import {
 } from "@/components/ui/dialog";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
+import PaginationWrapper from "@/components/commons/Pagination";
 
 /**
  * Affiche la liste des équipes d'un utilisateur
  */
 export default function UserTeamsPage() {
-  const { data = [], isLoading, isError, refetch } = useTeams({ all: true });
+  const pageSize = 12;
+  const [page, setPage] = useState(1);
+  const { data, isLoading, isError, refetch } = useTeams({ page, pageSize });
   const [showDialog, setShowDialog] = useState(false);
+  const totalItems = data?.pagination?.totalItems || 0;
+  const totalPages =
+    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+
   return (
     <div
       className={clsx(
@@ -47,7 +54,7 @@ export default function UserTeamsPage() {
           <div
             className={clsx(
               "flex flex-1 flex-col justify-between gap-4",
-              !(data && data.length > 0) && "items-center justify-center",
+              !(data && data.data.length > 0) && "items-center justify-center",
               isError && "justify-start gap-10"
             )}
           >
@@ -56,8 +63,16 @@ export default function UserTeamsPage() {
             )}
             {data && (
               <>
-                {data.length > 0 ? (
-                  <TeamsBoard teams={data} />
+                {data.data.length > 0 ? (
+                  <>
+                    <TeamsBoard teams={data.data} />
+                    <PaginationWrapper
+                      page={page}
+                      setPage={setPage}
+                      totalItems={totalItems}
+                      totalPages={totalPages}
+                    />
+                  </>
                 ) : (
                   <NoItems
                     message="No teams available!"

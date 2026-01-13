@@ -25,6 +25,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * Propriétés du menu d'un projet
@@ -50,7 +51,10 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
   );
   const navigate = useNavigate();
   const { deleteProject } = useDeleteProject({
-    onSuccess: () => setShowDialog(false),
+    onSuccess: () => {
+      showSuccess("Project deleted successfully!");
+    },
+    onError: () => showError("An error occur while processing your request!"),
   });
   const menu = useRef<Menu>(null);
   const menuItems: MenuItem[] = [
@@ -87,7 +91,7 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle("Edit project");
+            setDialogTitle(`Edit project "${project.title}"`);
             setDialogContent(
               <ProjectForm
                 isUpdateForm={true}

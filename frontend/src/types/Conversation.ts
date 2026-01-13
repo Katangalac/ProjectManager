@@ -29,12 +29,26 @@ export type ConversationsApiResponse = {
 };
 
 /**
+ * Type représentant la structure des responses API pour une requte de recupération d'une conversation
+ */
+export type ConversationApiResponse = {
+  data: ConversationWithRelation;
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
+};
+
+/**
  * Type des données attendues lors de la création d'une conversation
  */
 export type CreateConversationData = {
   isGroup: boolean;
   teamId: string | null;
   participantIds: string[];
+};
+
+export type ConversationHookInput = CreateConversationData & {
+  message: string;
 };
 
 /**

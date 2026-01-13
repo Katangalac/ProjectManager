@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getProjectCollaborators } from "@/api/project.api";
 import { SearchUsersFilter } from "@/types/User";
-import { User } from "@/types/User";
+import { UsersApiResponse } from "@/types/User";
 
 /**
  * Récupère les collaborateurs d'un projet
@@ -13,7 +13,7 @@ export const useProjectCollaborators = (
   projectId: string,
   params: SearchUsersFilter
 ) => {
-  const { data, isLoading, isError, refetch } = useQuery<User[]>({
+  const { data, isLoading, isError, refetch } = useQuery<UsersApiResponse>({
     queryKey: ["projectCollaborators", projectId, params],
     queryFn: () => getProjectCollaborators(projectId, params),
     refetchOnWindowFocus: true,

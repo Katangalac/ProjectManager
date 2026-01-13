@@ -23,6 +23,7 @@ export const createInvitationSchema = invitationSchema.omit({
   id: true,
   updatedAt: true,
   createdAt: true,
+  status: true,
 });
 
 /**

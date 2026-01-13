@@ -13,6 +13,7 @@ import ProjectsPage from "./pages/ProjectsPage.tsx";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage.tsx";
 import UserTeamsPage from "./pages/UserTeamsPage.tsx";
 import TeamDetailsPage from "./pages/TeamDetailsPage.tsx";
+import NotificationsPage from "./pages/NotficationPage.tsx";
 import TestPage from "./pages/TestPage.tsx";
 import MessagePage from "./pages/MessagePage.tsx";
 import { useUserStore } from "./stores/userStore.ts";
@@ -24,14 +25,15 @@ import { clsx } from "clsx";
 import { Toaster } from "@/components/ui/sonner";
 import { useSocket } from "./hooks/socket/useSocket.ts";
 import { toast } from "sonner";
-import { Message } from "./types/Message.ts";
+import { MessageWithRelation } from "./types/Message.ts";
 import { Notification } from "./types/Notification.ts";
+import { socket } from "./lib/socket/socketClient.ts";
 
 /**
  * Point d'entrée de l'application
  */
 function App() {
-  const { setUser, logout, isAuthenticated } = useUserStore();
+  const { setUser, logout, isAuthenticated, user } = useUserStore();
 
   /**
    * Récupère les informations de l'utilisateur connecté
@@ -57,19 +59,25 @@ function App() {
     }
   }, [isSuccess, isError, data, logout, setUser]);
 
-  // /**
-  //  *
-  //  */
-  // useEffect(() => {
-  //   if (data) {
-  //     socket.emit("login", data.data.id);
-  //   }
-  // }, [data]);
+  //Evenements socket global
+  useSocket<MessageWithRelation>("new_message", (data) => {
+    if (user && data.senderId !== user.id) {
+      toast.info(data.content);
+    }
+  });
 
-  useSocket<Message>("new_message", (data) => toast.info(data.content));
   useSocket<Notification>("new_notification", (data) =>
     toast.info(data.message)
   );
+
+  useSocket<string>("new_conversation", (data) =>
+    socket.emit("join_conversation", data)
+  );
+
+  useSocket<string>("new_team", (data) => socket.emit("join_team", data));
+
+  useSocket<string>("leave_team", (data) => socket.emit("remove_team", data));
+  //Fin d'evenements socket
 
   return (
     <>
@@ -157,6 +165,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TestPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage />
                 </ProtectedRoute>
               }
             />

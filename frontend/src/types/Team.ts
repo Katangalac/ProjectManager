@@ -37,6 +37,24 @@ export type TeamsApiResponse = {
 };
 
 /**
+ * Type représentant la structure des responses API pour une requte de recupération d'une equipe
+ */
+export type TeamApiResponse = {
+  data: TeamWithRelations;
+  success: boolean;
+  message?: string;
+};
+
+/**
+ * Type représentant la structure des responses API pour une requte de recupération du role dans une equipe
+ */
+export type TeamRoleApiResponse = {
+  data: string;
+  success: boolean;
+  message?: string;
+};
+
+/**
  * Type des données attendues lors de la création d'une équipe
  */
 export type CreateTeamData = {

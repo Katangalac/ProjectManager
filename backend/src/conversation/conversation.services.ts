@@ -19,6 +19,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { UsersCollection } from "../user/User";
 import { MessagesCollection } from "../message/Message";
+import { getIO } from "../chat/chat.socket";
 
 /**
  * Crée une nouvelle conversation
@@ -33,13 +34,18 @@ export const createConversation = async (
   const { participantIds, teamId, ...conversationInfo } = conversationData;
   let finalParticipantIds = [...participantIds];
   if (teamId) {
-    const memberFilter = searchUsersFilterSchema.parse({ all: true });
-    const teamMembers = await getTeamMembers(teamId, memberFilter);
+    //const memberFilter = searchUsersFilterSchema.parse({ all: true });
+    const teamMembers = await getTeamMembers(teamId, {
+      page: 1,
+      pageSize: 20,
+      all: true,
+    });
     const teamMemberIds = teamMembers.users.map((user) => user.id);
     finalParticipantIds = Array.from(
       new Set([...finalParticipantIds, ...teamMemberIds])
     );
   }
+
   if (!finalParticipantIds || finalParticipantIds.length < 1)
     throw new NotEnoughParticipantsInConversationError();
   const conversation = await db.conversation.create({
@@ -66,6 +72,16 @@ export const createConversation = async (
       },
     },
   });
+
+  try {
+    const io = getIO();
+    if (conversation.teamId) {
+      io.to(conversation.teamId).emit("new_conversation", conversation.id);
+    }
+  } catch (err: any) {
+    console.error("Erreur lors de socket-io : ", err);
+  }
+
   return conversation;
 };
 

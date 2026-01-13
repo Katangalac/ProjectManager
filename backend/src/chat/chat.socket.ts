@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import http from "http";
 import { Message } from "../message/Message";
+import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
 import { verifyToken } from "../auth/utils/jwt";
 import { tokenPayloadSchema } from "../auth/auth.schemas";
@@ -63,6 +64,18 @@ export const setupSocket = (server: http.Server) => {
       });
       conversations.conversations.forEach((conversation) => {
         socket.join(conversation.id);
+        console.log(`🟢 User ${socket.userId} join one of his conversation`);
+      });
+
+      const teams = await getUserTeams(socket.userId, {
+        all: true,
+        page: 1,
+        pageSize: 20,
+      });
+
+      teams.teams.forEach((team) => {
+        socket.join(team.id);
+        console.log(`🟢 User ${socket.userId} join one of his team`);
       });
 
       /**
@@ -72,7 +85,29 @@ export const setupSocket = (server: http.Server) => {
        */
       socket.on("join_conversation", (conversationId: string) => {
         socket.join(conversationId);
-        console.log("Le client a joint la conversation : ", conversationId);
+        console.log(
+          `🟢 User ${socket.userId} join the conversation ${conversationId}`
+        );
+      });
+
+      /**
+       * Le client rejoint une equipe spécifique.
+       * Chaque team est représentée par une "room" Socket.IO
+       * permettant d’envoyer des messages uniquement aux membres.
+       */
+      socket.on("join_team", (teamId: string) => {
+        socket.join(teamId);
+        console.log(`🟢 User ${socket.userId} join the team ${teamId}`);
+      });
+
+      /**
+       * Le client quitte une equipe spécifique.
+       * Chaque team est représentée par une "room" Socket.IO
+       * permettant d’envoyer des messages uniquement aux membres.
+       */
+      socket.on("remove_team", (teamId: string) => {
+        socket.leave(teamId);
+        console.log(`🟢 User ${socket.userId} join the team ${teamId}`);
       });
 
       /**

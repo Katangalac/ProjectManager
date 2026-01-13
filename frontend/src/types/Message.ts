@@ -29,6 +29,16 @@ export type MessagesApiResponse = {
 };
 
 /**
+ * Type représentant la structure des responses API pour une requte de recupération d'un message
+ */
+export type MessageApiResponse = {
+  data: MessageWithRelation;
+  success: boolean;
+  pagination?: Pagination;
+  message?: string;
+};
+
+/**
  * Type représentant un élément joint/attaché à un message
  */
 export type Attachment = {

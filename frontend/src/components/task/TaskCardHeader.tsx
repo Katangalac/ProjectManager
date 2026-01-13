@@ -4,9 +4,6 @@ import { TaskWithRelations } from "../../types/Task";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-/**
- *
- */
 type TaskCardHeaderProps = {
   task: TaskWithRelations;
   flipped: boolean;
@@ -14,9 +11,7 @@ type TaskCardHeaderProps = {
 };
 
 /**
- *
- * @param param0
- * @returns
+ * En-tete du TaskCard
  */
 export default function TaskCardHeader({
   task,

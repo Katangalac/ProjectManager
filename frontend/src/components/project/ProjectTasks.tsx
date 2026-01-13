@@ -11,6 +11,7 @@ type ProjectTasksProps = {
   onSeeMore?: () => void;
 };
 
+/**Affiche sommairement les taches d'un projet */
 export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 

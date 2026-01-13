@@ -7,6 +7,7 @@ import {
 import { z } from "zod";
 import { Pagination } from "../types/Pagination";
 import { User } from "./User";
+import { Team } from "./Team";
 
 /**
  * Type représentant la structure d'une invitation
@@ -16,6 +17,7 @@ export type Invitation = z.infer<typeof invitationSchema>;
 export type InvitationWithRelations = Invitation & {
   sender?: User;
   receiver?: User;
+  team?: Team;
 };
 
 /**

@@ -25,7 +25,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
-
+import { showError, showSuccess } from "@/utils/toastService";
 /**
  * Propriétés du menu d'une tâche
  *
@@ -49,7 +49,10 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
     null
   );
   const { deleteTask } = useDeleteTask({
-    onSuccess: () => setShowDialog(false),
+    onSuccess: () => {
+      showSuccess("Task deleted successfully!");
+    },
+    onError: () => showError("An error occur while processing your request!"),
   });
   const menu = useRef<Menu>(null);
   const menuItems: MenuItem[] = [
@@ -90,7 +93,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle("Edit task");
+            setDialogTitle(`Edit task "${task.title}"`);
             setDialogContent(
               <TaskForm
                 isUpdateForm={true}
@@ -121,7 +124,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle("Assign this task");
+            setDialogTitle(`Assign the task "${task.title}"`);
             setDialogContent(
               <AssignTaskForm
                 task={task}
@@ -144,7 +147,7 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle("Unassign this task");
+            setDialogTitle(`Unassign the task "${task.title}"`);
             setDialogContent(
               <UnAssignTaskForm
                 task={task}

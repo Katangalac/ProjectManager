@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import NoItems from "../commons/NoItems";
 import UserBasicInfo from "../profile/UserBasicInfo";
+import { showError, showSuccess } from "@/utils/toastService";
 
 /**
  * * Propriétés du AssignTaskForm
@@ -33,7 +34,13 @@ export default function UnAssignTaskForm({
   task,
   onSuccess,
 }: UnAssignTaskFormProps) {
-  const { unassignTask } = useUnassignTaskTask();
+  const { unassignTask } = useUnassignTaskTask({
+    onSuccess: () => {
+      showSuccess("Task unassigned successfully!");
+      onSuccess();
+    },
+    onError: () => showError("An error occur while processing your request!"),
+  });
   const peerOptions =
     task.assignedTo?.map((assignTo) => ({
       label: <UserBasicInfo user={assignTo.user} />,
@@ -49,7 +56,6 @@ export default function UnAssignTaskForm({
     try {
       console.log(form.formState.errors);
       await unassignTask(userTaskSchema.parse(data));
-      onSuccess();
     } catch (error: unknown) {
       console.log("An error occur while unassigning task from user", error);
     }

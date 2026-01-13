@@ -37,13 +37,23 @@ export const register = async (req: Request, res: Response) => {
     res.cookie("projectFlowToken", token, cookieOptions);
     user = await updateUserLastLoginDateToNow(user.id);
     res.status(201).json(successResponse(user, "Utilisateur créé"));
-    addNotificationToQueue(
-      user.id,
-      "Bienvenue 🎉",
-      "Votre compte a été créé avec succès!"
-    );
-    const html = getWelcomeMessageHtml(user.userName);
-    addEmailToQueue(user.email, "Bienvenue sur ProjectFlow", html);
+
+    try {
+      await addNotificationToQueue(
+        user.id,
+        "🚀 Welcome aboard ProjectFlow!",
+        "Jump right in and start planning projects, tracking tasks, and staying productive."
+      );
+    } catch (err) {
+      console.error("Erreur lors de l'ajout de la notification", err);
+    }
+
+    try {
+      const html = getWelcomeMessageHtml(user.userName);
+      await addEmailToQueue(user.email, "Bienvenue sur ProjectFlow", html);
+    } catch (err) {
+      console.error("Erreur lors de l'ajout de l'email dans la queue", err);
+    }
   } catch (err) {
     console.error("Erreur lors de l'inscription : ", err);
     if (err instanceof z.ZodError) {
