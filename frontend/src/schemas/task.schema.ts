@@ -4,10 +4,10 @@ import { z } from "zod";
  * Schéma pour valider la structure de base d'une tâche dans la BD
  */
 export const taskSchema = z.object({
-  id: z.uuid("ID invalide"),
-  creatorId: z.uuid("ID invalide").nullable(),
-  projectId: z.uuid("ID invalide").nullable(),
-  teamId: z.uuid("ID invalide").nullable(),
+  id: z.uuid("Invalid ID"),
+  creatorId: z.uuid("Invalid ID").nullable(),
+  projectId: z.uuid("Invalid ID").nullable(),
+  teamId: z.uuid("Invalid ID").nullable(),
   title: z.string(),
   description: z.string(),
   priorityLevel: z.number().int().min(0).max(5),
@@ -110,9 +110,9 @@ export const createTaskSchema = taskSchema.omit({
  * Schéma pour valider les données attendues lors de la modification d'une tâche
  */
 export const updateTaskDataSchema = z.object({
-  creatorId: z.uuid("ID invalide").nullable().optional(),
-  projectId: z.uuid("ID invalide").nullable().optional(),
-  teamId: z.uuid("ID invalide").nullable().optional(),
+  creatorId: z.uuid("Invalid ID").nullable().optional(),
+  projectId: z.uuid("Invalid ID").nullable().optional(),
+  teamId: z.uuid("Invalid ID").nullable().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
   priorityLevel: z.coerce.number().int().min(0).max(5).optional(),
@@ -185,10 +185,14 @@ export const searchTasksFilterSchema = z.object({
   priorityLevelEq: z.coerce.number().int().min(0).max(5).optional(),
   priorityLevelLt: z.coerce.number().int().min(0).max(5).optional(),
   priorityLevelGt: z.coerce.number().int().min(0).max(5).optional(),
+  priorityLevelIn: z.array(z.number()).min(1, "Pas de tableau vide").optional(),
   progressEq: z.coerce.number().int().min(0).max(100).optional(),
   progressLt: z.coerce.number().int().min(0).max(100).optional(),
   progessGt: z.coerce.number().int().min(0).max(100).optional(),
   status: z.enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"]).optional(),
+  statusIn: z
+    .array(z.enum(["TODO", "IN_PROGRESS", "COMPLETED", "BLOCKED"]))
+    .optional(),
   startOn: z.coerce.date().optional(),
   endOn: z.coerce.date().optional(),
   startBefore: z.coerce.date().optional(),
@@ -198,8 +202,8 @@ export const searchTasksFilterSchema = z.object({
   completedOn: z.coerce.date().optional(),
   completedBefore: z.coerce.date().optional(),
   completedAfter: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  page: z.coerce.number().int().optional(),
+  pageSize: z.coerce.number().int().max(100).optional(),
   all: z
     .string()
     .transform((val) => {

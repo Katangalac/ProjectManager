@@ -11,7 +11,7 @@ import {
 } from "../utils/utils";
 import { Prisma } from "@prisma/client";
 import { NotificationsCollection } from "./Notification";
-import { getIO } from "../chat/chat.socket";
+import { getIO } from "../socket/socket";
 
 /**
  * Créer une nouvelle notification
@@ -19,7 +19,7 @@ import { getIO } from "../chat/chat.socket";
  * @returns {Notification} - la notification créée
  */
 export const sendNotification = async (
-  notificationData: CreateNotificationData
+  notificationData: CreateNotificationData,
 ): Promise<Notification> => {
   const newNotification = await db.notification.create({
     data: {
@@ -44,7 +44,7 @@ export const sendNotification = async (
  * @returns {NotificationsCollection} - la liste de notifications respectant le filtre de recherche
  */
 export const getNotifications = async (
-  filter: SearchNotificationsFilter
+  filter: SearchNotificationsFilter,
 ): Promise<NotificationsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -84,7 +84,7 @@ export const getNotifications = async (
  * @throws {NotificationNotFoundError} - lorsqu'aucune notification avec l'identifiant a été trouvée
  */
 export const getNotificationById = async (
-  id: string
+  id: string,
 ): Promise<Notification> => {
   const notification = await db.notification.findUnique({ where: { id } });
   if (!notification) throw new NotificationNotFoundError(id);
@@ -98,7 +98,7 @@ export const getNotificationById = async (
  * @throws {NotificationNotFoundError} - lorsqu'aucune notification avec l'identifiant a été trouvée
  */
 export const markNotificationAsRead = async (
-  id: string
+  id: string,
 ): Promise<Notification> => {
   try {
     const updatedNotification = await db.notification.update({

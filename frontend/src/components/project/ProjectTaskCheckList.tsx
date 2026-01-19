@@ -59,9 +59,9 @@ export default function ProjectTaskCheckList({
                 "[&::-webkit-scrollbar]:w-0"
               )}
             >
-              {tasks.map((task, index) => (
+              {tasks.map((task) => (
                 <div
-                  key={index}
+                  key={task.id}
                   className={clsx(
                     "flex h-fit w-full items-center gap-1 py-2",
                     "border-b border-dotted border-gray-400 last:border-b-0"
@@ -103,7 +103,7 @@ export default function ProjectTaskCheckList({
                     <div className={clsx("flex gap-4")}>
                       <span
                         className={clsx(
-                          "flex w-20 justify-end text-left text-[10px] text-wrap text-gray-600"
+                          "flex text-left text-[10px] text-wrap text-gray-600"
                         )}
                       >
                         {formatShortDateWithOptionalYear(

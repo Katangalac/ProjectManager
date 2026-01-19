@@ -2,6 +2,8 @@ import { Pagination } from "./Pagination";
 import { Project } from "./Project";
 import { Team } from "./Team";
 import { User } from "./User";
+import { searchTasksFilterSchema } from "@/schemas/task.schema";
+import { z } from "zod";
 
 /**
  * Type représentant une tache
@@ -90,25 +92,4 @@ export type UpdateTaskData = {
 /**
  * Type des données attendues comme paramètre de recherche des taches
  */
-export type SearchTasksFilter = {
-  page?: number | undefined;
-  pageSize?: number | undefined;
-  title?: string | undefined;
-  priorityLevelEq?: number | undefined;
-  priorityLevelLt?: number | undefined;
-  priorityLevelGt?: number | undefined;
-  progressEq?: number | undefined;
-  progressLt?: number | undefined;
-  progressGt?: number | undefined;
-  status?: TaskStatus | undefined;
-  startOn?: Date | undefined;
-  endOn?: Date | undefined;
-  startBefore?: Date | undefined;
-  endBefore?: Date | undefined;
-  startAfter?: Date | undefined;
-  endAfter?: Date | undefined;
-  completedOn?: Date | undefined;
-  completedBefore?: Date | undefined;
-  completedAfter?: Date | undefined;
-  all?: boolean | undefined;
-};
+export type SearchTasksFilter = z.infer<typeof searchTasksFilterSchema>;

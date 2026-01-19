@@ -1,20 +1,35 @@
-import { Task, TaskWithRelations } from "../types/Task";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { TaskWithRelations } from "../types/Task";
 import { Project } from "../types/Project";
 import { TASK_STATUS_META } from "../lib/constants/task";
 import { PROJECT_STATUS_META } from "../lib/constants/project";
+import { User } from "@/types/User";
+import { dateToLongString } from "./dateUtils";
 
 /**
  * Type reprédentant un évenement (Task,Project,...) du calendrier
  */
 export type Event = {
-  start: string;
-  end: string;
-  title: string;
-  resource: string | number;
+  start?: string | undefined;
+  end?: string | undefined;
+  title?: string | undefined;
+  description?: string;
+  resource?: string | number | (string | number)[] | undefined;
   color?: string;
   cssClass?: string;
   dataType?: string;
-  originalData?: Task | Project;
+  progress?: number;
+  status?:
+    | "COMPLETED"
+    | "ACTIVE"
+    | "BLOCKED"
+    | "TODO"
+    | "PAUSED"
+    | "IN_PROGRESS"
+    | "PLANNING";
+  completedAt?: string | undefined;
+  assignedTo?: { user: User }[];
+  original?: TaskWithRelations | Project | any;
 };
 
 /**
@@ -24,8 +39,11 @@ export type Resource = {
   id: string | number;
   name: string;
   color: string;
+  description?: string;
   children?: Resource[];
   cssClass?: string;
+  assignedTo?: { user: User }[];
+  original?: any;
 };
 
 /**
@@ -39,10 +57,18 @@ export function taskToEvent(task: TaskWithRelations): Event {
     start: new Date(task.startedAt).toISOString().split("T")[0],
     end: new Date(task.deadline).toISOString().split("T")[0],
     resource: task.id,
+    description: task.description,
+    progress: task.progress,
     color: TASK_STATUS_META[task.status].hexColor,
-    cssClass: "text-center",
+    cssClass: "text-left",
     dataType: "Task",
-    originalData: task,
+    status: task.status,
+    completedAt:
+      task.completedAt !== null
+        ? dateToLongString(new Date(task.completedAt))
+        : undefined,
+    assignedTo: task.assignedTo,
+    original: task,
   };
 }
 
@@ -57,10 +83,17 @@ export function projectToEvent(project: Project): Event {
     start: new Date(project.startedAt).toISOString().split("T")[0],
     end: new Date(project.deadline).toISOString().split("T")[0],
     resource: project.id,
+    description: project.description,
+    progress: project.progress,
     color: PROJECT_STATUS_META[project.status].hexColor,
-    cssClass: "text-center",
+    cssClass: "text-left",
     dataType: "Project",
-    originalData: project,
+    status: project.status,
+    completedAt:
+      project.completedAt !== null
+        ? dateToLongString(new Date(project.completedAt))
+        : undefined,
+    original: project,
   };
 }
 
@@ -84,6 +117,7 @@ export function mapProjectsAndTasksToResources(
     id: 0,
     color: "#D1D5DB",
     name: "Isolated Tasks",
+    description: "Tasks without project",
     children: [],
     cssClass: "text-left resource-project",
   };
@@ -93,7 +127,8 @@ export function mapProjectsAndTasksToResources(
   for (const p of projects) {
     const res: Resource = {
       id: p.id,
-      name: "Project : " + p.title,
+      name: p.title,
+      description: p.description,
       color: PROJECT_STATUS_META[p.status].hexColor,
       children: [],
       cssClass: "text-left resource-project",
@@ -106,9 +141,12 @@ export function mapProjectsAndTasksToResources(
   for (const t of tasks) {
     const taskRes: Resource = {
       id: t.id,
-      name: "- " + t.title,
+      name: t.title,
+      description: t.description,
       color: TASK_STATUS_META[t.status].hexColor,
-      cssClass: "text-left ml-2",
+      cssClass: "text-left",
+      original: t,
+      assignedTo: t.assignedTo,
     };
 
     if (t.projectId && projectMap[t.projectId]) {

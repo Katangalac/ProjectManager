@@ -31,7 +31,7 @@ import { UsersCollection } from "../user/User";
 import { TasksCollection } from "../task/Task";
 import { ConversationsCollection } from "../conversation/Conversation";
 import { addNotificationToQueue } from "../notification/notification.queue";
-import { getIO } from "../chat/chat.socket";
+import { getIO } from "../socket/socket";
 
 /**
  * Crée une nouvelle équipe de travail
@@ -53,7 +53,7 @@ export const createTeam = async (teamData: CreateTeamData): Promise<Team> => {
  * @returns {TeamsCollection} - la liste d'équipes créées dans le système
  */
 export const getTeams = async (
-  filter: SearchTeamsFilter
+  filter: SearchTeamsFilter,
 ): Promise<TeamsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -127,7 +127,7 @@ export const getTeamById = async (id: string): Promise<Team> => {
  */
 export const getUserTeamRole = async (
   teamId: string,
-  userId: string
+  userId: string,
 ): Promise<string> => {
   const userTeam = await db.userTeam.findUnique({
     where: { pk_user_team: { userId, teamId } },
@@ -146,7 +146,7 @@ export const getUserTeamRole = async (
  */
 export const updateTeam = async (
   id: string,
-  teamData: UpdateTeamData
+  teamData: UpdateTeamData,
 ): Promise<Team> => {
   try {
     const updatedTeam = await db.team.update({
@@ -187,7 +187,7 @@ export const deleteTeam = async (id: string) => {
 export const addUserToTeam = async (
   userId: string,
   teamId: string,
-  userRole: string = ""
+  userRole: string = "",
 ): Promise<UserTeam> => {
   try {
     const userTeamPair = await db.userTeam.create({
@@ -202,7 +202,7 @@ export const addUserToTeam = async (
       addNotificationToQueue(
         userTeamPair.userId,
         `NEW_TEAM-${userTeamPair.teamId}`,
-        "you’ve been added to a team."
+        "you’ve been added to a team.",
       );
     } catch (err: any) {
       console.error("Erreur lors de l'ajout de la notification", err);
@@ -240,7 +240,7 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
       await addNotificationToQueue(
         userId,
         `REMOVE_FROM_TEAM-${teamId}`,
-        "You've been removed from a team"
+        "You've been removed from a team",
       );
     } catch (err: any) {
       console.error("Erreur lors de l'ajout de la notification", err);
@@ -269,7 +269,7 @@ export const removeUserFromTeam = async (userId: string, teamId: string) => {
 export const updateUserRoleInTeam = async (
   userId: string,
   teamId: string,
-  userRole: string
+  userRole: string,
 ): Promise<UserTeam> => {
   try {
     const updatedUserTeamPair = await db.userTeam.update({
@@ -283,7 +283,7 @@ export const updateUserRoleInTeam = async (
       await addNotificationToQueue(
         userId,
         `NEW_TEAM_ROLE-${teamId}`,
-        "Your team role has been changed."
+        "Your team role has been changed.",
       );
     } catch (err: any) {
       console.log("Erreur lors de l'ajoue de la notification", err);
@@ -305,7 +305,7 @@ export const updateUserRoleInTeam = async (
  */
 export const getTeamMembers = async (
   teamId: string,
-  filter: SearchUsersFilter
+  filter: SearchUsersFilter,
 ): Promise<UsersCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const teamMemberCondition: Prisma.UserWhereInput = {
@@ -358,7 +358,7 @@ export const getTeamMembers = async (
  */
 export const getTeamProjects = async (
   teamId: string,
-  filter: SearchProjectsFilter
+  filter: SearchProjectsFilter,
 ): Promise<ProjectsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const teamProjectCondition: Prisma.ProjectWhereInput = {
@@ -410,7 +410,7 @@ export const getTeamProjects = async (
  */
 export const getTeamTasks = async (
   teamId: string,
-  filter: SearchTasksFilter
+  filter: SearchTasksFilter,
 ): Promise<TasksCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -468,7 +468,7 @@ export const getTeamTasks = async (
  */
 export const getTeamConversations = async (
   teamId: string,
-  filter: SearchConversationsFilter
+  filter: SearchConversationsFilter,
 ): Promise<ConversationsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const teamConversationCondition: Prisma.ConversationWhereInput = {

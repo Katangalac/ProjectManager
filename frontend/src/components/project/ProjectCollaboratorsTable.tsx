@@ -30,14 +30,16 @@ export default function ProjectCollaboratorsTable({
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-4 overflow-y-auto",
+        "flex h-full w-full flex-col gap-4",
         (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center pt-5",
         isError && "items-center"
       )}
     >
       {/* Sélecteur de mode */}
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
 
       {isError && <UserErrorMessage />}
       {data && (
@@ -57,7 +59,6 @@ export default function ProjectCollaboratorsTable({
               message="No collaborators yet"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </>

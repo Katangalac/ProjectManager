@@ -19,7 +19,7 @@ import {
 import { Prisma } from "@prisma/client";
 import { UsersCollection } from "../user/User";
 import { MessagesCollection } from "../message/Message";
-import { getIO } from "../chat/chat.socket";
+import { getIO } from "../socket/socket";
 
 /**
  * Crée une nouvelle conversation
@@ -29,7 +29,7 @@ import { getIO } from "../chat/chat.socket";
  * @throws {NotEnoughParticipantsInConversationError} - lorsqu'il n'y a pas assez des participants dans la conversation
  */
 export const createConversation = async (
-  conversationData: CreateConversationData
+  conversationData: CreateConversationData,
 ): Promise<Conversation> => {
   const { participantIds, teamId, ...conversationInfo } = conversationData;
   let finalParticipantIds = [...participantIds];
@@ -42,7 +42,7 @@ export const createConversation = async (
     });
     const teamMemberIds = teamMembers.users.map((user) => user.id);
     finalParticipantIds = Array.from(
-      new Set([...finalParticipantIds, ...teamMemberIds])
+      new Set([...finalParticipantIds, ...teamMemberIds]),
     );
   }
 
@@ -93,7 +93,7 @@ export const createConversation = async (
  * @throws {ConversationNotFoundError} - lorsqu'aucune conversation possedant l'identifiant a été trouvée
  */
 export const getConversationById = async (
-  id: string
+  id: string,
 ): Promise<Conversation> => {
   const conversation = await db.conversation.findUnique({
     where: { id },
@@ -151,7 +151,7 @@ export const updateConversation = async (id: string): Promise<Conversation> => {
  */
 export const getConversationParticipants = async (
   conversationId: string,
-  filter: SearchUsersFilter
+  filter: SearchUsersFilter,
 ): Promise<UsersCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const conversatioParticipantCondition: Prisma.UserWhereInput = {
@@ -205,7 +205,7 @@ export const getConversationParticipants = async (
  */
 export const getConversationMessages = async (
   conversationId: string,
-  filter: SearchMessagesFilter
+  filter: SearchMessagesFilter,
 ): Promise<MessagesCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -258,7 +258,7 @@ export const getConversationMessages = async (
  */
 export const addParticipantToConversation = async (
   conversationId: string,
-  userId: string
+  userId: string,
 ): Promise<UserConversation> => {
   try {
     const userConversationPair = await db.userConversation.create({

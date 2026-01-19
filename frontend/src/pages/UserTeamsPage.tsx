@@ -5,7 +5,6 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import TeamForm from "../components/team/TeamForm";
 import { useState } from "react";
 import { TEAMFORM_DEFAULT_VALUES } from "../lib/constants/team";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +14,8 @@ import {
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
 import PaginationWrapper from "@/components/commons/Pagination";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
+import { PlusIcon } from "lucide-react";
 
 /**
  * Affiche la liste des équipes d'un utilisateur
@@ -34,7 +35,9 @@ export default function UserTeamsPage() {
         "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
       )}
     >
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!isLoading && (
         <div className={clsx("flex h-full w-full flex-col gap-4")}>
           <div className="flex h-fit w-fit items-center gap-4">
@@ -78,7 +81,7 @@ export default function UserTeamsPage() {
                     message="No teams available!"
                     iconSize="size-15 stroke-1"
                     textStyle="text-lg text-gray-400 font-medium"
-                    className="h-80 w-80 rounded-full bg-sky-50"
+                    className="lg:h-80 lg:w-80"
                   />
                 )}
               </>
@@ -96,7 +99,15 @@ export default function UserTeamsPage() {
           )}
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
-            <DialogTitle className="text-lg text-white">New team</DialogTitle>
+            <DialogTitle className="text-lg text-white">
+              <div className="flex items-center gap-2">
+                <div className="relative h-fit w-fit">
+                  <UserGroupIcon className="size-6 stroke-2" />
+                  <PlusIcon className="absolute -top-2 -right-1 size-3 stroke-3" />
+                </div>
+                New Team
+              </div>
+            </DialogTitle>
           </DialogHeader>
           <div
             className={clsx(

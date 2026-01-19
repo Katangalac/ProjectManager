@@ -18,7 +18,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         )}
       >
         <div className={clsx("absolute top-10 left-10 flex items-center")}>
-          <AppLogo showText={true} />
+          <AppLogo
+            showText={true}
+            className={clsx("text-xl font-bold")}
+            iconSize={25}
+          />
         </div>
         {children}
       </div>

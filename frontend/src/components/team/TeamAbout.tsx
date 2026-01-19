@@ -122,7 +122,7 @@ export default function TeamAbout({ team }: TeamAboutProps) {
           </AccordionTrigger>
           <AccordionContent>
             <div className={clsx("flex w-full justify-start")}>
-              <p className="text-sm text-black">{team.description}</p>
+              <p className="text-sm text-gray-600">{team.description}</p>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -135,10 +135,10 @@ export default function TeamAbout({ team }: TeamAboutProps) {
             <div
               className={clsx("flex flex-col items-start justify-start gap-2")}
             >
-              <span className="text-sm text-black">
+              <span className="text-sm text-gray-600">
                 Created on {dateToLongString(new Date(team.createdAt))}
               </span>
-              <span className="text-sm text-black">
+              <span className="text-sm text-gray-600">
                 Last update on {dateToLongString(new Date(team.updatedAt))}
               </span>
             </div>

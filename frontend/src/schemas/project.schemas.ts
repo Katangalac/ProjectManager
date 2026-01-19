@@ -5,9 +5,9 @@ import { z } from "zod";
  * Schéma pour valider la structure de base d'un objet projet
  */
 export const projectSchema = z.object({
-  id: z.uuid("ID invalide"),
-  creatorId: z.uuid("ID invalide").nullable(),
-  title: z.string().max(100, "Titre trop long"),
+  id: z.uuid("Invalid ID"),
+  creatorId: z.uuid("Invalid ID").nullable(),
+  title: z.string().max(100, "Too long title"),
   description: z.string(),
   status: z.enum(PROJECT_STATUSES).default("PLANNING"),
   budgetPlanned: z.float64().default(0.0),
@@ -35,8 +35,8 @@ export const createProjectSchema = projectSchema.omit({
  * Schéma pour valider les données attendues lors de la modification d'un projet
  */
 export const updateProjectDataSchema = z.object({
-  creatorId: z.uuid("ID invalide").nullable().optional(),
-  title: z.string().max(100, "Titre trop long").optional(),
+  creatorId: z.uuid("Invalid ID").nullable().optional(),
+  title: z.string().max(100, "Too long title").optional(),
   description: z.string().optional(),
   status: z.enum(PROJECT_STATUSES).optional(),
   budgetPlanned: z.float64().optional(),
@@ -51,8 +51,12 @@ export const updateProjectDataSchema = z.object({
  * Schéma pour valider les données attendues comme filtre de recherche des projets
  */
 export const searchProjectsFilterSchema = z.object({
-  title: z.string().max(100, "Titre trop long").optional(),
+  title: z.string().max(100, "Too long title").optional(),
   status: z.enum(PROJECT_STATUSES).optional(),
+  statusIn: z
+    .array(z.enum(PROJECT_STATUSES))
+    .min(1, "Pas de tableau vide")
+    .optional(),
   progressEq: z.coerce.number().int().min(0).max(100).optional(),
   progressLt: z.coerce.number().int().min(0).max(100).optional(),
   progessGt: z.coerce.number().int().min(0).max(100).optional(),
@@ -65,8 +69,8 @@ export const searchProjectsFilterSchema = z.object({
   completedOn: z.coerce.date().optional(),
   completedBefore: z.coerce.date().optional(),
   completedAfter: z.coerce.date().optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  page: z.coerce.number().int().min(1).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
   all: z
     .string()
     .transform((val) => {

@@ -31,6 +31,7 @@ export default function ConversationMessages({
 
   const queryClient = useQueryClient();
 
+  //Ajoute le nouveau message entrant directement dans la liste des messages de la conversation
   const handleNewMessage = useCallback(
     (message: MessageWithRelation) => {
       if (message.conversationId !== conversationId) return;
@@ -51,7 +52,9 @@ export default function ConversationMessages({
 
   return (
     <div className={clsx("flex h-full w-full flex-1 flex-col")}>
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {isError && (
         <div>An error occcur while loading conversation messages</div>
       )}

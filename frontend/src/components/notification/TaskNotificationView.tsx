@@ -28,8 +28,10 @@ export default function TaskNotificationView({
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
 
   return (
-    <div>
-      {isLoading && <ProgressSpinner />}
+    <div className={clsx(isLoading && "py-5")}>
+      {isLoading && (
+        <ProgressSpinner className="h-15 sm:h-10" strokeWidth="4" />
+      )}
 
       {!isLoading && (
         <>

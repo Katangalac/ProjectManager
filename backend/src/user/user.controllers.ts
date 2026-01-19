@@ -37,8 +37,8 @@ export const getUsersController = async (req: Request, res: Response) => {
         successResponse(
           userCollection.users,
           "Utilisateurs récupérés",
-          userCollection.pagination
-        )
+          userCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error("Erreur lors de la récupération des utilisateurs", err);
@@ -52,8 +52,8 @@ export const getUsersController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des utilisateurs"
-        )
+          "Erreur lors de la récupération des utilisateurs",
+        ),
       );
   }
 };
@@ -82,7 +82,7 @@ export const getUserByIdController = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json(
-          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message)
+          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message),
         );
     }
 
@@ -91,8 +91,8 @@ export const getUserByIdController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération de l'utilisateur"
-        )
+          "Erreur lors de la récupération de l'utilisateur",
+        ),
       );
   }
 };
@@ -125,7 +125,7 @@ export const updateUserController = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json(
-          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message)
+          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message),
         );
     }
 
@@ -133,7 +133,7 @@ export const updateUserController = async (req: Request, res: Response) => {
       return res
         .status(409)
         .json(
-          errorResponse(err.code ? err.code : "EMAIL_CONFLICT", err.message)
+          errorResponse(err.code ? err.code : "EMAIL_CONFLICT", err.message),
         );
     }
 
@@ -141,7 +141,7 @@ export const updateUserController = async (req: Request, res: Response) => {
       return res
         .status(409)
         .json(
-          errorResponse(err.code ? err.code : "USERNAME_CONFLICT", err.message)
+          errorResponse(err.code ? err.code : "USERNAME_CONFLICT", err.message),
         );
     }
 
@@ -151,8 +151,8 @@ export const updateUserController = async (req: Request, res: Response) => {
         .json(
           errorResponse(
             err.code ? err.code : "PHONE_NUMBER_CONFLICT",
-            err.message
-          )
+            err.message,
+          ),
         );
     }
 
@@ -161,8 +161,8 @@ export const updateUserController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la mise à jour de l'utilisateur"
-        )
+          "Erreur lors de la mise à jour de l'utilisateur",
+        ),
       );
   }
 };
@@ -190,7 +190,7 @@ export const deleteUserController = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json(
-          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message)
+          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message),
         );
     }
 
@@ -199,8 +199,8 @@ export const deleteUserController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la suppression de l'utilisateur"
-        )
+          "Erreur lors de la suppression de l'utilisateur",
+        ),
       );
   }
 };
@@ -221,13 +221,13 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
         successResponse(
           teamCollection.teams,
           "Équipes de l'utilisateur récupérées",
-          teamCollection.pagination
-        )
+          teamCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des équipes de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -237,8 +237,8 @@ export const getUserTeamsController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des équipes de l'utilisateur"
-        )
+          "Erreur lors de la récupération des équipes de l'utilisateur",
+        ),
       );
   }
 };
@@ -258,7 +258,7 @@ export const getUserPeersController = async (req: Request, res: Response) => {
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des coéquipiers de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -268,8 +268,8 @@ export const getUserPeersController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des coéquipiers de l'utilisateur"
-        )
+          "Erreur lors de la récupération des coéquipiers de l'utilisateur",
+        ),
       );
   }
 };
@@ -281,7 +281,7 @@ export const getUserPeersController = async (req: Request, res: Response) => {
  */
 export const getUserProjectsController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
@@ -293,13 +293,13 @@ export const getUserProjectsController = async (
         successResponse(
           projectCollection.projects,
           "Projets de l'utilisateur récupérés",
-          projectCollection.pagination
-        )
+          projectCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des projets de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -309,8 +309,8 @@ export const getUserProjectsController = async (
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des projets de l'utilisateur"
-        )
+          "Erreur lors de la récupération des projets de l'utilisateur",
+        ),
       );
   }
 };
@@ -324,6 +324,7 @@ export const getUserTasksController = async (req: Request, res: Response) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
     const filter = searchTasksFilterSchema.parse(req.query);
+    console.log("==PARAMS==", req.query);
     const userTaskCollection = await userService.getUserTasks(id, filter);
     res
       .status(200)
@@ -331,13 +332,13 @@ export const getUserTasksController = async (req: Request, res: Response) => {
         successResponse(
           userTaskCollection.tasks,
           "Tâches de l'utilisateur récupérées",
-          userTaskCollection.pagination
-        )
+          userTaskCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des taches de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -347,8 +348,8 @@ export const getUserTasksController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des tâches de l'utilisateur"
-        )
+          "Erreur lors de la récupération des tâches de l'utilisateur",
+        ),
       );
   }
 };
@@ -360,14 +361,14 @@ export const getUserTasksController = async (req: Request, res: Response) => {
  */
 export const getUserNotificationsController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
     const filter = searchNotificationsFilterSchema.parse(req.query);
     const userNotificationCollection = await userService.getUserNotifications(
       id,
-      filter
+      filter,
     );
     res
       .status(200)
@@ -375,13 +376,13 @@ export const getUserNotificationsController = async (
         successResponse(
           userNotificationCollection.notifications,
           "Notifications de l'utilisateur récupérées",
-          userNotificationCollection.pagination
-        )
+          userNotificationCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des notifications de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -391,8 +392,8 @@ export const getUserNotificationsController = async (
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des notifications de l'utilisateur"
-        )
+          "Erreur lors de la récupération des notifications de l'utilisateur",
+        ),
       );
   }
 };
@@ -404,14 +405,14 @@ export const getUserNotificationsController = async (
  */
 export const getUserConversationsController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
     const filter = searchConversationsFilterSchema.parse(req.query);
     const userConversationCollection = await userService.getUserConversations(
       id,
-      filter
+      filter,
     );
     res
       .status(200)
@@ -419,13 +420,13 @@ export const getUserConversationsController = async (
         successResponse(
           userConversationCollection.conversations,
           "Conversations de l'utilisateur récupérées",
-          userConversationCollection.pagination
-        )
+          userConversationCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des conversations de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -435,8 +436,8 @@ export const getUserConversationsController = async (
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des conversations de l'utilisateur"
-        )
+          "Erreur lors de la récupération des conversations de l'utilisateur",
+        ),
       );
   }
 };
@@ -448,7 +449,7 @@ export const getUserConversationsController = async (
  */
 export const getUserMessagesController = async (
   req: Request,
-  res: Response
+  res: Response,
 ) => {
   try {
     const { id } = idParamSchema.parse({ id: getUserIdFromRequest(req) });
@@ -460,13 +461,13 @@ export const getUserMessagesController = async (
         successResponse(
           userMessageCollection.messages,
           "Messages de l'utilisateur récupérés",
-          userMessageCollection.pagination
-        )
+          userMessageCollection.pagination,
+        ),
       );
   } catch (err) {
     console.error(
       "Erreur lors de la récupération des messages de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -476,8 +477,8 @@ export const getUserMessagesController = async (
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération des messages de l'utilisateur"
-        )
+          "Erreur lors de la récupération des messages de l'utilisateur",
+        ),
       );
   }
 };
@@ -495,7 +496,7 @@ export const getUserStatusController = async (req: Request, res: Response) => {
   } catch (err) {
     console.error(
       "Erreur lors de la récupération du status de l'utilisateur : ",
-      err
+      err,
     );
     if (err instanceof z.ZodError) {
       res.status(400).json(errorResponse("INVALID_REQUEST", err.message));
@@ -505,8 +506,8 @@ export const getUserStatusController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "Erreur lors de la récupération du status de l'utilisateur"
-        )
+          "Erreur lors de la récupération du status de l'utilisateur",
+        ),
       );
   }
 };

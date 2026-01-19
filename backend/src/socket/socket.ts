@@ -24,7 +24,7 @@ let io: Server;
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
-      origin: "https://projectmanager-wb93.onrender.com",
+      origin: "http://localhost:5173", //"https://projectmanager-wb93.onrender.com"
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -34,11 +34,11 @@ export const setupSocket = (server: http.Server) => {
     try {
       console.log("🟢 Client connecté:", socket.id);
       const rawcookies = socket.request.headers?.cookie;
-      if (!rawcookies) {
-        console.log("No cookie found in socket handshake");
-        return;
-      }
-      const cookies = cookie.parse(rawcookies || "");
+      // if (!rawcookies) {
+      //   console.log("No cookie found in socket handshake");
+      //   return;
+      // }
+      const cookies = cookie.parse(rawcookies ?? "");
       const token = cookies["projectFlowToken"];
 
       if (!token) {
@@ -91,7 +91,7 @@ export const setupSocket = (server: http.Server) => {
       socket.on("join_conversation", (conversationId: string) => {
         socket.join(conversationId);
         console.log(
-          `🟢 User ${socket.userId} join the conversation ${conversationId}`
+          `🟢 User ${socket.userId} join the conversation ${conversationId}`,
         );
       });
 
@@ -156,7 +156,7 @@ export const setupSocket = (server: http.Server) => {
        */
       socket.on("disconnect", async () => {
         console.log(
-          `❌ User disconnected: ${socket.userId} (socket: ${socket.id})`
+          `❌ User disconnected: ${socket.userId} (socket: ${socket.id})`,
         );
 
         // Retirer cette socket

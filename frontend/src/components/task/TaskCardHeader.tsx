@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import { cn } from "@/lib/utils";
 import TaskActionMenu from "./TaskActionMenu";
 import { TaskWithRelations } from "../../types/Task";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
@@ -7,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 type TaskCardHeaderProps = {
   task: TaskWithRelations;
   flipped: boolean;
+  className?: string;
   onArrowButtonClick: () => void;
 };
 
@@ -17,10 +19,14 @@ export default function TaskCardHeader({
   task,
   onArrowButtonClick,
   flipped,
+  className,
 }: TaskCardHeaderProps) {
   return (
     <div
-      className={clsx("flex w-full flex-col items-start justify-center gap-2")}
+      className={cn(
+        "flex w-full flex-col items-start justify-center gap-2",
+        className
+      )}
     >
       <div className="flex w-full items-center justify-between gap-3">
         <span

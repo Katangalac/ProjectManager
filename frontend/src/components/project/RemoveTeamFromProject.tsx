@@ -17,6 +17,7 @@ import {
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import { showError, showSuccess } from "@/utils/toastService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * * Propriétés du RemoveTeamFromProjectForm
@@ -37,6 +38,7 @@ export default function RemoveTeamFromProjectForm({
   project,
   onSuccess,
 }: RemoveTeamFromProjectFormProps) {
+  const queryClient = useQueryClient();
   const {
     data: projectTeams,
     isLoading: projectTeamsLoading,
@@ -50,7 +52,8 @@ export default function RemoveTeamFromProjectForm({
 
   const { removeTeamFromProject } = useRemoveTeam({
     onSuccess: () => {
-      showSuccess("Team removed from project successfully!");
+      queryClient.invalidateQueries({ queryKey: ["projectTeams", project.id] });
+      showSuccess("Team removed from project successfully!", 5000);
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
@@ -76,8 +79,15 @@ export default function RemoveTeamFromProjectForm({
   };
 
   return (
-    <div className={clsx("mr-5 ml-1")}>
-      {projectTeamsLoading && <ProgressSpinner />}
+    <div
+      className={clsx(
+        "mr-5 ml-1",
+        projectTeamsLoading && "flex flex-col items-center justify-center gap-4"
+      )}
+    >
+      {projectTeamsLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!projectTeamsLoading && (
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}
@@ -167,7 +177,6 @@ export default function RemoveTeamFromProjectForm({
               message="No teams available!"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </form>

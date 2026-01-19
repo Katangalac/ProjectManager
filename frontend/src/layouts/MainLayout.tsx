@@ -33,7 +33,7 @@ export default function MainLayout() {
           )}
         >
           <Header />
-          <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-900">
+          <main className="h-full flex-1 overflow-y-auto bg-white dark:bg-gray-900">
             <Outlet />
           </main>
         </div>

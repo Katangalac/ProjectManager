@@ -62,6 +62,10 @@ export const searchProjectsFilterSchema = z.object({
   endBefore: z.coerce.date().optional(),
   startAfter: z.coerce.date().optional(),
   endAfter: z.coerce.date().optional(),
+  statusIn: z
+    .array(z.enum(ProjectStatus))
+    .min(1, "Pas de tableau vide")
+    .optional(),
   completedOn: z.coerce.date().optional(),
   completedBefore: z.coerce.date().optional(),
   completedAfter: z.coerce.date().optional(),

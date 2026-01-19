@@ -112,7 +112,7 @@ export default function InviteUser({
             const value = e.target.value;
             setQuery(
               value.trim() === ""
-                ? { all: false } // aucune recherche
+                ? { all: false, page: 1, pageSize: 5 }
                 : {
                     userName: value,
                     firstName: value,

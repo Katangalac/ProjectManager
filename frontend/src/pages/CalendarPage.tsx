@@ -51,7 +51,9 @@ export default function CalendarPage() {
         "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
       )}
     >
-      {(projectsLoading || tasksLoading) && <ProgressSpinner />}
+      {(projectsLoading || tasksLoading) && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!(projectsLoading || tasksLoading) && (
         <div className={clsx("flex h-full w-full flex-col gap-4")}>
           <div className={clsx("w-fit")}>

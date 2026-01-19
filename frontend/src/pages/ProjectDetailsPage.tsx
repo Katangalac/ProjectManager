@@ -39,10 +39,16 @@ export default function ProjectDetailsPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, isError } = useProjectById(projectId!);
+  const isOverdue =
+    data &&
+    data.data.status !== "COMPLETED" &&
+    new Date(data.data.deadline) < new Date();
   return (
     <div className={clsx("h-full w-full")}>
       {isLoading ? (
-        <ProgressSpinner />
+        <div className="flex h-full w-full items-center justify-center">
+          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+        </div>
       ) : (
         <div>
           {isError && <div>An error occur while loading the project</div>}
@@ -128,6 +134,19 @@ export default function ProjectDetailsPage() {
                       {timeAgo(new Date(data.data.updatedAt), true)}
                     </span>
                   </div>
+                  {isOverdue && (
+                    <div className="flex items-center justify-end">
+                      <span
+                        className={clsx(
+                          "px-2 py-1",
+                          "rounded-sm border border-gray-300 bg-red-100",
+                          "text-xs font-medium text-red-600"
+                        )}
+                      >
+                        Overdue!
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               <Tabs value={tab} onValueChange={setTab} className="gap-0">
@@ -214,6 +233,7 @@ export default function ProjectDetailsPage() {
                     </span>
                   </TabsTrigger>
                 </TabsList>
+
                 <div>
                   <TabsContent value="overview" className={clsx("h-full px-5")}>
                     <ProjectOverview
@@ -226,15 +246,24 @@ export default function ProjectDetailsPage() {
                     />
                   </TabsContent>
 
-                  <TabsContent value="teams" className={clsx("h-full px-5")}>
+                  <TabsContent
+                    value="teams"
+                    className={clsx("flex h-full items-start px-5")}
+                  >
                     <ProjectTeamsView projectId={projectId!} />
                   </TabsContent>
 
-                  <TabsContent value="tasks" className={clsx("px-5")}>
+                  <TabsContent
+                    value="tasks"
+                    className={clsx("flex h-full items-start px-5")}
+                  >
                     <ProjectTasksView projectId={projectId!} />
                   </TabsContent>
 
-                  <TabsContent value="collaborators" className={clsx("px-5")}>
+                  <TabsContent
+                    value="collaborators"
+                    className={clsx("flex h-full items-start px-5")}
+                  >
                     <ProjectCollaboratorsTable projectId={projectId!} />
                   </TabsContent>
 

@@ -58,10 +58,23 @@ export const searchTasksFilterSchema = z.object({
   priorityLevelEq: z.coerce.number().int().min(0).max(5).optional(),
   priorityLevelLt: z.coerce.number().int().min(0).max(5).optional(),
   priorityLevelGt: z.coerce.number().int().min(0).max(5).optional(),
+  priorityLevelIn: z.preprocess((val) => {
+    if (typeof val === "string") return [Number(val)];
+    if (Array.isArray(val)) return val.map(Number);
+    return undefined;
+  }, z.array(z.number()).optional()),
   progressEq: z.coerce.number().int().min(0).max(100).optional(),
   progressLt: z.coerce.number().int().min(0).max(100).optional(),
   progessGt: z.coerce.number().int().min(0).max(100).optional(),
   status: z.enum(TaskStatus).optional(),
+  statusIn: z.preprocess(
+    (val) => {
+      if (typeof val === "string") return [val]; // un seul status
+      if (Array.isArray(val)) return val; // tableau
+      return undefined;
+    },
+    z.array(z.enum(TaskStatus)).optional(),
+  ),
   startOn: z.coerce.date().optional(),
   endOn: z.coerce.date().optional(),
   startBefore: z.coerce.date().optional(),
