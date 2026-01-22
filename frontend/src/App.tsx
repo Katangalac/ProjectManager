@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { MessageWithRelation } from "./types/Message.ts";
 import { Notification } from "./types/Notification.ts";
 import { socket } from "./lib/socket/socketClient.ts";
+import {showInfo} from "@/utils/toastService";
 
 /**
  * Point d'entrée de l'application
@@ -59,15 +60,15 @@ function App() {
     }
   }, [isSuccess, isError, data, logout, setUser]);
 
-  //Evenements socket global
+  //Evénements socket global
   useSocket<MessageWithRelation>("new_message", (data) => {
     if (user && data.senderId !== user.id) {
-      toast.info(data.content);
+        if(data.content) showInfo(data.content);
     }
   });
 
   useSocket<Notification>("new_notification", (data) =>
-    toast.info(data.message)
+    showInfo(data.message)
   );
 
   useSocket<string>("new_conversation", (data) =>
