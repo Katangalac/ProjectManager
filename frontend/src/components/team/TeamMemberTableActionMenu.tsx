@@ -2,13 +2,17 @@ import { Menu } from "primereact/menu";
 import { useRef } from "react";
 import { clsx } from "clsx";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import { PencilSimpleLineIcon } from "@phosphor-icons/react";
+import {
+  PencilSimpleLineIcon,
+  UserCircleMinusIcon,
+} from "@phosphor-icons/react";
 import { TeamWithRelations } from "../../types/Team";
 import { MenuItem } from "primereact/menuitem";
 import { useUserStore } from "../../stores/userStore";
 import { useState, ReactNode } from "react";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -17,6 +21,9 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { User } from "@/types/User";
 import UpdateTeamMemberRoleForm from "./UpdateTeamMemberRole";
 import { useUserTeamRole } from "@/hooks/queries/team/useUserTeamRole";
+import { useRemoveMember } from "@/hooks/mutations/team/useRemoveMember";
+import { UserRoundMinus, UserRoundPen, ShieldAlert } from "lucide-react";
+import { showSuccess, showError } from "@/utils/toastService";
 
 type TeamMemberActionMenuProps = {
   team: TeamWithRelations;
@@ -36,14 +43,21 @@ export default function TeamMemberTableActionMenu({
 }: TeamMemberActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
+    null
+  );
   const [dialogTitle, setDialogTitle] = useState("");
-  //   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
+  const [dialogStyle, setDialogStyle] = useState<string | null>(null);
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
     null
   );
   const roles = ["Leader", "Manager"];
   const { user } = useUserStore();
   const { data: userRole } = useUserTeamRole(team.id, user!.id);
+  const { removeMemberToTeam } = useRemoveMember({
+    onSuccess: () => showSuccess("Memeber removed successfully!"),
+    onError: () => showError("An error occur while romoving the member!"),
+  });
 
   const menu = useRef<Menu>(null);
 
@@ -65,7 +79,8 @@ export default function TeamMemberTableActionMenu({
             "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             if (user && userRole && roles.includes(userRole.data)) {
-              setDialogTitle("Edit team");
+              setDialogTitleIcon(<UserRoundPen />);
+              setDialogTitle("Edit this member role");
               setDialogContent(
                 <UpdateTeamMemberRoleForm
                   team={team}
@@ -76,6 +91,85 @@ export default function TeamMemberTableActionMenu({
               );
               setShowDialog(true);
             } else {
+              setDialogTitleIcon(<ShieldAlert />);
+              setDialogTitle("Alert!");
+              setDialogContent(
+                <div>
+                  You don’t have the required role to perform this action.
+                </div>
+              );
+              setDialogHeaderStyle("bg-red-500");
+              setShowDialog(true);
+            }
+          },
+        },
+        {
+          label: "Remove this member",
+          icon: (
+            <UserCircleMinusIcon
+              weight="regular"
+              className={clsx("stroke-1.5 mr-1 size-4")}
+            />
+          ),
+          className:
+            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          command: () => {
+            if (user && userRole && roles.includes(userRole.data)) {
+              setDialogHeaderStyle("bg-transparent px-0 py-0");
+              setDialogStyle("w-fit px-5");
+              setDialogTitle("");
+              setDialogContent(
+                <div
+                  className={clsx(
+                    "flex w-full flex-col items-center justify-start"
+                  )}
+                >
+                  <span className={clsx("mb-4 rounded-md bg-red-200 p-2")}>
+                    <UserRoundMinus
+                      size={30}
+                      className={clsx("text-red-700")}
+                    />
+                  </span>
+                  <span className={clsx("text-lg font-medium text-black")}>
+                    Remove this member?
+                  </span>
+                  <span className={clsx("text-sm font-medium text-gray-500")}>
+                    Are you sure you want to remove this member?
+                  </span>
+                  <div
+                    className={clsx(
+                      "flex w-full items-center justify-center gap-5 p-5"
+                    )}
+                  >
+                    <DialogClose>
+                      <button
+                        className={clsx(
+                          "rounded-md border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                        )}
+                      >
+                        No,cancel
+                      </button>
+                    </DialogClose>
+                    <button
+                      className={
+                        "rounded-md border border-red-700 bg-red-700 px-5 py-2 text-sm font-medium text-white hover:bg-red-800"
+                      }
+                      onClick={async () => {
+                        await removeMemberToTeam({
+                          teamId: team.id,
+                          memberId: member.id,
+                        });
+                        setShowDialog(false);
+                      }}
+                    >
+                      Yes, i'm sure
+                    </button>
+                  </div>
+                </div>
+              );
+              setShowDialog(true);
+            } else {
+              setDialogTitleIcon(<ShieldAlert />);
               setDialogTitle("Alert!");
               setDialogContent(
                 <div>
@@ -129,7 +223,8 @@ export default function TeamMemberTableActionMenu({
           className={clsx(
             "max-w-[500px] p-0",
             "[&>button]:text-white",
-            "[&>button]:hover:text-white"
+            "[&>button]:hover:text-white",
+            dialogStyle
           )}
         >
           <DialogHeader
@@ -139,7 +234,10 @@ export default function TeamMemberTableActionMenu({
             )}
           >
             <DialogTitle className="text-lg text-white">
-              {dialogTitle}
+              <span className="flex items-center gap-2">
+                {dialogTitleIcon}
+                {dialogTitle}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

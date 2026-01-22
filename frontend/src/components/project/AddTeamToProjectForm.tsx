@@ -18,6 +18,7 @@ import {
 import NoItems from "../commons/NoItems";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import { showError, showSuccess } from "@/utils/toastService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * * Propriétés du AddTeamToProjectForm
@@ -38,6 +39,7 @@ export default function AddTeamToProjectForm({
   project,
   onSuccess,
 }: AddTeamToProjectFormProps) {
+  const queryClient = useQueryClient();
   const {
     data: teams,
     isLoading: teamLoading,
@@ -52,7 +54,8 @@ export default function AddTeamToProjectForm({
 
   const { addTeamToProject } = useAddTeam({
     onSuccess: () => {
-      showSuccess("Team added to project successfully!");
+      queryClient.invalidateQueries({ queryKey: ["projectTeams", project.id] });
+      showSuccess("Team added to project successfully!", 5000);
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
@@ -86,9 +89,17 @@ export default function AddTeamToProjectForm({
   };
 
   return (
-    <div className={clsx("mr-5 ml-1")}>
-      {(projectTeamsLoading || teamLoading) && <ProgressSpinner />}
-      {!(projectTeamsLoading && teamLoading) && (
+    <div
+      className={clsx(
+        "mr-5 ml-1",
+        (projectTeamsLoading || teamLoading) &&
+          "flex flex-col items-center justify-center gap-4"
+      )}
+    >
+      {(projectTeamsLoading || teamLoading) && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
+      {!(projectTeamsLoading || teamLoading) && (
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}
           className={clsx(
@@ -177,7 +188,6 @@ export default function AddTeamToProjectForm({
               message="No teams available!"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </form>

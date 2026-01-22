@@ -87,7 +87,11 @@ export default function TeamMembersTable({
           ></Column>
           <Column
             header="Firstname"
-            body={(teamUser) => teamUser.user.firstName || "Unkown"}
+            body={(teamUser) =>
+                teamUser.user.firstName && teamUser.user.firstName || (
+                <span className="text-gray-500 italic">"None"</span>
+              )
+            }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
               "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-medium text-gray-500",
@@ -100,9 +104,11 @@ export default function TeamMembersTable({
           <Column
             header="Lastname"
             body={(teamUser) =>
-              teamUser.user.lastName?.trim() !== ""
-                ? teamUser.user.lastName
-                : "Unknown"
+                teamUser.user.lastName && teamUser.user.lastName?.trim() !== "" ? (
+                teamUser.user.lastName
+              ) : (
+                <span className="text-gray-500 italic">"None"</span>
+              )
             }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
@@ -115,9 +121,11 @@ export default function TeamMembersTable({
           <Column
             header="Profession"
             body={(teamUser) =>
-              teamUser.user.profession?.trim() !== ""
-                ? teamUser.user.profession
-                : "Unknown"
+                teamUser.user.profession && teamUser.user.profession?.trim() !== "" ? (
+                teamUser.user.profession
+              ) : (
+                <span className="text-gray-500 italic">"None"</span>
+              )
             }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(
@@ -130,9 +138,11 @@ export default function TeamMembersTable({
           <Column
             header="Rôle"
             body={(teamUser) =>
-              teamUser.userRole && teamUser.userRole.trim() !== ""
-                ? teamUser.userRole
-                : "Undefined"
+              teamUser.userRole && teamUser.userRole.trim() !== "" ? (
+                teamUser.userRole
+              ) : (
+                <span className="text-gray-500 italic">"Undefined"</span>
+              )
             }
             className={clsx("w-fit p-2 text-left text-xs")}
             headerClassName={clsx(

@@ -21,6 +21,7 @@ import {
 import { useUserStore } from "@/stores/userStore";
 import InviteUser from "../user/InviteUsers";
 import { useUserTeamRole } from "@/hooks/queries/team/useUserTeamRole";
+import { UserRoundPlus } from "lucide-react";
 
 /**
  * Propriétés du TeamMembersView
@@ -100,7 +101,10 @@ export default function TeamMembersView({ team }: TeamMembersViewProps) {
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
             <DialogTitle className="text-lg text-white">
-              Add member to "{team.name}"
+              <span className="flex items-center gap-2">
+                <UserRoundPlus />
+                Add member to "{team.name}"
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

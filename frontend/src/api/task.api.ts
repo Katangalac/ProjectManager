@@ -1,4 +1,4 @@
-import { axiosClient } from "../lib/axios/axiosClient";
+import { axiosClient } from "@/lib/axios/axiosClient";
 import axios from "axios";
 import {
   CreateTaskData,
@@ -16,10 +16,12 @@ import {
 export const createTask = async (taskData: CreateTaskData) => {
   try {
     const axiosResponse = await axiosClient.post("/tasks", taskData);
+    console.log("TASKS:", axiosResponse);
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message = error.response?.data?.message;
+      console.log("TASKS-ERR", message);
       throw new Error(message);
     }
     throw new Error("Erreur inconnue lors de la création de la tâche");

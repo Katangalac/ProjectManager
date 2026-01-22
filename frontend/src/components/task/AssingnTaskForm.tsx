@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TaskWithRelations } from "@/types/Task";
 import { useAssignTaskTask } from "@/hooks/mutations/task/useAssignTask";
 import { useUserPeers } from "@/hooks/queries/user/useUserPeers";
+import { useQueryClient } from "@tanstack/react-query";
 // import { useProjectCollaborators } from "@/hooks/queries/project/useProjectCollaborators";
 import { ProgressSpinner } from "primereact/progressspinner";
 import {
@@ -49,9 +50,20 @@ export default function AssignTaskForm({
   //     isLoading: projectCollaboratorsLoading,
   //     isError: projectCollaboratorsError,
   //   } = useProjectCollaborators(project.id, { all: true });
+  const queryClient = useQueryClient();
   const { assignTask } = useAssignTaskTask({
     onSuccess: () => {
-      showSuccess("Task assigned successfully!");
+      showSuccess("Task assigned successfully!", 5000);
+      if (task.projectId) {
+        queryClient.invalidateQueries({
+          queryKey: ["projectTasks", task.projectId],
+        });
+      }
+      if (task.teamId) {
+        queryClient.invalidateQueries({
+          queryKey: ["teamTasks", task.teamId],
+        });
+      }
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
@@ -91,8 +103,15 @@ export default function AssignTaskForm({
   };
 
   return (
-    <div className={clsx("mr-5 ml-1")}>
-      {peersLoading && <ProgressSpinner />}
+    <div
+      className={clsx(
+        "mr-5 ml-1",
+        peersLoading && "flex flex-col items-center justify-center gap-4"
+      )}
+    >
+      {peersLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!peersLoading && (
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}
@@ -182,7 +201,6 @@ export default function AssignTaskForm({
               message="No users available!"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </form>

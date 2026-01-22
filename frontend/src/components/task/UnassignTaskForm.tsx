@@ -14,6 +14,7 @@ import {
 import NoItems from "../commons/NoItems";
 import UserBasicInfo from "../profile/UserBasicInfo";
 import { showError, showSuccess } from "@/utils/toastService";
+import { useQueryClient } from "@tanstack/react-query";
 
 /**
  * * Propriétés du AssignTaskForm
@@ -34,9 +35,20 @@ export default function UnAssignTaskForm({
   task,
   onSuccess,
 }: UnAssignTaskFormProps) {
+  const queryClient = useQueryClient();
   const { unassignTask } = useUnassignTaskTask({
     onSuccess: () => {
       showSuccess("Task unassigned successfully!");
+      if (task.projectId) {
+        queryClient.invalidateQueries({
+          queryKey: ["projectTasks", task.projectId],
+        });
+      }
+      if (task.teamId) {
+        queryClient.invalidateQueries({
+          queryKey: ["teamTasks", task.teamId],
+        });
+      }
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
@@ -156,7 +168,6 @@ export default function UnAssignTaskForm({
               message="No users available!"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </form>

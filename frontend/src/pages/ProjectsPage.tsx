@@ -18,6 +18,9 @@ import ProjectCard from "@/components/project/ProjectCard";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
 import PaginationWrapper from "@/components/commons/Pagination";
+import { FolderPlus } from "lucide-react";
+import ProjectFilterButton from "@/components/project/ProjectFilterButton";
+import { SearchProjectsFilter } from "@/types/Project";
 
 /**
  * Affiche les projets de l'utilisateur
@@ -25,7 +28,14 @@ import PaginationWrapper from "@/components/commons/Pagination";
 export default function ProjectsPage() {
   const pageSize = 12;
   const [page, setPage] = useState(1);
-  const { data, isError, isLoading, refetch } = useProjects({ page, pageSize });
+  const [projectsFilter, setProjectsFilter] = useState<SearchProjectsFilter>(
+    {}
+  );
+  const { data, isError, isLoading, refetch } = useProjects({
+    ...projectsFilter,
+    page,
+    pageSize,
+  });
   const [showDialog, setShowDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const totalItems = data?.pagination?.totalItems || 0;
@@ -49,29 +59,36 @@ export default function ProjectsPage() {
         "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
       )}
     >
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!isLoading && (
         <div className={clsx("flex h-full w-full flex-col gap-4")}>
-          <div className="flex h-fit w-fit items-center gap-4">
-            <InlineSelector
-              value={viewMode}
-              options={viewModeOptions}
-              onChange={setViewMode}
+          <div className="flex w-full justify-between">
+            <div className="flex h-fit w-fit items-center gap-4">
+              <InlineSelector
+                value={viewMode}
+                options={viewModeOptions}
+                onChange={setViewMode}
+              />
+              <button
+                onClick={() => setShowDialog(true)}
+                className={clsx(
+                  "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-2",
+                  "focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                  "rounded-md border border-sky-600 bg-sky-500 hover:bg-sky-600",
+                  "text-xs font-medium text-white"
+                )}
+              >
+                <PlusIcon className={clsx("size-3 stroke-3")} />
+                Add New
+              </button>
+            </div>
+            <ProjectFilterButton
+              projectsFilter={projectsFilter}
+              setProjectsFilter={setProjectsFilter}
             />
-            <button
-              onClick={() => setShowDialog(true)}
-              className={clsx(
-                "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-2",
-                "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-                "rounded-md border border-sky-600 bg-sky-500 hover:bg-sky-600",
-                "text-xs font-medium text-white"
-              )}
-            >
-              <PlusIcon className={clsx("size-3 stroke-3")} />
-              Add New
-            </button>
           </div>
-
           <div
             className={clsx(
               "flex flex-1 flex-col justify-between gap-4",
@@ -92,7 +109,7 @@ export default function ProjectsPage() {
                     )}
                   >
                     {data.data.map((project, index) => (
-                      <ProjectCard key={index} project={project} />
+                      <ProjectCard key={project.id} project={project} showProgressBar={true}/>
                     ))}
                   </div>
                 )}
@@ -108,7 +125,7 @@ export default function ProjectsPage() {
                 message="No projects available!"
                 iconSize="size-15 stroke-1"
                 textStyle="text-lg text-gray-400 font-medium"
-                className="h-80 w-80 rounded-full bg-sky-50"
+                className="lg:h-80 lg:w-80"
               />
             )}
           </div>
@@ -125,7 +142,10 @@ export default function ProjectsPage() {
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
             <DialogTitle className="text-lg text-white">
-              New project
+              <span className="flex items-center gap-2">
+                <FolderPlus className="stroke-2" />
+                New project
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

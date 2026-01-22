@@ -11,17 +11,24 @@ import {
 import { dateToLongString } from "@/utils/dateUtils";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Progress } from "../ui/progress";
 /**
  * Propriétés du ProjectCard
  *
  *  - project: le projet à afficher sur la carte
+ *  - showProgressBar: montrer ou cacher la barre de progression
  */
 type ProjectCardProps = {
   project: Project;
+  showProgressBar?: boolean;
   className?: string;
 };
 
-export default function ProjectCard({ project, className }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  className,
+  showProgressBar = false,
+}: ProjectCardProps) {
   const navigate = useNavigate();
   const isOverdue =
     project.status !== "COMPLETED" && new Date(project.deadline) < new Date();
@@ -84,7 +91,7 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
           </span>
           <p
             className={clsx(
-              "h-20 overflow-x-auto text-left text-xs text-gray-600",
+              "h-20 max-h-20 overflow-x-auto text-left text-xs text-gray-600",
               "[&::-webkit-scrollbar]:w-0.5",
               "[&::-webkit-scrollbar-track]:bg-gray-300",
               "[&::-webkit-scrollbar-thumb]:bg-gray-400"
@@ -112,7 +119,7 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
             {project.status === "COMPLETED" && project.completedAt ? (
               <span
                 className={clsx(
-                  "flex items-center gap-1 text-left text-xs text-gray-600"
+                  "flex items-center gap-1 text-left text-xs text-green-600"
                 )}
               >
                 <CalendarCheckIcon
@@ -138,6 +145,12 @@ export default function ProjectCard({ project, className }: ProjectCardProps) {
               </span>
             )}
             <div className={clsx("flex w-full flex-col gap-1")}>
+              {showProgressBar && (
+                <Progress
+                  value={project.progress}
+                  className={clsx("h-1.5 [&>div]:bg-sky-500")}
+                />
+              )}
               <span
                 className={clsx("text-left text-xs font-medium text-black")}
               >

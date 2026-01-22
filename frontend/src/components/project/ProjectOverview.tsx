@@ -43,11 +43,19 @@ export default function ProjectOverview({
   } = useProjectCollaborators(project.id, { page: 1, pageSize: 10 });
 
   return (
-    <div className={clsx("flex h-full w-full items-center")}>
+    <div
+      className={clsx(
+        "flex h-full w-full items-center",
+        (projectTasksLoading ||
+          projectTeamsLoading ||
+          projectCollaboratorsLoading) &&
+          "justify-center pt-5"
+      )}
+    >
       {projectTasksLoading ||
       projectTeamsLoading ||
       projectCollaboratorsLoading ? (
-        <ProgressSpinner />
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
       ) : (
         <div className={clsx("flex h-full w-full flex-col justify-start")}>
           {projectTasksError && (

@@ -481,7 +481,7 @@ export default function ProjectForm({
                     ? "border-red-500"
                     : "border-gray-300"
                 )}
-                placeholder="Tap here..."
+                placeholder="Write here..."
               />
             )}
           />

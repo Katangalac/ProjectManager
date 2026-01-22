@@ -40,9 +40,16 @@ export default function TeamDetailsPage() {
   if (isError) return <div>An error occur while loading team</div>;
 
   return (
-    <div className={clsx("flex h-full items-start justify-start gap-5")}>
+    <div
+      className={clsx(
+        "flex h-full w-full items-start justify-start gap-5",
+        isLoading && "items-center justify-center"
+      )}
+    >
       {isLoading ? (
-        <ProgressSpinner />
+        <div className="flex h-full w-full items-center justify-center">
+          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+        </div>
       ) : (
         <>
           {data && (
@@ -162,22 +169,22 @@ export default function TeamDetailsPage() {
                 </TabsTrigger>
               </TabsList>
               <div className={clsx("h-full w-full")}>
-                <TabsContent value="projects" className={clsx("px-5")}>
+                <TabsContent value="projects" className={clsx("h-fit px-5")}>
                   <TeamProjectsView teamId={teamId!} />
                 </TabsContent>
-                <TabsContent value="tasks" className={clsx("px-5")}>
+                <TabsContent value="tasks" className={clsx("h-fit px-5")}>
                   <TeamTasksView teamId={teamId!} />
                 </TabsContent>
                 <TabsContent value="publications" className="m-0 h-full w-full">
                   <TeamConversationsView teamId={teamId!} />
                 </TabsContent>
-                <TabsContent value="members" className={clsx("px-5")}>
+                <TabsContent value="members" className={clsx("h-fit px-5")}>
                   <TeamMembersView team={data.data} />
                 </TabsContent>
-                <TabsContent value="invitations" className={clsx("px-5")}>
+                <TabsContent value="invitations" className={clsx("h-fit px-5")}>
                   <TeamInvitationsView teamId={teamId!} />
                 </TabsContent>
-                <TabsContent value="about" className={clsx("px-5")}>
+                <TabsContent value="about" className={clsx("h-fit px-5")}>
                   <TeamAbout team={data.data} />
                 </TabsContent>
               </div>

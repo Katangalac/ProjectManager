@@ -63,7 +63,11 @@ export default function TeamInvitationsTable({
           field="senderId"
           header="Sender"
           body={(rowData: InvitationWithRelations) =>
-            rowData.sender ? <UserBasicInfo user={rowData.sender} /> : '"None"'
+            rowData.sender ? (
+              <UserBasicInfo user={rowData.sender} />
+            ) : (
+              <span className="text-gray-500 italic">"None"</span>
+            )
           }
           className={clsx(
             "flex items-center justify-start truncate p-2 text-xs font-medium"
@@ -82,7 +86,7 @@ export default function TeamInvitationsTable({
             rowData.receiver ? (
               <UserBasicInfo user={rowData.receiver} />
             ) : (
-              '"None"'
+              <span className="text-gray-500 italic">"None"</span>
             )
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}

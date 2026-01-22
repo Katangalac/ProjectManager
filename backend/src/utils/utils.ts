@@ -28,13 +28,28 @@ export const getUserIdFromRequest = (req: Request): string | undefined => {
  * @returns l'objet passé en  paramètre sans les propriétés/champs qui étaient undefined
  */
 export const removeUndefined = <T extends Record<string, any>>(
-  obj: T
+  obj: T,
 ): {
   [K in keyof T as T[K] extends undefined ? never : K]: T[K];
 } => {
   return Object.fromEntries(
-    Object.entries(obj).filter(([_, v]) => v !== undefined)
+    Object.entries(obj).filter(([_, v]) => v !== undefined),
   ) as any;
+};
+
+/**
+ * Retourne le debut et la fin de la journée associée à une date
+ * @param {Date} date - la date dont on veut déterminer le début de l ajournée et la fin
+ * @returns le debut et la fin de la journée assoicée à la date
+ */
+export const getStartAndEndOfDay = (
+  date: Date,
+): { startOfDay: Date; endOfDay: Date } => {
+  const startOfDay = new Date(date);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(date);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+  return { startOfDay, endOfDay };
 };
 
 /**
@@ -43,7 +58,7 @@ export const removeUndefined = <T extends Record<string, any>>(
  * @return {Prisma.UserWhereInput } - le filtre construit
  */
 export const buildUserWhereInput = (
-  filter: SearchUsersFilter
+  filter: SearchUsersFilter,
 ): Prisma.UserWhereInput => {
   const where: Prisma.UserWhereInput = {};
   const OR: Prisma.UserWhereInput[] = [];
@@ -71,7 +86,7 @@ export const buildUserWhereInput = (
  * @return {Prisma.TeamWhereInput } - le filtre construit
  */
 export const buildTeamWhereInput = (
-  filter: SearchTeamsFilter
+  filter: SearchTeamsFilter,
 ): Prisma.TeamWhereInput => {
   const where: Prisma.TeamWhereInput = {};
   if (filter.name) where.name = { contains: filter.name, mode: "insensitive" };
@@ -84,7 +99,7 @@ export const buildTeamWhereInput = (
  * @return {Prisma.InvitationWhereInput } - le filtre construit
  */
 export const buildInvitationWhereInput = (
-  filter: SearchInvitationFilter
+  filter: SearchInvitationFilter,
 ): Prisma.InvitationWhereInput => {
   const where: Prisma.InvitationWhereInput = {};
   if (filter.senderId) where.senderId = filter.senderId;
@@ -100,33 +115,128 @@ export const buildInvitationWhereInput = (
  * @return {Prisma.ProjectWhereInput } - le filtre construit
  */
 export const buildProjectWhereInput = (
-  filter: SearchProjectsFilter
+  filter: SearchProjectsFilter,
 ): Prisma.ProjectWhereInput => {
   const where: Prisma.ProjectWhereInput = {};
-  if (filter.title)
-    where.title = { contains: filter.title, mode: "insensitive" };
+  const AND: Prisma.ProjectWhereInput[] = [];
 
-  if (filter.status) where.status = filter.status;
+  // ---------- title ----------
+  if (filter.title) {
+    AND.push({
+      title: { contains: filter.title, mode: "insensitive" },
+    });
+  }
 
-  if (filter.startOn) where.startedAt = { equals: new Date(filter.startOn) };
-  if (filter.startBefore)
-    where.startedAt = { lt: new Date(filter.startBefore) };
-  if (filter.startAfter) where.startedAt = { gt: new Date(filter.startAfter) };
+  if (filter.status) {
+    AND.push({ status: filter.status });
+  }
 
-  if (filter.endOn) where.deadline = { equals: new Date(filter.endOn) };
-  if (filter.endBefore) where.deadline = { lt: new Date(filter.endBefore) };
-  if (filter.endAfter) where.deadline = { gt: new Date(filter.endAfter) };
+  // ---------- startedAt ----------
+  const startedAtOR: Prisma.ProjectWhereInput[] = [];
+  if (filter.startOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.startOn),
+    );
+    startedAtOR.push({
+      startedAt: { gte: startOfDay, lte: endOfDay },
+    });
+  }
 
-  if (filter.completedOn)
-    where.completedAt = { equals: new Date(filter.completedOn) };
-  if (filter.completedBefore)
-    where.completedAt = { lt: new Date(filter.completedBefore) };
-  if (filter.completedAfter)
-    where.completedAt = { gt: new Date(filter.completedAfter) };
+  if (filter.startBefore) {
+    const { startOfDay } = getStartAndEndOfDay(new Date(filter.startBefore));
+    startedAtOR.push({
+      startedAt: { lt: startOfDay },
+    });
+  }
 
-  if (filter.progressEq) where.progress = { equals: filter.progressEq };
-  if (filter.progressLt) where.progress = { lt: filter.progressLt };
-  if (filter.progessGt) where.progress = { gt: filter.progessGt };
+  if (filter.startAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.startAfter));
+    startedAtOR.push({
+      startedAt: { gt: endOfDay },
+    });
+  }
+
+  if (startedAtOR.length) AND.push({ OR: startedAtOR });
+
+  // ---------- deadline ----------
+  const deadlineOR: Prisma.ProjectWhereInput[] = [];
+  if (filter.endOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.endOn),
+    );
+    deadlineOR.push({
+      deadline: { gte: startOfDay, lte: endOfDay },
+    });
+  }
+
+  if (filter.endBefore) {
+    const { startOfDay } = getStartAndEndOfDay(new Date(filter.endBefore));
+    deadlineOR.push({
+      deadline: { lt: startOfDay },
+    });
+  }
+
+  if (filter.endAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.endAfter));
+    deadlineOR.push({
+      deadline: { gt: endOfDay },
+    });
+  }
+
+  if (deadlineOR.length) AND.push({ OR: deadlineOR });
+
+  // ---------- completedAt ----------
+  const completedAtOR: Prisma.ProjectWhereInput[] = [];
+  if (filter.completedOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.completedOn),
+    );
+    completedAtOR.push({
+      completedAt: { gte: startOfDay, lte: endOfDay },
+    });
+  }
+
+  if (filter.completedBefore) {
+    const { startOfDay } = getStartAndEndOfDay(
+      new Date(filter.completedBefore),
+    );
+    completedAtOR.push({
+      completedAt: { lt: startOfDay },
+    });
+  }
+
+  if (filter.completedAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.completedAfter));
+    completedAtOR.push({
+      completedAt: { gt: endOfDay },
+    });
+  }
+
+  if (completedAtOR.length) AND.push({ OR: completedAtOR });
+
+  // ---------- progress ----------
+  const progressOR: Prisma.ProjectWhereInput[] = [];
+
+  if (filter.progressEq)
+    progressOR.push({
+      progress: { equals: filter.progressEq },
+    });
+
+  if (filter.progressLt)
+    progressOR.push({
+      progress: { lt: filter.progressLt },
+    });
+
+  if (filter.progessGt)
+    progressOR.push({
+      progress: { gt: filter.progessGt },
+    });
+
+  if (progressOR.length) AND.push({ OR: progressOR });
+
+  // ---------- final ----------
+  if (AND.length) where.AND = AND;
+
   return where;
 };
 
@@ -136,42 +246,153 @@ export const buildProjectWhereInput = (
  * @return {Prisma.TaskWhereInput } - le filtre construit
  */
 export const buildTaskWhereInput = (
-  filter: SearchTasksFilter
+  filter: SearchTasksFilter,
 ): Prisma.TaskWhereInput => {
-  const where: Prisma.TaskWhereInput = {};
+  const AND: Prisma.TaskWhereInput[] = [];
 
-  if (filter.title)
-    where.title = { contains: filter.title, mode: "insensitive" };
-  if (filter.status) where.status = filter.status;
+  // ---------- title ----------
+  if (filter.title) {
+    AND.push({
+      title: { contains: filter.title, mode: "insensitive" },
+    });
+  }
 
-  if (filter.startOn) where.startedAt = { equals: new Date(filter.startOn) };
-  if (filter.startBefore)
-    where.startedAt = { lt: new Date(filter.startBefore) };
-  if (filter.startAfter) where.startedAt = { gt: new Date(filter.startAfter) };
+  // ---------- status ----------
+  if (filter.statusIn?.length) {
+    AND.push({
+      status: { in: filter.statusIn },
+    });
+  } else if (filter.status) {
+    AND.push({
+      status: filter.status,
+    });
+  }
 
-  if (filter.endOn) where.deadline = { equals: new Date(filter.endOn) };
-  if (filter.endBefore) where.deadline = { lt: new Date(filter.endBefore) };
-  if (filter.endAfter) where.deadline = { gt: new Date(filter.endAfter) };
+  // ---------- startedAt ----------
+  const startedAtOR: Prisma.TaskWhereInput[] = [];
+  if (filter.startOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.startOn),
+    );
+    startedAtOR.push({
+      startedAt: { gte: startOfDay, lte: endOfDay },
+    });
+  }
 
-  if (filter.completedOn)
-    where.completedAt = { equals: new Date(filter.completedOn) };
-  if (filter.completedBefore)
-    where.completedAt = { lt: new Date(filter.completedBefore) };
-  if (filter.completedAfter)
-    where.completedAt = { gt: new Date(filter.completedAfter) };
+  if (filter.startBefore) {
+    const { startOfDay } = getStartAndEndOfDay(new Date(filter.startBefore));
+    startedAtOR.push({
+      startedAt: { lt: startOfDay },
+    });
+  }
 
+  if (filter.startAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.startAfter));
+    startedAtOR.push({
+      startedAt: { gt: endOfDay },
+    });
+  }
+
+  if (startedAtOR.length) AND.push({ OR: startedAtOR });
+
+  // ---------- deadline ----------
+  const deadlineOR: Prisma.TaskWhereInput[] = [];
+  if (filter.endOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.endOn),
+    );
+    deadlineOR.push({
+      deadline: { gte: startOfDay, lte: endOfDay },
+    });
+  }
+
+  if (filter.endBefore) {
+    const { startOfDay } = getStartAndEndOfDay(new Date(filter.endBefore));
+    deadlineOR.push({
+      deadline: { lt: startOfDay },
+    });
+  }
+
+  if (filter.endAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.endAfter));
+    deadlineOR.push({
+      deadline: { gt: endOfDay },
+    });
+  }
+
+  if (deadlineOR.length) AND.push({ OR: deadlineOR });
+
+  // ---------- completedAt ----------
+  const completedAtOR: Prisma.TaskWhereInput[] = [];
+  if (filter.completedOn) {
+    const { startOfDay, endOfDay } = getStartAndEndOfDay(
+      new Date(filter.completedOn),
+    );
+    completedAtOR.push({
+      completedAt: { gte: startOfDay, lte: endOfDay },
+    });
+  }
+
+  if (filter.completedBefore) {
+    const { startOfDay } = getStartAndEndOfDay(
+      new Date(filter.completedBefore),
+    );
+    completedAtOR.push({
+      completedAt: { lt: startOfDay },
+    });
+  }
+
+  if (filter.completedAfter) {
+    const { endOfDay } = getStartAndEndOfDay(new Date(filter.completedAfter));
+    completedAtOR.push({
+      completedAt: { gt: endOfDay },
+    });
+  }
+
+  if (completedAtOR.length) AND.push({ OR: completedAtOR });
+
+  // ---------- priorityLevel ----------
+  const priorityOR: Prisma.TaskWhereInput[] = [];
   if (filter.priorityLevelEq)
-    where.priorityLevel = { equals: filter.priorityLevelEq };
+    priorityOR.push({
+      priorityLevel: { equals: filter.priorityLevelEq },
+    });
   if (filter.priorityLevelLt)
-    where.priorityLevel = { lt: filter.priorityLevelLt };
+    priorityOR.push({
+      priorityLevel: { lt: filter.priorityLevelLt },
+    });
   if (filter.priorityLevelGt)
-    where.priorityLevel = { gt: filter.priorityLevelGt };
+    priorityOR.push({
+      priorityLevel: { gt: filter.priorityLevelGt },
+    });
 
-  if (filter.progressEq) where.progress = { equals: filter.progressEq };
-  if (filter.progressLt) where.progress = { lt: filter.progressLt };
-  if (filter.progessGt) where.progress = { gt: filter.progessGt };
+  if (priorityOR.length) AND.push({ OR: priorityOR });
 
-  return where;
+  if (filter.priorityLevelIn?.length) {
+    AND.push({
+      priorityLevel: { in: filter.priorityLevelIn },
+    });
+  }
+
+  // ---------- progress ----------
+  const progressOR: Prisma.TaskWhereInput[] = [];
+  if (filter.progressEq)
+    progressOR.push({
+      progress: { equals: filter.progressEq },
+    });
+  if (filter.progressLt)
+    progressOR.push({
+      progress: { lt: filter.progressLt },
+    });
+  if (filter.progessGt)
+    progressOR.push({
+      progress: { gt: filter.progessGt },
+    });
+
+  if (progressOR.length) AND.push({ OR: progressOR });
+
+  // ---------- final ----------
+  return AND.length ? { AND } : {};
 };
 
 /**
@@ -180,7 +401,7 @@ export const buildTaskWhereInput = (
  * @return {Prisma.NotificationWhereInput } - le filtre construit
  */
 export const buildNotificationWhereInput = (
-  filter: SearchNotificationsFilter
+  filter: SearchNotificationsFilter,
 ): Prisma.NotificationWhereInput => {
   const where: Prisma.NotificationWhereInput = {};
   if (filter.read !== undefined) where.read = filter.read;
@@ -193,7 +414,7 @@ export const buildNotificationWhereInput = (
  * @return {Prisma.MessageWhereInput } - le filtre construit
  */
 export const buildMessageWhereInput = (
-  filter: SearchMessagesFilter
+  filter: SearchMessagesFilter,
 ): Prisma.MessageWhereInput => {
   const where: Prisma.MessageWhereInput = {};
   if (filter.read !== undefined) where.read = filter.read;
@@ -206,7 +427,7 @@ export const buildMessageWhereInput = (
  * @return {Prisma.ConversationWhereInput } - le filtre construit
  */
 export const buildConversationWhereInput = (
-  filter: SearchConversationsFilter
+  filter: SearchConversationsFilter,
 ): Prisma.ConversationWhereInput => {
   const where: Prisma.ConversationWhereInput = {};
   if (filter.isGroup !== undefined) where.isGroup = filter.isGroup;
@@ -225,7 +446,7 @@ export const buildPaginationInfos = (
   all: boolean | undefined,
   page: number,
   pageSize: number,
-  totalItems: number
+  totalItems: number,
 ): Pagination => {
   const totalPages = all ? 1 : Math.ceil(totalItems / pageSize);
   const pagination: Pagination = {

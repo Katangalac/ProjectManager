@@ -110,18 +110,28 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
                       />
                     ))}
                     {tasks[currentIndex]?.assignedTo?.length === 0 && (
-                      <span className={clsx("text-left text-xs")}>None</span>
+                      <span className={clsx("text-left text-xs italic")}>"None"</span>
                     )}
                   </div>
                 </div>
 
                 <div className={clsx("flex flex-col gap-[0.5px]")}>
-                  <span className={clsx("text-left text-[10px] text-gray-600")}>
+                  {tasks[currentIndex]?.completedAt && tasks[currentIndex]?.status === "COMPLETED" ?
+                      (<>
+                        <span className={clsx("text-left text-[10px] text-gray-600")}>
+                    Completed on
+                  </span>
+                        <span className={clsx("text-left text-xs text-black")}>
+                    {dateToLongString(new Date(tasks[currentIndex]?.completedAt))}
+                  </span>
+                      </>):
+                      (<><span className={clsx("text-left text-[10px] text-gray-600")}>
                     Deadline
                   </span>
-                  <span className={clsx("text-left text-xs text-black")}>
+                    <span className={clsx("text-left text-xs text-black")}>
                     {dateToLongString(new Date(tasks[currentIndex]?.deadline))}
-                  </span>
+                  </span></>)
+                  }
                 </div>
               </div>
 

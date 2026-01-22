@@ -13,11 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
 import TaskForm from "../task/TaskForm";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
 import PaginationWrapper from "../commons/Pagination";
+import { ClipboardPlus, PlusIcon } from "lucide-react";
+import { SearchTasksFilter } from "@/types/Task";
+import TaskFilterButton from "../task/TaskFilterButton";
 
 type ProjectTasksViewProps = {
   projectId: string;
@@ -31,7 +33,9 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<"table" | "checklist">("table");
   const [showDialog, setShowDialog] = useState(false);
+  const [tasksFilter, setTasksFilter] = useState<SearchTasksFilter>({});
   const { data, isLoading, isError } = useProjectTasks(projectId, {
+    ...tasksFilter,
     page,
     pageSize,
   });
@@ -55,34 +59,41 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-4 overflow-y-auto pb-4",
+        "flex h-full w-full flex-col gap-4 pb-4",
         (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center",
-        isError && "items-center"
+          "items-center justify-center"
       )}
     >
       {/* Sélecteur de mode */}
-      <div className="flex w-full items-center justify-start gap-3">
-        <InlineSelector
-          value={viewMode}
-          options={viewModeOptions}
-          onChange={setViewMode}
+      <div className="flex w-full justify-between">
+        <div className="flex w-full items-center justify-start gap-3">
+          <InlineSelector
+            value={viewMode}
+            options={viewModeOptions}
+            onChange={setViewMode}
+          />
+          <button
+            onClick={() => setShowDialog(true)}
+            className={clsx(
+              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+              "focus:ring-2 focus:ring-sky-200 focus:outline-none",
+              "rounded-md bg-sky-500 hover:bg-sky-600",
+              "text-xs font-medium text-white"
+            )}
+          >
+            <PlusIcon className={clsx("size-3 stroke-3")} />
+            Add New
+          </button>
+        </div>
+        <TaskFilterButton
+          tasksFilter={tasksFilter}
+          setTasksFilter={setTasksFilter}
         />
-        <button
-          onClick={() => setShowDialog(true)}
-          className={clsx(
-            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
-            "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-            "rounded-md bg-sky-500 hover:bg-sky-600",
-            "text-xs font-medium text-white"
-          )}
-        >
-          <PlusIcon className={clsx("size-3 stroke-3")} />
-          Add New
-        </button>
       </div>
 
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
 
       {isError && <UserErrorMessage />}
       {data && (
@@ -108,7 +119,6 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
               message="No tasks available"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </>
@@ -123,7 +133,12 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
           )}
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
-            <DialogTitle className="text-lg text-white">New task</DialogTitle>
+            <DialogTitle className="text-lg text-white">
+              <div className="flex items-center gap-2">
+                <ClipboardPlus className="size-6 stroke-2" />
+                New Task
+              </div>
+            </DialogTitle>
           </DialogHeader>
           <div
             className={clsx(

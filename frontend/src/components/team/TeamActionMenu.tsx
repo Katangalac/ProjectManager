@@ -27,6 +27,7 @@ import InviteUser from "../user/InviteUsers";
 import { useUserTeamRole } from "@/hooks/queries/team/useUserTeamRole";
 import { useRemoveMember } from "@/hooks/mutations/team/useRemoveMember";
 import { showSuccess, showError } from "@/utils/toastService";
+import { UserRoundPlus, Pencil, ShieldAlert } from "lucide-react";
 
 /**
  * Propriétés du menu d'une équipe
@@ -52,10 +53,13 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
   });
   const { removeMemberToTeam } = useRemoveMember({
     onSuccess: () => showSuccess("Memeber removed successfully!"),
-    onError: () => showError("An error occur while romoving th member!"),
+    onError: () => showError("An error occur while romoving the member!"),
   });
   const menu = useRef<Menu>(null);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
+    null
+  );
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
@@ -81,6 +85,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
             "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             if (user && userRole && roles.includes(userRole.data)) {
+              setDialogTitleIcon(<Pencil />);
               setDialogTitle(`Edit team "${team.name}"`);
               setDialogContent(
                 <TeamForm
@@ -91,6 +96,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
               );
               setShowDialog(true);
             } else {
+              setDialogTitleIcon(<ShieldAlert />);
               setDialogTitle("Alert!");
               setDialogContent(
                 <div>
@@ -114,6 +120,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
             "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             if (user && userRole && roles.includes(userRole.data)) {
+              setDialogTitleIcon(<UserRoundPlus />);
               setDialogTitle(`Add member to "${team.name}"`);
               setDialogContent(
                 <InviteUser
@@ -124,6 +131,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
               );
               setShowDialog(true);
             } else {
+              setDialogTitleIcon(<ShieldAlert />);
               setDialogTitle("Alert!");
               setDialogContent(
                 <div>
@@ -227,7 +235,7 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
                     <TrashIcon
                       size={30}
                       weight="regular"
-                      className={clsx("text-red-700")}
+                      className={clsx("px-4 py-4 text-red-700")}
                     />
                   </span>
                   <span className={clsx("text-lg font-medium text-black")}>
@@ -267,13 +275,15 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
 
               setShowDialog(true);
             } else {
+              setDialogStyle("p-0");
+              setDialogTitleIcon(<ShieldAlert />);
               setDialogTitle("Alert!");
               setDialogContent(
                 <div>
                   You don’t have the required role to perform this action.
                 </div>
               );
-              setDialogHeaderStyle("bg-red-500");
+              setDialogHeaderStyle("bg-red-500 p");
               setShowDialog(true);
             }
           },
@@ -331,7 +341,10 @@ export default function TeamActionMenu({ team }: TeamActionMenuProps) {
             )}
           >
             <DialogTitle className="text-lg text-white">
-              {dialogTitle}
+              <span className="flex items-center gap-2">
+                {dialogTitleIcon}
+                {dialogTitle}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

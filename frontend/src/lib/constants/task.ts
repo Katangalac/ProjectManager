@@ -26,7 +26,11 @@ export type StatusMeta = {
   textColor: string;
   bgColor: string;
   borderColor: string;
-  icon: ComponentType<{ size?: number; weight?: IconWeightProps }>;
+  icon: ComponentType<{
+    size?: number;
+    weight?: IconWeightProps;
+    className?: string;
+  }>;
   hexColor: string;
 };
 
@@ -46,33 +50,33 @@ export const TASK_STATUSES: TaskStatus[] = [
 export const TASK_STATUS_META: Record<TaskStatus, StatusMeta> = {
   TODO: {
     label: "To-do",
-    textColor: "text-yellow-600",
+    textColor: "text-yellow-700",
     bgColor: "bg-yellow-100",
-    borderColor: "border-gray-300",
+    borderColor: "border-yellow-500",
     icon: CircleIcon,
     hexColor: "#FEF08A",
   },
   IN_PROGRESS: {
     label: "In progress",
-    textColor: "text-sky-500",
+    textColor: "text-sky-600",
     bgColor: "bg-sky-100",
-    borderColor: "border-gray-300",
+    borderColor: "border-sky-500",
     icon: CircleHalfIcon,
     hexColor: "#BFDBFE",
   },
   BLOCKED: {
     label: "Blocked",
-    textColor: "text-red-600",
+    textColor: "text-red-700",
     bgColor: "bg-red-200",
-    borderColor: "border-gray-300",
+    borderColor: "border-red-500",
     icon: LockIcon,
     hexColor: "#FEE2E2",
   },
   COMPLETED: {
     label: "Completed",
-    textColor: "text-green-600",
+    textColor: "text-green-700",
     bgColor: "bg-green-200",
-    borderColor: "border-gray-300",
+    borderColor: "border-green-500",
     icon: CheckCircleIcon,
     hexColor: "#A7F3D0",
   },

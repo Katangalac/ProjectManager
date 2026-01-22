@@ -97,7 +97,11 @@ export default function UsersTable({
         <Column
           field="firstName"
           header="FirstName"
-          body={(user: User) => user.firstName || '"None"'}
+          body={(user: User) =>
+            user.firstName || (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -110,7 +114,11 @@ export default function UsersTable({
         <Column
           field="lastName"
           header="LastName"
-          body={(user: User) => user.lastName || '"None"'}
+          body={(user: User) =>
+            user.lastName || (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -136,7 +144,11 @@ export default function UsersTable({
         <Column
           field="profession"
           header="Profession"
-          body={(user: User) => user.profession || '"None"'}
+          body={(user: User) =>
+            user.profession || (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -149,7 +161,11 @@ export default function UsersTable({
         <Column
           field="phoneNumber"
           header="Phone number"
-          body={(user: User) => user.phoneNumber || '"None"'}
+          body={(user: User) =>
+            user.phoneNumber || (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",

@@ -22,7 +22,9 @@ export default function NotificationsShortList() {
           "items-center justify-center"
       )}
     >
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="h-15 sm:h-10" strokeWidth="4" />
+      )}
       {!isLoading && (
         <>
           {isError && <UserErrorMessage onRetryButtonClick={refetch} />}

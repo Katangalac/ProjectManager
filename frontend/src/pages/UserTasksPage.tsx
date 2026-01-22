@@ -14,11 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../lib/constants/task";
 import TaskForm from "../components/task/TaskForm";
-import { ViewColumnsIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ViewColumnsIcon } from "@heroicons/react/24/outline";
 import { ProgressSpinner } from "primereact/progressspinner";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
 import PaginationWrapper from "@/components/commons/Pagination";
+import { ClipboardPlus, PlusIcon } from "lucide-react";
+import TaskFilterButton from "@/components/task/TaskFilterButton";
+import { SearchTasksFilter } from "@/types/Task";
 
 /**
  * Page d'affichage des tâches de l'utilisateur courant
@@ -47,8 +50,12 @@ export default function UserTasksPage() {
       icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
     },
   ];
-
-  const { data, isLoading, isError, refetch } = useTasks({ page, pageSize });
+  const [tasksFilter, setTasksFilter] = useState<SearchTasksFilter>({});
+  const { data, isLoading, isError, refetch } = useTasks({
+    ...tasksFilter,
+    page,
+    pageSize,
+  });
   const totalItems = data?.pagination?.totalItems || 0;
   const totalPages =
     data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
@@ -60,28 +67,36 @@ export default function UserTasksPage() {
         "flex h-full flex-col items-center justify-center gap-2 p-5"
       )}
     >
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!isLoading && (
         <div className="flex h-full w-full flex-col gap-4">
           {/* Sélecteur de mode */}
-          <div className="flex items-center justify-start gap-4">
-            <InlineSelector
-              value={viewMode}
-              options={viewModeOptions}
-              onChange={setViewMode}
+          <div className="flex w-full justify-between">
+            <div className="flex items-center justify-start gap-4">
+              <InlineSelector
+                value={viewMode}
+                options={viewModeOptions}
+                onChange={setViewMode}
+              />
+              <button
+                onClick={() => setShowDialog(true)}
+                className={clsx(
+                  "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+                  "focus:ring-2 focus:ring-sky-200 focus:outline-none",
+                  "rounded-md bg-sky-500 hover:bg-sky-600",
+                  "text-xs font-medium text-white"
+                )}
+              >
+                <PlusIcon className={clsx("size-3 stroke-3")} />
+                Add New
+              </button>
+            </div>
+            <TaskFilterButton
+              tasksFilter={tasksFilter}
+              setTasksFilter={setTasksFilter}
             />
-            <button
-              onClick={() => setShowDialog(true)}
-              className={clsx(
-                "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
-                "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-                "rounded-md bg-sky-500 hover:bg-sky-600",
-                "text-xs font-medium text-white"
-              )}
-            >
-              <PlusIcon className={clsx("size-3 stroke-3")} />
-              Add New
-            </button>
           </div>
 
           <div
@@ -113,7 +128,7 @@ export default function UserTasksPage() {
                     message="No tasks available!"
                     iconSize="size-15 stroke-1"
                     textStyle="text-lg text-gray-400 font-medium"
-                    className="h-80 w-80 rounded-full bg-sky-50"
+                    className="lg:h-80 lg:w-80"
                   />
                 )}
               </>
@@ -130,7 +145,10 @@ export default function UserTasksPage() {
             >
               <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
                 <DialogTitle className="text-lg text-white">
-                  New task
+                  <div className="flex items-center gap-2">
+                    <ClipboardPlus className="size-6 stroke-2" />
+                    New Task
+                  </div>
                 </DialogTitle>
               </DialogHeader>
               <div

@@ -33,7 +33,7 @@ export default function ProjectAbout({ project }: ProjectAboutProps) {
           </AccordionTrigger>
           <AccordionContent>
             <div className={clsx("flex w-full justify-start")}>
-              <p className="text-sm text-black">{project.description}</p>
+              <p className="text-sm text-gray-600">{project.description}</p>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -57,10 +57,10 @@ export default function ProjectAbout({ project }: ProjectAboutProps) {
                   "Unknown"
                 )}
               </span>
-              <span className="text-sm text-black">
+              <span className="text-sm text-gray-600">
                 Started on {dateToLongString(new Date(project.createdAt))}
               </span>
-              <span className="text-sm text-black">
+              <span className="text-sm text-gray-600">
                 Last update on {dateToLongString(new Date(project.updatedAt))}
               </span>
             </div>

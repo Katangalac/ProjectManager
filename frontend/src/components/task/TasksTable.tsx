@@ -78,7 +78,11 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="project.title"
           header="Project"
-          body={(task) => task.project?.title ?? '"None"'}
+          body={(task) =>
+            task.project?.title ?? (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -91,7 +95,11 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="team.name"
           header="Team"
-          body={(task) => task.team?.name ?? '"None"'}
+          body={(task) =>
+            task.team?.name ?? (
+              <span className="text-gray-500 italic">"None"</span>
+            )
+          }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -102,7 +110,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         ></Column>
         <Column
           field="assignedTo"
-          header="Assigned to"
+          header="Assignees"
           body={(task: TaskWithRelations) =>
             task.assignedTo && task.assignedTo.length > 0 ? (
               <div
@@ -129,7 +137,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
                 ))}
               </div>
             ) : (
-              '"None"'
+              <span className="text-gray-500 italic">"None"</span>
             )
           }
           className={clsx("w-fit p-2 text-left text-xs")}

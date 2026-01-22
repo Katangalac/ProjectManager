@@ -47,7 +47,7 @@ export function InlineSelector({
     <div
       className={cn(
         "flex gap-3 px-1 py-1",
-        "rounded-md border border-sky-100 bg-sky-50",
+        "rounded-md border border-gray-300 bg-sky-50",
         className
       )}
     >

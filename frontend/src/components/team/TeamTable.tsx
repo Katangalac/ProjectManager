@@ -75,7 +75,11 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
           field="user"
           header="Creator"
           body={(team: TeamWithRelations) =>
-            team.user ? <UserBasicInfo user={team.user} /> : '"None"'
+            team.user ? (
+              <UserBasicInfo user={team.user} />
+            ) : (
+              <span className="text-gray-500 italic">"None"</span>
+            )
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -89,7 +93,11 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
           field="teamUsers"
           header="#Members"
           body={(team: TeamWithRelations) =>
-            team.teamUsers ? team.teamUsers.length.toString() : '"None"'
+            team.teamUsers ? (
+              team.teamUsers.length.toString()
+            ) : (
+              <span className="text-gray-500 italic">"None"</span>
+            )
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(

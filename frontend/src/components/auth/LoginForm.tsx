@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog.tsx";
+import { RotateCcwKeyIcon } from "lucide-react";
 
 /**
  * Formulaire de connexion
@@ -186,12 +187,12 @@ export default function LoginForm() {
         >
           Don't have an account ?{" "}
         </span>
-        <a
+        <span
           className={clsx("font-medium text-sky-600 hover:underline")}
-          href="/register"
+          onClick={() => navigate("/register")}
         >
           Sign up
-        </a>
+        </span>
       </p>
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent
@@ -203,7 +204,10 @@ export default function LoginForm() {
         >
           <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4")}>
             <DialogTitle className="text-lg text-white">
-              Forget password
+              <span className="flex h-fit items-center gap-2">
+                <RotateCcwKeyIcon className="size-6 stroke-[2.5px]" /> Forget
+                password
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

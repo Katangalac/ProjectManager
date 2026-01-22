@@ -6,10 +6,10 @@ const InvitationStatus = ["PENDING", "ACCEPTED", "REJECTED"] as const;
  * Schéma pour valider la structure de base d'une invitation dans la BD
  */
 export const invitationSchema = z.object({
-  id: z.uuid("ID invalide"),
-  senderId: z.uuid("ID invalide"),
-  receiverId: z.uuid("ID invalide"),
-  teamId: z.uuid("ID invalide"),
+  id: z.uuid("Invalid ID"),
+  senderId: z.uuid("Invalid ID"),
+  receiverId: z.uuid("Invalid ID"),
+  teamId: z.uuid("Invalid ID"),
   message: z.string(),
   status: z.enum(InvitationStatus),
   updatedAt: z.date(),

@@ -49,7 +49,7 @@ export const register = async (req: Request, res: Response) => {
       await addNotificationToQueue(
         user.id,
         "🚀 Welcome aboard ProjectFlow!",
-        "Jump right in and start planning projects, tracking tasks, and staying productive."
+        "Jump right in and start planning projects, tracking tasks, and staying productive.",
       );
     } catch (err) {
       console.error("Erreur lors de l'ajout de la notification", err);
@@ -84,7 +84,7 @@ export const register = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de l'inscription")
+        errorResponse("INTERNAL_SERVER_ERROR", "Erreur lors de l'inscription"),
       );
   }
 };
@@ -108,7 +108,7 @@ export const login = async (req: Request, res: Response) => {
     });
     if (!user)
       return res
-        .status(200)
+        .status(500)
         .json(errorResponse("INVALID_CREDENTIALS", "Invalid credentials"));
     if (user.provider === UserProvider.LOCAL) {
       const { password, ...safeUser } = user;
@@ -118,13 +118,13 @@ export const login = async (req: Request, res: Response) => {
           .json(
             errorResponse(
               "LOCAL_USER_WITHOUT_PASSWORD",
-              "This local user doesn't have a password"
-            )
+              "This local user doesn't have a password",
+            ),
           );
       const isValidPassword = await verify(password, loginData.password);
       if (!isValidPassword)
         return res
-          .status(401)
+          .status(500)
           .json(errorResponse("INVALID_PASSWORD", "Invalid password"));
       const { token, cookieOptions } = generateAuthResponse(safeUser);
       res.cookie("projectFlowToken", token, cookieOptions);
@@ -136,8 +136,8 @@ export const login = async (req: Request, res: Response) => {
         .json(
           errorResponse(
             "NOT_A_LOCAL_USER",
-            `This user is from ${user.provider} and must log the ${user.provider} way`
-          )
+            `This user is from ${user.provider} and must log the ${user.provider} way`,
+          ),
         );
     }
   } catch (err) {
@@ -148,7 +148,7 @@ export const login = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while login")
+        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while login"),
       );
   }
 };
@@ -173,7 +173,7 @@ export const logout = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while logout")
+        errorResponse("INTERNAL_SERVER_ERROR", "An error occur while logout"),
       );
   }
 };
@@ -204,7 +204,7 @@ export const updatePasswordController = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json(
-          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message)
+          errorResponse(err.code ? err.code : "USER_NOT_FOUND", err.message),
         );
     }
 
@@ -212,7 +212,7 @@ export const updatePasswordController = async (req: Request, res: Response) => {
       return res
         .status(err.status)
         .json(
-          errorResponse(err.code ? err.code : "UNKNOWN_ERROR", err.message)
+          errorResponse(err.code ? err.code : "UNKNOWN_ERROR", err.message),
         );
     }
 
@@ -221,8 +221,8 @@ export const updatePasswordController = async (req: Request, res: Response) => {
       .json(
         errorResponse(
           "INTERNAL_SERVER_ERROR",
-          "An error occur while handling your request"
-        )
+          "An error occur while handling your request",
+        ),
       );
   }
 };
@@ -256,7 +256,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
   if (!user) {
     return res.json(
-      successResponse(null, "If this email exists, a reset link has been sent.")
+      successResponse(
+        null,
+        "If this email exists, a reset link has been sent.",
+      ),
     );
   }
   const token = signResetPasswordToken(user.id);
@@ -266,7 +269,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   await addEmailToQueue(user.email, "Reset Password", html);
 
   return res.json(
-    successResponse(null, "If this email exists, a reset link has been sent.")
+    successResponse(null, "If this email exists, a reset link has been sent."),
   );
 };
 
@@ -279,7 +282,7 @@ export const validateResetToken = (req: Request, res: Response) => {
       successResponse({
         valid: true,
         userId: payload.userId,
-      })
+      }),
     );
   } catch (err) {
     return res.status(400).json({
