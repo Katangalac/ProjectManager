@@ -44,7 +44,7 @@ export default function ProjectCollaborators({
           )}
         >
           {collaborators.map((user) => (
-            <div className={clsx("h-fit w-full px-2")}>
+            <div key={user.id} className={clsx("h-fit w-full px-2")}>
               <div className={clsx("w-full py-2", "border-b border-gray-300")}>
                 <UserBasicInfo user={user} />
               </div>

@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { MessageCirclePlus } from "lucide-react";
 
 type TeamConversationsViewProps = {
   teamId: string;
@@ -44,10 +45,13 @@ export default function TeamConversationsView({
       <div
         className={clsx(
           "flex h-full max-w-72 min-w-72 flex-col gap-4",
-          "border-r border-gray-300"
+          "border-r border-gray-300",
+          isLoading && "items-center justify-start py-5"
         )}
       >
-        {isLoading && <ProgressSpinner />}
+        {isLoading && (
+          <ProgressSpinner className="sm:h-10 lg:h-10" strokeWidth="4" />
+        )}
         {!isLoading && (
           <>
             <div
@@ -102,7 +106,10 @@ export default function TeamConversationsView({
                       ))}
                     </>
                   ) : (
-                    <NoItems message="No conversations available" />
+                    <NoItems
+                      message="No conversations available"
+                      className="mt-5"
+                    />
                   )}
                 </>
               )}
@@ -155,7 +162,9 @@ export default function TeamConversationsView({
         >
           <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4")}>
             <DialogTitle className="text-lg text-white">
-              New conversation
+              <span className="flex items-center gap-2">
+                <MessageCirclePlus /> New Conversation
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

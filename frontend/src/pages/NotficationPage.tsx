@@ -45,10 +45,13 @@ export default function NotificationsPage() {
       <div
         className={clsx(
           "flex h-full max-w-72 min-w-72 flex-col gap-4",
-          "border-r border-gray-300"
+          "border-r border-gray-300",
+          isLoading && "flex items-center justify-start py-5"
         )}
       >
-        {isLoading && <ProgressSpinner />}
+        {isLoading && (
+          <ProgressSpinner className="h-10 lg:h-10" strokeWidth="4" />
+        )}
         {!isLoading && (
           <>
             {isError && <UserErrorMessage onRetryButtonClick={refetch} />}
@@ -65,7 +68,7 @@ export default function NotificationsPage() {
                   >
                     {data.data.map((notif, index) => (
                       <NotificationCard
-                        key={index}
+                        key={notif.id}
                         className={clsx(
                           "rounded-none border-0 border-b",
                           selectedIndex === index && "bg-sky-50"

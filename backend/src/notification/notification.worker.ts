@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
 import { redisConnection } from "../types/Redis";
 import { sendNotification } from "./notification.services";
-import { getIO } from "../chat/chat.socket";
+import { getIO } from "../socket/socket";
 
 /**
  * Worker qui s'occupe d'envoyer les notifications dans la file de notifications
@@ -29,5 +29,5 @@ export const notificationWorker = new Worker(
       throw err;
     }
   },
-  { connection: redisConnection }
+  { connection: redisConnection },
 );

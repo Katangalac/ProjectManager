@@ -53,14 +53,14 @@ import {
 export const createUser = async (
   newUserData: CreateUserData,
   provider: UserProvider = UserProvider.LOCAL,
-  oauthId: string | null = null
+  oauthId: string | null = null,
 ): Promise<SafeUser> => {
   try {
     let hashedPassword = null;
     if (provider === UserProvider.LOCAL) {
       if (!newUserData.password)
         throw new Error(
-          "Le mot de passe doit être fourni pour créer un utilisateur local"
+          "Le mot de passe doit être fourni pour créer un utilisateur local",
         );
       hashedPassword = await hash(newUserData.password);
     }
@@ -107,7 +107,7 @@ export const createUser = async (
  * @returns {Promise<SafeUser[]>} - la liste des utilisateurs respectant les filtres utilisés
  */
 export const getUsers = async (
-  filter: SearchUsersFilter
+  filter: SearchUsersFilter,
 ): Promise<UsersCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -160,7 +160,7 @@ export const getUserById = async (id: string): Promise<SafeUser> => {
  * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'email n'est trouvé
  */
 export const getUserByEmail = async (
-  email: string
+  email: string,
 ): Promise<SafeUser | null> => {
   const user = await db.user.findUnique({ where: { email } });
   if (!user) return null;
@@ -180,7 +180,7 @@ export const getUserByEmail = async (
  */
 export const updateUser = async (
   id: string,
-  userData: UpdateUserData
+  userData: UpdateUserData,
 ): Promise<SafeUser> => {
   try {
     const updatedUser = await db.user.update({
@@ -217,7 +217,7 @@ export const updateUser = async (
  * @throws {UserNotFoundError} - lorsqu'aucun utilisateur avec l'identifiant n'est trouvé
  */
 export const updateUserLastLoginDateToNow = async (
-  id: string
+  id: string,
 ): Promise<SafeUser> => {
   try {
     const updatedUser = await db.user.update({
@@ -255,7 +255,7 @@ export const deleteUser = async (id: string): Promise<void> => {
  */
 export const getUserTeams = async (
   userId: string,
-  filter: SearchTeamsFilter
+  filter: SearchTeamsFilter,
 ): Promise<TeamsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const userTeamCondition: Prisma.TeamWhereInput = {
@@ -321,7 +321,7 @@ export const getUserPeers = async (userId: string): Promise<SafeUser[]> => {
     },
   });
   const uniqueUsers = Array.from(
-    new Map(teammates.map((tm) => [tm.user.id, tm.user])).values()
+    new Map(teammates.map((tm) => [tm.user.id, tm.user])).values(),
   );
   const safeUsers = uniqueUsers.map(toSafeUser);
   return safeUsers;
@@ -335,7 +335,7 @@ export const getUserPeers = async (userId: string): Promise<SafeUser[]> => {
  */
 export const getUserProjects = async (
   userId: string,
-  filter: SearchProjectsFilter
+  filter: SearchProjectsFilter,
 ): Promise<ProjectsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const userProjectCondition: Prisma.ProjectWhereInput = {
@@ -400,7 +400,7 @@ export const getUserProjects = async (
  */
 export const getUserTasks = async (
   userId: string,
-  filter: SearchTasksFilter
+  filter: SearchTasksFilter,
 ): Promise<TasksCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const userTaskConditions: Prisma.TaskWhereInput = {
@@ -425,6 +425,7 @@ export const getUserTasks = async (
 
   //Construction du WHERE à partir des filtres
   const taskfilter = buildTaskWhereInput(filter);
+  console.log("Prisma where object:", filter);
 
   //Compte total des tâches correspondant au filtre
   const totalItems = await db.task.count({
@@ -475,7 +476,7 @@ export const getUserTasks = async (
  */
 export const getUserNotifications = async (
   userId: string,
-  filter: SearchNotificationsFilter
+  filter: SearchNotificationsFilter,
 ): Promise<NotificationsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -523,7 +524,7 @@ export const getUserNotifications = async (
  */
 export const getUserMessages = async (
   userId: string,
-  filter: SearchMessagesFilter
+  filter: SearchMessagesFilter,
 ): Promise<MessagesCollection> => {
   const { page, pageSize, all, ..._ } = filter;
 
@@ -572,7 +573,7 @@ export const getUserMessages = async (
  */
 export const getUserConversations = async (
   userId: string,
-  filter: SearchConversationsFilter
+  filter: SearchConversationsFilter,
 ): Promise<ConversationsCollection> => {
   const { page, pageSize, all, ..._ } = filter;
   const userConversationCondition: Prisma.ConversationWhereInput = {

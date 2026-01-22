@@ -28,6 +28,7 @@ import {
 import { useRef } from "react";
 import { deleteUploadcareFile } from "@/utils/uploadcare";
 import UserProfilePhoto from "./UserProfilePhoto";
+import { RotateCcwKeyIcon } from "lucide-react";
 
 /**
  * Propriétés du ProfileHeader
@@ -315,7 +316,10 @@ export default function ProfileHeader({
             )}
           >
             <DialogTitle className="text-lg text-white">
-              {dialogTitle}
+              <span className="flex h-fit items-center gap-2">
+                <RotateCcwKeyIcon className="size-6 stroke-[2.5px]" />
+                Update password
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

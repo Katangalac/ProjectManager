@@ -49,7 +49,7 @@ export default function UpdateTeamMemberRoleForm({
   });
 
   const { updateTeamMemberRole } = useUpdateMember({
-    onSuccess: () => showSuccess("Memeber role successfully updated!"),
+    onSuccess: () => showSuccess("Memeber role successfully updated!", 5000),
     onError: () => showError("An error occur while processing your request!"),
   });
 

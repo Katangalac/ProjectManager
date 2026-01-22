@@ -49,7 +49,9 @@ export default function ProfilePage() {
         "dark:bg-gray-900"
       )}
     >
-      {loading && <ProgressSpinner strokeWidth="5" />}
+      {loading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {isOwnProfile && viewedUser && <PrivateProfile user={viewedUser} />}
       {!isOwnProfile && viewedUser && <PublicProfile user={viewedUser} />}
 

@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import AddTeamToProjectForm from "./AddTeamToProjectForm";
 import RemoveTeamFromProjectForm from "./RemoveTeamFromProject";
-import { PlusIcon, MinusIcon } from "@phosphor-icons/react";
+import { PlusIcon, MinusIcon } from "lucide-react";
 import { useProjectById } from "@/hooks/queries/project/useProjectById";
 import { showError } from "@/utils/toastService";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 
 type ProjectTeamsViewProps = {
   projectId: string;
@@ -35,7 +36,10 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
   });
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
-  const [dialogTile, setDialogTitle] = useState<string>("");
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
+    null
+  );
+  const [dialogTitle, setDialogTitle] = useState<string>("");
   const totalItems = data?.pagination?.totalItems || 0;
   const totalPages =
     data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
@@ -43,10 +47,9 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-4 overflow-y-auto",
+        "flex h-full w-full flex-col gap-4",
         (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center pt-5",
-        isError && "items-center"
+          "items-center justify-center pt-5"
       )}
     >
       {/* Sélecteur de mode */}
@@ -54,6 +57,12 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
         <button
           onClick={() => {
             if (project) {
+              setDialogTitleIcon(
+                <div className="relative h-fit w-fit">
+                  <UserGroupIcon className="size-6 stroke-2" />
+                  <PlusIcon className="absolute -top-2 -right-1 size-3 stroke-3" />
+                </div>
+              );
               setDialogTitle(`Add new team to this project`);
               setDialogContent(
                 <AddTeamToProjectForm
@@ -80,6 +89,12 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
           onClick={() => {
             if (project) {
               setDialogTitle(`Remove team from this project`);
+              setDialogTitleIcon(
+                <div className="relative h-fit w-fit">
+                  <UserGroupIcon className="size-6 stroke-2" />
+                  <MinusIcon className="absolute -top-2 -right-1 size-3 stroke-3" />
+                </div>
+              );
               setDialogContent(
                 <RemoveTeamFromProjectForm
                   project={project.data}
@@ -94,7 +109,7 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
           className={clsx(
             "flex h-fit w-fit cursor-pointer items-center gap-1 border border-red-600 px-2 py-2",
             "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-            "rounded-md bg-red-500 hover:bg-red-600",
+            "rounded-md bg-red-700 hover:bg-red-800",
             "text-xs font-medium text-white"
           )}
         >
@@ -102,10 +117,12 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
           Remove
         </button>
       </div>
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
 
       {isError && <UserErrorMessage />}
-      {data && (
+      {!isLoading && data && (
         <>
           {data.data.length > 0 ? (
             <>
@@ -122,7 +139,6 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
               message="No Teams available"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </>
@@ -138,7 +154,10 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
             <DialogTitle className="text-lg text-white">
-              {dialogTile}
+              <span className="flex items-center gap-2">
+                {dialogTitleIcon}
+                {dialogTitle}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

@@ -19,6 +19,8 @@ import { useUpdateTask } from "../../hooks/mutations/task/useUpdateTask";
 import { useTeams } from "../../hooks/queries/team/useTeams";
 import { useProjects } from "../../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
+import UserErrorMessage from "../commons/UserErrorMessage";
+import { useQueryClient } from "@tanstack/react-query";
 
 import DatePicker from "../ui/DatePicker";
 
@@ -65,12 +67,14 @@ export default function TaskForm({
     data: projects,
     isLoading: projectLoading,
     isError: projectError,
+    refetch: refetchProjects,
   } = useProjects({ all: true });
 
   const {
     data: teams,
     isLoading: teamLoading,
     isError: teamError,
+    refetch: refetchTeams,
   } = useTeams({ all: true });
   const schema = isUpdateForm
     ? updateTaskDataSchema
@@ -81,9 +85,13 @@ export default function TaskForm({
     defaultValues: defaultValues,
   });
 
+  const queryClient = useQueryClient();
+
   const status = form.watch("status");
   const progress = form.watch("progress");
   const completedAt = form.watch("completedAt");
+  const projectId = form.watch("projectId");
+  const teamId = form.watch("teamId");
 
   useEffect(() => {
     if (status === "COMPLETED") {
@@ -135,6 +143,16 @@ export default function TaskForm({
   const { createTask } = useCreateTask({
     onSuccess: () => {
       showSuccess("Task created successfully!");
+      if (projectId) {
+        queryClient.invalidateQueries({
+          queryKey: ["projectTasks", projectId],
+        });
+      }
+      if (teamId) {
+        queryClient.invalidateQueries({
+          queryKey: ["teamTasks", teamId],
+        });
+      }
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
@@ -142,25 +160,21 @@ export default function TaskForm({
   const { updateTask } = useUpdateTask({
     onSuccess: () => {
       showSuccess("Task edited successfully!");
+      if (projectId) {
+        queryClient.invalidateQueries({
+          queryKey: ["projectTasks", projectId],
+        });
+      }
+      if (teamId) {
+        queryClient.invalidateQueries({
+          queryKey: ["teamTasks", teamId],
+        });
+      }
       onSuccess();
     },
     onError: () => showError("An error occur while processing your request!"),
   });
 
-  if (projectLoading || teamLoading) {
-    <div>
-      <ProgressSpinner />
-    </div>;
-  }
-  if (projectError || teamError) {
-    if (projectError) {
-      return <div>An error occur while loading user projects</div>;
-    }
-
-    if (teamError) {
-      return <div>An error occur while loading user teams</div>;
-    }
-  }
   const projectOptions =
     projects?.data.map((p: Project) => ({
       label: p.title,
@@ -208,8 +222,25 @@ export default function TaskForm({
   };
 
   return (
-    <div className={clsx("mr-5 ml-1")}>
-      {!(projectLoading && teamLoading) && (
+    <div
+      className={clsx(
+        "mr-5 ml-1",
+        (projectLoading || projectError || teamLoading || teamError) &&
+          "flex flex-col items-center justify-center gap-4"
+      )}
+    >
+      {(projectLoading || teamLoading) && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
+      {!(projectLoading || teamLoading) && (projectError || teamError) && (
+        <UserErrorMessage
+          onRetryButtonClick={() => {
+            refetchProjects();
+            refetchTeams();
+          }}
+        />
+      )}
+      {!(projectLoading || teamLoading) && (
         <form
           onSubmit={form.handleSubmit(onSubmit, onError)}
           className={clsx("flex flex-col gap-3.5")}
@@ -681,7 +712,7 @@ export default function TaskForm({
                       ? "border-red-500"
                       : "border-gray-300"
                   )}
-                  placeholder="Write..."
+                  placeholder="Write here..."
                 />
               )}
             />

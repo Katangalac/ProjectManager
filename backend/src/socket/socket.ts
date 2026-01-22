@@ -5,7 +5,7 @@ import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
 import { verifyToken } from "../auth/utils/jwt";
 import { tokenPayloadSchema } from "../auth/auth.schemas";
-import cookie from "cookie";
+import * as cookie from 'cookie';
 import { redis } from "../types/Redis";
 
 //Instance du serveur Socket.io
@@ -16,15 +16,16 @@ let io: Server;
  * Cet utilitaire crée une instance de Socket.IO liée au serveur HTTP fourni,
  * puis configure les événements côté serveur pour la gestion des conversations :
  * - Connexion et déconnexion des clients
- * - Jointure d’une conversation (room)
+ * - Jointure d’une conversation, équipe (room)
  * - Envoi, modification, suppression et lecture de messages
+ * - Envoi des notifications en temps réel
  * @param server - Instance du serveur HTTP Node.js sur laquelle Socket.IO sera attaché
  * @returns L’instance initialisée de Socket.IO
  */
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
-      origin: "https://projectmanager-wb93.onrender.com",
+      origin: "http://localhost:5173", //"https://projectmanager-wb93.onrender.com"
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -32,13 +33,14 @@ export const setupSocket = (server: http.Server) => {
 
   io.on("connection", async (socket) => {
     try {
-      console.log("🟢 Client connecté:", socket.id);
-      const rawcookies = socket.request.headers?.cookie;
-      if (!rawcookies) {
-        console.log("No cookie found in socket handshake");
+      const rawCookie = socket.request.headers?.cookie;
+
+      if(!rawCookie){
+        socket.disconnect();
         return;
       }
-      const cookies = cookie.parse(rawcookies || "");
+
+      const cookies = cookie.parse(rawCookie);
       const token = cookies["projectFlowToken"];
 
       if (!token) {
@@ -91,7 +93,7 @@ export const setupSocket = (server: http.Server) => {
       socket.on("join_conversation", (conversationId: string) => {
         socket.join(conversationId);
         console.log(
-          `🟢 User ${socket.userId} join the conversation ${conversationId}`
+          `🟢 User ${socket.userId} join the conversation ${conversationId}`,
         );
       });
 
@@ -156,7 +158,7 @@ export const setupSocket = (server: http.Server) => {
        */
       socket.on("disconnect", async () => {
         console.log(
-          `❌ User disconnected: ${socket.userId} (socket: ${socket.id})`
+          `❌ User disconnected: ${socket.userId} (socket: ${socket.id})`,
         );
 
         // Retirer cette socket
@@ -172,7 +174,6 @@ export const setupSocket = (server: http.Server) => {
         }
       });
     } catch (err) {
-      console.log("Socket error", err);
       socket.disconnect();
     }
   });

@@ -6,6 +6,7 @@ import { PROJECT_STATUS_META } from "@/lib/constants/project";
 import { CircleIcon } from "@phosphor-icons/react";
 import { formatShortDateWithOptionalYear } from "@/utils/dateUtils";
 import ProjectActionMenu from "./ProjectActionMenu";
+import { Progress } from "../ui/progress";
 
 /**
  * Propriétés du ProjectsTable
@@ -98,6 +99,12 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="progress"
           header="Progress(%)"
+          body={(rowData) => (
+            <Progress
+              value={rowData.progress}
+              className={clsx("h-1.5 max-w-20 [&>div]:bg-sky-500")}
+            />
+          )}
           className={clsx(
             "flex items-center justify-start truncate p-2 text-xs font-medium"
           )}
@@ -141,9 +148,11 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
           field="completedAt"
           header="Completed at"
           body={(rowData) =>
-            rowData.completedAt
-              ? formatShortDateWithOptionalYear(new Date(rowData.completedAt))
-              : "Not completed yet"
+            rowData.completedAt ? (
+              formatShortDateWithOptionalYear(new Date(rowData.completedAt))
+            ) : (
+              <span className="text-gray-500 italic">Not completed yet</span>
+            )
           }
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(

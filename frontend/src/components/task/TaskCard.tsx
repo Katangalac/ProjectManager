@@ -55,7 +55,7 @@ export default function TaskCard({ task, className }: TaskCardProps) {
           >
             <div
               className={clsx(
-                "flex w-full flex-col items-start justify-center gap-2"
+                "relative flex w-full flex-col items-start justify-center gap-2"
               )}
             >
               <TaskCardHeader
@@ -139,30 +139,46 @@ export default function TaskCard({ task, className }: TaskCardProps) {
               <div
                 className={clsx("flex w-full items-center justify-start gap-2")}
               >
-                <CalendarDateRangeIcon
-                  className={clsx(
-                    "size-4",
-                    "dark:text-white",
-                    isOverDue ? "text-red-500" : "text-gray-500"
-                  )}
-                />
-                <span
-                  className={clsx(
-                    "text-xs font-medium text-gray-500",
-                    "dark:text-white"
-                  )}
-                >
-                  {new Date(task.deadline).toISOString().split("T")[0]}
-                </span>
-                {isOverDue && (
-                  <span className={clsx("text-xs font-medium text-red-600")}>
-                    Overdue!
-                  </span>
-                )}
-                {task.status === "COMPLETED" && (
-                  <CheckCircleIcon
-                    className={clsx("size-4 stroke-2 text-green-500")}
-                  />
+                {task.completedAt && task.status === "COMPLETED" ? (
+                  <>
+                    <CheckCircleIcon
+                      className={clsx("size-4 stroke-2 text-green-600")}
+                    />
+                    <span
+                      className={clsx(
+                        "text-xs font-medium text-green-600",
+                        "dark:text-white"
+                      )}
+                    >
+                      Completed on{" "}
+                      {new Date(task.completedAt).toISOString().split("T")[0]}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <CalendarDateRangeIcon
+                      className={clsx(
+                        "size-4",
+                        "dark:text-white",
+                        isOverDue ? "text-red-500" : "text-gray-500"
+                      )}
+                    />
+                    <span
+                      className={clsx(
+                        "text-xs font-medium text-gray-500",
+                        "dark:text-white"
+                      )}
+                    >
+                      {new Date(task.deadline).toISOString().split("T")[0]}
+                    </span>
+                    {isOverDue && (
+                      <span
+                        className={clsx("text-xs font-medium text-red-600")}
+                      >
+                        Overdue!
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               <TaskPriority priorityLevel={task.priorityLevel} />
@@ -184,7 +200,7 @@ export default function TaskCard({ task, className }: TaskCardProps) {
           >
             <div
               className={clsx(
-                "flex w-full flex-col items-start justify-center gap-2"
+                "relative z-10 flex w-full flex-col items-start justify-center gap-2"
               )}
             >
               <TaskCardHeader

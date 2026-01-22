@@ -6,6 +6,8 @@ import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
 import { useState } from "react";
 import PaginationWrapper from "../commons/Pagination";
+import { SearchProjectsFilter } from "@/types/Project";
+import ProjectFilterButton from "../project/ProjectFilterButton";
 
 type TeamProjectsViewProps = {
   teamId: string;
@@ -17,7 +19,11 @@ type TeamProjectsViewProps = {
 export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
   const pageSize = 12;
   const [page, setPage] = useState(1);
+  const [projectsFilter, setProjectsFilter] = useState<SearchProjectsFilter>(
+    {}
+  );
   const { data, isLoading, isError } = useTeamProjects(teamId, {
+    ...projectsFilter,
     page,
     pageSize,
   });
@@ -28,16 +34,24 @@ export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-4 overflow-y-auto",
+        "flex h-full w-full flex-col gap-4",
         (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center",
-        isError && "items-center"
+          "items-center justify-center pt-5",
+        isError && "items-center justify-center pt-5"
       )}
     >
+      <div className="flex w-full justify-between">
+        <ProjectFilterButton
+          projectsFilter={projectsFilter}
+          setProjectsFilter={setProjectsFilter}
+        />
+      </div>
       {/* Sélecteur de mode */}
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
 
-      {isError && <UserErrorMessage />}
+      {!isLoading && isError && <UserErrorMessage />}
       {data && (
         <>
           {data.data.length > 0 ? (
@@ -55,7 +69,6 @@ export default function TeamProjectsView({ teamId }: TeamProjectsViewProps) {
               message="No projects available"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </>

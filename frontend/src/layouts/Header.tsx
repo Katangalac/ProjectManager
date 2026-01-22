@@ -47,7 +47,7 @@ export default function Header({ className = "" }: HeaderProps) {
   return (
     <header
       className={clsx(
-        "border-b border-gray-300 bg-white px-4 py-2 text-black",
+        "border-b-4 border-sky-500 bg-white px-4 py-2 text-black",
         className
       )}
     >

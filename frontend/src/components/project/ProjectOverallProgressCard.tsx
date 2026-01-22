@@ -34,7 +34,9 @@ export default function ProjectOverallProgressCard({
           Overall progress
         </span>
       </div>
-      {isLoading && <ProgressSpinner />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
       {!isLoading && (
         <>
           {isError ? (
@@ -60,13 +62,13 @@ export default function ProjectOverallProgressCard({
                 <span className="flex items-baseline gap-1 text-left text-xs text-gray-600">
                   Planned cost :
                   <span className="font-medium text-black">
-                    {project.budgetPlanned}
+                    {project.budgetPlanned} CAD
                   </span>
                 </span>
                 <span className="flex items-baseline gap-1 text-left text-xs text-gray-600">
                   Actual cost :
                   <span className="font-medium text-black">
-                    {data?.data || 0}
+                    {data?.data || 0} CAD
                   </span>
                 </span>
               </div>

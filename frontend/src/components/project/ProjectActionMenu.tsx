@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { showError, showSuccess } from "@/utils/toastService";
+import { FolderPen, PlusIcon, MinusIcon } from "lucide-react";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 
 /**
  * Propriétés du menu d'un projet
@@ -44,6 +46,9 @@ type ProjectActionMenuProps = {
 export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
+    null
+  );
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
@@ -91,7 +96,8 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle(`Edit project "${project.title}"`);
+            setDialogTitleIcon(<FolderPen />);
+            setDialogTitle(`Edit "${project.title}"`);
             setDialogContent(
               <ProjectForm
                 isUpdateForm={true}
@@ -122,6 +128,12 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
+            setDialogTitleIcon(
+              <div className="relative h-fit w-fit">
+                <UserGroupIcon className="size-6 stroke-2" />
+                <PlusIcon className="absolute -top-2 -right-1 size-3 stroke-3" />
+              </div>
+            );
             setDialogTitle("Add team to this project");
             setDialogContent(
               <AddTeamToProjectForm
@@ -145,6 +157,12 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
+            setDialogTitleIcon(
+              <div className="relative h-fit w-fit">
+                <UserGroupIcon className="size-6 stroke-2" />
+                <MinusIcon className="absolute -top-2 -right-1 size-3 stroke-3" />
+              </div>
+            );
             setDialogTitle("Remove team from this project");
             setDialogContent(
               <RemoveTeamFromProjectForm
@@ -271,7 +289,10 @@ export default function ProjectActionMenu({ project }: ProjectActionMenuProps) {
             )}
           >
             <DialogTitle className="text-lg text-white">
-              {dialogTitle}
+              <span className="flex items-center gap-2">
+                {dialogTitleIcon}
+                {dialogTitle}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div

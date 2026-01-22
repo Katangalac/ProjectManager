@@ -15,6 +15,9 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
 import PaginationWrapper from "../commons/Pagination";
+import { ClipboardPlus } from "lucide-react";
+import { SearchTasksFilter } from "@/types/Task";
+import TaskFilterButton from "../task/TaskFilterButton";
 
 type TeamTasksViewProps = {
   teamId: string;
@@ -27,7 +30,9 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
   const [showDialog, setShowDialog] = useState(false);
   const pageSize = 12;
   const [page, setPage] = useState(1);
+  const [tasksFilter, setTasksFilter] = useState<SearchTasksFilter>({});
   const { data, isLoading, isError } = useTeamTasks(teamId, {
+    ...tasksFilter,
     page,
     pageSize,
   });
@@ -38,30 +43,39 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-4 overflow-y-auto",
+        "flex h-full w-full flex-col gap-4",
         (isLoading || !(data && data.data.length > 0)) &&
           "items-center justify-center",
-        isError && "items-center"
+        isError && "items-center justify-center"
       )}
     >
       {/* Sélecteur de mode */}
-      <div className="flex w-full items-center justify-start gap-3">
-        <button
-          onClick={() => setShowDialog(true)}
-          className={clsx(
-            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
-            "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-            "rounded-md bg-sky-500 hover:bg-sky-600",
-            "text-xs font-medium text-white"
-          )}
-        >
-          <PlusIcon className={clsx("size-3 stroke-3")} />
-          Add New
-        </button>
+      <div className="flex w-full justify-between">
+        <div className="flex w-full items-center justify-start gap-3">
+          <button
+            onClick={() => setShowDialog(true)}
+            className={clsx(
+              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+              "focus:ring-2 focus:ring-sky-200 focus:outline-none",
+              "rounded-md bg-sky-500 hover:bg-sky-600",
+              "text-xs font-medium text-white"
+            )}
+          >
+            <PlusIcon className={clsx("size-3 stroke-3")} />
+            Add New
+          </button>
+        </div>
+        <TaskFilterButton
+          tasksFilter={tasksFilter}
+          setTasksFilter={setTasksFilter}
+        />
       </div>
-      {isLoading && <ProgressSpinner />}
 
-      {isError && <UserErrorMessage />}
+      {isLoading && (
+        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+      )}
+
+      {!isLoading && isError && <UserErrorMessage />}
       {data && (
         <>
           {data.data.length > 0 ? (
@@ -79,7 +93,6 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
               message="No tasks available"
               iconSize="size-15 stroke-1"
               textStyle="text-lg text-gray-400 font-medium"
-              className="h-80 w-80 rounded-full bg-sky-50"
             />
           )}
         </>
@@ -94,7 +107,11 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
           )}
         >
           <DialogHeader className="rounded-t-md bg-sky-500 px-4 py-4">
-            <DialogTitle className="text-lg text-white">New task</DialogTitle>
+            <DialogTitle className="text-lg text-white">
+              <span className="flex items-center gap-2">
+                <ClipboardPlus /> New Task
+              </span>
+            </DialogTitle>
           </DialogHeader>
           <div
             className={clsx(

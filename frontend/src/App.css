@@ -263,10 +263,10 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
   border-radius: 0.375rem;
 }
 
-.resource-project.mbsc-material.mbsc-timeline-resource {
+.resource-project {
   background: #fff;
-  color: #0376da !important;
-  font-weight: 200 !important;
+  color: #11acff !important;
+  font-weight: 200;
 }
 
 .resource-task.mbsc-material.mbsc-timeline-resource {
@@ -280,7 +280,7 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 }
 
 .mbsc-material.mbsc-timeline-header-active:after {
-  background-color: #0376da !important;
+  background-color: #3ea5ff !important;
   border-radius: 8px;
 }
 
@@ -302,6 +302,35 @@ uc-file-uploader-regular uc-simple-btn button .uploadcare--button__caption {
 
 .mbsc-calendar-text.mbsc-ltr {
   text-align: center !important;
+}
+
+.mbsc-schedule-event-range,
+.mbsc-event-time {
+  display: none !important;
+}
+
+.mds-tasks-resource-name {
+  padding: 2px 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.mds-tasks-resource-description {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: black !important;
+}
+
+.mbsc-timeline-row {
+  height: 150px !important;
+}
+
+.mbsc-material.mbsc-selected .mbsc-calendar-cell-text {
+  background: #00aeff !important;
+  border-color: #00aeff !important;
+  color: #fff;
 }
 
 .p-accordion-header-link {

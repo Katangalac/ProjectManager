@@ -45,26 +45,24 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
     <>
       <div
         className={clsx(
-          "flex h-[90%] max-h-[600px] min-h-[600px] w-60 min-w-56 flex-col justify-start overflow-hidden",
+          "flex h-[90%] max-h-[600px] min-h-[600px] w-60 min-w-56 flex-col justify-start overflow-hidden shadow-xl",
           "rounded-lg border bg-gray-50",
-          "dark:border-gray-400 dark:bg-gray-600",
-          borderColor
+          "dark:border-gray-400 dark:bg-gray-600"
         )}
       >
         {/**Header */}
         <div
           className={clsx(
-            "flex w-full items-center justify-between rounded-t-lg border-b border-gray-300 p-1.5",
-            bgColor
+            "flex w-full items-center justify-between rounded-t-lg border-b-[3px] border-gray-300 px-1.5 py-2 shadow-md",
+            bgColor,
+            borderColor
           )}
         >
           <div className={clsx("flex w-fit items-center justify-start gap-1")}>
             <span className={clsx(textColor)}>
-              <StatusIcon size={16} weight={"duotone"} />
+              <StatusIcon size={16} weight={"duotone"} className="stroke-3" />
             </span>
-            <span
-              className={clsx("text-center text-xs font-medium", textColor)}
-            >
+            <span className={clsx("text-center text-xs font-bold", textColor)}>
               {label} [{tasks.length}]
             </span>
           </div>
@@ -82,7 +80,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
         {tasks.length > 0 ? (
           <div
             className={clsx(
-              "flex w-full flex-1 flex-col items-center gap-2 px-1 py-1",
+              "flex w-full flex-1 flex-col items-center gap-2 px-2 py-2",
               "overflow-x-hidden overflow-y-auto",
               "[&::-webkit-scrollbar]:w-0",
               "[&::-webkit-scrollbar-track]:bg-neutral-200",

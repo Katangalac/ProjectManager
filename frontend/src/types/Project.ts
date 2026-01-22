@@ -1,5 +1,7 @@
 import { Pagination } from "./Pagination";
 import { User } from "./User";
+import { searchProjectsFilterSchema } from "@/schemas/project.schemas";
+import { z } from "zod";
 
 /**
  * Type représentant les status d'un projet
@@ -96,22 +98,4 @@ export type UpdateProjectData = {
 /**
  * Type des données attendues comme paramètre de recherche des projets
  */
-export type SearchProjectsFilter = {
-  page?: number | undefined;
-  pageSize?: number | undefined;
-  title?: string | undefined;
-  status?: ProjectStatus | undefined;
-  startOn?: Date | undefined;
-  endOn?: Date | undefined;
-  startBefore?: Date | undefined;
-  endBefore?: Date | undefined;
-  startAfter?: Date | undefined;
-  progessEq?: number | undefined;
-  progessLt?: number | undefined;
-  progessGt?: number | undefined;
-  endAfter?: Date | undefined;
-  completedOn?: Date | undefined;
-  completedBefore?: Date | undefined;
-  completedAfter?: Date | undefined;
-  all?: boolean | undefined;
-};
+export type SearchProjectsFilter = z.infer<typeof searchProjectsFilterSchema>;

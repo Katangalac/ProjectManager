@@ -16,13 +16,13 @@ import messageRoutes from "./message/message.routes";
 import invitationsRoutes from "./invitation/invitation.routes";
 import emailRoutes from "./email/email.routes";
 import { isAuthenticated } from "./auth/auth.middleware";
-import { setupSocket } from "./chat/chat.socket";
+import { setupSocket } from "./socket/socket";
 import morgan from "morgan";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const corsOption = {
-  origin: "https://projectmanager-wb93.onrender.com",
+  origin: "http://localhost:5173", //"https://projectmanager-wb93.onrender.com",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -31,7 +31,7 @@ const corsOption = {
 app.use(express.json());
 
 //Logger
-app.use(morgan("dev")); //Logs en format dev des requêtes reçues
+//app.use(morgan("dev")); //Logs en format dev des requêtes reçues
 
 //Les cors pour la communication avec des sytèmes externes
 app.use(cors(corsOption));
@@ -82,6 +82,6 @@ const server = http.createServer(app);
 setupSocket(server);
 
 server.listen(PORT, () =>
-  console.log("Serveur démarré sur http://localhost:3000")
+  console.log("Serveur démarré sur http://localhost:3000"),
 );
 //https.createServer(app).listen(PORT, () => console.log("Serveur démarré sur https://localhost:3000"));

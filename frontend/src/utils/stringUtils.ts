@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { User } from "@/types/User";
 
 /**
@@ -124,3 +125,15 @@ export const getNotificationTitle = (
     payload: notificationTitleMap[type] ? payload : "",
   };
 };
+
+/**
+ * Vérifie si un objet est vide
+ */
+export function isObjectNotEmpty(object: any): boolean {
+  return Object.entries(object).some(([_, value]) => {
+    if (value === undefined || value === null) return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === "string") return value.trim() !== "";
+    return true;
+  });
+}

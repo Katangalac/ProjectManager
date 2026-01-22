@@ -26,6 +26,12 @@ import {
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import { showError, showSuccess } from "@/utils/toastService";
+import {
+  ClipboardEdit,
+  ClipboardList,
+  UserRoundPlus,
+  UserRoundMinus,
+} from "lucide-react";
 /**
  * Propriétés du menu d'une tâche
  *
@@ -43,6 +49,9 @@ type TaskActionMenuProps = {
 export default function TaskActionMenu({ task }: TaskActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
+    null
+  );
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
   const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
@@ -72,9 +81,12 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
             />
           ),
           command: () => {
-            setDialogHeaderStyle(null);
-            setDialogStyle(null);
-            setDialogTitle(`Task : ${task.title}`);
+            setDialogHeaderStyle(
+              "bg-white text-black border-b-2 border-dotted border-gray-400"
+            );
+            setDialogStyle("[&>button]:text-black [&>button]:hover:text-black");
+            setDialogTitleIcon(<ClipboardList />);
+            setDialogTitle(`${task.title}`);
             setDialogContent(<TaskDetails task={task} />);
             setShowDialog(true);
           },
@@ -93,7 +105,8 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle(`Edit task "${task.title}"`);
+            setDialogTitleIcon(<ClipboardEdit />);
+            setDialogTitle(`Edit "${task.title}"`);
             setDialogContent(
               <TaskForm
                 isUpdateForm={true}
@@ -124,7 +137,8 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle(`Assign the task "${task.title}"`);
+            setDialogTitleIcon(<UserRoundPlus />);
+            setDialogTitle(`Assign "${task.title}"`);
             setDialogContent(
               <AssignTaskForm
                 task={task}
@@ -147,7 +161,8 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
           command: () => {
             setDialogHeaderStyle(null);
             setDialogStyle(null);
-            setDialogTitle(`Unassign the task "${task.title}"`);
+            setDialogTitleIcon(<UserRoundMinus />);
+            setDialogTitle(`Unassign "${task.title}"`);
             setDialogContent(
               <UnAssignTaskForm
                 task={task}
@@ -268,12 +283,15 @@ export default function TaskActionMenu({ task }: TaskActionMenuProps) {
         >
           <DialogHeader
             className={clsx(
-              "rounded-t-md bg-sky-500 px-4 py-4",
+              "rounded-t-md bg-sky-500 px-4 py-4 text-white",
               dialogHeaderStyle
             )}
           >
-            <DialogTitle className="text-lg text-white">
-              {dialogTitle}
+            <DialogTitle className="text-lg">
+              <span className="flex items-center gap-2">
+                {dialogTitleIcon}
+                {dialogTitle}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div
