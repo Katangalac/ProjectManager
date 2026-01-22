@@ -31,7 +31,7 @@ const corsOption = {
 app.use(express.json());
 
 //Logger
-app.use(morgan("dev")); //Logs en format dev des requêtes reçues
+//app.use(morgan("dev")); //Logs en format dev des requêtes reçues
 
 //Les cors pour la communication avec des sytèmes externes
 app.use(cors(corsOption));

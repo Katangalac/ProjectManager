@@ -88,7 +88,7 @@ export default function TeamMembersTable({
           <Column
             header="Firstname"
             body={(teamUser) =>
-              teamUser.user.firstName || (
+                teamUser.user.firstName && teamUser.user.firstName || (
                 <span className="text-gray-500 italic">"None"</span>
               )
             }
@@ -104,7 +104,7 @@ export default function TeamMembersTable({
           <Column
             header="Lastname"
             body={(teamUser) =>
-              teamUser.user.lastName?.trim() !== "" ? (
+                teamUser.user.lastName && teamUser.user.lastName?.trim() !== "" ? (
                 teamUser.user.lastName
               ) : (
                 <span className="text-gray-500 italic">"None"</span>
@@ -121,7 +121,7 @@ export default function TeamMembersTable({
           <Column
             header="Profession"
             body={(teamUser) =>
-              teamUser.user.profession?.trim() !== "" ? (
+                teamUser.user.profession && teamUser.user.profession?.trim() !== "" ? (
                 teamUser.user.profession
               ) : (
                 <span className="text-gray-500 italic">"None"</span>

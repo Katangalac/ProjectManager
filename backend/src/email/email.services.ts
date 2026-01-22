@@ -3,9 +3,9 @@ import { z } from "zod";
 import { sendEmailSchema } from "./email.schemas";
 
 //Adresse email utilisé pour envoyer des emails avec Resend
-const RESEND_MAIL = "onboarding@resend.dev";
+const RESEND_MAIL = process.env.RESEND_DEFAULT_DEV_MAIL;
 
-const RESEND_API_KEY = "re_Afp8Nr3Y_NKKTsgmRJzz6LBcjzmjNE1ep";
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 //Instance Resend
 const resend = new Resend(RESEND_API_KEY);

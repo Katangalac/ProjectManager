@@ -119,7 +119,7 @@ export default function Scheduler({ tasks, projects }: SchedulerProps) {
                     />{" "}
                     Assignees{" "}
                   </span>
-                  <div>
+                  <div className={clsx("flex -space-x-2")}>
                     {event.original.assignedTo.map((a: { user: User }) => (
                       <UserProfilePhoto
                         key={a.user.id}
@@ -208,7 +208,7 @@ export default function Scheduler({ tasks, projects }: SchedulerProps) {
           {resource.original && resource.original.assignedTo ? (
             <div>
               {resource.original.assignedTo.length > 0 ? (
-                <div>
+                <div className={clsx("flex -space-x-2")}>
                   {resource.original.assignedTo.map((a: { user: User }) => (
                     <UserProfilePhoto
                       key={a.user.id}

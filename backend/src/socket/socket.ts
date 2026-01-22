@@ -5,7 +5,7 @@ import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
 import { verifyToken } from "../auth/utils/jwt";
 import { tokenPayloadSchema } from "../auth/auth.schemas";
-import cookie from "cookie";
+import * as cookie from 'cookie';
 import { redis } from "../types/Redis";
 
 //Instance du serveur Socket.io
@@ -16,8 +16,9 @@ let io: Server;
  * Cet utilitaire crée une instance de Socket.IO liée au serveur HTTP fourni,
  * puis configure les événements côté serveur pour la gestion des conversations :
  * - Connexion et déconnexion des clients
- * - Jointure d’une conversation (room)
+ * - Jointure d’une conversation, équipe (room)
  * - Envoi, modification, suppression et lecture de messages
+ * - Envoi des notifications en temps réel
  * @param server - Instance du serveur HTTP Node.js sur laquelle Socket.IO sera attaché
  * @returns L’instance initialisée de Socket.IO
  */
@@ -32,13 +33,14 @@ export const setupSocket = (server: http.Server) => {
 
   io.on("connection", async (socket) => {
     try {
-      console.log("🟢 Client connecté:", socket.id);
-      const rawcookies = socket.request.headers?.cookie;
-      // if (!rawcookies) {
-      //   console.log("No cookie found in socket handshake");
-      //   return;
-      // }
-      const cookies = cookie.parse(rawcookies ?? "");
+      const rawCookie = socket.request.headers?.cookie;
+
+      if(!rawCookie){
+        socket.disconnect();
+        return;
+      }
+
+      const cookies = cookie.parse(rawCookie);
       const token = cookies["projectFlowToken"];
 
       if (!token) {
@@ -172,7 +174,6 @@ export const setupSocket = (server: http.Server) => {
         }
       });
     } catch (err) {
-      console.log("Socket error", err);
       socket.disconnect();
     }
   });

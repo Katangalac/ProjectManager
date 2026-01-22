@@ -25,7 +25,7 @@ export default function TeamsBoard({ teams }: TeamsBoardProps) {
     >
       {(!teams || teams.length === 0) && <div>No teams</div>}
       {teams.map((team, index) => (
-        <TeamCard key={index} team={team} />
+        <TeamCard key={team.id} team={team} />
       ))}
     </div>
   );

@@ -109,7 +109,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
                     />{" "}
                     Assignees{" "}
                   </span>
-                  <div>
+                  <div className={clsx("flex -space-x-2")}>
                     {event.original.assignedTo.map((a: { user: User }) => (
                       <UserProfilePhoto
                         key={a.user.id}

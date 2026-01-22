@@ -109,7 +109,7 @@ export default function ProjectsPage() {
                     )}
                   >
                     {data.data.map((project, index) => (
-                      <ProjectCard key={index} project={project} />
+                      <ProjectCard key={project.id} project={project} showProgressBar={true}/>
                     ))}
                   </div>
                 )}

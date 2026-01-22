@@ -204,7 +204,7 @@ export default function DashBoard() {
             />
 
             <DashboardStatsCard
-              title="Completed tasks"
+              title="Ended tasks"
               className="border-green-500"
               icon={
                 <ClipboardCheck className="size-10 stroke-[2px] text-green-500 opacity-20" />
@@ -213,7 +213,7 @@ export default function DashBoard() {
                 tasks?.data.filter((task: Task) => task.status === "COMPLETED")
                   .length ?? 0
               }
-              description="Completed tasks"
+              description="Ended tasks"
               onSeeMore={() => navigate("/userTasks")}
             />
           </div>
@@ -273,7 +273,7 @@ export default function DashBoard() {
                 </div>
               </div>
 
-              <div className={clsx("h-full w-full")}>
+              <div className={clsx("h-full w-full", !filteredProjects.length > 0 && "flex items-center justify-center")}>
                 {filteredProjects.length > 0 ? (
                   <>
                     <ProjectCard
@@ -363,7 +363,7 @@ export default function DashBoard() {
                 </div>
               </div>
 
-              <div className={clsx("h-full w-full")}>
+              <div className={clsx("h-full w-full", !filteredTasks.length > 0 && "flex items-center justify-center")}>
                 {filteredTasks.length > 0 ? (
                   <>
                     <TaskDashboardCard
