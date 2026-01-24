@@ -43,6 +43,8 @@ app.use(bodyParser.urlencoded({ extended: true })); //Pour les formulaires
 //Cookie parsing
 app.use(cookieParser());
 
+app.set("trust proxy", 1);
+
 //Routes
 app.get("/", (req, res) => {
   res.json({
@@ -63,6 +65,11 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/invitations", invitationsRoutes);
+app.use((req, res, next) => {
+  console.log("Cookie brut:", req.headers.cookie);
+  console.log("Cookies parsés:", req.cookies);
+  next();
+});
 
 
 //Serveur pour faire du temps réel
