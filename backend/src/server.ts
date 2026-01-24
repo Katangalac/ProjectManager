@@ -22,7 +22,7 @@ import morgan from "morgan";
 const app = express();
 const PORT = process.env.PORT || 3000;
 const corsOption = {
-  origin: "http://localhost:5173", //"https://projectmanager-wb93.onrender.com",
+  origin: process.env.CLIENT_URL||"http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -63,19 +63,7 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/conversations", conversationRoutes);
 app.use("/api/v1/messages", messageRoutes);
 app.use("/api/v1/invitations", invitationsRoutes);
-//app.use("/api/v1/email", emailRoutes); test d'envoie d'email
 
-//TODO:Interaction entre service X
-//TODO:Déterminer les routes à exposer à l'API X
-//TODO:Corriger le createdAt qui change à chaque fois X
-//TODO:Parachever les routes pour un user connnecté, routes "me" X
-//TODO:Revoir le decoupage/architecture X
-//TODO:Ajouter les informations de paginations comme retour des requetes X
-//TODO:Ajouter la route patch auth/password X
-//TODO:Determiner si oui ou non ajouter les routes du profile utilisateur X
-//TODO:Mécanisme de mot de passe oublié => une fois le frontend pret
-//TODO:Mettre en place le service d'envoi d'email X
-//TODO:Modifier socket.io
 
 //Serveur pour faire du temps réel
 const server = http.createServer(app);
@@ -84,4 +72,3 @@ setupSocket(server);
 server.listen(PORT, () =>
   console.log("Serveur démarré sur http://localhost:3000"),
 );
-//https.createServer(app).listen(PORT, () => console.log("Serveur démarré sur https://localhost:3000"));
