@@ -19,8 +19,8 @@ export const generateAuthResponse = (user: SafeUser) => {
     token,
     cookieOptions: {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
+      secure: true,
+      sameSite: "none" as const,
       maxAge: 6 * 60 * 60 * 1000,
     },
   };

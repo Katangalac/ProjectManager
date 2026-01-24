@@ -23,6 +23,7 @@ export const isAuthenticated = (
     const decodedRaw = verifyToken(token);
     const tokenPayload = tokenPayloadSchema.parse(decodedRaw);
     req.user = tokenPayload;
+    console.log("USER GET", req.user);
     next();
   } catch {
     res.status(401).json({ error: "Jeton d'authentification invalide" });
