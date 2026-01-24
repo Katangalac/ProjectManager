@@ -167,8 +167,8 @@ export const logout = async (req: Request, res: Response) => {
   try {
     const cookieOptions = {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
+      secure: true,
+      sameSite: "none" as const,
     };
     res.clearCookie("projectFlowToken", cookieOptions);
     res.status(200).json(successResponse(null, "Déconnexion réussie"));
