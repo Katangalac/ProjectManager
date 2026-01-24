@@ -53,6 +53,7 @@ export const logoutRequest = async () => {
     }catch(error:unknown){
       console.log("Erreur de socket!", error);
     }
+    console.log(axiosResponse.data);
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
