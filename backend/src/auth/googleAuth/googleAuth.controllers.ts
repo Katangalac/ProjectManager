@@ -11,8 +11,6 @@ import {
 } from "../../user/user.services";
 import { successResponse, errorResponse } from "../../utils/apiResponse";
 
-const REDIRECT_URI = "http://localhost:3000/api/v1/auth/google/callback";
-
 /**
  * Initialise le processus d'authentification OAuth2.0 avec Google
  * Génère une URL contenant les paramètres nécessaires (client_id, redirect_uri, scope, etc.)
@@ -24,7 +22,7 @@ export const googleAuth = (req: Request, res: Response) => {
   const redirectUri =
     "https://accounts.google.com/o/oauth2/v2/auth" +
     `?client_id=${process.env.GOOGLE_CLIENT_ID}` +
-    `&redirect_uri=${REDIRECT_URI}` +
+    `&redirect_uri=${process.env.GOOGLE_AUTH_REDIRECT_URI}` +
     `&response_type=code` +
     `&scope=openid%20email%20profile`;
   res.redirect(redirectUri);
@@ -45,12 +43,12 @@ export const googleAuth = (req: Request, res: Response) => {
  */
 export const googleCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
-  const frontEndUrl = process.env.FRONTEND_URL;
+  const frontEndUrl = process.env.CLIENT_URL;
 
   try {
     const { id_token, access_token } = await exchangeCodeForToken(
       code,
-      REDIRECT_URI
+      process.env.GOOGLE_AUTH_REDIRECT_URI
     );
     const googleUser = await getGoogleUser(access_token);
     const { email, name, sub } = googleUser;
