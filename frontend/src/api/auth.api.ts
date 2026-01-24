@@ -24,7 +24,7 @@ export async function loginRequest(identifier: string, password: string) {
     }catch(error:unknown){
       console.log("Erreur de socket!", error);
     }
-
+    console.log(response.data);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
