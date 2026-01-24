@@ -18,11 +18,14 @@ import { successResponse, errorResponse } from "../../utils/apiResponse";
  * @param {Request} req - requête Express
  * @param {Response} res - réponse Express
  */
+
+const REDIRECT_URI = process.env.GOOGLE_AUTH_REDIRECT_URI||"http:localhost:3000/api/v1/auth";
+
 export const googleAuth = (req: Request, res: Response) => {
   const redirectUri =
     "https://accounts.google.com/o/oauth2/v2/auth" +
-    `?client_id=${process.env.GOOGLE_CLIENT_ID}` +
-    `&redirect_uri=${process.env.GOOGLE_AUTH_REDIRECT_URI}` +
+    `?client_id=${process.env.GOOGLE_CLIENT_ID||"Undefined"}` +
+    `&redirect_uri=${REDIRECT_URI}` +
     `&response_type=code` +
     `&scope=openid%20email%20profile`;
   res.redirect(redirectUri);
@@ -43,12 +46,12 @@ export const googleAuth = (req: Request, res: Response) => {
  */
 export const googleCallback = async (req: Request, res: Response) => {
   const code = req.query.code as string;
-  const frontEndUrl = process.env.CLIENT_URL;
+  const frontEndUrl = process.env.CLIENT_URL||"http:localhost:5173";
 
   try {
     const { id_token, access_token } = await exchangeCodeForToken(
       code,
-      process.env.GOOGLE_AUTH_REDIRECT_URI
+      REDIRECT_URI
     );
     const googleUser = await getGoogleUser(access_token);
     const { email, name, sub } = googleUser;

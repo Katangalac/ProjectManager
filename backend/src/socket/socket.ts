@@ -36,9 +36,18 @@ export const setupSocket = (server: http.Server) => {
   io.on("connection", async (socket) => {
     try {
       const rawCookie = socket.request.headers?.cookie;
+      if(!rawCookie){
+        //socket.disconnect();
+        return;
+      }
 
       const cookies = cookie.parse(rawCookie);
       const token = cookies["projectFlowToken"];
+
+      if (!token) {
+        //socket.disconnect();
+        return;
+      }
 
       const payLoad = tokenPayloadSchema.parse(verifyToken(token));
       socket.userId = payLoad.sub;
