@@ -126,10 +126,12 @@ export const login = async (req: Request, res: Response) => {
         return res
           .status(500)
           .json(errorResponse("INVALID_PASSWORD", "Invalid password"))
-      console.log("USER GET LOGIN");
+      console.error("USER GET LOGIN");
       const { token, cookieOptions } = generateAuthResponse(safeUser);
+      console.error("TOKEN:", token);
       res.cookie("projectFlowToken", token, cookieOptions);
       const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
+      console.log("options", cookieOptions);
 
       res.status(200).json(successResponse(updatedUser, "Connexion réussie"));
     } else {
