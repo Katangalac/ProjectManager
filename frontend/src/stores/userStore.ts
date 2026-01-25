@@ -35,7 +35,8 @@ export const useUserStore = create<UserStore>()(
       },
       logout: async () => {
         try {
-          await logoutRequest();
+          //await logoutRequest();
+            console.log("Deconnecté");
         } catch {
           console.warn("Erreur lors de la déconnexion");
         }
