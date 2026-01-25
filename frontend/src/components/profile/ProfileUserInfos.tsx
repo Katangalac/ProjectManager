@@ -3,7 +3,7 @@ import { UpdateUserData, User } from "../../types/User";
 import { updateUserDataSchema } from "../../schemas/user.schemas";
 import { useState, useEffect, useCallback } from "react";
 import { updateUser } from "../../api/user.api";
-import { useUserStore } from "../../stores/userStore";
+import { userStore } from "../../stores/userStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { timeAgo, dateToLongString } from "@/utils/dateUtils";
@@ -32,7 +32,7 @@ export default function ProfileUserInfo({
   user,
   isEditable,
 }: ProfileUserInfoProps) {
-  const { setUser } = useUserStore();
+  const { setUser } = userStore();
   const [editing, setEditing] = useState(false);
   const { isOnline } = useUserStatus(user.id);
   const lastLogin = isOnline?.valueOf()

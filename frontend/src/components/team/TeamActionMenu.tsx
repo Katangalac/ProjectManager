@@ -11,7 +11,7 @@ import {
 } from "@phosphor-icons/react";
 import { TeamWithRelations } from "../../types/Team";
 import { MenuItem } from "primereact/menuitem";
-import { useUserStore } from "../../stores/userStore";
+import { userStore } from "../../stores/userStore";
 import { useState, ReactNode } from "react";
 import TeamForm from "./TeamForm";
 import {
@@ -45,7 +45,7 @@ type TeamActionMenuProps = {
  */
 export default function TeamActionMenu({ team }: TeamActionMenuProps) {
   const [showDialog, setShowDialog] = useState(false);
-  const { user } = useUserStore();
+  const { user } = userStore();
   const { data: userRole } = useUserTeamRole(team.id, user!.id);
   const { deleteTeam } = useDeleteTeam({
     onSuccess: () => showSuccess("Team deleted successfully!"),

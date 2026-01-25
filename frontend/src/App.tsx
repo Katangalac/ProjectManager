@@ -16,7 +16,7 @@ import TeamDetailsPage from "./pages/TeamDetailsPage.tsx";
 import NotificationsPage from "./pages/NotficationPage.tsx";
 import TestPage from "./pages/TestPage.tsx";
 import MessagePage from "./pages/MessagePage.tsx";
-import { useUserStore } from "./stores/userStore.ts";
+import { userStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./api/auth.api.ts";
@@ -34,7 +34,7 @@ import {showInfo} from "@/utils/toastService";
  * Point d'entrée de l'application
  */
 function App() {
-  const { setUser, logout, isAuthenticated, user } = useUserStore();
+  const { setUser, logout, isAuthenticated, user } = userStore();
 
   /**
    * Récupère les informations de l'utilisateur connecté

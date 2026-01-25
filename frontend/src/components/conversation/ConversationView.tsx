@@ -3,7 +3,7 @@ import { ConversationWithRelation } from "@/types/Conversation";
 import UserProfilePhoto from "../profile/UserProfilePhoto";
 import clsx from "clsx";
 import { timeAgo } from "@/utils/dateUtils";
-import { useUserStore } from "@/stores/userStore";
+import { userStore } from "@/stores/userStore";
 
 /**
  * Propriétés du ConversationCard
@@ -26,7 +26,7 @@ export default function ConversationCard({
   className,
   onClick,
 }: ConversationCardProps) {
-  const { user } = useUserStore();
+  const { user } = userStore();
   return (
     <div
       className={cn(

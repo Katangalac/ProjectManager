@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { useUserStore } from "../stores/userStore";
+import { userStore } from "../stores/userStore";
 import { useTasks } from "../hooks/queries/task/useTasks";
 import { useProjects } from "../hooks/queries/project/useProjects";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -27,7 +27,7 @@ import {
  * Affiche les 2 taches qui arrivent à leur échéance prochainement
  */
 export default function DashBoard() {
-  const { user } = useUserStore();
+  const { user } = userStore();
   const navigate = useNavigate();
   const {
     data: tasks,

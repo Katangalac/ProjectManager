@@ -6,7 +6,7 @@ import { loginRequest } from "../../api/auth.api.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
-import { useUserStore } from "../../stores/userStore.ts";
+import { userStore } from "../../stores/userStore.ts";
 import { InputText } from "../ui/InputText.tsx";
 import { InputPassword } from "../ui/InputPassword.tsx";
 import { toast } from "sonner";
@@ -30,8 +30,8 @@ import { RotateCcwKeyIcon } from "lucide-react";
 export default function LoginForm() {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_API_URL;
-  const setUser = useUserStore((state) => state.setUser);
-  const setToken = useUserStore((state) => state.setToken);
+  const setUser = userStore((state) => state.setUser);
+  const setToken = userStore((state) => state.setToken);
   const [showDialog, setShowDialog] = useState(false);
   /**
    * Configuration de react-hook-form avec validation Zod

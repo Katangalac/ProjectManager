@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { useNavigate } from "react-router-dom";
 import { ReactNode, useState } from "react";
-import { useUserStore } from "../stores/userStore";
+import { userStore } from "../stores/userStore";
 import UserProfilePhoto from "../components/profile/UserProfilePhoto";
 import { Search, Bell } from "lucide-react";
 import {
@@ -33,7 +33,7 @@ type HeaderProps = {
 };
 
 export default function Header({ className = "" }: HeaderProps) {
-  const { user } = useUserStore();
+  const { user } = userStore();
   const { meta } = usePageMetaContext();
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
