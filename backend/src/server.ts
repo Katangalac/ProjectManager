@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
+  const origin = req.headers.origin||"http://localhost:3000";
 
   // Autoriser seulement votre frontend
   if (origin === process.env.CLIENT_URL) {
