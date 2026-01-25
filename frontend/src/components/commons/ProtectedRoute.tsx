@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { JSX } from "react";
-import { getUserStore } from "../../stores/getUserStore";
+import { userStore } from "../../stores/userStore";
 
 /**
  * Composant qui vérifie que l'utilisateur est connecté avant de
@@ -16,6 +16,6 @@ export default function ProtectedRoute({
 }: {
   children: JSX.Element;
 }) {
-  const { isAuthenticated } = getUserStore();
+  const { isAuthenticated } = userStore();
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }

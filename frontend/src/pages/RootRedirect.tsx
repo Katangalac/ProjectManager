@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getUserStore } from "../stores/getUserStore";
+import { userStore } from "../stores/userStore";
 
 /**
  * Page racine de l'application
@@ -7,7 +7,7 @@ import { getUserStore } from "../stores/getUserStore";
  * que l'utilisateur est connecté ou non
  */
 export default function RootRedirect() {
-  const { isAuthenticated } = getUserStore();
+  const { isAuthenticated } = userStore();
 
   return isAuthenticated ? (
     <Navigate to="/dashboard" replace />

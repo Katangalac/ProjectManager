@@ -1,5 +1,5 @@
 import axios from "axios";
-import {getUserStore} from "@/stores/getUserStore";
+import {userStore} from "@/stores/userStore";
 
 /**
  * Clent axios pour faire des requêtes à l'API
@@ -12,7 +12,7 @@ export const axiosClient = axios.create({
 // Log pour debug (retirer en prod)
 axiosClient.interceptors.request.use((config) => {
     console.log("AXIOS-INTERCEPT-1")
-    const token = getUserStore().getState().token;
+    const token = userStore.getState().token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

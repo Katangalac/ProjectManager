@@ -29,31 +29,19 @@ interface UserStore {
  * Creer le store pour conserver l'utilisateur connecté
  * Conserve l'utilisateur dans le local storage pour des fins de persistance (ex:lors d'un refresh)
  */
-export const getUserStore = create<UserStore>()(
-  persist(
-    (set) => ({
-      user: null,
-      token:null,
-      isAuthenticated: false,
-      setUser: (user) => {
-        set({ user: user, isAuthenticated: true });
-      },
-      setToken:(token:string)=>{
-        set({token:token});
-      },
-      logout: async () => {
-        try {
-          //await logoutRequest();
-            console.log("Deconnecté");
-        } catch {
-          console.warn("Erreur lors de la déconnexion");
+export const userStore = create<UserStore>()(
+    persist(
+        (set) => ({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            setUser: (user) => set({ user, isAuthenticated: true }),
+            setToken: (token) => set({ token }),
+            logout: () => set({ user: null, token: null, isAuthenticated: false }),
+        }),
+        {
+            name: "user-storage",
+            storage: createJSONStorage(() => sessionStorage),
         }
-        set({ user: null, token:null, isAuthenticated: false });
-      },
-    }),
-    {
-      name: "user-storage",
-      storage: createJSONStorage(()=>sessionStorage)
-    }
-  )
+    )
 );

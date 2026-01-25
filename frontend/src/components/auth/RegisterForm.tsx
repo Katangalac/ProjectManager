@@ -6,7 +6,7 @@ import { registerRequest } from "../../api/auth.api.ts";
 import { useNavigate } from "react-router-dom";
 import { Google } from "@lobehub/icons";
 import { clsx } from "clsx";
-import { getUserStore } from "../../stores/getUserStore.ts";
+import { userStore } from "../../stores/userStore.ts";
 import { InputText } from "../ui/InputText.tsx";
 import { InputPassword } from "../ui/InputPassword.tsx";
 import { User, Mail } from "lucide-react";
@@ -21,8 +21,8 @@ import { AppError } from "@/errors/AppError.ts";
 export default function RegisterForm() {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_API_URL;
-  const setUser = getUserStore((state) => state.setUser);
-  const setToken = getUserStore((state) => state.setToken);
+  const setUser = userStore((state) => state.setUser);
+  const setToken = userStore((state) => state.setToken);
 
   /**
    * Configuration de react-hook-form avec validation Zod

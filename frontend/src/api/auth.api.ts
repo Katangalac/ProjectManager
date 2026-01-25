@@ -21,7 +21,7 @@ export async function loginRequest(identifier: string, password: string) {
 
     try {
       console.log("Connecté")
-      //socket.connect();
+      socket.connect();
     }catch(error:unknown){
       console.log("Erreur de socket!", error);
     }
@@ -51,7 +51,7 @@ export const logoutRequest = async () => {
     const axiosResponse = await axiosClient.post("/auth/logout");
     try{
       console.log("Deconnecté")
-      //socket.disconnect();
+      socket.disconnect();
     }catch(error:unknown){
       console.log("Erreur de socket!", error);
     }

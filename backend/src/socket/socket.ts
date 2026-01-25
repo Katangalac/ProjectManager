@@ -35,14 +35,13 @@ export const setupSocket = (server: http.Server) => {
 
   io.on("connection", async (socket) => {
     try {
-      const rawCookie = socket.request.headers?.cookie;
+      /*const rawCookie = socket.request.headers?.cookie;
       if(!rawCookie){
-        //socket.disconnect();
         return;
       }
 
-      const cookies = cookie.parse(rawCookie);
-      const token = cookies["projectFlowToken"];
+      const cookies = cookie.parse(rawCookie);*/
+      const token = socket.handshake.auth.token;
 
       if (!token) {
         //socket.disconnect();

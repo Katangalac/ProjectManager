@@ -8,7 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { TeamWithRelations } from "../../types/Team";
 import { MenuItem } from "primereact/menuitem";
-import { getUserStore } from "../../stores/getUserStore";
+import { userStore } from "../../stores/userStore";
 import { useState, ReactNode } from "react";
 import {
   Dialog,
@@ -52,7 +52,7 @@ export default function TeamMemberTableActionMenu({
     null
   );
   const roles = ["Leader", "Manager"];
-  const { user } = getUserStore();
+  const { user } = userStore();
   const { data: userRole } = useUserTeamRole(team.id, user!.id);
   const { removeMemberToTeam } = useRemoveMember({
     onSuccess: () => showSuccess("Memeber removed successfully!"),

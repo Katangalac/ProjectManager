@@ -1,6 +1,6 @@
 import { MessageWithRelation } from "@/types/Message";
 import MessageCard from "./MessageCard";
-import { getUserStore } from "@/stores/getUserStore";
+import { userStore } from "@/stores/userStore";
 import { useCreateMessage } from "@/hooks/mutations/message/useCreateMessage";
 import clsx from "clsx";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function MessageList({
   messages,
   conversationId,
 }: MessageListProps) {
-  const { user } = getUserStore();
+  const { user } = userStore();
   const [message, setMessage] = useState<string>("");
   const { createMessage, isCreating, error } = useCreateMessage();
 
