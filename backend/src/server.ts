@@ -24,8 +24,9 @@ const PORT = process.env.PORT || 3000;
 const corsOption = {
   origin: process.env.CLIENT_URL||"http://localhost:5173",
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ['Set-Cookie'],
 };
 
 app.use(express.json());
@@ -52,6 +53,26 @@ app.get("/", (req, res) => {
     timestamp: new Date().toISOString(),
     version: "v1.0.0",
   });
+});
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Autoriser seulement votre frontend
+  if (origin === process.env.CLIENT_URL) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,Cookie');
+    res.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
+  }
+
+  // Répondre aux requêtes OPTIONS (preflight)
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
 });
 
 app.use("/api/v1/auth", authRoutes);
