@@ -30,6 +30,8 @@ const corsOption = {
 
 app.use(express.json());
 
+//Cookie parsing
+app.use(cookieParser());
 //Logger
 //app.use(morgan("dev")); //Logs en format dev des requêtes reçues
 
@@ -39,9 +41,6 @@ app.use(cors(corsOption));
 //Body parsing
 app.use(bodyParser.json()); //Pour JSON
 app.use(bodyParser.urlencoded({ extended: true })); //Pour les formulaires
-
-//Cookie parsing
-app.use(cookieParser());
 
 app.set("trust proxy", 1);
 
