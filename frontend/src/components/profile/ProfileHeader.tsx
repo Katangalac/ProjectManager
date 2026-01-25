@@ -6,7 +6,7 @@ import {
   UploadCtxProvider,
 } from "@uploadcare/react-uploader";
 import { useState, ReactNode } from "react";
-import { userStore } from "../../stores/userStore";
+import { getUserStore } from "../../stores/getUserStore";
 import { updateUser } from "../../api/user.api";
 import "@uploadcare/react-uploader/core.css";
 import { CameraIcon } from "@heroicons/react/24/solid";
@@ -53,7 +53,7 @@ export default function ProfileHeader({
   user,
   isEditable,
 }: ProfileHeaderProps) {
-  const { setUser } = userStore();
+  const { setUser } = getUserStore();
   const uploadcarePubKey = import.meta.env.VITE_UPLOAD_CARE_PUBLIC_KEY;
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);

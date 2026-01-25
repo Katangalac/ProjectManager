@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import AppLogo from "../commons/AppLogo";
 import NavItem from "./NavItem";
-import { userStore } from "../../stores/userStore";
+import { getUserStore } from "../../stores/getUserStore";
 import { useNavigate } from "react-router-dom";
 import {
   SignOutIcon,
@@ -35,7 +35,7 @@ type SideBarProps = {
  * Permet de naviguer entre les pages de l'application
  */
 export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
-  const { logout, user } = userStore();
+  const { logout, user } = getUserStore();
   const navigate = useNavigate();
 
   /**

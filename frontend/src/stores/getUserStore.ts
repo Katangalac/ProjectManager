@@ -29,7 +29,7 @@ interface UserStore {
  * Creer le store pour conserver l'utilisateur connecté
  * Conserve l'utilisateur dans le local storage pour des fins de persistance (ex:lors d'un refresh)
  */
-export const userStore = create<UserStore>()(
+export const getUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,

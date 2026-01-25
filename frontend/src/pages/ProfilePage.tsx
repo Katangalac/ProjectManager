@@ -1,5 +1,5 @@
 import { User } from "../types/User";
-import { userStore } from "../stores/userStore";
+import { getUserStore } from "../stores/getUserStore";
 import { getUserById } from "../api/user.api";
 import { useState, useEffect } from "react";
 import { clsx } from "clsx";
@@ -13,7 +13,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
  */
 export default function ProfilePage() {
   const { id } = useParams();
-  const currentUser = userStore((s) => s.user);
+  const currentUser = getUserStore((s) => s.user);
   const isOwnProfile = !id || (currentUser && currentUser.id === id);
   const [viewedUser, setViewedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

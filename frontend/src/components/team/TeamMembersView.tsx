@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { userStore } from "@/stores/userStore";
+import { getUserStore } from "@/stores/getUserStore";
 import InviteUser from "../user/InviteUsers";
 import { useUserTeamRole } from "@/hooks/queries/team/useUserTeamRole";
 import { UserRoundPlus } from "lucide-react";
@@ -39,7 +39,7 @@ type TeamMembersViewProps = {
  * @param {TeamMembersViewProps} param0 - Propriétés du TeamMembersView
  */
 export default function TeamMembersView({ team }: TeamMembersViewProps) {
-  const { user } = userStore();
+  const { user } = getUserStore();
   const { data: userRole } = useUserTeamRole(team.id, user!.id);
   const roles = ["Leader", "Manager"];
   const [showDialog, setShowDialog] = useState(false);
