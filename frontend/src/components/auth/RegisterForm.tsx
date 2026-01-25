@@ -22,6 +22,7 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_API_URL;
   const setUser = useUserStore((state) => state.setUser);
+  const setToken = useUserStore((state) => state.setToken);
 
   /**
    * Configuration de react-hook-form avec validation Zod
@@ -48,7 +49,8 @@ export default function RegisterForm() {
         data.email,
         data.password
       );
-      setUser(result.data);
+      setToken(result.data.token);
+      setUser(result.data.user);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);

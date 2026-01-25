@@ -43,7 +43,7 @@ export const register = async (req: Request, res: Response) => {
     const { token, cookieOptions } = generateAuthResponse(user);
     res.cookie("projectFlowToken", token, cookieOptions);
     user = await updateUserLastLoginDateToNow(user.id);
-    res.status(201).json(successResponse(user, "Utilisateur créé"));
+    res.status(201).json(successResponse({user:user, token:token}, "Utilisateur créé"));
 
     try {
       await addNotificationToQueue(
@@ -133,7 +133,7 @@ export const login = async (req: Request, res: Response) => {
       const updatedUser = await updateUserLastLoginDateToNow(safeUser.id);
       console.log("options", cookieOptions);
 
-      res.status(200).json(successResponse(updatedUser, "Connexion réussie"));
+      res.status(200).json(successResponse({user:updatedUser, token:token}, "Connexion réussie"));
     } else {
       res
         .status(500)

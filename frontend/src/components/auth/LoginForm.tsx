@@ -31,6 +31,7 @@ export default function LoginForm() {
   const navigate = useNavigate();
   const backendUrl = import.meta.env.VITE_API_URL;
   const setUser = useUserStore((state) => state.setUser);
+  const setToken = useUserStore((state) => state.setToken);
   const [showDialog, setShowDialog] = useState(false);
   /**
    * Configuration de react-hook-form avec validation Zod
@@ -53,7 +54,8 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginInputs) => {
     try {
       const result = await loginRequest(data.identifier, data.password);
-      setUser(result.data);
+      setToken(result.data.token)
+      setUser(result.data.user);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);

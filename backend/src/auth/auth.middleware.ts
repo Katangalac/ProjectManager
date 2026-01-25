@@ -14,8 +14,26 @@ export const isAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  const token =
-    req.cookies.projectFlowToken || req.headers.authorization?.split(" ")[1];
+  let token: string | undefined;
+
+  // Chercher le token dans bearer token dans le header authorization
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader?.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  // Chercher le token le header authorization
+  if (!token && req.cookies?.projectFlowToken) {
+    token = req.cookies.projectFlowToken;
+  }
+
+  // Pas de token => non autorisé
+  if (!token) {
+    return res.status(401).json({
+      error: "Token d'authentification manquant",
+    });
+  }
+
   if (!token)
     return res.status(401).json({ error: "Jeton d'authentification manquant" });
 

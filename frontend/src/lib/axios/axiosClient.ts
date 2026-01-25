@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useUserStore} from "@/stores/userStore";
 
 /**
  * Clent axios pour faire des requêtes à l'API
@@ -6,12 +7,17 @@ import axios from "axios";
 export const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL||"http://localhost:3000",
   withCredentials: true,
-
 });
 
 // Log pour debug (retirer en prod)
 axiosClient.interceptors.request.use((config) => {
+    const token = useUserStore().getState().token;
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
   console.log('🔹 Request:', config.method?.toUpperCase(), config.url);
+  console.log('🔹 Request-Auth:', token);
   console.log('🍪 With credentials:', config.withCredentials);
   return config;
 });

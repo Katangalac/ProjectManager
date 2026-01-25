@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { User } from "../types/User";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { logoutRequest } from "../api/auth.api";
 
 /**
@@ -8,16 +8,20 @@ import { logoutRequest } from "../api/auth.api";
  *
  * - user contient les informations de l’utilisateur connecté,
  *    ou null si personne n'est connecté.
+ * - token d'authentification
  * - isAuthenticated conserve le status de connexion de l'utilisateur
  * - setUser met à jour l’utilisateur dans le store
+ * - setToken met à jour le token d'authentification
  * - logout réinitialise l’état en supprimant l’utilisateur courant
  *
  * Cette interface est utilisée par Zustand pour typer le store.
  */
 interface UserStore {
   user: User | null;
+  token:string|null;
   isAuthenticated: boolean;
   setUser: (u: User | null) => void;
+  setToken:(t:string|null)=>void;
   logout: () => Promise<void>;
 }
 
@@ -29,9 +33,13 @@ export const useUserStore = create<UserStore>()(
   persist(
     (set) => ({
       user: null,
+      token:null,
       isAuthenticated: false,
-      setUser: (u) => {
-        set({ user: u, isAuthenticated: true });
+      setUser: (user) => {
+        set({ user: user, isAuthenticated: true });
+      },
+      setToken:(token:string)=>{
+        set({token:token});
       },
       logout: async () => {
         try {
@@ -40,16 +48,12 @@ export const useUserStore = create<UserStore>()(
         } catch {
           console.warn("Erreur lors de la déconnexion");
         }
-        localStorage.removeItem("user-storage");
-        set({ user: null, isAuthenticated: false });
+        set({ user: null, token:null, isAuthenticated: false });
       },
     }),
     {
       name: "user-storage",
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-      }),
+      storage: createJSONStorage(()=>sessionStorage)
     }
   )
 );
