@@ -7,6 +7,7 @@ import { useState } from "react";
 import { PageMetaProvider } from "@/components/commons/PageMetaProvider";
 import { usePageKey } from "@/hooks/utils/usePageKey";
 import { usePageMeta } from "@/hooks/utils/usePageMeta";
+import {motion} from "framer-motion";
 
 /**
  * Layout principal de l'application
@@ -24,19 +25,20 @@ export default function MainLayout() {
           onToogle={() => setSideBarIsCollapsed(!sideBarIsCollapsed)}
         />
 
-        <div
+        <motion.div
+            animate={{ marginLeft: sideBarIsCollapsed ? "4rem" : "12.5rem" }}
+            transition={{ type: "spring", stiffness: 200, damping: 25 }}
           className={clsx(
             "flex h-full flex-1 flex-col",
             "bg-white",
             "dark:bg-gray-900",
-            sideBarIsCollapsed ? "ml-16" : "ml-50"
           )}
         >
           <Header />
           <main className="h-full flex-1 overflow-y-auto bg-white dark:bg-gray-900">
             <Outlet />
           </main>
-        </div>
+        </motion.div>
       </div>
     </PageMetaProvider>
   );

@@ -91,6 +91,9 @@ app.use((req, res, next) => {
   next();
 });
 
+//store temporaire pour les codes internes
+export const authCodes = new Map<string,string>();
+
 
 //Serveur pour faire du temps réel
 const server = http.createServer(app);

@@ -8,6 +8,7 @@ import {
   forgotPassword,
   validateResetToken,
   resetPassword,
+    exchangeAuthCodeController
 } from "./auth.controllers";
 import { isAuthenticated } from "./auth.middleware";
 
@@ -28,6 +29,10 @@ router.post("/login", login);
  */
 router.post("/logout", logout);
 
+/**
+ * @route POST /api/auth/exchange
+ */
+router.post("/exchange", exchangeAuthCodeController);
 /**
  * @route GET /api/auth/verify
  */

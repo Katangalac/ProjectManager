@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootRedirect from "./pages/RootRedirect.tsx";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AuthCallback from "@/pages/AuthCallback";
 import DashBoard from "./pages/DashBoard.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
@@ -96,6 +97,7 @@ function App() {
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth/callback" element={<AuthCallback/>}/>
           <Route element={<MainLayout />}>
             <Route
               path="/dashboard"

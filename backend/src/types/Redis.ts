@@ -10,8 +10,15 @@ export const redisConnection: RedisOptions = {
 };
 
 /**
+ * Url de connexion
+ */
+export const redisUrl = process.env.REDIS_URL||"redis://127.0.0.1:6379";
+
+/**
  * Client Redis
  */
-export const redis = new Redis(
-    redisConnection
+export const redis = new Redis(redisUrl,
+    {maxRetriesPerRequest: null}
 );
+redis.on("connect", () => console.log("✅ Connected to Redis"));
+redis.on("error", (err) => console.error("❌ Redis error", err));

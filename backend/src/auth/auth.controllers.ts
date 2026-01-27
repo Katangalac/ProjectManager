@@ -29,6 +29,7 @@ import {
   verifyToken,
 } from "./utils/jwt";
 import { AppError } from "../errors/AppError";
+import {authCodes} from "../server";
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système
@@ -181,6 +182,21 @@ export const logout = async (req: Request, res: Response) => {
       );
   }
 };
+
+/**
+ * Renvoie un token en échange d'un code d'authentification valide.
+ * @param {Request} req - requête Express
+ * @param {Response} res - réponse Express utilisé pour renvoyer la réponse JSON
+ */
+export const exchangeAuthCodeController = async (req: Request, res: Response)=>{
+  const {code} = req.body;
+  if(!code || !authCodes.has(code)){
+    return res.status(401).json(errorResponse("INVALID_CODE","Code invalide"));
+  }
+  const token = authCodes.get(code)!;
+  authCodes.delete(code);
+  res.status(200).json(successResponse({token:token}));
+}
 
 /**
  * Modifie le mot de passe de l'utilisateur connecté

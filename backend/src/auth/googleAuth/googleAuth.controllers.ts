@@ -10,6 +10,7 @@ import {
   updateUserLastLoginDateToNow,
 } from "../../user/user.services";
 import { successResponse, errorResponse } from "../../utils/apiResponse";
+import {authCodes} from "../../server";
 
 /**
  * Initialise le processus d'authentification OAuth2.0 avec Google
@@ -70,8 +71,10 @@ export const googleCallback = async (req: Request, res: Response) => {
     }
     const { token, cookieOptions } = generateAuthResponse(user);
     res.cookie("projectFlowToken", token, cookieOptions);
+    const internalCode = crypto.randomUUID();
+    authCodes.set(internalCode, token);
     user = await updateUserLastLoginDateToNow(user.id);
-    res.redirect(`${frontEndUrl}/dashboard`);
+    res.redirect(`${frontEndUrl}/auth/callback?code=${internalCode}`);
   } catch (err) {
     console.error("Erreur d’authentification Google", err);
     if (err instanceof ZodError) {
