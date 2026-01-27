@@ -1,5 +1,6 @@
 import {useEffect} from "react";
 import {useNavigate, useSearchParams} from "react-router-dom";
+import {getMe} from "@/api/auth.api";
 import {userStore} from "@/stores/userStore";
 import {axiosClient} from "@/lib/axios/axiosClient";
 
@@ -9,7 +10,7 @@ import {axiosClient} from "@/lib/axios/axiosClient";
 export default function AuthCallback(){
     const [params] = useSearchParams();
     const navigate = useNavigate();
-    const {setToken} = userStore();
+    const {setToken, setUser} = userStore();
     useEffect(() => {
         const code = params.get("code");
 
@@ -21,12 +22,14 @@ export default function AuthCallback(){
             try {
                 const res = await axiosClient.post("/auth/exchange", { code });
                 const token = res.data?.data?.token;
-
+                console.log(token);
                 if (!token) {
                     navigate("/login");
                     return;
                 }
                 setToken(token);
+                const axiosResData = await getMe();
+                setUser(axiosResData.data);
                 navigate("/dashboard");
             } catch (error) {
                 console.error("Code exchange failed", error);
