@@ -10,16 +10,31 @@ export default function AuthCallback(){
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const {setToken} = userStore();
-    useEffect(()=>{
+    useEffect(() => {
         const code = params.get("code");
-        if(!code)return navigate("/login");
-        axiosClient.post("/exchange", {code}).then((res)=>{
-            const token = res.data.data.token;
-            if(token){
+
+        if (!code) {
+            navigate("/login");
+            return;
+        }
+        const exchangeCode = async () => {
+            try {
+                const res = await axiosClient.post("/exchange", { code });
+                const token = res.data?.data?.token;
+
+                if (!token) {
+                    navigate("/login");
+                    return;
+                }
                 setToken(token);
+                navigate("/dashboard");
+            } catch (error) {
+                console.error("Code exchange failed", error);
+                navigate("/login");
             }
-            navigate("/dashboard");
-        }))
-    }, [])
+        };
+        exchangeCode();
+    }, []);
+
     return <div>Login...</div>
 }
