@@ -19,7 +19,7 @@ export default function AuthCallback(){
         }
         const exchangeCode = async () => {
             try {
-                const res = await axiosClient.post("/exchange", { code });
+                const res = await axiosClient.post("/auth/exchange", { code });
                 const token = res.data?.data?.token;
 
                 if (!token) {
