@@ -30,9 +30,10 @@ export default function MainLayout() {
           exit={{ opacity: 0, y: 8 }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
           className={clsx(
-            "flex h-full flex-1 flex-col",
+            "flex h-full flex-col",
             "bg-white",
-            "dark:bg-gray-900"
+            "dark:bg-gray-900",
+            sideBarIsCollapsed ? "w-[calc(100%-64px)]" : "w-[calc(100%-200px)]"
           )}
         >
           <Header />
