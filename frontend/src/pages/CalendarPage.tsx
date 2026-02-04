@@ -11,6 +11,7 @@ import {
 import { clsx } from "clsx";
 import { ProgressSpinner } from "primereact/progressspinner";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
+import MotionPage from "@/components/commons/MotionPage";
 
 /**
  * Affiche les tâches et projets d'un utilisateurs dans un calendrier ou un scheduler
@@ -46,53 +47,57 @@ export default function CalendarPage() {
   ];
 
   return (
-    <div
-      className={clsx(
-        "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
-      )}
-    >
-      {(projectsLoading || tasksLoading) && (
-        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-      )}
-      {!(projectsLoading || tasksLoading) && (
-        <div className={clsx("flex h-full w-full flex-col gap-4")}>
-          <div className={clsx("w-fit")}>
-            <InlineSelector
-              value={viewMode}
-              options={viewModeOptions}
-              onChange={setViewMode}
-            />
-          </div>
+    <MotionPage>
+      <div
+        className={clsx(
+          "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
+        )}
+      >
+        {(projectsLoading || tasksLoading) && (
+          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+        )}
+        {!(projectsLoading || tasksLoading) && (
+          <div className={clsx("flex h-full w-full flex-col gap-4")}>
+            <div className={clsx("w-fit")}>
+              <InlineSelector
+                value={viewMode}
+                options={viewModeOptions}
+                onChange={setViewMode}
+              />
+            </div>
 
-          <div
-            className={clsx(
-              "flex flex-1 flex-col justify-between gap-4 pb-4",
-              (projectsError || tasksError) && "justify-start gap-10"
-            )}
-          >
-            {(projectsError || tasksError) && (
-              <UserErrorMessage
-                onRetryButtonClick={() => {
-                  refetchTasks();
-                  refetchProjects();
-                }}
-              />
-            )}
-            {viewMode === "calendar" && !projectsLoading && !tasksLoading && (
-              <Calendar
-                tasks={tasks?.data ?? []}
-                projects={projects?.data ?? []}
-              />
-            )}
-            {viewMode === "scheduler" && !projectsLoading && !tasksLoading && (
-              <Scheduler
-                tasks={tasks?.data ?? []}
-                projects={projects?.data ?? []}
-              />
-            )}
+            <div
+              className={clsx(
+                "flex flex-1 flex-col justify-between gap-4 pb-4",
+                (projectsError || tasksError) && "justify-start gap-10"
+              )}
+            >
+              {(projectsError || tasksError) && (
+                <UserErrorMessage
+                  onRetryButtonClick={() => {
+                    refetchTasks();
+                    refetchProjects();
+                  }}
+                />
+              )}
+              {viewMode === "calendar" && !projectsLoading && !tasksLoading && (
+                <Calendar
+                  tasks={tasks?.data ?? []}
+                  projects={projects?.data ?? []}
+                />
+              )}
+              {viewMode === "scheduler" &&
+                !projectsLoading &&
+                !tasksLoading && (
+                  <Scheduler
+                    tasks={tasks?.data ?? []}
+                    projects={projects?.data ?? []}
+                  />
+                )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </MotionPage>
   );
 }

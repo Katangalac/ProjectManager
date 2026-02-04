@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import NotificationsShortList from "@/components/notification/NotificationsShortList";
 import { usePageMetaContext } from "@/hooks/utils/usePageMetaContext";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * Propriétés du Header
@@ -52,15 +53,34 @@ export default function Header({ className = "" }: HeaderProps) {
       )}
     >
       <div className={clsx("flex justify-between")}>
-        <div className={clsx("flex flex-col justify-center gap-1")}>
-          <div className={clsx("flex items-center justify-start gap-2")}>
-            {meta.icon && <span>{meta.icon}</span>}
-            <h1 className={clsx("text-left text-lg font-bold text-sky-500")}>
-              {meta.title}
-            </h1>
+        <AnimatePresence>
+          <div
+            key={meta.title}
+            className={clsx("flex flex-col justify-center gap-1")}
+          >
+            <motion.div
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={clsx("flex items-center justify-start gap-2")}
+            >
+              {meta.icon && <span>{meta.icon}</span>}
+              <h1 className={clsx("text-left text-lg font-bold text-sky-500")}>
+                {meta.title}
+              </h1>
+            </motion.div>
+            <motion.span
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={clsx("text-xs")}
+            >
+              {meta.message}
+            </motion.span>
           </div>
-          <span className={clsx("text-xs")}>{meta.message}</span>
-        </div>
+        </AnimatePresence>
 
         <div className={"flex items-center gap-2"}>
           <Tooltip>

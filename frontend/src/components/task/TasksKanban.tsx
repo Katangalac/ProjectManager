@@ -19,7 +19,7 @@ export default function TasksKanban({ tasks }: TasksKanbanProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full justify-between gap-4 overflow-x-visible"
+        "flex h-full w-full justify-between gap-4 overflow-x-auto pb-1"
       )}
     >
       {TASK_STATUSES.map((status) => (

@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import { ChartDonutIcon } from "@phosphor-icons/react/ChartDonut";
 import { cn } from "@/lib/utils";
-import {motion, AnimatePresence} from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion";
 
 type AppLogoProps = {
   showText: boolean;
@@ -36,14 +36,15 @@ export default function AppLogo({
 
       <AnimatePresence>
         {showText && (
-            <motion.span
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className={clsx("text-left whitespace-nowrap", "dark:font-white")}>
-              ProjectFlow
-            </motion.span>
+          <motion.span
+            initial={false}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={clsx("text-left whitespace-nowrap", "dark:font-white")}
+          >
+            ProjectFlow
+          </motion.span>
         )}
       </AnimatePresence>
     </div>
