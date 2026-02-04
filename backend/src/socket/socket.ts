@@ -5,10 +5,9 @@ import { getUserTeams } from "../user/user.services";
 import { getUserConversations } from "../user/user.services";
 import { verifyToken } from "../auth/utils/jwt";
 import { tokenPayloadSchema } from "../auth/auth.schemas";
-import * as cookie from 'cookie';
+import * as cookie from "cookie";
 import { redis } from "../types/Redis";
 //import {createAdapter} from "@socket.io/redis-adapter";
-
 
 //Instance du serveur Socket.io
 let io: Server;
@@ -27,7 +26,7 @@ let io: Server;
 export const setupSocket = (server: http.Server) => {
   io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL||"http://localhost:5173",
+      origin: process.env.CLIENT_URL || "http://localhost:5173",
       methods: ["GET", "POST"],
       credentials: true,
     },
