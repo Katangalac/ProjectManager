@@ -2,6 +2,7 @@ import { ComponentType } from "react";
 import { clsx } from "clsx";
 import { NavLink } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { motion, AnimatePresence } from "framer-motion";
 
 type IconWeightProps = "fill" | "regular" | "bold" | "duotone" | "light";
 
@@ -67,7 +68,19 @@ export default function NavItem({
             <TooltipContent>{showText ? "" : label}</TooltipContent>
           </Tooltip>
 
-          {showText && <span>{label}</span>}
+          <AnimatePresence>
+            {showText && (
+              <motion.span
+                initial={false}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="whitespace-nowrap"
+              >
+                {label}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </>
       )}
     </NavLink>

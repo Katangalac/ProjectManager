@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import AppLogo from "../commons/AppLogo";
 import NavItem from "./NavItem";
-import { useUserStore } from "../../stores/userStore";
+import { userStore } from "../../stores/userStore";
 import { useNavigate } from "react-router-dom";
 import {
   SignOutIcon,
@@ -18,6 +18,7 @@ import {
 } from "@phosphor-icons/react";
 import { socket } from "@/lib/socket/socketClient";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Propriétés du SideBar
@@ -35,7 +36,7 @@ type SideBarProps = {
  * Permet de naviguer entre les pages de l'application
  */
 export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
-  const { logout, user } = useUserStore();
+  const { logout } = userStore();
   const navigate = useNavigate();
 
   /**
@@ -43,20 +44,20 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
    */
   const handleLogout = async () => {
     await logout();
-    socket.emit("logout", user?.id);
     navigate("/login");
   };
 
   return (
-    <div className={clsx("fixed top-0 left-0 h-screen")}>
-      <aside
+    <div className={clsx("h-screen max-w-[200px]")}>
+      <motion.aside
+        initial={false}
+        animate={{ width: isCollapsed ? 64 : 200 }}
+        transition={{ type: "spring", stiffness: 200, damping: 25 }}
         className={clsx(
           "relative flex min-h-screen flex-col px-3 py-5",
-          "border-r border-gray-300 bg-white",
+          "border-r border-gray-300 bg-white shadow-lg",
           "dark:bg-gray-900",
-          "dark:border-gray-500",
-          "transition-all duration-300 ease-in-out",
-          isCollapsed ? "w-16" : "w-50"
+          "dark:border-gray-500"
         )}
       >
         <Tooltip>
@@ -98,16 +99,22 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           </a>
         </div>
 
-        {!isCollapsed && (
-          <h3
-            className={clsx(
-              "text-left text-sm font-bold text-gray-600",
-              "dark:text-gray-400"
-            )}
-          >
-            Main Menu
-          </h3>
-        )}
+        <AnimatePresence>
+          {!isCollapsed && (
+            <motion.h3
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={clsx(
+                "text-left text-sm font-bold whitespace-nowrap text-gray-600",
+                "dark:text-gray-400"
+              )}
+            >
+              Main Menu
+            </motion.h3>
+          )}
+        </AnimatePresence>
 
         <nav
           className={clsx(
@@ -169,15 +176,20 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
           )}
         ></div>
 
+        <AnimatePresence></AnimatePresence>
         {!isCollapsed && (
-          <h3
+          <motion.h3
+            initial={false}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             className={clsx(
-              "text-left text-sm font-bold text-gray-600",
+              "white text-left text-sm font-bold whitespace-nowrap text-gray-600",
               "dark:text-gray-400"
             )}
           >
             Account
-          </h3>
+          </motion.h3>
         )}
 
         <nav
@@ -215,7 +227,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
             {!isCollapsed && <span>Logout</span>}
           </button>
         </nav>
-      </aside>
+      </motion.aside>
     </div>
   );
 }

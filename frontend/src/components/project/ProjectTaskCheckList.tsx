@@ -29,7 +29,7 @@ export default function ProjectTaskCheckList({
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col rounded-sm border border-gray-300 pb-1"
+        "flex h-full w-full flex-col rounded-sm border border-gray-300 pb-1 shadow-md"
       )}
     >
       {/**Header */}
@@ -39,9 +39,7 @@ export default function ProjectTaskCheckList({
           "rounded-t-sm bg-sky-50"
         )}
       >
-        <span className={clsx("text-left text-sm font-medium text-black")}>
-          Tasks check list
-        </span>
+        <span className={clsx("text-left text-sm font-medium text-black")}>Tasks check list</span>
       </div>
 
       <div className={clsx("flex flex-1 flex-col gap-4")}>
@@ -70,45 +68,29 @@ export default function ProjectTaskCheckList({
                   {task.status === "COMPLETED" ? (
                     <CheckCircleIcon
                       weight="fill"
-                      className={clsx(
-                        "size-4 stroke-1 text-green-500",
-                        "cursor-pointer"
-                      )}
+                      className={clsx("size-4 stroke-1 text-green-500", "cursor-pointer")}
                       onClick={() => toggleTaskStatus(task)}
                     />
                   ) : (
                     <CircleIcon
                       weight="regular"
-                      className={clsx(
-                        "size-4 stroke-1 text-gray-500",
-                        "cursor-pointer"
-                      )}
+                      className={clsx("size-4 stroke-1 text-gray-500", "cursor-pointer")}
                       onClick={() => toggleTaskStatus(task)}
                     />
                   )}
-                  <div
-                    className={clsx("flex flex-1 items-center justify-between")}
-                  >
+                  <div className={clsx("flex flex-1 items-center justify-between")}>
                     <span
                       className={clsx(
                         "line-clamp-2 text-left text-[13px] text-wrap text-gray-800",
-                        task.status === "COMPLETED"
-                          ? "text-gray-500 line-through"
-                          : ""
+                        task.status === "COMPLETED" ? "text-gray-500 line-through" : ""
                       )}
                     >
                       {task.title}
                     </span>
 
                     <div className={clsx("flex gap-4")}>
-                      <span
-                        className={clsx(
-                          "flex text-left text-[10px] text-wrap text-gray-600"
-                        )}
-                      >
-                        {formatShortDateWithOptionalYear(
-                          new Date(task.deadline)
-                        )}
+                      <span className={clsx("flex text-left text-[10px] text-wrap text-gray-600")}>
+                        {formatShortDateWithOptionalYear(new Date(task.deadline))}
                         {/* {new Date(task.deadline).toISOString().split("T")[0]} */}
                       </span>
                       <span className={clsx("rotate-90 transform")}>
@@ -120,20 +102,12 @@ export default function ProjectTaskCheckList({
               ))}
             </div>
           ) : (
-            <NoItems
-              message="No tasks available"
-              textStyle="text-sm font-medium text-gray-400"
-            />
+            <NoItems message="No tasks available" textStyle="text-sm font-medium text-gray-400" />
           )}
         </div>
 
         {/**Footer */}
-        <div
-          className={clsx(
-            "h-fit w-full px-2 pb-3",
-            hideSeeAllButton && "hidden"
-          )}
-        >
+        <div className={clsx("h-fit w-full px-2 pb-3", hideSeeAllButton && "hidden")}>
           <button
             onClick={onSeeMore}
             className={clsx(

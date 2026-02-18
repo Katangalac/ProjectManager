@@ -21,10 +21,7 @@ type TeamMembersTableProps = {
  *
  * @param {TeamMembersTableProps} param0 - proprités du TeamMembersTable
  */
-export default function TeamMembersTable({
-  team,
-  showLeaderOnly,
-}: TeamMembersTableProps) {
+export default function TeamMembersTable({ team, showLeaderOnly }: TeamMembersTableProps) {
   return (
     <div className={clsx("flex max-h-[600px] w-full")}>
       {team.teamUsers && (
@@ -32,9 +29,7 @@ export default function TeamMembersTable({
           value={
             showLeaderOnly
               ? team.teamUsers.filter(
-                  (teamUser) =>
-                    teamUser.user.id === team.leaderId ||
-                    teamUser.userRole === "Leader"
+                  (teamUser) => teamUser.user.id === team.leaderId || teamUser.userRole === "Leader"
                 )
               : team.teamUsers
           }
@@ -42,7 +37,7 @@ export default function TeamMembersTable({
           scrollable
           scrollHeight="500px"
           className={clsx(
-            "w-full rounded-sm border border-gray-200 text-black",
+            "w-full rounded-sm border border-gray-200 text-black shadow-md",
             "dark:text-gray-200",
             "dark:border-gray-500"
           )}
@@ -51,9 +46,7 @@ export default function TeamMembersTable({
         >
           <Column
             header="UserName"
-            className={clsx(
-              "flex items-center justify-start p-2 text-xs font-medium"
-            )}
+            className={clsx("flex items-center justify-start p-2 text-xs font-medium")}
             headerClassName={clsx(
               "border-b border-gray-200 p-2 bg-sky-50 text-left text-xs font-medium text-gray-500",
               "dark:text-gray-400",
@@ -88,7 +81,7 @@ export default function TeamMembersTable({
           <Column
             header="Firstname"
             body={(teamUser) =>
-                teamUser.user.firstName && teamUser.user.firstName || (
+              (teamUser.user.firstName && teamUser.user.firstName) || (
                 <span className="text-gray-500 italic">"None"</span>
               )
             }
@@ -104,7 +97,7 @@ export default function TeamMembersTable({
           <Column
             header="Lastname"
             body={(teamUser) =>
-                teamUser.user.lastName && teamUser.user.lastName?.trim() !== "" ? (
+              teamUser.user.lastName && teamUser.user.lastName?.trim() !== "" ? (
                 teamUser.user.lastName
               ) : (
                 <span className="text-gray-500 italic">"None"</span>
@@ -121,7 +114,7 @@ export default function TeamMembersTable({
           <Column
             header="Profession"
             body={(teamUser) =>
-                teamUser.user.profession && teamUser.user.profession?.trim() !== "" ? (
+              teamUser.user.profession && teamUser.user.profession?.trim() !== "" ? (
                 teamUser.user.profession
               ) : (
                 <span className="text-gray-500 italic">"None"</span>

@@ -2,12 +2,7 @@ import { useState } from "react";
 import { clsx } from "clsx";
 import TasksTable from "../task/TasksTable";
 import { useTeamTasks } from "@/hooks/queries/team/useTeamTasks";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
 import TaskForm from "../task/TaskForm";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -37,15 +32,13 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
     pageSize,
   });
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4",
-        (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center",
+        (isLoading || !(data && data.data.length > 0)) && "items-center justify-center",
         isError && "items-center justify-center"
       )}
     >
@@ -55,9 +48,9 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
           <button
             onClick={() => setShowDialog(true)}
             className={clsx(
-              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-500 px-2 py-2",
               "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-              "rounded-md bg-sky-500 hover:bg-sky-600",
+              "rounded-md bg-sky-500 shadow-md hover:bg-sky-600",
               "text-xs font-medium text-white"
             )}
           >
@@ -65,15 +58,10 @@ export default function TeamTasksView({ teamId }: TeamTasksViewProps) {
             Add New
           </button>
         </div>
-        <TaskFilterButton
-          tasksFilter={tasksFilter}
-          setTasksFilter={setTasksFilter}
-        />
+        <TaskFilterButton tasksFilter={tasksFilter} setTasksFilter={setTasksFilter} />
       </div>
 
-      {isLoading && (
-        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-      )}
+      {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
 
       {!isLoading && isError && <UserErrorMessage />}
       {data && (

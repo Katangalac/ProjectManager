@@ -26,7 +26,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black shadow-md",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -60,9 +60,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
         <Column
           field="name"
           header="Name"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
@@ -110,9 +108,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
         <Column
           field="createdAt"
           header="Created at"
-          body={(rowData) =>
-            new Date(rowData.createdAt).toISOString().split("T")[0]
-          }
+          body={(rowData) => new Date(rowData.createdAt).toISOString().split("T")[0]}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
@@ -124,9 +120,7 @@ export default function TeamsTable({ teams }: TeamsTableProps) {
         <Column
           field="updatedAt"
           header="Last update"
-          body={(rowData) =>
-            new Date(rowData.updatedAt).toISOString().split("T")[0]
-          }
+          body={(rowData) => new Date(rowData.updatedAt).toISOString().split("T")[0]}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",

@@ -1,8 +1,4 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchProjectsFilter, ProjectStatus } from "@/types/Project";
 import { PROJECT_STATUS_META } from "@/lib/constants/project";
 import DatePicker from "../ui/DatePicker";
@@ -31,10 +27,7 @@ const STATUSES = Object.entries(PROJECT_STATUS_META).map(([status, meta]) => ({
 /**
  * Bouton de filtrage des projets
  */
-export default function ProjectFilterButton({
-  projectsFilter,
-  setProjectsFilter,
-}: Props) {
+export default function ProjectFilterButton({ projectsFilter, setProjectsFilter }: Props) {
   const [localFilter, setLocalFilter] = useState<SearchProjectsFilter>({
     ...projectsFilter,
   });
@@ -54,18 +47,14 @@ export default function ProjectFilterButton({
         <button
           className={clsx(
             "mt-2 flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-transparent px-2 py-2 text-xs font-medium",
-            "hover:bg-gray-100 focus:ring-2 focus:ring-sky-300 focus:outline-none",
+            "shadow-md hover:bg-gray-100 focus:ring-2 focus:ring-sky-300 focus:outline-none",
             isObjectNotEmpty(projectsFilter) && "bg-sky-200"
           )}
         >
           {isObjectNotEmpty(projectsFilter) ? (
             <FunnelIcon weight="fill" className="text-sky-500" size={16} />
           ) : (
-            <FunnelXIcon
-              size={16}
-              className="stroke-2 text-gray-400"
-              weight="fill"
-            />
+            <FunnelXIcon size={16} className="stroke-2 text-gray-400" weight="fill" />
           )}
           Filters
         </button>
@@ -106,10 +95,7 @@ export default function ProjectFilterButton({
                   "shadow-none"
                 )}
               >
-                <SelectValue
-                  className="text-black"
-                  placeholder="Pick a status"
-                />
+                <SelectValue className="text-black" placeholder="Pick a status" />
               </SelectTrigger>
               <SelectContent className="rounded-lg border border-gray-200 bg-white shadow-lg">
                 {STATUSES.map((option) => (
@@ -145,14 +131,8 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Start before</span>
           <DatePicker
-            value={
-              localFilter.startBefore
-                ? new Date(localFilter.startBefore)
-                : undefined
-            }
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, startBefore: e ?? undefined })
-            }
+            value={localFilter.startBefore ? new Date(localFilter.startBefore) : undefined}
+            onChange={(e) => setLocalFilter({ ...localFilter, startBefore: e ?? undefined })}
           />
         </div>
 
@@ -160,12 +140,8 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Start on</span>
           <DatePicker
-            value={
-              localFilter.startOn ? new Date(localFilter.startOn) : undefined
-            }
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, startOn: e ?? undefined })
-            }
+            value={localFilter.startOn ? new Date(localFilter.startOn) : undefined}
+            onChange={(e) => setLocalFilter({ ...localFilter, startOn: e ?? undefined })}
           />
         </div>
 
@@ -173,14 +149,8 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Start after</span>
           <DatePicker
-            value={
-              localFilter.startAfter
-                ? new Date(localFilter.startAfter)
-                : undefined
-            }
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, startAfter: e ?? undefined })
-            }
+            value={localFilter.startAfter ? new Date(localFilter.startAfter) : undefined}
+            onChange={(e) => setLocalFilter({ ...localFilter, startAfter: e ?? undefined })}
           />
         </div>
 
@@ -188,14 +158,8 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Deadline before</span>
           <DatePicker
-            value={
-              localFilter.endBefore
-                ? new Date(localFilter.endBefore)
-                : undefined
-            }
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, endBefore: e ?? undefined })
-            }
+            value={localFilter.endBefore ? new Date(localFilter.endBefore) : undefined}
+            onChange={(e) => setLocalFilter({ ...localFilter, endBefore: e ?? undefined })}
           />
         </div>
 
@@ -204,9 +168,7 @@ export default function ProjectFilterButton({
           <span className="text-sm font-bold">Deadline on</span>
           <DatePicker
             value={localFilter.endOn ? new Date(localFilter.endOn) : undefined}
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, endOn: e ?? undefined })
-            }
+            onChange={(e) => setLocalFilter({ ...localFilter, endOn: e ?? undefined })}
           />
         </div>
 
@@ -214,12 +176,8 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Deadline after</span>
           <DatePicker
-            value={
-              localFilter.endAfter ? new Date(localFilter.endAfter) : undefined
-            }
-            onChange={(e) =>
-              setLocalFilter({ ...localFilter, endAfter: e ?? undefined })
-            }
+            value={localFilter.endAfter ? new Date(localFilter.endAfter) : undefined}
+            onChange={(e) => setLocalFilter({ ...localFilter, endAfter: e ?? undefined })}
           />
         </div>
 
@@ -227,11 +185,7 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Completed before</span>
           <DatePicker
-            value={
-              localFilter.completedBefore
-                ? new Date(localFilter.completedBefore)
-                : undefined
-            }
+            value={localFilter.completedBefore ? new Date(localFilter.completedBefore) : undefined}
             onChange={(e) =>
               setLocalFilter({
                 ...localFilter,
@@ -245,11 +199,7 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Completed on</span>
           <DatePicker
-            value={
-              localFilter.completedOn
-                ? new Date(localFilter.completedOn)
-                : undefined
-            }
+            value={localFilter.completedOn ? new Date(localFilter.completedOn) : undefined}
             onChange={(e) =>
               setLocalFilter({
                 ...localFilter,
@@ -263,11 +213,7 @@ export default function ProjectFilterButton({
         <div>
           <span className="text-sm font-bold">Completed after</span>
           <DatePicker
-            value={
-              localFilter.completedAfter
-                ? new Date(localFilter.completedAfter)
-                : undefined
-            }
+            value={localFilter.completedAfter ? new Date(localFilter.completedAfter) : undefined}
             onChange={(e) =>
               setLocalFilter({
                 ...localFilter,

@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RootRedirect from "./pages/RootRedirect.tsx";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AuthCallback from "./pages/AuthCallback";
 import DashBoard from "./pages/DashBoard.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
 import ProtectedRoute from "./components/commons/ProtectedRoute.tsx";
@@ -16,7 +17,7 @@ import TeamDetailsPage from "./pages/TeamDetailsPage.tsx";
 import NotificationsPage from "./pages/NotficationPage.tsx";
 import TestPage from "./pages/TestPage.tsx";
 import MessagePage from "./pages/MessagePage.tsx";
-import { useUserStore } from "./stores/userStore.ts";
+import { userStore } from "./stores/userStore.ts";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMe } from "./api/auth.api.ts";
@@ -28,13 +29,13 @@ import { toast } from "sonner";
 import { MessageWithRelation } from "./types/Message.ts";
 import { Notification } from "./types/Notification.ts";
 import { socket } from "./lib/socket/socketClient.ts";
-import {showInfo} from "@/utils/toastService";
+import { showInfo } from "@/utils/toastService";
 
 /**
  * Point d'entrée de l'application
  */
 function App() {
-  const { setUser, logout, isAuthenticated, user } = useUserStore();
+  const { setUser, logout, isAuthenticated, user } = userStore();
 
   /**
    * Récupère les informations de l'utilisateur connecté
@@ -63,13 +64,11 @@ function App() {
   //Evénements socket global
   useSocket<MessageWithRelation>("new_message", (data) => {
     if (user && data.senderId !== user.id) {
-        if(data.content) showInfo(data.content);
+      if (data.content) showInfo(data.content);
     }
   });
 
-  useSocket<Notification>("new_notification", (data) =>
-    showInfo(data.message)
-  );
+  useSocket<Notification>("new_notification", (data) => showInfo(data.message));
 
   useSocket<string>("new_conversation", (data) =>
     socket.emit("join_conversation", data)
@@ -96,6 +95,7 @@ function App() {
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route element={<MainLayout />}>
             <Route
               path="/dashboard"

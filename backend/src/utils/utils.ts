@@ -1,13 +1,13 @@
 import { Request } from "express";
 import { Prisma } from "@prisma/client";
-import { SearchNotificationsFilter } from "../notification/Notification";
-import { SearchTasksFilter } from "../task/Task";
-import { SearchTeamsFilter } from "../team/Team";
-import { SearchUsersFilter } from "../user/User";
-import { SearchProjectsFilter } from "../project/Project";
-import { SearchMessagesFilter } from "../message/Message";
-import { SearchConversationsFilter } from "../conversation/Conversation";
-import { SearchInvitationFilter } from "../invitation/Invitation";
+import { SearchNotificationsFilter } from "../types/Notification";
+import { SearchTasksFilter } from "../types/Task";
+import { SearchTeamsFilter } from "../types/Team";
+import { SearchUsersFilter } from "../types/User";
+import { SearchProjectsFilter } from "../types/Project";
+import { SearchMessagesFilter } from "../types/Message";
+import { SearchConversationsFilter } from "../types/Conversation";
+import { SearchInvitationFilter } from "../types/Invitation";
 import { Pagination } from "../types/Pagination";
 
 //Format des numéros de téléphone

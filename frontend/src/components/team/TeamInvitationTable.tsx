@@ -17,9 +17,7 @@ type TeamInvitationsTableProps = {
  * Affiche les équipes dans une table
  * @param {TeamInvitationsTableProps} param0 - Propriétés du TeamsTable
  */
-export default function TeamInvitationsTable({
-  invitations,
-}: TeamInvitationsTableProps) {
+export default function TeamInvitationsTable({ invitations }: TeamInvitationsTableProps) {
   return (
     <div className={clsx("flex max-h-[600px] w-full")}>
       <DataTable
@@ -28,7 +26,7 @@ export default function TeamInvitationsTable({
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black shadow-md",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -69,9 +67,7 @@ export default function TeamInvitationsTable({
               <span className="text-gray-500 italic">"None"</span>
             )
           }
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",

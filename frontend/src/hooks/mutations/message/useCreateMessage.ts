@@ -19,14 +19,14 @@ type CreateMessageMutationParams = {
  * @returns la fontion de mutation ainsi que le status de la requête
  */
 export const useCreateMessage = (params: CreateMessageMutationParams = {}) => {
-  const queryClient = useQueryClient();
+  //const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: CreateMessageData) => {
       const message = await sendMessage(data);
       socket.emit("send_message", message.data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["conversationMessages"] });
+      //queryClient.invalidateQueries({ queryKey: ["conversationMessages"] });
       params.onSuccess?.();
     },
     onError: (error) => {

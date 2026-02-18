@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       </div>
       <div
         className={clsx(
-          "b-custom relative flex-1 items-center justify-center overflow-hidden bg-sky-500 lg:flex",
+          "b-custom hidden relative flex-1 items-center justify-center overflow-hidden bg-sky-500 lg:flex",
           "m-5 rounded-xl rounded-bl-[20%]"
         )}
       >

@@ -18,7 +18,7 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
   return (
     <div
       className={clsx(
-        "flex h-full w-full flex-col gap-2 rounded-sm border border-gray-300"
+        "flex h-full w-full flex-col gap-2 rounded-sm border border-gray-300 shadow-md"
       )}
     >
       <div
@@ -27,9 +27,7 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
           "rounded-t-sm bg-sky-50"
         )}
       >
-        <span className={clsx("text-left text-sm font-medium text-black")}>
-          Tasks
-        </span>
+        <span className={clsx("text-left text-sm font-medium text-black")}>Tasks</span>
         <div className={clsx("flex gap-2")}>
           <button
             disabled={currentIndex === 0}
@@ -55,9 +53,7 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
           </button>
         </div>
       </div>
-      <div
-        className={clsx("flex h-full w-full flex-col justify-between gap-4")}
-      >
+      <div className={clsx("flex h-full w-full flex-col justify-between gap-4")}>
         <div
           className={clsx(
             "flex flex-1 flex-col px-2",
@@ -70,21 +66,15 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
           {tasks.length >= 1 ? (
             <div className={clsx("flex h-full w-full flex-col gap-3")}>
               <div className={clsx("flex flex-col gap-[0.5px]")}>
-                <span className={clsx("text-left text-[10px] text-gray-600")}>
-                  Task name
-                </span>
-                <span
-                  className={clsx("text-left text-xs font-medium text-black")}
-                >
+                <span className={clsx("text-left text-[10px] text-gray-600")}>Task name</span>
+                <span className={clsx("text-left text-xs font-medium text-black")}>
                   {tasks[currentIndex]?.title}
                 </span>
               </div>
 
               <div className={clsx("flex gap-6")}>
                 <div className={clsx("flex max-w-20 flex-col gap-[0.5px]")}>
-                  <span className={clsx("text-left text-[10px] text-gray-600")}>
-                    Assigned to
-                  </span>
+                  <span className={clsx("text-left text-[10px] text-gray-600")}>Assigned to</span>
                   <div
                     className={clsx(
                       "flex -space-x-2",
@@ -116,29 +106,29 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
                 </div>
 
                 <div className={clsx("flex flex-col gap-[0.5px]")}>
-                  {tasks[currentIndex]?.completedAt && tasks[currentIndex]?.status === "COMPLETED" ?
-                      (<>
-                        <span className={clsx("text-left text-[10px] text-gray-600")}>
-                    Completed on
-                  </span>
-                        <span className={clsx("text-left text-xs text-black")}>
-                    {dateToLongString(new Date(tasks[currentIndex]?.completedAt))}
-                  </span>
-                      </>):
-                      (<><span className={clsx("text-left text-[10px] text-gray-600")}>
-                    Deadline
-                  </span>
-                    <span className={clsx("text-left text-xs text-black")}>
-                    {dateToLongString(new Date(tasks[currentIndex]?.deadline))}
-                  </span></>)
-                  }
+                  {tasks[currentIndex]?.completedAt &&
+                  tasks[currentIndex]?.status === "COMPLETED" ? (
+                    <>
+                      <span className={clsx("text-left text-[10px] text-gray-600")}>
+                        Completed on
+                      </span>
+                      <span className={clsx("text-left text-xs text-black")}>
+                        {dateToLongString(new Date(tasks[currentIndex]?.completedAt))}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className={clsx("text-left text-[10px] text-gray-600")}>Deadline</span>
+                      <span className={clsx("text-left text-xs text-black")}>
+                        {dateToLongString(new Date(tasks[currentIndex]?.deadline))}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
               <div className={clsx("flex flex-col gap-[0.5px]")}>
-                <span className={clsx("text-left text-[10px] text-gray-600")}>
-                  Description
-                </span>
+                <span className={clsx("text-left text-[10px] text-gray-600")}>Description</span>
                 <p
                   className={clsx(
                     "max-h-10 overflow-y-visible text-left text-xs text-black",
@@ -152,10 +142,7 @@ export default function ProjectTasks({ tasks, onSeeMore }: ProjectTasksProps) {
               </div>
             </div>
           ) : (
-            <NoItems
-              message="No tasks available"
-              textStyle="text-sm font-medium text-gray-400"
-            />
+            <NoItems message="No tasks available" textStyle="text-sm font-medium text-gray-400" />
           )}
         </div>
         <div className={clsx("h-fit w-full px-2 pb-3")}>

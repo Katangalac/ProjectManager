@@ -3,7 +3,7 @@ import { UpdateUserData, User } from "../../types/User";
 import { updateUserDataSchema } from "../../schemas/user.schemas";
 import { useState, useEffect, useCallback } from "react";
 import { updateUser } from "../../api/user.api";
-import { useUserStore } from "../../stores/userStore";
+import { userStore } from "../../stores/userStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { timeAgo, dateToLongString } from "@/utils/dateUtils";
@@ -28,11 +28,8 @@ type ProfileUserInfoProps = {
  *
  * @param {ProfileUserInfoProps} param0 - Propriétés du ProfileUserInfos
  */
-export default function ProfileUserInfo({
-  user,
-  isEditable,
-}: ProfileUserInfoProps) {
-  const { setUser } = useUserStore();
+export default function ProfileUserInfo({ user, isEditable }: ProfileUserInfoProps) {
+  const { setUser } = userStore();
   const [editing, setEditing] = useState(false);
   const { isOnline } = useUserStatus(user.id);
   const lastLogin = isOnline?.valueOf()
@@ -121,19 +118,14 @@ export default function ProfileUserInfo({
   return (
     <div
       className={clsx(
-        "flex flex-col items-start gap-5 px-7 py-4",
+        "flex flex-col items-start gap-5 px-7 py-4 shadow-md",
         "rounded-sm border border-gray-300",
         "dark:border-gray-500"
       )}
     >
       <div className={clsx("flex w-full flex-col items-start gap-2")}>
         <div className={clsx("flex w-full items-center justify-between")}>
-          <h3
-            className={clsx(
-              "text-sm font-bold text-sky-500",
-              "dark:text-white"
-            )}
-          >
+          <h3 className={clsx("text-sm font-bold text-sky-500", "dark:text-white")}>
             Personal informations
           </h3>
 
@@ -142,7 +134,8 @@ export default function ProfileUserInfo({
             <button
               className={clsx(
                 "flex items-center justify-between gap-3 px-2 py-1",
-                "rounded-sm bg-sky-500 hover:bg-sky-600",
+                "rounded-sm bg-sky-500 shadow-md hover:bg-sky-600",
+                "border border-sky-500",
                 "text-sm font-medium text-white",
                 "dark:bg-sky-800 dark:hover:bg-sky-700",
                 "dark:text-white"
@@ -155,18 +148,11 @@ export default function ProfileUserInfo({
           )}
         </div>
 
-        <div
-          className={clsx(
-            "w-full border-b border-gray-300",
-            "dark:border-gray-500"
-          )}
-        ></div>
+        <div className={clsx("w-full border-b border-gray-300", "dark:border-gray-500")}></div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className={clsx("w-full")}>
-        <div
-          className={clsx("grid grid-cols-1 gap-x-28 gap-y-6 md:grid-cols-3")}
-        >
+        <div className={clsx("grid grid-cols-1 gap-x-28 gap-y-6 md:grid-cols-3")}>
           {/**Prénom de l'utilisateur*/}
           <div className={clsx("flex flex-col")}>
             <div className={clsx("flex justify-between")}>
@@ -180,9 +166,7 @@ export default function ProfileUserInfo({
                 Firstname
               </span>
               {errors.firstName && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.firstName.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.firstName.message}</p>
               )}
             </div>
 
@@ -218,9 +202,7 @@ export default function ProfileUserInfo({
                 Lastname
               </span>
               {errors.lastName && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.lastName.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.lastName.message}</p>
               )}
             </div>
 
@@ -255,9 +237,7 @@ export default function ProfileUserInfo({
                 Username
               </span>
               {errors.userName && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.userName.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.userName.message}</p>
               )}
             </div>
 
@@ -292,15 +272,13 @@ export default function ProfileUserInfo({
                 Email
               </span>
               {errors.email && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.email.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.email.message}</p>
               )}
             </div>
 
             <input
               className={clsx(
-                "flex justify-start",
+                "justify-star flex truncate",
                 "text-sm font-medium text-black",
                 "dark:text-white",
                 editing &&
@@ -329,9 +307,7 @@ export default function ProfileUserInfo({
                 Phone number
               </span>
               {errors.phoneNumber && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.phoneNumber.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.phoneNumber.message}</p>
               )}
             </div>
 
@@ -366,9 +342,7 @@ export default function ProfileUserInfo({
                 Profession
               </span>
               {errors.profession && (
-                <p className={clsx("text-sm text-red-500")}>
-                  {errors.profession.message}
-                </p>
+                <p className={clsx("text-sm text-red-500")}>{errors.profession.message}</p>
               )}
             </div>
 
@@ -393,11 +367,7 @@ export default function ProfileUserInfo({
           {/**Date de dernière connexion */}
           <div className={clsx("flex flex-col")}>
             <span
-              className={clsx(
-                "flex justify-start",
-                "text-sm text-gray-500",
-                "dark:text-gray-300"
-              )}
+              className={clsx("flex justify-start", "text-sm text-gray-500", "dark:text-gray-300")}
             >
               Last login
             </span>
@@ -418,11 +388,7 @@ export default function ProfileUserInfo({
           {/**Date d'inscription */}
           <div className={clsx("flex flex-col")}>
             <span
-              className={clsx(
-                "flex justify-start",
-                "text-sm text-gray-500",
-                "dark:text-gray-300"
-              )}
+              className={clsx("flex justify-start", "text-sm text-gray-500", "dark:text-gray-300")}
             >
               Signup since
             </span>
@@ -430,15 +396,13 @@ export default function ProfileUserInfo({
             <input
               className={clsx(
                 "flex justify-start",
-                "text-sm font-medium text-black",
+                "text-sm font-medium text-black placeholder:italic",
                 "dark:text-white"
               )}
               type="text"
               placeholder="Unkown"
               disabled={true}
-              value={
-                user.createdAt ? dateToLongString(new Date(user.createdAt)) : ""
-              }
+              value={user.createdAt ? dateToLongString(new Date(user.createdAt)) : ""}
             />
           </div>
         </div>
@@ -450,7 +414,8 @@ export default function ProfileUserInfo({
               type="submit"
               className={clsx(
                 "px-5 py-1 font-semibold text-white",
-                "rounded-sm bg-sky-500 hover:bg-sky-600"
+                "rounded-sm bg-sky-500 shadow-md hover:bg-sky-600",
+                "border border-sky-500"
               )}
             >
               Save
