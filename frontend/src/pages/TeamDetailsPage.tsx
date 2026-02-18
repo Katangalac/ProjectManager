@@ -25,6 +25,7 @@ import {
 import TeamInvitationsView from "@/components/team/TeamInvitationsView";
 import TeamProjectsView from "@/components/team/TeamProjectsView";
 import TeamTasksView from "@/components/team/TeamTasksView";
+import MotionPage from "@/components/commons/MotionPage";
 
 /**
  * Affiche les informations détaillées d'une équipe :
@@ -40,158 +41,167 @@ export default function TeamDetailsPage() {
   if (isError) return <div>An error occur while loading team</div>;
 
   return (
-    <div
-      className={clsx(
-        "flex h-full w-full items-start justify-start gap-5",
-        isLoading && "items-center justify-center"
-      )}
-    >
-      {isLoading ? (
-        <div className="flex h-full w-full items-center justify-center">
-          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-        </div>
-      ) : (
-        <>
-          {data && (
-            <Tabs defaultValue="projects" className="h-full w-full gap-0">
-              <TabsList className="h-fit w-full justify-start gap-5 rounded-none border-b border-gray-300 px-3 py-0">
-                <div className={clsx("mr-4 flex w-fit items-center gap-2")}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        className={clsx(
-                          "flex cursor-pointer items-center justify-center rounded-full bg-white p-0.5",
-                          "hover:bg-gray-100",
-                          "border border-gray-400"
-                        )}
-                        onClick={() => navigate("/userTeams")}
-                      >
-                        <ArrowLeftIcon
-                          weight="bold"
+    <MotionPage>
+      <div
+        className={clsx(
+          "flex h-full w-full items-start justify-start gap-5",
+          isLoading && "items-center justify-center"
+        )}
+      >
+        {isLoading ? (
+          <div className="flex h-full w-full items-center justify-center">
+            <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
+          </div>
+        ) : (
+          <>
+            {data && (
+              <Tabs defaultValue="projects" className="h-full w-full gap-0">
+                <TabsList className="h-fit w-full justify-start gap-5 rounded-none border-b border-gray-300 px-3 py-0">
+                  <div className={clsx("mr-4 flex w-fit items-center gap-2")}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
                           className={clsx(
-                            "size-2.5 cursor-pointer text-gray-500 hover:text-gray-700"
+                            "flex cursor-pointer items-center justify-center rounded-full bg-white p-0.5",
+                            "hover:bg-gray-100",
+                            "border border-gray-400"
                           )}
-                        />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>Teams</TooltipContent>
-                  </Tooltip>
+                          onClick={() => navigate("/userTeams")}
+                        >
+                          <ArrowLeftIcon
+                            weight="bold"
+                            className={clsx(
+                              "size-2.5 cursor-pointer text-gray-500 hover:text-gray-700"
+                            )}
+                          />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Teams</TooltipContent>
+                    </Tooltip>
 
-                  <TeamNameAcronym
-                    id={data.data.id}
-                    name={data.data.name}
-                    className="h-fit w-fit px-2 py-2"
-                    textClassName="text-red-500 text-xs font-medium"
-                  />
-                  <span className="text-sm font-medium text-black">
-                    {data.data.name}
-                  </span>
+                    <TeamNameAcronym
+                      id={data.data.id}
+                      name={data.data.name}
+                      className="h-fit w-fit px-2 py-2"
+                      textClassName="text-red-500 text-xs font-medium"
+                    />
+                    <span className="text-sm font-medium text-black">
+                      {data.data.name}
+                    </span>
+                  </div>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="projects"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <FolderIcon className={clsx("size-4.5")} /> Projects
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="tasks"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <ClipboardDocumentListIcon className={clsx("size-4.5")} />{" "}
+                      Tasks
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="publications"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <ChatBubbleLeftRightIcon className={clsx("size-4.5")} />{" "}
+                      Publications
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="members"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <UserGroupIcon className={clsx("size-4.5")} /> Members
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="invitations"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <UserPlusIcon className={clsx("size-4.5")} /> Invitations
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className={clsx(
+                      "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                      "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
+                      "data-[state=active]:text-black",
+                      "hover:text-black"
+                    )}
+                    value="about"
+                  >
+                    <span className={clsx("flex items-center gap-1 stroke-1")}>
+                      <InformationCircleIcon className={clsx("size-4.5")} />{" "}
+                      About
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+                <div className={clsx("h-full w-full")}>
+                  <TabsContent value="projects" className={clsx("h-fit px-5")}>
+                    <TeamProjectsView teamId={teamId!} />
+                  </TabsContent>
+                  <TabsContent value="tasks" className={clsx("h-fit px-5")}>
+                    <TeamTasksView teamId={teamId!} />
+                  </TabsContent>
+                  <TabsContent
+                    value="publications"
+                    className="m-0 h-full w-full"
+                  >
+                    <TeamConversationsView teamId={teamId!} />
+                  </TabsContent>
+                  <TabsContent value="members" className={clsx("h-fit px-5")}>
+                    <TeamMembersView team={data.data} />
+                  </TabsContent>
+                  <TabsContent
+                    value="invitations"
+                    className={clsx("h-fit px-5")}
+                  >
+                    <TeamInvitationsView teamId={teamId!} />
+                  </TabsContent>
+                  <TabsContent value="about" className={clsx("h-fit px-5")}>
+                    <TeamAbout team={data.data} />
+                  </TabsContent>
                 </div>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="projects"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <FolderIcon className={clsx("size-4.5")} /> Projects
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="tasks"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <ClipboardDocumentListIcon className={clsx("size-4.5")} />{" "}
-                    Tasks
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="publications"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <ChatBubbleLeftRightIcon className={clsx("size-4.5")} />{" "}
-                    Publications
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="members"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <UserGroupIcon className={clsx("size-4.5")} /> Members
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="invitations"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <UserPlusIcon className={clsx("size-4.5")} /> Invitations
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  className={clsx(
-                    "w-fit rounded-none px-0 py-3 data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                    "data-[state=active]:border-b-3 data-[state=active]:border-sky-500",
-                    "data-[state=active]:text-black",
-                    "hover:text-black"
-                  )}
-                  value="about"
-                >
-                  <span className={clsx("flex items-center gap-1 stroke-1")}>
-                    <InformationCircleIcon className={clsx("size-4.5")} /> About
-                  </span>
-                </TabsTrigger>
-              </TabsList>
-              <div className={clsx("h-full w-full")}>
-                <TabsContent value="projects" className={clsx("h-fit px-5")}>
-                  <TeamProjectsView teamId={teamId!} />
-                </TabsContent>
-                <TabsContent value="tasks" className={clsx("h-fit px-5")}>
-                  <TeamTasksView teamId={teamId!} />
-                </TabsContent>
-                <TabsContent value="publications" className="m-0 h-full w-full">
-                  <TeamConversationsView teamId={teamId!} />
-                </TabsContent>
-                <TabsContent value="members" className={clsx("h-fit px-5")}>
-                  <TeamMembersView team={data.data} />
-                </TabsContent>
-                <TabsContent value="invitations" className={clsx("h-fit px-5")}>
-                  <TeamInvitationsView teamId={teamId!} />
-                </TabsContent>
-                <TabsContent value="about" className={clsx("h-fit px-5")}>
-                  <TeamAbout team={data.data} />
-                </TabsContent>
-              </div>
-            </Tabs>
-          )}
-        </>
-      )}
-    </div>
+              </Tabs>
+            )}
+          </>
+        )}
+      </div>
+    </MotionPage>
   );
 }

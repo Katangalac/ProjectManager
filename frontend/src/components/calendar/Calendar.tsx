@@ -102,11 +102,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
               {event.original.assignedTo.length > 0 ? (
                 <div className="flex items-center gap-2">
                   <span className="flex items-center gap-2 text-sm text-gray-600">
-                    <UsersIcon
-                      weight="fill"
-                      size={20}
-                      className={clsx("text-sm text-gray-500")}
-                    />{" "}
+                    <UsersIcon weight="fill" size={20} className={clsx("text-sm text-gray-500")} />{" "}
                     Assignees{" "}
                   </span>
                   <div className={clsx("flex -space-x-2")}>
@@ -129,9 +125,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
                   </div>
                 </div>
               ) : (
-                <span className="text-sm text-gray-500 italic">
-                  "Unassigned"
-                </span>
+                <span className="text-sm text-gray-500 italic">"Unassigned"</span>
               )}
             </>
           )}
@@ -139,11 +133,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
           {event.start && (
             <div className="flex gap-2">
               <span className="flex items-center gap-2 text-sm text-gray-600">
-                <CalendarPlusIcon
-                  weight="duotone"
-                  size={20}
-                  className={clsx("text-gray-500")}
-                />{" "}
+                <CalendarPlusIcon weight="duotone" size={20} className={clsx("text-gray-500")} />{" "}
                 Started on {dateToLongString(new Date(event.start))}
               </span>
             </div>
@@ -151,11 +141,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
           {event.original.status === "COMPLETED" ? (
             <div className="flex gap-2">
               <span className="flex items-center gap-2 text-sm text-gray-600">
-                <CalendarCheckIcon
-                  weight="duotone"
-                  size={20}
-                  className={clsx("text-gray-500")}
-                />{" "}
+                <CalendarCheckIcon weight="duotone" size={20} className={clsx("text-gray-500")} />{" "}
                 Completed on {event.completedAt}
               </span>
             </div>
@@ -164,11 +150,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
               {event.end && (
                 <div className="flex gap-2">
                   <span className="flex items-center gap-2 text-sm text-gray-600">
-                    <CalendarXIcon
-                      weight="duotone"
-                      size={20}
-                      className={clsx("text-gray-500")}
-                    />{" "}
+                    <CalendarXIcon weight="duotone" size={20} className={clsx("text-gray-500")} />{" "}
                     Deadline on {dateToLongString(new Date(event.end))}
                   </span>
                 </div>
@@ -180,9 +162,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
               value={event.original.progress}
               className={clsx("h-1.5 [&>div]:bg-sky-500")}
             />
-            <span className="text-sm font-medium">
-              {event.original.progress}% Completed
-            </span>
+            <span className="text-sm font-medium">{event.original.progress}% Completed</span>
           </div>
         </div>
       </div>
@@ -205,7 +185,7 @@ export default function Calendar({ tasks, projects }: CalendarProps) {
         eventDelete={false}
         view={view}
         data={events}
-        className={clsx("rounded-md border border-gray-300")}
+        className={clsx("rounded-md border border-gray-300 shadow-md")}
         onEventClick={handleEventClick}
         onPageLoaded={() => setIsLoading(false)}
       />

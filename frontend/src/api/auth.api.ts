@@ -18,7 +18,13 @@ export async function loginRequest(identifier: string, password: string) {
       identifier,
       password,
     });
-    socket.connect();
+
+    // try {
+    //   console.log("Connecté");
+    //   socket.connect();
+    // } catch (error: unknown) {
+    //   console.log("Erreur de socket!", error);
+    // }
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
@@ -42,8 +48,12 @@ export async function loginRequest(identifier: string, password: string) {
 export const logoutRequest = async () => {
   try {
     const axiosResponse = await axiosClient.post("/auth/logout");
-    socket.disconnect();
-    console.log(axiosResponse.data);
+    try {
+      console.log("Deconnecté");
+      socket.disconnect();
+    } catch (error: unknown) {
+      console.log("Erreur de socket!", error);
+    }
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
@@ -77,7 +87,11 @@ export const registerRequest = async (
       email,
       password,
     });
-
+    try {
+      socket.connect();
+    } catch (error: unknown) {
+      console.log("Erreur de socket!", error);
+    }
     return response.data;
   } catch (err: unknown) {
     if (axios.isAxiosError?.(err)) {

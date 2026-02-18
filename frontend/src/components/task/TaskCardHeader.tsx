@@ -56,7 +56,7 @@ export default function TaskCardHeader({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              {!flipped ? "Show description" : "Show main infos"}s
+              {!flipped ? "Show description" : "Show main infos"}
             </TooltipContent>
           </Tooltip>
 

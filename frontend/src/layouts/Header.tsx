@@ -1,27 +1,16 @@
 import { clsx } from "clsx";
 import { useNavigate } from "react-router-dom";
 import { ReactNode, useState } from "react";
-import { useUserStore } from "../stores/userStore";
+import { userStore } from "../stores/userStore";
 import UserProfilePhoto from "../components/profile/UserProfilePhoto";
 import { Search, Bell } from "lucide-react";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "../components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import NotificationsShortList from "@/components/notification/NotificationsShortList";
 import { usePageMetaContext } from "@/hooks/utils/usePageMetaContext";
+import { useUserUnreadNotificationsCount } from "@/hooks/queries/user/useUserUnreadNotifications";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * Propriétés du Header
@@ -33,34 +22,47 @@ type HeaderProps = {
 };
 
 export default function Header({ className = "" }: HeaderProps) {
-  const { user } = useUserStore();
+  const { user } = userStore();
   const { meta } = usePageMetaContext();
+  const { data = 0, isLoading } = useUserUnreadNotificationsCount();
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
-  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
-    null
-  );
+  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(null);
   const navigate = useNavigate();
 
   return (
     <header
       className={clsx(
-        "border-b-4 border-sky-500 bg-white px-4 py-2 text-black",
+        "border-b border-gray-300 bg-white px-4 py-2 text-black shadow-lg",
         className
       )}
     >
       <div className={clsx("flex justify-between")}>
-        <div className={clsx("flex flex-col justify-center gap-1")}>
-          <div className={clsx("flex items-center justify-start gap-2")}>
-            {meta.icon && <span>{meta.icon}</span>}
-            <h1 className={clsx("text-left text-lg font-bold text-sky-500")}>
-              {meta.title}
-            </h1>
+        <AnimatePresence>
+          <div key={meta.title} className={clsx("flex flex-col justify-center gap-1")}>
+            <motion.div
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={clsx("flex items-center justify-start gap-2")}
+            >
+              {meta.icon && <span>{meta.icon}</span>}
+              <h1 className={clsx("text-left text-lg font-bold text-sky-500")}>{meta.title}</h1>
+            </motion.div>
+            <motion.span
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={clsx("text-xs")}
+            >
+              {meta.message}
+            </motion.span>
           </div>
-          <span className={clsx("text-xs")}>{meta.message}</span>
-        </div>
+        </AnimatePresence>
 
         <div className={"flex items-center gap-2"}>
           <Tooltip>
@@ -86,14 +88,24 @@ export default function Header({ className = "" }: HeaderProps) {
 
           <Popover>
             <PopoverTrigger asChild>
-              <button
-                className={clsx(
-                  "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
+              <div className={clsx("relative h-fit w-fit cursor-pointer rounded-full")}>
+                <button
+                  className={clsx(
+                    "cursor-pointer rounded-full border border-gray-300 px-2 py-2 hover:bg-gray-100"
+                  )}
+                >
+                  {/* <i className={clsx("pi pi-bell size-5")} /> */}
+                  <Bell className={clsx("size-5 stroke-2 text-gray-500")} />
+                </button>
+                {!isLoading && data > 0 && (
+                  <div
+                    className={clsx(
+                      "absolute top-1 right-0 ring-2 ring-white",
+                      "size-2 rounded-full bg-red-500"
+                    )}
+                  ></div>
                 )}
-              >
-                {/* <i className={clsx("pi pi-bell size-5")} /> */}
-                <Bell className={clsx("size-5 stroke-2 text-gray-500")} />
-              </button>
+              </div>
             </PopoverTrigger>
             <PopoverContent
               sideOffset={8}
@@ -102,9 +114,7 @@ export default function Header({ className = "" }: HeaderProps) {
               className="w-fit"
             >
               <div className={clsx("flex flex-col gap-2")}>
-                <span
-                  className={clsx("text-left text-sm font-medium text-black")}
-                >
+                <span className={clsx("text-left text-sm font-medium text-black")}>
                   Notifications
                 </span>
                 <NotificationsShortList />
@@ -138,9 +148,7 @@ export default function Header({ className = "" }: HeaderProps) {
               </>
             ) : (
               <>
-                <span className={clsx("text-xs font-medium text-gray-700")}>
-                  Déconnecté
-                </span>
+                <span className={clsx("text-xs font-medium text-gray-700")}>Déconnecté</span>
               </>
             )}
           </div>
@@ -155,15 +163,8 @@ export default function Header({ className = "" }: HeaderProps) {
             dialogStyle
           )}
         >
-          <DialogHeader
-            className={clsx(
-              "rounded-t-md bg-sky-500 px-4 py-4",
-              dialogHeaderStyle
-            )}
-          >
-            <DialogTitle className="text-lg text-black">
-              {dialogTitle}
-            </DialogTitle>
+          <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4", dialogHeaderStyle)}>
+            <DialogTitle className="text-lg text-black">{dialogTitle}</DialogTitle>
           </DialogHeader>
           <div
             className={clsx(

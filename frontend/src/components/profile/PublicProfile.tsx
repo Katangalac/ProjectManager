@@ -21,12 +21,7 @@ type PublicProfileProps = {
  */
 export default function PublicProfile({ user }: PublicProfileProps) {
   return (
-    <div
-      className={clsx(
-        "flex min-h-screen flex-col gap-6",
-        "bg-white dark:bg-gray-900"
-      )}
-    >
+    <div className={clsx("flex min-h-screen flex-col gap-6", "bg-white dark:bg-gray-900")}>
       <ProfileHeader user={user} isEditable={false} />
       <ProfileUserInfo user={user} isEditable={false} />
     </div>

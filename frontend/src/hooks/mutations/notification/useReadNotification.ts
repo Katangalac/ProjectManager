@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { markNotificationAsRead } from "@/api/user.api";
-
+import { NotificationsApiResponse } from "@/types/Notification";
 /**
  * Propriété du hook de la mutation
  *
@@ -18,13 +18,30 @@ type ReadNotificationParams = {
  * @returns la fontion de mutation ainsi que le status de la requête
  */
 export const useReadNotification = (params: ReadNotificationParams = {}) => {
-  //const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (notificationId: string) => {
       await markNotificationAsRead(notificationId);
     },
-    onSuccess: () => {
-      //queryClient.invalidateQueries({ queryKey: ["userNotifications"] });
+    onSuccess: (_, notificationId) => {
+      queryClient.invalidateQueries({ queryKey: ["userUnreadNotifications"] });
+      queryClient.setQueryData<NotificationsApiResponse>(
+        [
+          "userNotifications",
+          JSON.stringify({
+            all: true,
+          }),
+        ],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            data: oldData.data.map((notif) =>
+              notif.id === notificationId ? { ...notif, read: true } : notif
+            ),
+          };
+        }
+      );
       params.onSuccess?.();
     },
     onError: (error) => {

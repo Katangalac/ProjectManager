@@ -45,7 +45,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
     <>
       <div
         className={clsx(
-          "flex h-[90%] max-h-[600px] min-h-[600px] w-60 min-w-56 flex-col justify-start overflow-hidden shadow-xl",
+          "flex h-[90%] max-h-[600px] min-h-[600px] w-60 min-w-56 flex-col justify-start overflow-hidden shadow-md",
           "rounded-lg border bg-gray-50",
           "dark:border-gray-400 dark:bg-gray-600"
         )}
@@ -53,7 +53,7 @@ export default function TasksColumns({ status, tasks }: TasksColumnProps) {
         {/**Header */}
         <div
           className={clsx(
-            "flex w-full items-center justify-between rounded-t-lg border-b-[3px] border-gray-300 px-1.5 py-2 shadow-md",
+            "flex w-full items-center justify-between rounded-t-lg border-b-[3px] border-gray-300 px-1.5 py-2 shadow",
             bgColor,
             borderColor
           )}

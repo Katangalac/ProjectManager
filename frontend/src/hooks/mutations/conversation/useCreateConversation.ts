@@ -2,7 +2,7 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { createConversation } from "@/api/conversation.api";
 import { ConversationHookInput } from "@/types/Conversation";
 import { socket } from "@/lib/socket/socketClient";
-import { useUserStore } from "@/stores/userStore";
+import { userStore } from "@/stores/userStore";
 import { useCreateMessage } from "../message/useCreateMessage";
 
 /**
@@ -23,7 +23,7 @@ type CreateConversationMutationParams = {
 export const useCreateConversation = (
   params: CreateConversationMutationParams = {}
 ) => {
-  const { user } = useUserStore();
+  const { user } = userStore();
   const queryClient = useQueryClient();
   const { createMessage } = useCreateMessage();
 

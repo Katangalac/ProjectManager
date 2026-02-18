@@ -36,7 +36,7 @@ export default function ProjectCard({
     <div
       className={cn(
         "relative h-fit w-full max-w-76 cursor-pointer px-2",
-        "rounded-md border border-gray-300 shadow-lg",
+        "rounded-md border border-gray-300 shadow-md",
         className
       )}
     >

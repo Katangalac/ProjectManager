@@ -6,12 +6,7 @@ import UserErrorMessage from "../commons/UserErrorMessage";
 import NoItems from "../commons/NoItems";
 import { ReactNode, useState } from "react";
 import PaginationWrapper from "../commons/Pagination";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AddTeamToProjectForm from "./AddTeamToProjectForm";
 import RemoveTeamFromProjectForm from "./RemoveTeamFromProject";
 import { PlusIcon, MinusIcon } from "lucide-react";
@@ -36,20 +31,16 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
   });
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
-  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(
-    null
-  );
+  const [dialogTitleIcon, setDialogTitleIcon] = useState<ReactNode | null>(null);
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4",
-        (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center pt-5"
+        (isLoading || !(data && data.data.length > 0)) && "items-center justify-center pt-5"
       )}
     >
       {/* Sélecteur de mode */}
@@ -76,9 +67,9 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
             }
           }}
           className={clsx(
-            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-500 px-2 py-2",
             "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-            "rounded-md bg-sky-500 hover:bg-sky-600",
+            "rounded-md bg-sky-500 shadow-md hover:bg-sky-600",
             "text-xs font-medium text-white"
           )}
         >
@@ -107,9 +98,9 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
             }
           }}
           className={clsx(
-            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-red-600 px-2 py-2",
+            "flex h-fit w-fit cursor-pointer items-center gap-1 border border-red-700 px-2 py-2",
             "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-            "rounded-md bg-red-700 hover:bg-red-800",
+            "rounded-md bg-red-700 shadow-md hover:bg-red-800",
             "text-xs font-medium text-white"
           )}
         >
@@ -117,9 +108,7 @@ export default function ProjectTeamsView({ projectId }: ProjectTeamsViewProps) {
           Remove
         </button>
       </div>
-      {isLoading && (
-        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-      )}
+      {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
 
       {isError && <UserErrorMessage />}
       {!isLoading && data && (

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { axiosClient } from "@/lib/axios/axiosClient";
 import { useNavigate } from "react-router-dom";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import MotionPage from "@/components/commons/MotionPage";
 
 /**Page de reset du mot de passe */
 export default function ResetPasswordPage() {
@@ -32,20 +33,20 @@ export default function ResetPasswordPage() {
   }, [token]);
 
   if (loading) {
-    return <p>Validation du lien…</p>;
+    return <p>Validating link...</p>;
   }
 
   if (!valid) {
-    return <p>Ce lien est invalide ou expiré.</p>;
+    return <p>Invalid link!</p>;
   }
 
   return (
-    <>
+    <MotionPage>
       {token ? (
         <ResetPasswordForm token={token} onSuccess={() => navigate("/login")} />
       ) : (
-        <p>Ce lien est invalide ou expiré.</p>
+        <p>Invalid link!</p>
       )}
-    </>
+    </MotionPage>
   );
 }
