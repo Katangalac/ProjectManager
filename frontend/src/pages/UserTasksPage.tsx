@@ -6,12 +6,7 @@ import TasksKanban from "../components/task/TasksKanban";
 import { useTasks } from "../hooks/queries/task/useTasks";
 import { InlineSelector } from "../components/commons/InlineSelector";
 import { NumberedListIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../lib/constants/task";
 import TaskForm from "../components/task/TaskForm";
 import { ViewColumnsIcon } from "@heroicons/react/24/outline";
@@ -21,8 +16,9 @@ import UserErrorMessage from "@/components/commons/UserErrorMessage";
 import PaginationWrapper from "@/components/commons/Pagination";
 import { ClipboardPlus, PlusIcon } from "lucide-react";
 import TaskFilterButton from "@/components/task/TaskFilterButton";
-import { SearchTasksFilter } from "@/types/Task";
+import { SearchTasksFilter, TaskStatus } from "@/types/Task";
 import MotionPage from "@/components/commons/MotionPage";
+import { useSearchParams } from "react-router-dom";
 
 /**
  * Page d'affichage des tâches de l'utilisateur courant
@@ -30,9 +26,7 @@ import MotionPage from "@/components/commons/MotionPage";
 export default function UserTasksPage() {
   const pageSize = 12;
   const [page, setPage] = useState(1);
-  const [viewMode, setViewMode] = useState<"kanban" | "board" | "table">(
-    "board"
-  );
+  const [viewMode, setViewMode] = useState<"kanban" | "board" | "table">("board");
   const [showDialog, setShowDialog] = useState(false);
   const viewModeOptions = [
     {
@@ -51,43 +45,35 @@ export default function UserTasksPage() {
       icon: <NumberedListIcon className={clsx("size-4 stroke-2")} />,
     },
   ];
+  const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get("status") || undefined;
   const [tasksFilter, setTasksFilter] = useState<SearchTasksFilter>({});
+  tasksFilter.status = initialStatus as TaskStatus;
   const { data, isLoading, isError, refetch } = useTasks({
     ...tasksFilter,
     page,
     pageSize,
   });
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
   //const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <MotionPage>
-      <div
-        className={clsx(
-          "flex h-full flex-col items-center justify-center gap-2 p-5"
-        )}
-      >
-        {isLoading && (
-          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-        )}
+      <div className={clsx("flex h-full flex-col items-center justify-center gap-2 p-5")}>
+        {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
         {!isLoading && (
           <div className="flex h-full w-full flex-col gap-4">
             {/* Sélecteur de mode */}
             <div className="flex w-full justify-between">
               <div className="flex items-center justify-start gap-4">
-                <InlineSelector
-                  value={viewMode}
-                  options={viewModeOptions}
-                  onChange={setViewMode}
-                />
+                <InlineSelector value={viewMode} options={viewModeOptions} onChange={setViewMode} />
                 <button
                   onClick={() => setShowDialog(true)}
                   className={clsx(
-                    "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+                    "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-500 px-2 py-2",
                     "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-                    "rounded-md bg-sky-500 hover:bg-sky-600",
+                    "rounded-md bg-sky-500 shadow-md hover:bg-sky-600",
                     "text-xs font-medium text-white"
                   )}
                 >
@@ -95,31 +81,23 @@ export default function UserTasksPage() {
                   Add New
                 </button>
               </div>
-              <TaskFilterButton
-                tasksFilter={tasksFilter}
-                setTasksFilter={setTasksFilter}
-              />
+              <TaskFilterButton tasksFilter={tasksFilter} setTasksFilter={setTasksFilter} />
             </div>
 
             <div
               className={clsx(
                 "flex flex-1 flex-col justify-between gap-4",
-                !(data && data.data.length > 0) &&
-                  "items-center justify-center",
+                !(data && data.data.length > 0) && "items-center justify-center",
                 isError && "justify-start gap-10"
               )}
             >
-              {isError && (
-                <UserErrorMessage onRetryButtonClick={() => refetch()} />
-              )}
+              {isError && <UserErrorMessage onRetryButtonClick={() => refetch()} />}
               {data && (
                 <>
                   {data.data.length > 0 ? (
                     <>
                       {viewMode === "board" && <TasksBoard tasks={data.data} />}
-                      {viewMode === "kanban" && (
-                        <TasksKanban tasks={data.data} />
-                      )}
+                      {viewMode === "kanban" && <TasksKanban tasks={data.data} />}
                       {viewMode === "table" && <TasksTable tasks={data.data} />}
                       <PaginationWrapper
                         page={page}

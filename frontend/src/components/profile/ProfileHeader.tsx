@@ -1,30 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx } from "clsx";
 import { User } from "../../types/User";
-import {
-  FileUploaderRegular,
-  UploadCtxProvider,
-} from "@uploadcare/react-uploader";
+import { FileUploaderRegular, UploadCtxProvider } from "@uploadcare/react-uploader";
 import { useState, ReactNode } from "react";
 import { userStore } from "../../stores/userStore";
 import { updateUser } from "../../api/user.api";
 import "@uploadcare/react-uploader/core.css";
 import { CameraIcon } from "@heroicons/react/24/solid";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import UpdatePasswordForm from "../auth/UpdatePasswordForm";
 import { Menu } from "primereact/menu";
 import { MenuItem } from "primereact/menuitem";
-import {
-  DownloadSimpleIcon,
-  TrashIcon,
-  NotePencilIcon,
-} from "@phosphor-icons/react";
+import { DownloadSimpleIcon, TrashIcon, NotePencilIcon } from "@phosphor-icons/react";
 import { useRef } from "react";
 import { deleteUploadcareFile } from "@/utils/uploadcare";
 import UserProfilePhoto from "./UserProfilePhoto";
@@ -49,23 +37,16 @@ type ProfileHeaderProps = {
  *
  * @param {ProfileHeaderProps} param0 - Propriétés du ProfileHeader
  */
-export default function ProfileHeader({
-  user,
-  isEditable,
-}: ProfileHeaderProps) {
+export default function ProfileHeader({ user, isEditable }: ProfileHeaderProps) {
   const { setUser } = userStore();
   const uploadcarePubKey = import.meta.env.VITE_UPLOAD_CARE_PUBLIC_KEY;
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState<ReactNode | null>(null);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogStyle, setDialogStyle] = useState<string | null>(null);
-  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(
-    null
-  );
+  const [dialogHeaderStyle, setDialogHeaderStyle] = useState<string | null>(null);
 
-  const [imageUrl, setImageUrl] = useState<string | null>(
-    user.imageUrl ?? null
-  );
+  const [imageUrl, setImageUrl] = useState<string | null>(user.imageUrl ?? null);
   const [saving, setSaving] = useState(false);
   if (saving) console.log("Saving image...");
 
@@ -87,10 +68,7 @@ export default function ProfileHeader({
       const saved = await updateUser({ imageUrl: url });
       setUser(saved.data);
     } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour de l'image de profil :",
-        error
-      );
+      console.error("Erreur lors de la mise à jour de l'image de profil :", error);
       setImageUrl(user.imageUrl ?? null);
     } finally {
       setSaving(false);
@@ -105,14 +83,9 @@ export default function ProfileHeader({
       items: [
         {
           label: "Upload new image",
-          className:
-            "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          className: "px-2 py-1.5 hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           icon: (
-            <DownloadSimpleIcon
-              weight="regular"
-              size={16}
-              className={clsx("stroke-1.5 mr-1")}
-            />
+            <DownloadSimpleIcon weight="regular" size={16} className={clsx("stroke-1.5 mr-1")} />
           ),
           command: () => {
             uploaderRef.current?.api.setCurrentActivity("start-from");
@@ -122,15 +95,8 @@ export default function ProfileHeader({
 
         {
           label: "Remove image",
-          icon: (
-            <TrashIcon
-              size={16}
-              weight="regular"
-              className={clsx("stroke-1.5 mr-1")}
-            />
-          ),
-          className:
-            "px-2 py-1.5 rounded-b-md hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
+          icon: <TrashIcon size={16} weight="regular" className={clsx("stroke-1.5 mr-1")} />,
+          className: "px-2 py-1.5 rounded-b-md hover:bg-sky-100 dark:hover:bg-gray-700 myMenu",
           command: () => {
             handleImageChange(null);
           },
@@ -142,7 +108,7 @@ export default function ProfileHeader({
   return (
     <div
       className={clsx(
-        "flex items-center justify-between gap-4 px-6 py-2",
+        "flex items-center justify-between gap-4 px-6 py-2 shadow-md",
         "rounded-sm border border-gray-300",
         "dark:border-gray-500"
       )}
@@ -215,9 +181,7 @@ export default function ProfileHeader({
                   />
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="bg-sky-500">
-                Upload a photo
-              </TooltipContent>
+              <TooltipContent className="bg-sky-500">Upload a photo</TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -226,32 +190,17 @@ export default function ProfileHeader({
           {/**Nom et prénom de l'utilisateur ou UserName*/}
           <div className={clsx("flex gap-2")}>
             {user.firstName && (
-              <span
-                className={clsx(
-                  "text-sm font-medium text-black",
-                  "dark:text-white"
-                )}
-              >
+              <span className={clsx("text-sm font-medium text-black", "dark:text-white")}>
                 {user.firstName}
               </span>
             )}
             {user.lastName && (
-              <span
-                className={clsx(
-                  "text-sm font-medium text-black",
-                  "dark:text-white"
-                )}
-              >
+              <span className={clsx("text-sm font-medium text-black", "dark:text-white")}>
                 {user.lastName}
               </span>
             )}
             {!user.firstName && !user.lastName && (
-              <span
-                className={clsx(
-                  "text-sm font-medium text-black",
-                  "dark:text-white"
-                )}
-              >
+              <span className={clsx("text-sm font-medium text-black", "dark:text-white")}>
                 {user.userName}
               </span>
             )}
@@ -260,15 +209,11 @@ export default function ProfileHeader({
           {/**Profession et email de l'utilisateur */}
           <div className={clsx("flex flex-col items-start")}>
             {user.profession && (
-              <span
-                className={clsx("text-sm text-gray-500", "dark:text-gray-400")}
-              >
+              <span className={clsx("text-sm text-gray-500", "dark:text-gray-400")}>
                 {user.profession}
               </span>
             )}
-            <span
-              className={clsx("text-sm text-gray-500", "dark:text-gray-400")}
-            >
+            <span className={clsx("text-sm text-gray-500", "dark:text-gray-400")}>
               {user.email}
             </span>
           </div>
@@ -279,7 +224,8 @@ export default function ProfileHeader({
           <button
             className={clsx(
               "flex items-center justify-between gap-3 px-2 py-1",
-              "rounded-sm bg-sky-500 hover:bg-sky-600",
+              "rounded-sm bg-sky-500 shadow-md hover:bg-sky-600",
+              "border border-sky-500",
               "text-sm font-medium text-white",
               "dark:bg-sky-800 dark:hover:bg-sky-700",
               "dark:text-white"
@@ -288,9 +234,7 @@ export default function ProfileHeader({
               setDialogHeaderStyle(null);
               setDialogStyle(null);
               setDialogTitle("Change password");
-              setDialogContent(
-                <UpdatePasswordForm onSuccess={() => setShowDialog(false)} />
-              );
+              setDialogContent(<UpdatePasswordForm onSuccess={() => setShowDialog(false)} />);
               setShowDialog(true);
             }}
           >
@@ -309,12 +253,7 @@ export default function ProfileHeader({
             dialogStyle
           )}
         >
-          <DialogHeader
-            className={clsx(
-              "rounded-t-md bg-sky-500 px-4 py-4",
-              dialogHeaderStyle
-            )}
-          >
+          <DialogHeader className={clsx("rounded-t-md bg-sky-500 px-4 py-4", dialogHeaderStyle)}>
             <DialogTitle className="text-lg text-white">
               <span className="flex h-fit items-center gap-2">
                 <RotateCcwKeyIcon className="size-6 stroke-[2.5px]" />

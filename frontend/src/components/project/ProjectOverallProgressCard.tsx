@@ -12,15 +12,13 @@ type ProjectOverallProgressCardProps = {
 /**
  * Affiche la progression d'un projet et son cout
  */
-export default function ProjectOverallProgressCard({
-  project,
-}: ProjectOverallProgressCardProps) {
+export default function ProjectOverallProgressCard({ project }: ProjectOverallProgressCardProps) {
   const { data, isError, isLoading } = useProjectCost(project.id);
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-2",
-        "rounded-sm border border-gray-300",
+        "rounded-sm border border-gray-300 shadow-md",
         (isLoading || isError) && "items-center justify-center"
       )}
     >
@@ -30,13 +28,9 @@ export default function ProjectOverallProgressCard({
           "rounded-t-sm bg-sky-50"
         )}
       >
-        <span className={clsx("text-left text-sm font-medium text-black")}>
-          Overall progress
-        </span>
+        <span className={clsx("text-left text-sm font-medium text-black")}>Overall progress</span>
       </div>
-      {isLoading && (
-        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-      )}
+      {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
       {!isLoading && (
         <>
           {isError ? (
@@ -44,16 +38,8 @@ export default function ProjectOverallProgressCard({
           ) : (
             <div className={clsx("flex w-full flex-col gap-3 p-2")}>
               <div className={clsx("flex w-full flex-col gap-2")}>
-                <Progress
-                  value={project.progress}
-                  className={clsx("[&>div]:bg-sky-500")}
-                />
-                <span
-                  className={clsx(
-                    "w-full",
-                    "text-left text-[13px] font-medium text-black"
-                  )}
-                >
+                <Progress value={project.progress} className={clsx("[&>div]:bg-sky-500")} />
+                <span className={clsx("w-full", "text-left text-[13px] font-medium text-black")}>
                   {project.progress}% completed
                 </span>
               </div>
@@ -61,22 +47,15 @@ export default function ProjectOverallProgressCard({
               <div className={clsx("flex w-full flex-col gap-2")}>
                 <span className="flex items-baseline gap-1 text-left text-xs text-gray-600">
                   Planned cost :
-                  <span className="font-medium text-black">
-                    {project.budgetPlanned} CAD
-                  </span>
+                  <span className="font-medium text-black">{project.budgetPlanned} CAD</span>
                 </span>
                 <span className="flex items-baseline gap-1 text-left text-xs text-gray-600">
-                  Actual cost :
-                  <span className="font-medium text-black">
-                    {data?.data || 0} CAD
-                  </span>
+                  Actual cost :<span className="font-medium text-black">{data?.data || 0} CAD</span>
                 </span>
               </div>
 
               <div className={clsx("flex flex-col gap-[0.5px]")}>
-                <span className={clsx("text-left text-[12px] text-gray-600")}>
-                  Description
-                </span>
+                <span className={clsx("text-left text-[12px] text-gray-600")}>Description</span>
                 <p
                   className={clsx(
                     "overflow-x-auto text-left text-xs text-black",

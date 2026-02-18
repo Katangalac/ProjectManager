@@ -30,7 +30,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black shadow-md",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -64,9 +64,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="title"
           header="Title"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
@@ -79,9 +77,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           field="project.title"
           header="Project"
           body={(task) =>
-            task.project?.title ?? (
-              <span className="text-gray-500 italic">"None"</span>
-            )
+            task.project?.title ?? <span className="text-gray-500 italic">"None"</span>
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -95,11 +91,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
         <Column
           field="team.name"
           header="Team"
-          body={(task) =>
-            task.team?.name ?? (
-              <span className="text-gray-500 italic">"None"</span>
-            )
-          }
+          body={(task) => task.team?.name ?? <span className="text-gray-500 italic">"None"</span>}
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 text-left p-2 text-xs font-bold text-gray-500",
@@ -114,10 +106,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           body={(task: TaskWithRelations) =>
             task.assignedTo && task.assignedTo.length > 0 ? (
               <div
-                className={clsx(
-                  "flex -space-x-2 overflow-x-auto",
-                  "[&::-webkit-scrollbar]:w-0"
-                )}
+                className={clsx("flex -space-x-2 overflow-x-auto", "[&::-webkit-scrollbar]:w-0")}
               >
                 {task.assignedTo.map((a) => (
                   <UserProfilePhoto
@@ -160,9 +149,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
               <CircleIcon
                 size={8}
                 weight="fill"
-                className={clsx(
-                  priorityLevelHelper[task.priorityLevel].textStyle
-                )}
+                className={clsx(priorityLevelHelper[task.priorityLevel].textStyle)}
               />
               <span>{priorityLevelHelper[task.priorityLevel].label}</span>
             </div>
@@ -203,8 +190,7 @@ export default function TasksTable({ tasks }: TasksTableProps) {
           field="deadline"
           header="Deadline"
           body={
-            (rowData) =>
-              formatShortDateWithOptionalYear(new Date(rowData.deadline))
+            (rowData) => formatShortDateWithOptionalYear(new Date(rowData.deadline))
             // new Date(rowData.deadline).toISOString().split("T")[0]
           }
           className={clsx("w-fit p-2 text-left text-xs")}

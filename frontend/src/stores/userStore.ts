@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { User } from "../types/User";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { logoutRequest } from "../api/auth.api";
+import { socket } from "@/lib/socket/socketClient";
 
 /**
  * UserStore représente l’état global lié à l’utilisateur dans l'application
@@ -18,10 +19,10 @@ import { logoutRequest } from "../api/auth.api";
  */
 interface UserStore {
   user: User | null;
-  token:string|null;
+  token: string | null;
   isAuthenticated: boolean;
   setUser: (u: User | null) => void;
-  setToken:(t:string|null)=>void;
+  setToken: (t: string | null) => void;
   logout: () => Promise<void>;
 }
 
@@ -30,18 +31,22 @@ interface UserStore {
  * Conserve l'utilisateur dans le local storage pour des fins de persistance (ex:lors d'un refresh)
  */
 export const userStore = create<UserStore>()(
-    persist(
-        (set) => ({
-            user: null,
-            token: null,
-            isAuthenticated: false,
-            setUser: (user) => set({ user, isAuthenticated: true }),
-            setToken: (token) => set({ token }),
-            logout: () => set({ user: null, token: null, isAuthenticated: false }),
-        }),
-        {
-            name: "user-storage",
-            storage: createJSONStorage(() => sessionStorage),
-        }
-    )
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      setUser: (user) => set({ user, isAuthenticated: true }),
+      setToken: (token) => set({ token }),
+      logout: async () => {
+        //socket.emit("logout", userStore.getState().user?.id);
+        set({ user: null, token: null, isAuthenticated: false });
+        await logoutRequest();
+      },
+    }),
+    {
+      name: "user-storage",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
 );

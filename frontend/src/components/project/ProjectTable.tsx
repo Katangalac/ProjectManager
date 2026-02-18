@@ -29,7 +29,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "min-w-full rounded-sm border border-gray-200 text-black",
+          "min-w-full rounded-sm border border-gray-200 text-black shadow-md",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -60,9 +60,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="title"
           header="Title"
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
@@ -105,9 +103,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
               className={clsx("h-1.5 max-w-20 [&>div]:bg-sky-500")}
             />
           )}
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
@@ -119,9 +115,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="startedAt"
           header="Started on"
-          body={(rowData) =>
-            formatShortDateWithOptionalYear(new Date(rowData.startedAt))
-          }
+          body={(rowData) => formatShortDateWithOptionalYear(new Date(rowData.startedAt))}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",
@@ -133,9 +127,7 @@ export default function ProjectsTable({ projects }: ProjectsTableProps) {
         <Column
           field="deadline"
           header="Deadline"
-          body={(rowData) =>
-            formatShortDateWithOptionalYear(new Date(rowData.deadline))
-          }
+          body={(rowData) => formatShortDateWithOptionalYear(new Date(rowData.deadline))}
           className={clsx("w-fit p-2 text-left text-xs")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50  text-left text-xs p-2 font-bold text-gray-500",

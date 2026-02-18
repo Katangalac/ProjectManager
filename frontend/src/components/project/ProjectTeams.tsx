@@ -12,10 +12,7 @@ type ProjectTeamsProps = {
 export default function ProjectTeams({ teams, onSeeMore }: ProjectTeamsProps) {
   return (
     <div
-      className={clsx(
-        "flex h-full w-full flex-col",
-        "rounded-sm border border-gray-300"
-      )}
+      className={clsx("flex h-full w-full flex-col", "rounded-sm border border-gray-300 shadow-md")}
     >
       <div
         className={clsx(
@@ -23,13 +20,9 @@ export default function ProjectTeams({ teams, onSeeMore }: ProjectTeamsProps) {
           "rounded-t-sm bg-sky-50"
         )}
       >
-        <span className={clsx("text-left text-sm font-medium text-black")}>
-          Teams
-        </span>
+        <span className={clsx("text-left text-sm font-medium text-black")}>Teams</span>
       </div>
-      <div
-        className={clsx("flex h-full w-full flex-col justify-between gap-4")}
-      >
+      <div className={clsx("flex h-full w-full flex-col justify-between gap-4")}>
         <div
           className={clsx(
             "flex h-full max-h-40 w-full flex-col",
@@ -49,10 +42,7 @@ export default function ProjectTeams({ teams, onSeeMore }: ProjectTeamsProps) {
           ))}
 
           {teams.length === 0 && (
-            <NoItems
-              message="No teams available"
-              textStyle="text-sm font-medium text-gray-400"
-            />
+            <NoItems message="No teams available" textStyle="text-sm font-medium text-gray-400" />
           )}
         </div>
         <div className={clsx("h-fit w-full px-2 pb-3")}>

@@ -5,12 +5,7 @@ import ProjectTaskCheckList from "../project/ProjectTaskCheckList";
 import { useProjectTasks } from "@/hooks/queries/project/useProjectTasks";
 import { InlineSelector } from "../commons/InlineSelector";
 import { NumberedListIcon } from "@heroicons/react/24/solid";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TASKFORM_DEFAULT_VALUES } from "../../lib/constants/task";
 import TaskForm from "../task/TaskForm";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -53,31 +48,25 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
   ];
 
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <div
       className={clsx(
         "flex h-full w-full flex-col gap-4 pb-4",
-        (isLoading || !(data && data.data.length > 0)) &&
-          "items-center justify-center"
+        (isLoading || !(data && data.data.length > 0)) && "items-center justify-center"
       )}
     >
       {/* Sélecteur de mode */}
       <div className="flex w-full justify-between">
         <div className="flex w-full items-center justify-start gap-3">
-          <InlineSelector
-            value={viewMode}
-            options={viewModeOptions}
-            onChange={setViewMode}
-          />
+          <InlineSelector value={viewMode} options={viewModeOptions} onChange={setViewMode} />
           <button
             onClick={() => setShowDialog(true)}
             className={clsx(
-              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-600 px-2 py-2",
+              "flex h-fit w-fit cursor-pointer items-center gap-1 border border-sky-500 px-2 py-2",
               "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-              "rounded-md bg-sky-500 hover:bg-sky-600",
+              "rounded-md bg-sky-500 shadow-md hover:bg-sky-600",
               "text-xs font-medium text-white"
             )}
           >
@@ -85,15 +74,10 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
             Add New
           </button>
         </div>
-        <TaskFilterButton
-          tasksFilter={tasksFilter}
-          setTasksFilter={setTasksFilter}
-        />
+        <TaskFilterButton tasksFilter={tasksFilter} setTasksFilter={setTasksFilter} />
       </div>
 
-      {isLoading && (
-        <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-      )}
+      {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
 
       {isError && <UserErrorMessage />}
       {data && (
@@ -102,10 +86,7 @@ export default function ProjectTasksView({ projectId }: ProjectTasksViewProps) {
             <>
               {viewMode === "table" && <TasksTable tasks={data.data} />}
               {viewMode === "checklist" && (
-                <ProjectTaskCheckList
-                  tasks={data.data}
-                  hideSeeAllButton={true}
-                />
+                <ProjectTaskCheckList tasks={data.data} hideSeeAllButton={true} />
               )}
               <PaginationWrapper
                 page={page}

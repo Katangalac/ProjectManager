@@ -1,11 +1,6 @@
 import { ProgressSpinner } from "primereact/progressspinner";
 import { clsx } from "clsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { InlineSelector } from "@/components/commons/InlineSelector";
 import { useProjects } from "@/hooks/queries/project/useProjects";
@@ -29,9 +24,7 @@ import MotionPage from "@/components/commons/MotionPage";
 export default function ProjectsPage() {
   const pageSize = 12;
   const [page, setPage] = useState(1);
-  const [projectsFilter, setProjectsFilter] = useState<SearchProjectsFilter>(
-    {}
-  );
+  const [projectsFilter, setProjectsFilter] = useState<SearchProjectsFilter>({});
   const { data, isError, isLoading, refetch } = useProjects({
     ...projectsFilter,
     page,
@@ -40,8 +33,7 @@ export default function ProjectsPage() {
   const [showDialog, setShowDialog] = useState(false);
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
   const viewModeOptions = [
     {
       label: "Overview",
@@ -56,29 +48,19 @@ export default function ProjectsPage() {
   ];
   return (
     <MotionPage>
-      <div
-        className={clsx(
-          "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
-        )}
-      >
-        {isLoading && (
-          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-        )}
+      <div className={clsx("flex h-full w-full flex-col items-center justify-center gap-2 p-5")}>
+        {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
         {!isLoading && (
           <div className={clsx("flex h-full w-full flex-col gap-4")}>
             <div className="flex w-full justify-between">
               <div className="flex h-fit w-fit items-center gap-4">
-                <InlineSelector
-                  value={viewMode}
-                  options={viewModeOptions}
-                  onChange={setViewMode}
-                />
+                <InlineSelector value={viewMode} options={viewModeOptions} onChange={setViewMode} />
                 <button
                   onClick={() => setShowDialog(true)}
                   className={clsx(
                     "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-2",
                     "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-                    "rounded-md border border-sky-600 bg-sky-500 hover:bg-sky-600",
+                    "rounded-md border border-sky-500 bg-sky-500 shadow-md hover:bg-sky-600",
                     "text-xs font-medium text-white"
                   )}
                 >
@@ -94,31 +76,20 @@ export default function ProjectsPage() {
             <div
               className={clsx(
                 "flex flex-1 flex-col justify-between gap-4",
-                !(data && data.data.length > 0) &&
-                  "items-center justify-center",
+                !(data && data.data.length > 0) && "items-center justify-center",
                 isError && "justify-start gap-10"
               )}
             >
-              {isError && (
-                <UserErrorMessage onRetryButtonClick={() => refetch()} />
-              )}
+              {isError && <UserErrorMessage onRetryButtonClick={() => refetch()} />}
               {data && data.data.length > 0 ? (
                 <>
-                  {viewMode === "list" && (
-                    <ProjectsTable projects={data.data} />
-                  )}
+                  {viewMode === "list" && <ProjectsTable projects={data.data} />}
                   {viewMode === "card" && (
                     <div
-                      className={clsx(
-                        "grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4"
-                      )}
+                      className={clsx("grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4")}
                     >
                       {data.data.map((project) => (
-                        <ProjectCard
-                          key={project.id}
-                          project={project}
-                          showProgressBar={true}
-                        />
+                        <ProjectCard key={project.id} project={project} showProgressBar={true} />
                       ))}
                     </div>
                   )}

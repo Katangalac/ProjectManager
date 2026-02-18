@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { MessageWithRelation } from "./types/Message.ts";
 import { Notification } from "./types/Notification.ts";
 import { socket } from "./lib/socket/socketClient.ts";
-import {showInfo} from "@/utils/toastService";
+import { showInfo } from "@/utils/toastService";
 
 /**
  * Point d'entrée de l'application
@@ -64,13 +64,11 @@ function App() {
   //Evénements socket global
   useSocket<MessageWithRelation>("new_message", (data) => {
     if (user && data.senderId !== user.id) {
-        if(data.content) showInfo(data.content);
+      if (data.content) showInfo(data.content);
     }
   });
 
-  useSocket<Notification>("new_notification", (data) =>
-    showInfo(data.message)
-  );
+  useSocket<Notification>("new_notification", (data) => showInfo(data.message));
 
   useSocket<string>("new_conversation", (data) =>
     socket.emit("join_conversation", data)
@@ -97,7 +95,7 @@ function App() {
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/auth/callback" element={<AuthCallback/>}/>
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route element={<MainLayout />}>
             <Route
               path="/dashboard"

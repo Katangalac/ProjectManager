@@ -30,10 +30,7 @@ export default function ProfilePage() {
           setViewedUser(res?.data ?? null);
         })
         .catch((error) => {
-          console.error(
-            "Erreur lors de la récupération de l'utilisateur :",
-            error
-          );
+          console.error("Erreur lors de la récupération de l'utilisateur :", error);
           setViewedUser(null);
         })
         .finally(() => {
@@ -44,24 +41,14 @@ export default function ProfilePage() {
 
   return (
     <MotionPage>
-      <div
-        className={clsx(
-          "min-h-screen w-full p-4",
-          "bg-white",
-          "dark:bg-gray-900"
-        )}
-      >
-        {loading && (
-          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-        )}
+      <div className={clsx("min-h-screen w-full p-4", "bg-white", "dark:bg-gray-900")}>
+        {loading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
         {isOwnProfile && viewedUser && <PrivateProfile user={viewedUser} />}
         {!isOwnProfile && viewedUser && <PublicProfile user={viewedUser} />}
 
         {!loading && !viewedUser && (
           <div className={clsx("flex flex-col gap-2")}>
-            <span className={clsx("text-black dark:text-white")}>
-              Utilisateur non défini
-            </span>
+            <span className={clsx("text-black dark:text-white")}>Utilisateur non défini</span>
           </div>
         )}
       </div>

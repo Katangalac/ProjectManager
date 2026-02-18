@@ -8,12 +8,9 @@ import { MessagesApiResponse } from "@/types/Message";
  * @param {SearchMessagesFilter} params - paramètres de la requête
  * @returns la liste des messages d'une conversation repondant aux critères de recherche
  */
-export const useConversationMessages = (
-  conversationId: string,
-  params: SearchMessagesFilter
-) => {
+export const useConversationMessages = (conversationId: string, params: SearchMessagesFilter) => {
   const { data, isLoading, isError, refetch } = useQuery<MessagesApiResponse>({
-    queryKey: ["conversationMessages", conversationId, params],
+    queryKey: ["conversationMessages", conversationId, JSON.stringify(params)],
     queryFn: () => getConversationMessages(conversationId, params),
     refetchOnWindowFocus: true,
   });

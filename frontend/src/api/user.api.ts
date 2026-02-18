@@ -17,8 +17,7 @@ export const getUserById = async (userId: string) => {
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la récupération de l'utilisateur";
+        error.response?.data?.message || "Erreur lors de la récupération de l'utilisateur";
       throw new Error(message);
     }
 
@@ -39,8 +38,7 @@ export const getUsers = async (params: SearchUsersFilter) => {
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la récupération des utilisateurs";
+        error.response?.data?.message || "Erreur lors de la récupération des utilisateurs";
       throw new Error(message);
     }
 
@@ -61,8 +59,7 @@ export const getUserPeers = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la récupération des coequipiers";
+        error.response?.data?.message || "Erreur lors de la récupération des coequipiers";
       throw new Error(message);
     }
 
@@ -84,8 +81,7 @@ export const updateUser = async (updateUserInput: UpdateUserData) => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la modification de l'utilisateur";
+        error.response?.data?.message || "Erreur lors de la modification de l'utilisateur";
       throw new Error(message);
     }
     throw new Error("Erreur inconnue lors de la modification de l'utilisateur");
@@ -99,9 +95,7 @@ export const updateUser = async (updateUserInput: UpdateUserData) => {
  * @returns - La liste des notifications d'un utilisateur
  * @throws - Une erreur si la requête échoue
  */
-export const getUserNotifications = async (
-  params: SearchNotificationsFilter
-) => {
+export const getUserNotifications = async (params: SearchNotificationsFilter) => {
   try {
     const axiosResponse = await axiosClient.get(`/users/me/notifications`, {
       params,
@@ -110,14 +104,33 @@ export const getUserNotifications = async (
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la récupération des notification";
+        error.response?.data?.message || "Erreur lors de la récupération des notification";
       throw new Error(message);
     }
 
-    throw new Error(
-      "Erreur inconnue lors de la récupération des notifications"
-    );
+    throw new Error("Erreur inconnue lors de la récupération des notifications");
+  }
+};
+
+/**
+ * Récupère le nombre de notifications non lues d'un utilisateur
+ *
+ * @returns - le nombre de notifications non lues de l'utilisateur
+ * @throws - Une erreur si la requête échoue
+ */
+export const getUserUnreadNotificationsCount = async () => {
+  try {
+    const axiosResponse = await axiosClient.get(`/users/me/notifications/unread/count`);
+    return axiosResponse.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError?.(error)) {
+      const message =
+        error.response?.data?.message ||
+        "Erreur lors de la récupération du nombre de notifications non lues";
+      throw new Error(message);
+    }
+
+    throw new Error("Erreur inconnue lors de la récupération du nombre de notifications non lues");
   }
 };
 
@@ -130,20 +143,15 @@ export const getUserNotifications = async (
  */
 export const markNotificationAsRead = async (notificationId: string) => {
   try {
-    const axiosResponse = await axiosClient.patch(
-      `/notifications/${notificationId}/read`
-    );
+    const axiosResponse = await axiosClient.patch(`/notifications/${notificationId}/read`);
     return axiosResponse.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {
       const message =
-        error.response?.data?.message ||
-        "Erreur lors de la mise à jour de la notification";
+        error.response?.data?.message || "Erreur lors de la mise à jour de la notification";
       throw new Error(message);
     }
 
-    throw new Error(
-      "Erreur inconnue lors de la mise à jour de la notification"
-    );
+    throw new Error("Erreur inconnue lors de la mise à jour de la notification");
   }
 };

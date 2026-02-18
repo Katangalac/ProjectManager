@@ -9,7 +9,6 @@ export const axiosClient = axios.create({
   withCredentials: true,
 });
 
-// Log pour debug (retirer en prod)
 axiosClient.interceptors.request.use((config) => {
   const token = userStore.getState().token;
   if (token) {
@@ -20,11 +19,11 @@ axiosClient.interceptors.request.use((config) => {
 
 axiosClient.interceptors.response.use(
   (response) => {
-    console.log("✅ Response:", response.status);
+    console.log("Response:", response.status);
     return response;
   },
   (error) => {
-    console.error("❌ Error:", error.response?.status, error.message);
+    console.error("Error:", error.response?.status, error.message);
     return Promise.reject(error);
   }
 );

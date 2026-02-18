@@ -17,10 +17,7 @@ type UsersTableProps = {
  * Affiche les users dans une table
  * @param {UsersTableProps} param0 - Propriétés du UsersTable
  */
-export default function UsersTable({
-  users,
-  title = "Users list",
-}: UsersTableProps) {
+export default function UsersTable({ users, title = "Users list" }: UsersTableProps) {
   return (
     <div className={clsx("flex max-h-[600px] w-full")}>
       <DataTable
@@ -29,7 +26,7 @@ export default function UsersTable({
         scrollable
         scrollHeight="500px"
         className={clsx(
-          "w-full rounded-sm border border-gray-200 text-black",
+          "w-full rounded-sm border border-gray-200 text-black shadow-md",
           "dark:text-gray-200",
           "dark:border-gray-500",
           "[&::-webkit-scrollbar]:w-1"
@@ -84,9 +81,7 @@ export default function UsersTable({
               <span>{user.userName}</span>
             </div>
           )}
-          className={clsx(
-            "flex items-center justify-start truncate p-2 text-xs font-medium"
-          )}
+          className={clsx("flex items-center justify-start truncate p-2 text-xs font-medium")}
           headerClassName={clsx(
             "border-b border-gray-200 bg-sky-50 p-2 text-left text-xs font-bold text-gray-500",
             "dark:text-gray-400",
@@ -98,9 +93,7 @@ export default function UsersTable({
           field="firstName"
           header="FirstName"
           body={(user: User) =>
-            user.firstName || (
-              <span className="text-gray-500 italic">"None"</span>
-            )
+            user.firstName || <span className="text-gray-500 italic">"None"</span>
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -115,9 +108,7 @@ export default function UsersTable({
           field="lastName"
           header="LastName"
           body={(user: User) =>
-            user.lastName || (
-              <span className="text-gray-500 italic">"None"</span>
-            )
+            user.lastName || <span className="text-gray-500 italic">"None"</span>
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -145,9 +136,7 @@ export default function UsersTable({
           field="profession"
           header="Profession"
           body={(user: User) =>
-            user.profession || (
-              <span className="text-gray-500 italic">"None"</span>
-            )
+            user.profession || <span className="text-gray-500 italic">"None"</span>
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(
@@ -162,9 +151,7 @@ export default function UsersTable({
           field="phoneNumber"
           header="Phone number"
           body={(user: User) =>
-            user.phoneNumber || (
-              <span className="text-gray-500 italic">"None"</span>
-            )
+            user.phoneNumber || <span className="text-gray-500 italic">"None"</span>
           }
           className={clsx("w-fit truncate p-2 text-left text-xs")}
           headerClassName={clsx(

@@ -27,7 +27,7 @@ export default function DashboardStatsCard({
   onSeeMore,
 }: DashboardStatsCardProps) {
   return (
-    <div className={cn("rounded-lg border-b-[3px] border-gray-100", className)}>
+    <div className={cn("rounded-lg border-l-4 border-gray-100 shadow-md", className)}>
       <div
         className={cn(
           "flex h-24 w-full justify-between gap-2",
@@ -39,19 +39,11 @@ export default function DashboardStatsCard({
             <span className={clsx("text-sm font-medium")}>{title}</span>
           </div>
           <div className={clsx("flex items-baseline justify-start gap-2")}>
-            <span className={clsx("text-left text-3xl font-bold")}>
-              {value}
-            </span>
-            <span className={clsx("text-left text-xs text-gray-500")}>
-              {description}
-            </span>
+            <span className={clsx("text-left text-3xl font-bold")}>{value}</span>
+            <span className={clsx("text-left text-xs text-gray-500")}>{description}</span>
           </div>
         </div>
-        {icon && (
-          <div className="flex h-full w-fit items-center justify-center">
-            {icon}
-          </div>
-        )}
+        {icon && <div className="flex h-full w-fit items-center justify-center">{icon}</div>}
         <div className="flex h-full items-start justify-end">
           <Tooltip>
             <TooltipTrigger asChild>

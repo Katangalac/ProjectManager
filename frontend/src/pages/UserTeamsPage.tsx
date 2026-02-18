@@ -5,12 +5,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import TeamForm from "../components/team/TeamForm";
 import { useState } from "react";
 import { TEAMFORM_DEFAULT_VALUES } from "../lib/constants/team";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import NoItems from "@/components/commons/NoItems";
 import UserErrorMessage from "@/components/commons/UserErrorMessage";
 import PaginationWrapper from "@/components/commons/Pagination";
@@ -27,19 +22,12 @@ export default function UserTeamsPage() {
   const { data, isLoading, isError, refetch } = useTeams({ page, pageSize });
   const [showDialog, setShowDialog] = useState(false);
   const totalItems = data?.pagination?.totalItems || 0;
-  const totalPages =
-    data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
+  const totalPages = data?.pagination?.totalPages || Math.ceil(totalItems / pageSize);
 
   return (
     <MotionPage>
-      <div
-        className={clsx(
-          "flex h-full w-full flex-col items-center justify-center gap-2 p-5"
-        )}
-      >
-        {isLoading && (
-          <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />
-        )}
+      <div className={clsx("flex h-full w-full flex-col items-center justify-center gap-2 p-5")}>
+        {isLoading && <ProgressSpinner className="sm:h-10 lg:h-15" strokeWidth="4" />}
         {!isLoading && (
           <div className={clsx("flex h-full w-full flex-col gap-4")}>
             <div className="flex h-fit w-fit items-center gap-4">
@@ -48,7 +36,8 @@ export default function UserTeamsPage() {
                 className={clsx(
                   "flex h-fit w-fit cursor-pointer items-center gap-1 px-2 py-2",
                   "focus:ring-2 focus:ring-sky-200 focus:outline-none",
-                  "rounded-md bg-sky-500 hover:bg-sky-600",
+                  "rounded-md bg-sky-500 shadow-md hover:bg-sky-600",
+                  "border border-sky-500",
                   "text-xs font-medium text-white"
                 )}
               >
@@ -59,14 +48,11 @@ export default function UserTeamsPage() {
             <div
               className={clsx(
                 "flex flex-1 flex-col justify-between gap-4",
-                !(data && data.data.length > 0) &&
-                  "items-center justify-center",
+                !(data && data.data.length > 0) && "items-center justify-center",
                 isError && "justify-start gap-10"
               )}
             >
-              {isError && (
-                <UserErrorMessage onRetryButtonClick={() => refetch()} />
-              )}
+              {isError && <UserErrorMessage onRetryButtonClick={() => refetch()} />}
               {data && (
                 <>
                   {data.data.length > 0 ? (

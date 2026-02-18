@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "../ui/dialog.tsx";
 import { RotateCcwKeyIcon } from "lucide-react";
+import { socket } from "@/lib/socket/socketClient.ts";
 
 /**
  * Formulaire de connexion
@@ -54,8 +55,14 @@ export default function LoginForm() {
   const onSubmit = async (data: LoginInputs) => {
     try {
       const result = await loginRequest(data.identifier, data.password);
-      setToken(result.data.token)
+      setToken(result.data.token);
       setUser(result.data.user);
+      try {
+        console.log("Connecté");
+        socket.connect();
+      } catch (error: unknown) {
+        console.log("Erreur de socket!", error);
+      }
       navigate("/dashboard");
     } catch (err) {
       console.error(err);

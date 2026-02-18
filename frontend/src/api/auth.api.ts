@@ -19,12 +19,12 @@ export async function loginRequest(identifier: string, password: string) {
       password,
     });
 
-    try {
-      console.log("Connecté");
-      socket.connect();
-    } catch (error: unknown) {
-      console.log("Erreur de socket!", error);
-    }
+    // try {
+    //   console.log("Connecté");
+    //   socket.connect();
+    // } catch (error: unknown) {
+    //   console.log("Erreur de socket!", error);
+    // }
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError?.(error)) {

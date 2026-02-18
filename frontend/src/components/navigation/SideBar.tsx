@@ -36,7 +36,7 @@ type SideBarProps = {
  * Permet de naviguer entre les pages de l'application
  */
 export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
-  const { logout, user } = userStore();
+  const { logout } = userStore();
   const navigate = useNavigate();
 
   /**
@@ -44,7 +44,6 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
    */
   const handleLogout = async () => {
     await logout();
-    socket.emit("logout", user?.id);
     navigate("/login");
   };
 
@@ -56,7 +55,7 @@ export default function SideBar({ isCollapsed, onToogle }: SideBarProps) {
         transition={{ type: "spring", stiffness: 200, damping: 25 }}
         className={clsx(
           "relative flex min-h-screen flex-col px-3 py-5",
-          "border-r border-gray-300 bg-white",
+          "border-r border-gray-300 bg-white shadow-lg",
           "dark:bg-gray-900",
           "dark:border-gray-500"
         )}
