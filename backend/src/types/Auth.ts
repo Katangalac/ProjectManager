@@ -3,7 +3,7 @@ import {
   tokenPayloadSchema,
   loginDataSchema,
   updatePasswordSchema,
-} from "@/schemas/auth.schemas";
+} from "../schemas/auth.schemas";
 
 /**
  * Type représentant le payload du token d'authentification

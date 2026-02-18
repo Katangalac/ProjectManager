@@ -1,6 +1,6 @@
-import { Message, CreateMessageData, EditMessageData } from "@/types/Message";
-import { MessageNotFoundError, NotUserMessageError } from "@/errors/message";
-import { db } from "@/db";
+import { Message, CreateMessageData, EditMessageData } from "../types/Message";
+import { MessageNotFoundError, NotUserMessageError } from "../errors/message";
+import { db } from "../db";
 
 /**
  * Crée et envoie un nouveau message

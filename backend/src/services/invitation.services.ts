@@ -4,16 +4,19 @@ import {
   UpdateInvitationData,
   InvitationCollection,
   SearchInvitationFilter,
-} from "@/types/Invitation";
+} from "../types/Invitation";
 import {
   InvitationAlreadySentError,
   InvitationNotFoundError,
-} from "@/errors/invitation";
-import { buildInvitationWhereInput, buildPaginationInfos } from "@/utils/utils";
-import { db } from "@/db";
+} from "../errors/invitation";
+import {
+  buildInvitationWhereInput,
+  buildPaginationInfos,
+} from "../utils/utils";
+import { db } from "../db";
 import { Prisma } from "@prisma/client";
-import { addNotificationToQueue } from "@/lib/bullmq/notification.queue";
-import { addUserToTeam } from "@/services/team.services";
+import { addNotificationToQueue } from "../lib/bullmq/notification.queue";
+import { addUserToTeam } from "./team.services";
 
 /**
  * Crée et envoie une nouvelle invitation

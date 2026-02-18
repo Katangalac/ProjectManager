@@ -4,9 +4,9 @@ import {
   updateTeamDataSchema,
   searchTeamsFilterSchema,
   userTeamSchema,
-} from "@/schemas/team.schemas";
+} from "../schemas/team.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant les données attendues pour créer une équipe

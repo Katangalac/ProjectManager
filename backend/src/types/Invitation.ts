@@ -3,9 +3,9 @@ import {
   searchInvitationsFilterSchema,
   updateInvitationDataSchema,
   createInvitationSchema,
-} from "@/schemas/invitation.schemas";
+} from "../schemas/invitation.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant la structure d'une invitation

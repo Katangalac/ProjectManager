@@ -4,9 +4,9 @@ import {
   updateUserDataSchema,
   createUserSchema,
   searchUsersFilterSchema,
-} from "@/schemas/user.schemas";
+} from "../schemas/user.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant les données attendues pour un utilisateur

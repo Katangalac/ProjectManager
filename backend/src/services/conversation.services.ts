@@ -1,24 +1,24 @@
-import { Conversation, CreateConversationData } from "@/types/Conversation";
-import { db } from "@/db";
-import { SearchUsersFilter, UsersCollection } from "@/types/User";
-import { toSafeUser } from "@/services/user.transforms";
-import { getTeamMembers } from "@/services/team.services";
-import { SearchMessagesFilter, MessagesCollection } from "@/types/Message";
+import { Conversation, CreateConversationData } from "../types/Conversation";
+import { db } from "../db";
+import { SearchUsersFilter, UsersCollection } from "../types/User";
+import { toSafeUser } from "./user.transforms";
+import { getTeamMembers } from "./team.services";
+import { SearchMessagesFilter, MessagesCollection } from "../types/Message";
 import { UserConversation } from "@prisma/client";
 import {
   ConversationNotFoundError,
   UserAlreadyInConversationError,
   NotEnoughParticipantsInConversationError,
-} from "@/errors/conversation";
+} from "../errors/conversation";
 import {
   buildUserWhereInput,
   buildMessageWhereInput,
   buildPaginationInfos,
-} from "@/utils/utils";
+} from "../utils/utils";
 
 import { Prisma } from "@prisma/client";
 
-import { getIO } from "@/lib/socket/socket";
+import { getIO } from "../lib/socket/socket";
 
 /**
  * Crée une nouvelle conversation

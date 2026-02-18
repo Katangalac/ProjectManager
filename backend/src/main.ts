@@ -1,6 +1,6 @@
-import { startServer } from "@/server";
-import { startEmailWorker } from "@/workers/email.worker";
-import { startNotificationWorker } from "@/workers/notification.worker";
+import { startServer } from "./server";
+import { startEmailWorker } from "./workers/email.worker";
+import { startNotificationWorker } from "./workers/notification.worker";
 
 let server: any;
 

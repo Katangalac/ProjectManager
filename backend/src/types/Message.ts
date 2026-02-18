@@ -3,9 +3,9 @@ import {
   createMessageSchema,
   editMessageSchema,
   searchMessagesFilterSchema,
-} from "@/schemas/message.schemas";
+} from "../schemas/message.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant la structure d'un objet Message dans la BD

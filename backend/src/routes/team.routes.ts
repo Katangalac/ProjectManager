@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as teamController from "@/controllers/team.controllers";
-import { isAuthenticated } from "@/middlewares/auth.middleware";
+import * as teamController from "../controllers/team.controllers";
+import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
 

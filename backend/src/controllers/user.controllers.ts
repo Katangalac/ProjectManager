@@ -2,25 +2,25 @@ import { Request, Response } from "express";
 import {
   updateUserDataSchema,
   searchUsersFilterSchema,
-} from "@/schemas/user.schemas";
-import { searchTasksFilterSchema } from "@/schemas/task.schemas";
+} from "../schemas/user.schemas";
+import { searchTasksFilterSchema } from "../schemas/task.schemas";
 import {
   EmailAlreadyUsedError,
   PhoneNumberAlreadyUsedError,
   UserNotFoundError,
   UsernameAlreadyUsedError,
-} from "@/errors/user";
-import * as userService from "@/services/user.services";
+} from "../errors/user";
+import * as userService from "../services/user.services";
 import { z } from "zod";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { searchProjectsFilterSchema } from "@/schemas/project.schemas";
-import { searchTeamsFilterSchema } from "@/schemas/team.schemas";
-import { searchNotificationsFilterSchema } from "@/schemas/notification.schemas";
-import { searchMessagesFilterSchema } from "@/schemas/message.schemas";
-import { searchConversationsFilterSchema } from "@/schemas/conversation.schemas";
-import { getUserIdFromRequest } from "@/utils/utils";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
-import { redis } from "@/lib/redis/redis";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { searchProjectsFilterSchema } from "../schemas/project.schemas";
+import { searchTeamsFilterSchema } from "../schemas/team.schemas";
+import { searchNotificationsFilterSchema } from "../schemas/notification.schemas";
+import { searchMessagesFilterSchema } from "../schemas/message.schemas";
+import { searchConversationsFilterSchema } from "../schemas/conversation.schemas";
+import { getUserIdFromRequest } from "../utils/utils";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+import { redis } from "../lib/redis/redis";
 
 /**
  * Récupère la liste des utilisateurs repondant à un filtre de recherche (Aucun filtre -> tous)

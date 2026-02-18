@@ -5,25 +5,25 @@ import {
   UpdateTeamData,
   SearchTeamsFilter,
   TeamsCollection,
-} from "@/types/Team";
+} from "../types/Team";
 
-import { db } from "@/db";
+import { db } from "../db";
 
 import {
   TeamNotFoundError,
   UserAlreadyInTeamError,
   UserNotInTeamError,
-} from "@/errors/team";
+} from "../errors/team";
 
 import { Prisma } from "@prisma/client";
-import { toSafeUser } from "@/services/user.transforms";
-import { SearchUsersFilter, UsersCollection } from "@/types/User";
-import { ProjectsCollection, SearchProjectsFilter } from "@/types/Project";
-import { SearchTasksFilter, TasksCollection } from "@/types/Task";
+import { toSafeUser } from "./user.transforms";
+import { SearchUsersFilter, UsersCollection } from "../types/User";
+import { ProjectsCollection, SearchProjectsFilter } from "../types/Project";
+import { SearchTasksFilter, TasksCollection } from "../types/Task";
 import {
   SearchConversationsFilter,
   ConversationsCollection,
-} from "@/types/Conversation";
+} from "../types/Conversation";
 
 import {
   buildTeamWhereInput,
@@ -32,10 +32,10 @@ import {
   buildTaskWhereInput,
   buildPaginationInfos,
   buildConversationWhereInput,
-} from "@/utils/utils";
+} from "../utils/utils";
 
-import { addNotificationToQueue } from "@/lib/bullmq/notification.queue";
-import { getIO } from "@/lib/socket/socket";
+import { addNotificationToQueue } from "../lib/bullmq/notification.queue";
+import { getIO } from "../lib/socket/socket";
 
 /**
  * Crée une nouvelle équipe de travail

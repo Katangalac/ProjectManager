@@ -1,6 +1,6 @@
-import * as messageController from "@/controllers/message.controllers";
+import * as messageController from "../controllers/message.controllers";
 import { Router } from "express";
-import { isAuthenticated } from "@/middlewares/auth.middleware";
+import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
 

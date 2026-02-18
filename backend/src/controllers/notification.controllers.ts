@@ -1,10 +1,10 @@
-import * as notificationService from "@/services/notification.services";
-import * as notificationSchema from "@/schemas/notification.schemas";
-import { NotificationNotFoundError } from "@/errors/notification";
+import * as notificationService from "../services/notification.services";
+import * as notificationSchema from "../schemas/notification.schemas";
+import { NotificationNotFoundError } from "../errors/notification";
 import { Request, Response } from "express";
-import { idParamSchema } from "@/schemas/idparam.schema";
+import { idParamSchema } from "../schemas/idparam.schema";
 import { z } from "zod";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle notification

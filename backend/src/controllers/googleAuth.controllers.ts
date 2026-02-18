@@ -2,18 +2,18 @@ import { Request, Response } from "express";
 import {
   exchangeCodeForToken,
   getGoogleUser,
-} from "@/services/googleAuth.services";
-import { db } from "@/db";
-import { generateAuthResponse } from "@/services/auth.services";
+} from "../services/googleAuth.services";
+import { db } from "../db";
+import { generateAuthResponse } from "../services/auth.services";
 import { UserProvider } from "@prisma/client";
 import {
   createUser,
   getUserByEmail,
   updateUserLastLoginDateToNow,
-} from "@/services/user.services";
+} from "../services/user.services";
 import { ZodError } from "zod";
-import { errorResponse } from "@/utils/apiResponse";
-import { authCodes } from "@/server";
+import { errorResponse } from "../utils/apiResponse";
+import { authCodes } from "../server";
 
 /**
  * Initialise le processus d'authentification OAuth2.0 avec Google

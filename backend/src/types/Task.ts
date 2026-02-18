@@ -3,9 +3,9 @@ import {
   searchTasksFilterSchema,
   taskSchema,
   updateTaskDataSchema,
-} from "@/schemas/task.schemas";
+} from "../schemas/task.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant la structure d'une tâche dans la BD

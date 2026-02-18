@@ -1,6 +1,6 @@
-import * as emailService from "@/controllers/email.controllers";
+import * as emailService from "../controllers/email.controllers";
 import { Router } from "express";
-import { isAuthenticated } from "@/middlewares/auth.middleware";
+import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
 

@@ -1,13 +1,13 @@
 import {
   createMessageSchema,
   editMessageSchema,
-} from "@/schemas/message.schemas";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { MessageNotFoundError, NotUserMessageError } from "@/errors/message";
+} from "../schemas/message.schemas";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { MessageNotFoundError, NotUserMessageError } from "../errors/message";
 import { z } from "zod";
 import { Request, Response } from "express";
-import * as messageService from "@/services/message.services";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import * as messageService from "../services/message.services";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée et envoi un nouveau message

@@ -9,8 +9,8 @@ import {
   validateResetToken,
   resetPassword,
   exchangeAuthCodeController,
-} from "@/controllers/auth.controllers";
-import { isAuthenticated } from "@/middlewares/auth.middleware";
+} from "../controllers/auth.controllers";
+import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
 

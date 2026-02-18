@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { UserRole, UserProvider } from "@prisma/client";
-import { phoneRegex } from "@/utils/utils";
+import { phoneRegex } from "../utils/utils";
 
 /**
  * Schéma de validation pour un utilisateur

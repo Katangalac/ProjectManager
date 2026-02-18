@@ -1,7 +1,7 @@
 import { Worker } from "bullmq";
-import { redisConnection } from "@/lib/redis/redis";
-import { sendNotification } from "@/services/notification.services";
-import { getIO } from "@/lib/socket/socket";
+import { redisConnection } from "../lib/redis/redis";
+import { sendNotification } from "../services/notification.services";
+import { getIO } from "../lib/socket/socket";
 
 /**
  * Worker qui s'occupe d'envoyer les notifications dans la file de notifications

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { TokenPayload } from "@/types/Auth";
-import { resetPasswordTokenPayloadSchema } from "@/schemas/auth.schemas";
+import { TokenPayload } from "../../types/Auth";
+import { resetPasswordTokenPayloadSchema } from "../../schemas/auth.schemas";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN = "6h";

@@ -4,25 +4,25 @@ import {
   Project,
   UpdateProjectData,
   ProjectsCollection,
-} from "@/types/Project";
+} from "../types/Project";
 import {
   ProjectNotFoundError,
   TeamAlreadyInProjectError,
   TeamNotInProjectError,
-} from "@/errors/project";
-import { db } from "@/db";
+} from "../errors/project";
+import { db } from "../db";
 import { Prisma, ProjectTeam } from "@prisma/client";
-import { SearchTeamsFilter, TeamsCollection } from "@/types/Team";
-import { toSafeUser } from "@/services/user.transforms";
-import { SearchUsersFilter, UsersCollection } from "@/types/User";
-import { SearchTasksFilter, TasksCollection } from "@/types/Task";
+import { SearchTeamsFilter, TeamsCollection } from "../types/Team";
+import { toSafeUser } from "./user.transforms";
+import { SearchUsersFilter, UsersCollection } from "../types/User";
+import { SearchTasksFilter, TasksCollection } from "../types/Task";
 import {
   buildProjectWhereInput,
   buildUserWhereInput,
   buildTaskWhereInput,
   buildTeamWhereInput,
   buildPaginationInfos,
-} from "@/utils/utils";
+} from "../utils/utils";
 
 /**
  * Crée un nouveau projet

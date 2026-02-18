@@ -3,9 +3,9 @@ import {
   projectSchema,
   searchProjectsFilterSchema,
   updateProjectDataSchema,
-} from "@/schemas/project.schemas";
+} from "../schemas/project.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant la structure d'un projet dans la BD

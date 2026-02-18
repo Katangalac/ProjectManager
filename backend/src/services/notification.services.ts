@@ -3,13 +3,13 @@ import {
   CreateNotificationData,
   SearchNotificationsFilter,
   NotificationsCollection,
-} from "@/types/Notification";
-import { db } from "@/db";
-import { NotificationNotFoundError } from "@/errors/notification";
+} from "../types/Notification";
+import { db } from "../db";
+import { NotificationNotFoundError } from "../errors/notification";
 import {
   buildNotificationWhereInput,
   buildPaginationInfos,
-} from "@/utils/utils";
+} from "../utils/utils";
 import { Prisma, UserProvider } from "@prisma/client";
 import { getIO } from "../lib/socket/socket";
 
@@ -32,7 +32,7 @@ export const sendNotification = async (
     const io = getIO();
     io.to(newNotification.userId).emit("new_notification", newNotification);
   } catch (wsError) {
-    console.error("❌ WebSocket emit failed:", wsError);
+    console.error("WebSocket emit failed:", wsError);
   }
 
   return newNotification;

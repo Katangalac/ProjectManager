@@ -1,11 +1,13 @@
 import { Server } from "socket.io";
 import http from "http";
-import { Message } from "@/types/Message";
-import { getUserTeams, getUserConversations } from "@/services/user.services";
-import { verifyToken } from "@/lib/jwt/jwt";
-import { tokenPayloadSchema } from "@/schemas/auth.schemas";
-import { redis } from "@/lib/redis/redis";
-import { logger } from "@/lib/logger/logger";
+import { Message } from "../../types/Message";
+import {
+  getUserTeams,
+  getUserConversations,
+} from "../../services/user.services";
+import { verifyToken } from "../jwt/jwt";
+import { tokenPayloadSchema } from "../../schemas/auth.schemas";
+import { redis } from "../redis/redis";
 
 //Instance du serveur Socket.io
 let io: Server;
@@ -149,10 +151,6 @@ export const setupSocket = (server: http.Server) => {
       });
 
       socket.on("logout", async (userId: string) => {
-        logger.info(`User disconnected: ${userId} (socket: ${socket.id})`);
-        logger.info(
-          `User disconnected: ${socket.userId} (socket: ${socket.id})`,
-        );
         console.log(
           `User disconnected: ${socket.userId} (socket: ${socket.id})`,
         );
@@ -179,9 +177,6 @@ export const setupSocket = (server: http.Server) => {
        * Gestion de la déconnexion d’un client.
        */
       socket.on("disconnect", async () => {
-        logger.info(
-          `User disconnected: ${socket.userId} (socket: ${socket.id})`,
-        );
         console.log(
           `User disconnected: ${socket.userId} (socket: ${socket.id})`,
         );

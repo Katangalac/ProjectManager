@@ -1,4 +1,4 @@
-import { AppError } from "@/errors/AppError";
+import { AppError } from "../AppError";
 
 /**
  * Erreur levée lors d'une recherche d'une équipe

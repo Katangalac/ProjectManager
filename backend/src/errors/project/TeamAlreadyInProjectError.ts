@@ -1,4 +1,4 @@
-import { AppError } from "@/errors/AppError";
+import { AppError } from "../AppError";
 
 /**
  * Erreur levée lors de l'ajout d'une équiper dans un projet

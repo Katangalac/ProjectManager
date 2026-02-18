@@ -1,12 +1,12 @@
-import * as taskService from "@/services/task.services";
-import * as taskSchemas from "@/schemas/task.schemas";
-import * as taskError from "@/errors/task";
+import * as taskService from "../services/task.services";
+import * as taskSchemas from "../schemas/task.schemas";
+import * as taskError from "../errors/task";
 import { Request, Response } from "express";
 import { z } from "zod";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { searchUsersFilterSchema } from "@/schemas/user.schemas";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { searchUsersFilterSchema } from "../schemas/user.schemas";
 import { TaskStatus } from "@prisma/client";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle tache

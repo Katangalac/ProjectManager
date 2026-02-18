@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { addEmailToQueue } from "@/lib/bullmq/email.queue";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
-import { sendWelcomeEmailSchema } from "@/schemas/email.schemas";
+import { addEmailToQueue } from "../lib/bullmq/email.queue";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+import { sendWelcomeEmailSchema } from "../schemas/email.schemas";
 import { z } from "zod";
 
 /**

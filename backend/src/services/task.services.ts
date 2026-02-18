@@ -3,19 +3,18 @@ import {
   SearchTasksFilter,
   Task,
   UpdateTaskData,
-} from "@/types/Task";
+} from "../types/Task";
 import {
   TaskNotFoundError,
   TaskNotAssignedToUserError,
   TaskAlreadyAssignedToUserError,
-} from "@/errors/task";
-import { db } from "@/db";
+} from "../errors/task";
+import { db } from "../db";
 import { Prisma, UserTask } from "@prisma/client";
-import { SafeUser, SearchUsersFilter } from "@/types/User";
-import { toSafeUser } from "@/services/user.transforms";
-import { buildTaskWhereInput } from "@/utils/utils";
-import { buildUserWhereInput } from "@/utils/utils";
-import { addNotificationToQueue } from "@/lib/bullmq/notification.queue";
+import { SafeUser, SearchUsersFilter } from "../types/User";
+import { toSafeUser } from "./user.transforms";
+import { buildTaskWhereInput, buildUserWhereInput } from "../utils/utils";
+import { addNotificationToQueue } from "../lib/bullmq/notification.queue";
 
 /**
  * Crée une nouvelle tâche

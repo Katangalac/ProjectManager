@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
-import { TokenPayload } from "@/types/Auth";
+import { TokenPayload } from "../Auth";
 
 declare global {
   namespace Express {

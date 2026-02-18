@@ -1,16 +1,16 @@
-import * as teamService from "@/services/team.services";
-import { getInvitations } from "@/services/invitation.services";
+import * as teamService from "../services/team.services";
+import { getInvitations } from "../services/invitation.services";
 import { Request, Response } from "express";
-import * as teamSchemas from "@/schemas/team.schemas";
-import * as teamError from "@/errors/team";
+import * as teamSchemas from "../schemas/team.schemas";
+import * as teamError from "../errors/team";
 import { z } from "zod";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { searchTasksFilterSchema } from "@/schemas/task.schemas";
-import { searchUsersFilterSchema } from "@/schemas/user.schemas";
-import { searchProjectsFilterSchema } from "@/schemas/project.schemas";
-import { searchConversationsFilterSchema } from "@/schemas/conversation.schemas";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
-import { searchInvitationsFilterSchema } from "@/schemas/invitation.schemas";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { searchTasksFilterSchema } from "../schemas/task.schemas";
+import { searchUsersFilterSchema } from "../schemas/user.schemas";
+import { searchProjectsFilterSchema } from "../schemas/project.schemas";
+import { searchConversationsFilterSchema } from "../schemas/conversation.schemas";
+import { successResponse, errorResponse } from "../utils/apiResponse";
+import { searchInvitationsFilterSchema } from "../schemas/invitation.schemas";
 
 /**
  * Crée une nouvelle équipe

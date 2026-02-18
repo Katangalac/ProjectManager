@@ -1,4 +1,4 @@
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "../types/Pagination";
 
 /**
  * Réponse à envoyer en cas de succès d'une requête

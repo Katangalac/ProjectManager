@@ -4,17 +4,17 @@ import https from "https";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import userRoutes from "@/routes/user.routes";
-import authRoutes from "@/routes/auth.routes";
-import googleAuthRoutes from "@/routes/googleAuth.routes";
-import teamRoutes from "@/routes/team.routes";
-import projectRoutes from "@/routes/project.routes";
-import taskRoutes from "@/routes/task.routes";
-import notificationRoutes from "@/routes/notification.routes";
-import conversationRoutes from "@/routes/conversation.routes";
-import messageRoutes from "@/routes/message.routes";
-import invitationsRoutes from "@/routes/invitation.routes";
-import { setupSocket } from "@/lib/socket/socket";
+import userRoutes from "./routes/user.routes";
+import authRoutes from "./routes/auth.routes";
+import googleAuthRoutes from "./routes/googleAuth.routes";
+import teamRoutes from "./routes/team.routes";
+import projectRoutes from "./routes/project.routes";
+import taskRoutes from "./routes/task.routes";
+import notificationRoutes from "./routes/notification.routes";
+import conversationRoutes from "./routes/conversation.routes";
+import messageRoutes from "./routes/message.routes";
+import invitationsRoutes from "./routes/invitation.routes";
+import { setupSocket } from "./lib/socket/socket";
 import morgan from "morgan";
 
 //store temporaire pour les codes internes

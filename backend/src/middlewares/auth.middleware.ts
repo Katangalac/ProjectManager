@@ -1,6 +1,6 @@
-import { verifyToken } from "@/lib/jwt/jwt";
+import { verifyToken } from "../lib/jwt/jwt";
 import { Request, Response, NextFunction } from "express";
-import { tokenPayloadSchema } from "@/schemas/auth.schemas";
+import { tokenPayloadSchema } from "../schemas/auth.schemas";
 
 /**
  * Vérifie si l'utiliateur a été authentifié en vérifiant si un token d'authentification valide a été

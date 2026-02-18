@@ -3,8 +3,8 @@ import {
   notificationSchema,
   createNotificationSchema,
   searchNotificationsFilterSchema,
-} from "@/schemas/notification.schemas";
-import { Pagination } from "@/types/Pagination";
+} from "../schemas/notification.schemas";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant les données attendues pour une notification dans la BD

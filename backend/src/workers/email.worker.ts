@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
-import { redisConnection } from "@/lib/redis/redis";
-import { sendEmail } from "@/services/email.services";
+import { redisConnection } from "../lib/redis/redis";
+import { sendEmail } from "../services/email.services";
 
 /**
  * Worker qui s'occupe d'envoyer les emails dans la file d'emails

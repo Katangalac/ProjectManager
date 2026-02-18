@@ -1,4 +1,4 @@
-import { AppError } from "@/errors/AppError";
+import { AppError } from "../AppError";
 
 /**
  * Erreur levée lors de la création d'un utilisateur déjà enregistré dans le système

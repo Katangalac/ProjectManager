@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as invitationController from "@/controllers/invitation.controllers";
-import { isAuthenticated } from "@/middlewares/auth.middleware";
+import * as invitationController from "../controllers/invitation.controllers";
+import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
 

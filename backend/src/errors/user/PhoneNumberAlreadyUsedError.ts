@@ -1,4 +1,4 @@
-import { AppError } from "@/errors/AppError";
+import { AppError } from "../AppError";
 
 /**
  * Erreur levée lors d'un conflit de numéro de téléphone entre utilisateurs

@@ -1,13 +1,13 @@
-import * as invitationService from "@/services/invitation.services";
-import * as invitationSchema from "@/schemas/invitation.schemas";
+import * as invitationService from "../services/invitation.services";
+import * as invitationSchema from "../schemas/invitation.schemas";
 import {
   InvitationAlreadySentError,
   InvitationNotFoundError,
-} from "@/errors/invitation";
+} from "../errors/invitation";
 import { Request, Response } from "express";
-import { idParamSchema } from "@/schemas/idparam.schema";
+import { idParamSchema } from "../schemas/idparam.schema";
 import { z } from "zod";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle invitation

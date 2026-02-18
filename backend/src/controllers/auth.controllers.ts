@@ -1,37 +1,40 @@
 import {
   createUser,
   updateUserLastLoginDateToNow,
-} from "@/services/user.services";
-import { loginDataSchema, updatePasswordSchema } from "@/schemas/auth.schemas";
-import { createUserSchema } from "@/schemas/user.schemas";
+} from "../services/user.services";
+import { loginDataSchema, updatePasswordSchema } from "../schemas/auth.schemas";
+import { createUserSchema } from "../schemas/user.schemas";
 import { UserProvider } from "@prisma/client";
 import { Request, Response } from "express";
-import { generateAuthResponse, updatePassword } from "@/services/auth.services";
+import {
+  generateAuthResponse,
+  updatePassword,
+} from "../services/auth.services";
 
-import { db } from "@/db";
+import { db } from "../db";
 import { verify, hash } from "argon2";
 import { z } from "zod";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 import {
   UserNotFoundError,
   UsernameAlreadyUsedError,
   EmailAlreadyUsedError,
   UserAlreadyExistError,
-} from "@/errors/user";
-import { addEmailToQueue } from "@/lib/bullmq/email.queue";
-import { addNotificationToQueue } from "@/lib/bullmq/notification.queue";
+} from "../errors/user";
+import { addEmailToQueue } from "../lib/bullmq/email.queue";
+import { addNotificationToQueue } from "../lib/bullmq/notification.queue";
 import {
   getForgetPasswordMessageHtml,
   getWelcomeMessageHtml,
-} from "@/utils/utils";
+} from "../utils/utils";
 import {
   signResetPasswordToken,
   verifyResetPasswordToken,
   verifyToken,
-} from "@/lib/jwt/jwt";
-import { AppError } from "@/errors/AppError";
-import { authCodes } from "@/server";
+} from "../lib/jwt/jwt";
+import { AppError } from "../errors/AppError";
+import { authCodes } from "../server";
 
 /**
  * Enregistre/inscrit un nouvel utilisateur dans le système

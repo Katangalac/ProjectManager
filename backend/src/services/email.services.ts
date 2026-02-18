@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { sendEmailSchema } from "@/schemas/email.schemas";
+import { sendEmailSchema } from "../schemas/email.schemas";
 
 //Adresse email utilisé pour envoyer des emails avec Resend
 const RESEND_MAIL = process.env.RESEND_DEFAULT_DEV_MAIL;

@@ -4,30 +4,30 @@ import {
   CreateUserData,
   UpdateUserData,
   SearchUsersFilter,
-} from "@/types/User";
-import { toSafeUser } from "@/services/user.transforms";
+} from "../types/User";
+import { toSafeUser } from "./user.transforms";
 import {
   EmailAlreadyUsedError,
   PhoneNumberAlreadyUsedError,
   UserAlreadyExistError,
   UserNotFoundError,
   UsernameAlreadyUsedError,
-} from "@/errors/user";
+} from "../errors/user";
 import { Prisma, UserRole, UserProvider } from "@prisma/client";
-import { db } from "@/db";
+import { db } from "../db";
 import { hash } from "argon2";
-import { SearchTeamsFilter, TeamsCollection } from "@/types/Team";
-import { ProjectsCollection, SearchProjectsFilter } from "@/types/Project";
-import { SearchTasksFilter, TasksCollection } from "@/types/Task";
+import { SearchTeamsFilter, TeamsCollection } from "../types/Team";
+import { ProjectsCollection, SearchProjectsFilter } from "../types/Project";
+import { SearchTasksFilter, TasksCollection } from "../types/Task";
 import {
   NotificationsCollection,
   SearchNotificationsFilter,
-} from "@/types/Notification";
-import { MessagesCollection, SearchMessagesFilter } from "@/types/Message";
+} from "../types/Notification";
+import { MessagesCollection, SearchMessagesFilter } from "../types/Message";
 import {
   ConversationsCollection,
   SearchConversationsFilter,
-} from "@/types/Conversation";
+} from "../types/Conversation";
 import {
   buildTaskWhereInput,
   buildTeamWhereInput,
@@ -37,7 +37,7 @@ import {
   buildMessageWhereInput,
   buildConversationWhereInput,
   buildPaginationInfos,
-} from "@/utils/utils";
+} from "../utils/utils";
 
 /**
  * Crée et enregistre un nouvel utilisateur dans le système

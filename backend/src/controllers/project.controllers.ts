@@ -1,14 +1,14 @@
-import * as projectService from "@/services/project.services";
+import * as projectService from "../services/project.services";
 import { Request, Response } from "express";
-import * as projectSchemas from "@/schemas/project.schemas";
-import * as projectError from "@/errors/project";
-import { idParamSchema } from "@/schemas/idparam.schema";
+import * as projectSchemas from "../schemas/project.schemas";
+import * as projectError from "../errors/project";
+import { idParamSchema } from "../schemas/idparam.schema";
 import { z } from "zod";
-import { searchUsersFilterSchema } from "@/schemas/user.schemas";
-import { searchTasksFilterSchema } from "@/schemas/task.schemas";
-import { searchTeamsFilterSchema } from "@/schemas/team.schemas";
+import { searchUsersFilterSchema } from "../schemas/user.schemas";
+import { searchTasksFilterSchema } from "../schemas/task.schemas";
+import { searchTeamsFilterSchema } from "../schemas/team.schemas";
 import { ProjectStatus } from "@prisma/client";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée un nouveau projet

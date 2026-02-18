@@ -2,9 +2,9 @@ import {
   conversationSchema,
   createConversationSchema,
   searchConversationsFilterSchema,
-} from "@/schemas/conversation.schemas";
+} from "../schemas/conversation.schemas";
 import { z } from "zod";
-import { Pagination } from "@/types/Pagination";
+import { Pagination } from "./Pagination";
 
 /**
  * Type représentant la structure d'un objet Conversation dans la BD

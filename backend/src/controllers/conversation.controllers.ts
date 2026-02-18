@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import * as conversationService from "@/services/conversation.services";
-import * as conversationSchema from "@/schemas/conversation.schemas";
+import * as conversationService from "../services/conversation.services";
+import * as conversationSchema from "../schemas/conversation.schemas";
 import {
   ConversationNotFoundError,
   UserAlreadyInConversationError,
   NotEnoughParticipantsInConversationError,
-} from "@/errors/conversation";
+} from "../errors/conversation";
 import { z } from "zod";
-import { idParamSchema } from "@/schemas/idparam.schema";
-import { searchMessagesFilterSchema } from "@/schemas/message.schemas";
-import { searchUsersFilterSchema } from "@/schemas/user.schemas";
-import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { idParamSchema } from "../schemas/idparam.schema";
+import { searchMessagesFilterSchema } from "../schemas/message.schemas";
+import { searchUsersFilterSchema } from "../schemas/user.schemas";
+import { successResponse, errorResponse } from "../utils/apiResponse";
 
 /**
  * Crée une nouvelle conversation

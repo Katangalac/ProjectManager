@@ -1,11 +1,11 @@
-import { signToken } from "@/lib/jwt/jwt";
-import { SafeUser } from "@/types/User";
-import { toTokenPayload } from "@/services/user.transforms";
-import { updatePasswordData } from "@/types/Auth";
-import { db } from "@/db";
+import { signToken } from "../lib/jwt/jwt";
+import { SafeUser } from "../types/User";
+import { toTokenPayload } from "./user.transforms";
+import { updatePasswordData } from "../types/Auth";
+import { db } from "../db";
 import { hash, verify } from "argon2";
-import { UserNotFoundError } from "@/errors/user";
-import { AppError } from "@/errors/AppError";
+import { UserNotFoundError } from "../errors/user";
+import { AppError } from "../errors/AppError";
 
 /**
  * Génère le token d'authentification signé ainsi que les options de cookie dans lequel il sera stocké

@@ -1,5 +1,5 @@
-import { TokenPayload } from "@/types/Auth";
-import { User, PublicUser, SafeUser } from "@/types/User";
+import { TokenPayload } from "../types/Auth";
+import { User, PublicUser, SafeUser } from "../types/User";
 
 /**
  * Transforme un objet User en PublicUser

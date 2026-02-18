@@ -1,5 +1,5 @@
 import { Queue } from "bullmq";
-import { redisConnection } from "@/lib/redis/redis";
+import { redisConnection } from "../redis/redis";
 
 /**
  * File d'emails. Enfile les emails à envoyer
