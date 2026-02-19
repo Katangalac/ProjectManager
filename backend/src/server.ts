@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import http from "http";
 import https from "https";
 import cors from "cors";
@@ -30,7 +31,13 @@ export function startServer() {
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   };
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    message: "Trop de requêtes, veuillez réessayer plus tard.",
+  });
 
+  app.set("trust proxy", 1);
   app.use(express.json());
 
   //Cookie parsing
@@ -45,7 +52,8 @@ export function startServer() {
   app.use(bodyParser.json()); //Pour JSON
   app.use(bodyParser.urlencoded({ extended: true })); //Pour les formulaires
 
-  app.set("trust proxy", 1);
+  //rate limit
+  app.use(limiter);
 
   //Routes
   app.get("/", (req, res) => {
