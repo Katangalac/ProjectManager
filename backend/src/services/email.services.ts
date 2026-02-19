@@ -18,7 +18,7 @@ const resend = new Resend(RESEND_API_KEY);
 export const sendEmail = async (to: string, subject: string, html: string) => {
   const sendEmailData = sendEmailSchema.parse({ to, subject, html });
   await resend.emails.send({
-    from: `ProjectManager <${RESEND_MAIL}>`,
+    from: `ProjectFlow <${RESEND_MAIL}>`,
     to: sendEmailData.to,
     subject: sendEmailData.subject,
     html: sendEmailData.html,

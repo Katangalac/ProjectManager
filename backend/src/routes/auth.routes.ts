@@ -1,4 +1,5 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
 import {
   register,
   login,
@@ -13,6 +14,11 @@ import {
 import { isAuthenticated } from "../middlewares/auth.middleware";
 
 const router = Router();
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: "Trop de tentatives de connexion, réessayez plus tard.",
+});
 
 /**
  * @route POST /api/auth/register
@@ -22,7 +28,7 @@ router.post("/register", register);
 /**
  * @route POST /api/auth/login
  */
-router.post("/login", login);
+router.post("/login", loginLimiter, login);
 
 /**
  * @route POST /api/auth/logout
